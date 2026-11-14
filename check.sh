@@ -131,7 +131,9 @@ echo "13m/13 no word under the scroll cue on a short phone, in both themes"; run
 # alone, past 60 percent of the 1,000 it had, so its limit is 1,300, about twice its time (run, above).
 # Since pass NI (Q98 (a), and Q, V and Y's five) it walks 44 banks: 862 seconds alone beside two reading agents, just under two thirds
 # of the 1,300 it had, so its limit is 1,700, about twice.
-echo "13n/13 the grown-up's card on a device with no voice, in both themes"; run "the grown-up's card" 1700 node tests/e2e/grown-up-card.mjs 2>&1 | tail -1 | tee /tmp/edu_card.txt; grep -q " 0 failed" /tmp/edu_card.txt || fail=1
+# Since pass NK (A, E and I's, O and U's and Small letters' fourteen) it walks 58 banks: 1,310 seconds in check.sh's second run, past
+# two thirds of the 1,700 it had, so its limit is 2,620, about twice.
+echo "13n/13 the grown-up's card on a device with no voice, in both themes"; run "the grown-up's card" 2620 node tests/e2e/grown-up-card.mjs 2>&1 | tail -1 | tee /tmp/edu_card.txt; grep -q " 0 failed" /tmp/edu_card.txt || fail=1
 # A browser too old for the app (Q92, Mikey's answer in pass NG: "Q92 - B"): a note in place of the Loading word when the app cannot
 # start, never when it can, and nothing in the page newer than the browsers the note names (204 seconds beside the rules test after pass
 # NG's round two, so its limit is 420, about twice).

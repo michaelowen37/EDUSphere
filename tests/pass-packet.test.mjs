@@ -208,6 +208,18 @@ const copiedOf = (opts) => checkPacket(T.packet(opts)).copied;
   const r = out ? checkPacket(out) : { faults: ['no packet'], copied: { RA: new Set(), EA: new Set(), IC: new Set() } }; const mine = checkPacket(T.packet({ areas: ['banks', 'letters'] }));
   const same = ['RA', 'EA', 'IC'].every((k) => r.copied[k].size === mine.copied[k].size && [...r.copied[k]].every((n) => mine.copied[k].has(n)));
   ok('the tool run from another folder makes the same packet, every line in its place', !error && r.faults.length === 0 && same, error || r.faults.slice(0, 3)); }
+// The earmark rows every screen brief names (pass NK, round three's whole read of INDEPENDENT-CHECKS: six screen briefs had left them out):
+// every row on the list open in EARMARKS, every open row whose status waits for the next screen read on the list, the packet printing them
+// with the screen brief and not without it; an open row planted with that status and left off the list, caught.
+{ const ea = TEXTS.EA.split('\n');
+  const open = (id) => ea.some((l) => l.startsWith('| ' + id + ' |') && T.openEarmark(l));
+  const waiting = (lines) => lines.filter(T.waitsForScreenRead).map((l) => l.match(/^\| ([AELP]\d+) \|/)[1]);
+  const missing = (lines) => waiting(lines).filter((id) => !T.SCREEN_BRIEF_ROWS.includes(id));
+  const withScreen = T.packet({ briefs: ['screen'] }); const without = T.packet({ briefs: ['code'] });
+  const planted = [...ea, '| A999 | A planted row (the pass packet test) | NK | Waiting (the next screen read) |'];
+  ok('the pass packet names the earmark rows every screen brief names, each open in EARMARKS, every open row waiting for the next screen read among them, with the screen brief and not without it (pass NK; an open row waiting for the next screen read left off the list, planted, caught)',
+    T.SCREEN_BRIEF_ROWS.every(open) && missing(ea).length === 0 && waiting(ea).length >= 5 && withScreen.includes('## The earmark rows every screen brief names') && T.SCREEN_BRIEF_ROWS.every((id) => withScreen.includes('\n- ' + id + ' ') && !withScreen.includes('\n- ' + id + ' (not found')) && !without.includes('## The earmark rows every screen brief names') && checkPacket(withScreen).faults.length === 0 && missing(planted).join() === 'A999',
+    { notOpen: T.SCREEN_BRIEF_ROWS.filter((id) => !open(id)), missing: missing(ea) }); }
 ok('every area takes a section, a brief or words', Object.values(T.AREAS).every((a) => (a.ra || []).length || (a.ea || []).length || (a.ic || []).length || a.words));
 ok('an unknown area is refused with a plain message', (() => { try { T.choose({ areas: ['nonsense'] }); return false; } catch (e) { return /no such area: nonsense/.test(e.message); } })());
 

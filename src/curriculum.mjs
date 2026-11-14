@@ -447,7 +447,7 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.IX.B.2', text: 'Child participates in activities that require eye-hand Coordination with adult support.', moduleIds: ['first-marks', 'three-dots'] },
       { framework: 'TEKS', code: 'PK3.IV.C.4', text: 'Child demonstrates emerging directionality (e.g., top to bottom, left to right), though placement may be inconsistent.', moduleIds: ['first-marks'] },
       { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-marks', 'three-dots'] },
-      { framework: 'TEKS', code: 'PK3.V.B.1', text: 'Child recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation.', moduleIds: ['triangles-too'] },
+      { framework: 'TEKS', code: 'PK3.V.B.1', text: 'Child recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation.', moduleIds: ['triangles-too', 'rectangles-too'] },
       { framework: 'TEKS', code: 'PK3.V.C.1', text: 'Child explores the heights or lengths of people or objects and uses language including bigger, smaller, longer, shorter, or taller with support.', moduleIds: ['big-and-small'] },
       // Pass MR (round one's standards check): I.C.1's list is joined by "or", any of its ways, so its kind words (Please and thank you)
       // and its nonverbal skills (Talking with a friend) teach it between them, each in part; I.A.1's personal boundaries, a friend's
@@ -487,7 +487,7 @@ const PREK_TAUGHT = [
       { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['four-feelings', 'help-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['help-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['four-feelings'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['triangles-too'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['triangles-too', 'rectangles-too'] },
       // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review
       // Committee."): 2027 outcomes the lessons already teach, cited since the requote (docs/standards/tea-pk3-2027-recommended.txt).
       { framework: 'TEKS', code: 'PK3.VI.B.1', text: 'Child explores observable properties of objects and materials using senses.', moduleIds: ['red-and-blue', 'yellow-and-green', 'big-and-little'] },
@@ -589,7 +589,7 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK4.V.A.4', text: 'Child counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
       { framework: 'TEKS', code: 'PK4.V.A.5', text: 'Child names numerals 0-10.', moduleIds: ['count-to-3', 'connect-the-dots'] },
       { framework: 'TEKS', code: 'PK4.V.A.8', text: 'Child compares two sets of up to 10 objects in each set using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'TEKS', code: 'PK4.V.B.1', text: 'Child names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.', moduleIds: ['match-the-shapes', 'draw-the-shapes'] },
+      { framework: 'TEKS', code: 'PK4.V.B.1', text: 'Child names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.', moduleIds: ['match-the-shapes', 'draw-the-shapes', 'any-size-any-turn'] },
       { framework: 'TEKS', code: 'PK4.V.B.2', text: 'Child recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones.', moduleIds: ['match-the-solids'] },
       { framework: 'TEKS', code: 'PK4.V.C.1', text: 'Child recognizes and compares the attributes of heights or lengths of people or objects using language including longer, shorter, taller, higher, lower or same.', moduleIds: ['bigger-and-smaller'] },
       { framework: 'TEKS', code: 'PK4.V.D.1', text: 'Child sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different.', moduleIds: ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids'] },
@@ -600,7 +600,7 @@ const PREK_TAUGHT = [
       { framework: 'CCSS', code: 'ELOF.P-MATH.5', text: 'Associates a quantity with written numerals up to 5 and begins to write numbers.', moduleIds: ['count-to-3'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.7', text: 'Understands simple patterns.', moduleIds: ['patterns'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['same-and-different', 'match-the-water-animals', 'bigger-and-smaller', 'big-bigger-biggest'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['match-the-shapes', 'match-the-solids', 'draw-the-shapes'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['match-the-shapes', 'match-the-solids', 'draw-the-shapes', 'any-size-any-turn'] },
       { framework: 'TEKS', code: 'PK4.IX.B.2', text: 'Child demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.II.D.1', text: 'Child understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events.', moduleIds: ['colours', 'big-bigger-biggest', 'which-came-first', 'which-came-second', 'words-go-together', 'helpers-all-around', 'opposites-and-same', 'things-we-do'] },
@@ -703,17 +703,25 @@ const PREK_TAUGHT = [
       // progression (EARMARKS E13, Domain IV's spaces between words).
       // Since pass NI Q, V and Y joins the III.C.2, III.C.3 and P-LIT 3 rows (pre-K 4's last three consonants: with the four lessons before it,
       // the sounds of twenty-one letters, past the twenty III.C.2 asks; thirteen produced of the fifteen III.C.3 asks).
-      { framework: 'TEKS', code: 'PK4.III.C.2', text: 'Child recognizes at least 20 distinct letter-sound correspondences.', moduleIds: ['hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'hear-it-in-a-word', 'q-v-and-y'] },
-      { framework: 'TEKS', code: 'PK4.III.C.3', text: 'Child produces at least 15 distinct letter-sound correspondences.', moduleIds: ['hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'hear-it-in-a-word', 'q-v-and-y'] },
+      { framework: 'TEKS', code: 'PK4.III.C.2', text: 'Child recognizes at least 20 distinct letter-sound correspondences.', moduleIds: ['hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'hear-it-in-a-word', 'q-v-and-y', 'a-e-and-i', 'o-and-u'] },
+      { framework: 'TEKS', code: 'PK4.III.C.3', text: 'Child produces at least 15 distinct letter-sound correspondences.', moduleIds: ['hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'hear-it-in-a-word', 'q-v-and-y', 'a-e-and-i', 'o-and-u'] },
       // Pass NE: Write it by its sounds, PK4 IV.C.3 in part (EARMARKS E13, Domain IV beside the letters: a familiar word written by the
       // letters for its first and last sounds), joining the P-LIT 6 row; Start or end of the name joins the III.C.2, III.C.3 and P-LIT 3 rows.
       { framework: 'TEKS', code: 'PK4.IV.C.3', text: 'Child writes familiar words using letter-sound correspondences, often using letters associated with beginning, medial and/or ending sounds to write words with adult support as needed.', moduleIds: ['write-by-sounds'] },
       { framework: 'TEKS', code: 'PK4.IV.C.5', text: 'Child demonstrates use of spacing in their writing with adult support as needed.', moduleIds: ['spaces-between-words'] },
       { framework: 'TEKS', code: 'PK4.III.E.2', text: 'Child can distinguish between elements of print including letters, words, and pictures.', moduleIds: ['spaces-between-words'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['spaces-between-words'] },
-      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['spaces-between-words', 'end-marks'] },
+      // Pass NK's second wave: End marks, PK4 III.E.4 whole (end punctuation and case) and IV.C.6 in part (a mark put at the end when
+      // writing, chosen for a sentence heard; the child's own writing with punctuation waits), joining the P-LIT 2 row; and Small letters,
+      // III.C.1 in part (eighteen big letters by name and seven small ones), joining the III.C.1 and P-LIT 3 rows.
+      { framework: 'TEKS', code: 'PK4.III.E.4', text: 'Child can identify some conventional features of print that communicate meaning including end punctuation and case.', moduleIds: ['end-marks'] },
+      { framework: 'TEKS', code: 'PK4.IV.C.6', text: 'Child experiments with and uses punctuation when writing.', moduleIds: ['end-marks'] },
+      // Pass NL: Almost the same and More small letters, III.C.1 in part (with Small letters, fifteen small letters by name, as many as it asks,
+      // and with the lessons before them twenty-two big letters, while naming them aloud is the child's own talk), each joining the III.C.1
+      // and P-LIT 3 rows.
+      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'o-and-u', 'small-letters', 'almost-the-same', 'more-small-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats', 'same-word-or-different', 'think-of-a-word', 'star-and-spoon', 'make-a-rhyme', 'very-first-sound', 'sound-by-sound'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'hear-it-in-a-word', 'q-v-and-y', 'write-your-name'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'hear-it-in-a-word', 'q-v-and-y', 'write-your-name', 'a-e-and-i', 'o-and-u', 'small-letters', 'almost-the-same', 'more-small-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'write-to-tell'] },
       { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'write-your-name'] },
       // Pass NI: Write your name, PK4 IV.C.1 in part (EARMARKS E13, Domain IV beside Q, V and Y: a first name's letters written in order, with

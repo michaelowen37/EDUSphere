@@ -1,7 +1,7 @@
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // The grown-up's card, walked in the real page (Q91, Mikey's answer in pass NG: "Q91 - A"; EARMARKS A96). In plain terms: on a
 // device with no voice, a grown-up reads each question aloud, and the letters banks GROWN_UP_CARD_BANKS names (24 in pass NG, 32 in
-// pass NH, 44 since pass NI) show, where their answers go, a card with the words to say and a Ready button. This walks every one at seeds 1 and 2 in both themes on a
+// pass NH, 44 in pass NI, 58 in pass NK, 66 since pass NL) show, where their answers go, a card with the words to say and a Ready button. This walks every one at seeds 1 and 2 in both themes on a
 // 375 by 667 phone, and each at seed 1 on a 320 by 568 phone and on a phone held sideways (667 by 375), in both themes, and checks, as
 // a child and a grown-up meet it:
 //   - before Ready the card shows its words (the whole question as grownUpCard gives it, and a which-sound question's sounds in the
@@ -54,6 +54,12 @@
 // phone's fold after Ready on all 44 banks at seeds 1 to 6, in both themes, read as a child the educator added sees them, with the test
 // page's own margin taken off so the count is the product's (Show the words again stood between the answers and Check answer, and on
 // Write it by its sounds' word kind pushed it under the fold on every seed in the dark theme; that place, planted, is caught).
+// Since pass NK A, E and I's five banks, O and U's five and Small letters' four join the list, 58 in all (round three's whole read of
+// RULES-AUDIT found this file still pinned pass NI's counts): 28 hiding kinds, 26 of whose cards ask the grown-up to read the question
+// after Ready, and ten picture cards, the two vowel lessons' picture kinds among them; every count below is worked out from the code's
+// lists at seeds 1 and 2 and pinned, so a bank added to the list without its walk here fails. Since pass NL Almost the same's four
+// and More small letters' four join, 66 in all, and their two yes-or-no kinds hide, 30 hiding kinds; their cards hold the question, as
+// Small letters' does, so 26 still ask.
 // Run: node tests/e2e/make-page.mjs && node tests/e2e/grown-up-card.mjs
 import { createRequire } from 'node:module'; import { execSync } from 'node:child_process';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
@@ -213,15 +219,15 @@ for (const theme of ['light', 'dark']) {
     { const want2 = ellsIn(s.feedback); const got = s.ells.map((e) => e.t); if (want2.length) ellReasons += 1; if (JSON.stringify(got) !== JSON.stringify(want2) || s.ells.some((e) => !e.serif)) faults.ells.push({ where, step: 'reason', want: want2, got: s.ells }); }
     if (s.card) faults.together.push({ where, step: 'after a wrong tap' });
   }
-  ok(`${theme}: before Ready each of the ${banks.length} banks shows the grown-up's card with its words and no answers or Check answer, at seeds 1 and 2 (Q91 (a); Q96 (a); Q98 (a))`, faults.before.length === 0 && banks.length === 44, faults.before.slice(0, 3));
-  ok(`${theme}: in the kinds whose picture or letter hides (${hidden} questions), the card stands alone before Ready and with the words again, and after Ready the picture and the question show with no setup line but the two kinds' own (Q97 (a); Q98 (a))`, faults.alone.length === 0 && hidden === 2 * L.GROWN_UP_CARD_HIDES.size && hidden === 2 * 23, faults.alone.slice(0, 3));
+  ok(`${theme}: before Ready each of the ${banks.length} banks shows the grown-up's card with its words and no answers or Check answer, at seeds 1 and 2 (Q91 (a); Q96 (a); Q98 (a))`, faults.before.length === 0 && banks.length === 66, faults.before.slice(0, 3));
+  ok(`${theme}: in the kinds whose picture or letter hides (${hidden} questions), the card stands alone before Ready and with the words again, and after Ready the picture and the question show with no setup line but the two kinds' own (Q97 (a); Q98 (a))`, faults.alone.length === 0 && hidden === 2 * L.GROWN_UP_CARD_HIDES.size && hidden === 2 * 30, faults.alone.slice(0, 3));
   ok(`${theme}: Ready shows the answers under the same print, with Show the words again, and no word the card added prints beside them`, faults.after.length === 0, faults.after.slice(0, 3));
   ok(`${theme}: a which-sound card lists its sounds in the buttons' order, and its buttons show their numbers, never a sound`, faults.numbers.length === 0, faults.numbers.slice(0, 3));
   ok(`${theme}: Show the words again brings the card back and hides the answers`, faults.again.length === 0, faults.again.slice(0, 3));
   ok(`${theme}: the card and the answers are never on the screen together, before Ready, after it, with the words again or after a wrong tap`, faults.together.length === 0, faults.together.slice(0, 3));
   ok(`${theme}: the card's Ready ends above a 375 by 667 phone's fold on all ${banks.length} banks`, faults.fold.length === 0, faults.fold.slice(0, 3));
-  ok(`${theme}: the eight picture cards (${pictureCards} questions) say under their names to read the question, or the words above the letters, then point to each picture and say its name again (pass NI's round one screen read)`, pictureCards === 16, pictureCards);
-  ok(`${theme}: Ready is the plain button, never the pulsing one, "tap Ready." holds together, and the ${asking} cards whose words stop before the question say to read it after Ready (the two letters' word card the words above them)`, faults.ready.length === 0 && asking === 2 * 22, faults.ready.slice(0, 3));
+  ok(`${theme}: the ten picture cards (${pictureCards} questions) say under their names to read the question, or the words above the letters, then point to each picture and say its name again (pass NI's round one screen read)`, pictureCards === 20, pictureCards);
+  ok(`${theme}: Ready is the plain button, never the pulsing one, "tap Ready." holds together, and the ${asking} cards whose words stop before the question say to read it after Ready (the two letters' word card the words above them)`, faults.ready.length === 0 && asking === 2 * 26, faults.ready.slice(0, 3));
   ok(`${theme}: every run of small l's on the card and in the reason draws in a serif type (${ellReasons} reasons hold one), and no lone capital starts a line of the card's words`, faults.ells.length === 0 && ellReasons >= 2, faults.ells.slice(0, 3));
   ok(`${theme}: Ready hands the focus to the first answer, and Show the words again hands it back to Ready`, faults.focus.length === 0, faults.focus.slice(0, 3));
   ok(`${theme}: a which-sound question's numbered buttons stand in one row`, faults.row.length === 0, faults.row.slice(0, 3));
@@ -263,7 +269,7 @@ for (const theme of ['light', 'dark']) {
   await page.close();
 }
 // Check answer above the fold after Ready (pass NI's round one screen read): on a 375 by 667 phone, in both themes, as a child the educator
-// added sees the question (no Walkthrough Mode tab), every one of the 44 banks at seeds 1 to 6 is shown with no voice, Ready is tapped, and
+// added sees the question (no Walkthrough Mode tab), every one of the banks on the list (44 in pass NI, 58 in pass NK, 66 since pass NL) at seeds 1 to 6 is shown with no voice, Ready is tapped, and
 // Check answer must end above the fold, its bottom read with the test page's own margin taken off (the fold check reads the same with a
 // voice). Near miss: Show the words again put back between the answers and Check answer, where round one had it, on Write it by its
 // sounds' word kind at seed 2, caught.
@@ -301,8 +307,8 @@ for (const theme of ['light', 'dark']) {
       await page.evaluate(() => { const link = document.querySelector('[data-card-again]'); const next = document.querySelector('[data-practice-next]'); if (link && next) next.after(link.closest('p')); });
     }
   }
-  ok(`${theme}: after Ready, Check answer ends above a 375 by 667 phone's fold on all 44 banks at seeds 1 to 6, read as a child sees them (${read} questions, the lowest ending at ${highest}; Show the words again at the foot of the question's card, where round one had it, planted on the word kind, caught at ${planted})`,
-    child && read === 6 * banks.length && banks.length === 44 && under.length === 0 && planted !== null && planted > 667, { child, under: under.slice(0, 4), planted });
+  ok(`${theme}: after Ready, Check answer ends above a 375 by 667 phone's fold on all ${banks.length} banks at seeds 1 to 6, read as a child sees them (${read} questions, the lowest ending at ${highest}; Show the words again at the foot of the question's card, where round one had it, planted on the word kind, caught at ${planted})`,
+    child && read === 6 * banks.length && banks.length === 66 && under.length === 0 && planted !== null && planted > 667, { child, under: under.slice(0, 4), planted });
   await page.close();
 }
 // A 320 by 568 phone (since round one's reads, pass NG): wherever Ready sits below the fold the scroll cue shows and a tap on it brings
@@ -435,6 +441,12 @@ for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'da
   await show(page, 'pl-hear-more', seedI); const withI = await read(); const ellOnI = await page.evaluate(() => document.querySelectorAll('[data-grown-up-card] [data-ell]').length);
   await show(page, 'pl-hear-more', seedH); const withoutI = await read();
   ok(`Trace more big letters' card draws the letter I in the serif type (seed ${seedI}), marked as the letter and not as a run of l's, and a card without it draws none (seed ${seedH})`, !!seedI && !!seedH && withI.length === 1 && withI[0].t === 'I' && withI[0].serif && ellOnI === 0 && withoutI.length === 0, { withI, ellOnI, withoutI });
+  // Since pass NL's round one screen read: More small letters' cards that name the big I ("Tap the big I.", "Which small letter goes with
+  // the big I?") draw it in the serif type too, as the letter (the read found both in the sans-serif bar of a small l, at seeds 15 and 12,
+  // which seeds 1 and 2 above never reach).
+  const bigI = [['p4-eirt-tap', /big\u00A0I\./], ['p4-eirt-find', /big\u00A0I\?/]].map(([g, re]) => [g, seeds.find((s) => re.test(L.keepLoneCapitals(L.grownUpCard(L.generateQuestion(g, s)).say)))]);
+  const bigRead = []; for (const [g, s] of bigI) { if (!s) continue; await show(page, g, s); bigRead.push({ g, s, i: await read() }); }
+  ok(`More small letters' cards that name the big I draw it in the serif type, marked as the letter (${bigI.map(([g, s]) => g + ' seed ' + s).join(', ')})`, bigI.every(([, s]) => !!s) && bigRead.length === 2 && bigRead.every((x) => x.i.length === 1 && x.i[0].t === 'I' && x.i[0].serif), bigRead);
   await page.close(); }
 // The way back on a row of its own (pass NI's third read, its screen read, as round two's had asked): the after line's second sentence,
 // "To see the names again, tap Show the words again, under Check answer.", starts its own row, below the first sentence's full stop, on

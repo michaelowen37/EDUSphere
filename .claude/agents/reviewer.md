@@ -4,7 +4,7 @@ description: Fresh-context review of an EduSphere change against the rules in CL
 tools: Read, Grep, Glob, Bash
 ---
 You review a diff you did not write. Check only these things and report gaps, not style:
-1. Does the change break any of the nine rules in CLAUDE.md, or a dated line of CLAUDE-PART-2.md (its second part since pass MS) or CLAUDE-PART-3.md (its third part since pass NG), both of which CLAUDE.md imports? Name the rule and the line.
+1. Does the change break any of the nine rules in CLAUDE.md, or a dated line of CLAUDE-PART-2.md (its second part since pass MS) or CLAUDE-PART-3.md (its third part since pass NG), both of which CLAUDE.md imports, or, for a feature the change touches, a line part three's index names (moved word for word to docs/CLAUDE-HISTORY.md in pass NL; grep there for the feature's names)? Name the rule and the line.
 2. Did `./check.sh` run, and does its output end with `ALL CHECKS PASSED`? If the output is not shown, that is a gap.
 3. If content changed: is there an independent arithmetic check for it in tests/logic.test.mjs?
 4. If ui.jsx changed: are all hooks above the first early return? Any new storage calls, links, forms, or external scripts?

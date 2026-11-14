@@ -1402,7 +1402,10 @@ function IconPic({ name, size = 90, tile = false }) {
     // there (round one's picture check: 1.0 to 1.4 to 1), as the coat's and the cactus' fills do.
     // An apple (pass NE, found by the screen engineer who edged the paper's drawings): What is data's picture graph names apples, and with no
     // apple drawn its four were grey stand-in discs. A red apple with a darker red outline, a brown stem, a green leaf and a light shine.
-    apple: <g><path d="M50 32 C38 22 16 26 16 52 C16 76 34 92 50 86 C66 92 84 76 84 52 C84 26 62 22 50 32 Z" fill="#D9473B" stroke="#7A1F18" strokeWidth="3" strokeLinejoin="round" /><path d="M50 32 Q49 22 54 13" fill="none" stroke="#5E3C1A" strokeWidth="4" strokeLinecap="round" /><path d="M55 19 Q66 9 77 16 Q67 25 55 19 Z" fill="#5E9A62" stroke="#3D6B41" strokeWidth="2" strokeLinejoin="round" /><path d="M29 48 Q29 39 37 35" fill="none" stroke="#F2A097" strokeWidth="4" strokeLinecap="round" /></g>,
+    // On a dark theme's answer tile (dk) the outline takes the yo-yo's light red, the stem the umbrella's lighter brown and the leaf a
+    // light green edge (pass NK: A, E and I's picture bank put the apple on a tile for the first time, where check.sh's tile edges read
+    // 19.4 percent of its edge at 3 to 1 against the dark tiles, its dark red outline melting into them).
+    apple: <g><path d="M50 32 C38 22 16 26 16 52 C16 76 34 92 50 86 C66 92 84 76 84 52 C84 26 62 22 50 32 Z" fill="#D9473B" stroke={dk ? '#F4B4AC' : '#7A1F18'} strokeWidth="3" strokeLinejoin="round" /><path d="M50 32 Q49 22 54 13" fill="none" stroke={dk ? '#B88A5A' : '#5E3C1A'} strokeWidth="4" strokeLinecap="round" /><path d="M55 19 Q66 9 77 16 Q67 25 55 19 Z" fill="#5E9A62" stroke={dk ? '#CFE6C8' : '#3D6B41'} strokeWidth="2" strokeLinejoin="round" /><path d="M29 48 Q29 39 37 35" fill="none" stroke="#F2A097" strokeWidth="4" strokeLinecap="round" /></g>,
     banana: <g><path d="M14 30 Q18 74 62 80 Q84 82 90 70 Q70 74 54 66 Q34 56 30 28 Z" fill="#F2D24E" stroke="#94741A" strokeWidth="3" strokeLinejoin="round" /><path d="M29 32 Q36 58 60 69" fill="none" stroke="#D9B53A" strokeWidth="3" strokeLinecap="round" /><path d="M90 70 Q70 74 54 66 Q34 56 30 28" fill="none" stroke="#94741A" strokeWidth="3" strokeLinecap="round" /><path d="M14 30 L10 20 L22 18 L30 28" fill={dk ? '#B88A5A' : '#7A5A2A'} stroke="#5E3C1A" strokeWidth="2" strokeLinejoin="round" /><circle cx="89" cy="71" r="2.6" fill="#5E3C1A" /></g>,
     butterfly: <g><path d="M48 46 Q30 12 13 21 Q6 40 46 52 Z" fill="#E88A3A" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><path d="M52 46 Q70 12 87 21 Q94 40 54 52 Z" fill="#E88A3A" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><path d="M47 54 Q24 57 21 74 Q34 88 48 62 Z" fill="#F2C14E" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><path d="M53 54 Q76 57 79 74 Q66 88 52 62 Z" fill="#F2C14E" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><circle cx="27" cy="31" r="4.5" fill="#FBE3C4" /><circle cx="73" cy="31" r="4.5" fill="#FBE3C4" /><rect x="46" y="38" width="8" height="34" rx="4" fill={dk ? '#B88A5A' : '#3A2A22'} /><path d="M48 40 Q42 26 35 21 M52 40 Q58 26 65 21" fill="none" stroke={dk ? '#B88A5A' : '#3A2A22'} strokeWidth="2.5" strokeLinecap="round" /></g>,
     umbrella: <g><path d="M50 50 L50 80 Q50 90 41 90 Q34 90 34 83" fill="none" stroke={dk ? '#B88A5A' : '#5E3C1A'} strokeWidth="5" strokeLinecap="round" /><path d="M10 50 Q14 12 50 10 Q86 12 90 50 Q83 44 76 50 Q70 44 63 50 Q57 44 50 50 Q43 44 37 50 Q30 44 24 50 Q17 44 10 50 Z" fill={dk ? '#DB6D55' : '#C9573E'} stroke="#8E3A27" strokeWidth="3" strokeLinejoin="round" /><path d="M50 10 Q41 28 37 50 M50 10 Q59 28 63 50" fill="none" stroke="#8E3A27" strokeWidth="2" /><path d="M50 4 L50 11" stroke={dk ? '#B88A5A' : '#5E3C1A'} strokeWidth="4" strokeLinecap="round" /></g>,
@@ -1545,6 +1548,118 @@ function IconPic({ name, size = 90, tile = false }) {
         </g>
       </g>
     ),
+    // The words of pre-K 4's A, E and I and O and U (pass NK; Claude's drawings, each read by eye in the real page): an ant beside the
+    // apple for A, an elephant and an elf for E, an igloo and an insect for I, an octopus and an otter for O (U's umbrella is drawn
+    // above), each outlined in a dark line on light places and a light one on the dark theme's tiles, so it reads on every tile. The
+    // insect is a beetle seen from above, its six legs and two feelers drawn, and never stands beside the ant (AEI4_APART), since an ant
+    // is an insect too.
+    // An ant, side on and facing left: a head with a feeler pair, a small middle and a big round back end, six legs, three to a side, the far
+    // side's three a step behind the near side's (round one's code read, pass NK: only the near three were drawn, an ant of three legs).
+    ant: (
+      <g>
+        <g fill="none" stroke={dk ? '#EBC3B3' : '#3E1A12'} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.75">
+          <path d="M42 56 L37 65 L33 76" /><path d="M47 57 L51 66 L50 77" /><path d="M52 55 L62 63 L71 72" />
+        </g>
+        <g fill="none" stroke={dk ? '#EBC3B3' : '#3E1A12'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M39 58 L31 68 L25 80" /><path d="M45 60 L46 70 L42 82" /><path d="M51 58 L59 68 L66 79" />
+          <path d="M24 39 Q18 26 9 22" /><path d="M28 38 Q29 25 23 15" />
+        </g>
+        <ellipse cx="69" cy="54" rx="20" ry="14" fill="#8B3A2A" stroke={dk ? '#EBC3B3' : '#3E1A12'} strokeWidth="3" />
+        <ellipse cx="45" cy="55" rx="9" ry="7" fill="#8B3A2A" stroke={dk ? '#EBC3B3' : '#3E1A12'} strokeWidth="3" />
+        <circle cx="27" cy="48" r="11" fill="#8B3A2A" stroke={dk ? '#EBC3B3' : '#3E1A12'} strokeWidth="3" />
+        <circle cx="23" cy="45" r="3.4" fill="#FFFFFF" /><circle cx="22.3" cy="45.4" r="1.7" fill="#1A1412" />
+        <path d="M60 46 Q68 42 76 46" fill="none" stroke="#B8604C" strokeWidth="2.6" strokeLinecap="round" />
+      </g>
+    ),
+    // An elephant, side on and facing left: a gray body on four legs, a big round ear, a trunk curling down and forward, a tusk, and a
+    // short tail with a tuft.
+    elephant: (
+      <g>
+        <path d="M83 50 Q92 56 90 68" fill="none" stroke={dk ? '#E3E8EA' : '#4E585D'} strokeWidth="2.6" strokeLinecap="round" /><path d="M88 66 L92 73 L86 72 Z" fill="#4E585D" />
+        {[36, 47, 67, 77].map((x) => <rect key={x} x={x} y="62" width="9" height="25" rx="3" fill="#9AA3A8" stroke={dk ? '#E3E8EA' : '#4E585D'} strokeWidth="2.6" />)}
+        <ellipse cx="60" cy="52" rx="27" ry="20" fill="#9AA3A8" stroke={dk ? '#E3E8EA' : '#4E585D'} strokeWidth="3" />
+        <path d="M22 46 Q10 52 9 66 Q9 77 18 76 Q14 70 16 64 Q19 56 28 54" fill="#9AA3A8" stroke={dk ? '#E3E8EA' : '#4E585D'} strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
+        <circle cx="30" cy="42" r="15" fill="#9AA3A8" stroke={dk ? '#E3E8EA' : '#4E585D'} strokeWidth="3" />
+        <path d="M24 54 Q20 60 13 60" fill="none" stroke="#F6F1E4" strokeWidth="3.4" strokeLinecap="round" />
+        <ellipse cx="39" cy="43" rx="10" ry="14" fill="#B9C1C5" stroke={dk ? '#E3E8EA' : '#4E585D'} strokeWidth="2.6" />
+        <circle cx="25" cy="38" r="2.2" fill="#1A1412" />
+      </g>
+    ),
+    // An elf: a small person in a green pointed hat with a gold bell at its tip, pointed ears, a round smiling face, a green tunic with a
+    // brown belt, and pointed shoes.
+    elf: (
+      <g>
+        <path d="M41 77 L41 88 L33 90 Q31 86 37 85 M59 77 L59 88 L67 90 Q69 86 63 85" fill="none" stroke={dk ? '#D9EFD9' : '#1F4A2A'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M38 54 L62 54 L68 80 L32 80 Z" fill="#3E8E4E" stroke={dk ? '#D9EFD9' : '#1F4A2A'} strokeWidth="3" strokeLinejoin="round" />
+        <rect x="35" y="64" width="30" height="5" fill="#7A4E26" />
+        <path d="M37 40 L27 31 L38 46 Z M63 40 L73 31 L62 46 Z" fill="#E2B48C" stroke="#9A6A44" strokeWidth="1.6" strokeLinejoin="round" />
+        <circle cx="50" cy="42" r="13" fill="#E2B48C" stroke="#9A6A44" strokeWidth="1.6" />
+        <circle cx="45" cy="41" r="1.8" fill="#2B2321" /><circle cx="55" cy="41" r="1.8" fill="#2B2321" />
+        <path d="M45 47 Q50 51 55 47" fill="none" stroke="#7A2E22" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M35 34 Q50 26 65 34 Q60 18 54 9 Q60 6 66 10" fill="#3E8E4E" stroke={dk ? '#D9EFD9' : '#1F4A2A'} strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />
+        <circle cx="67" cy="11" r="4" fill="#F2C14E" stroke="#8A6424" strokeWidth="1.6" />
+      </g>
+    ),
+    // An igloo: a dome of snow blocks on snowy ground, with a round-topped doorway.
+    igloo: (
+      <g>
+        <ellipse cx="50" cy="82" rx="44" ry="7" fill="#DCE9F1" stroke={dk ? '#FFFFFF' : '#5E7A8B'} strokeWidth="2" />
+        <path d="M12 80 Q12 26 50 24 Q88 26 88 80 Z" fill="#EEF5F9" stroke={dk ? '#FFFFFF' : '#5E7A8B'} strokeWidth="3" strokeLinejoin="round" />
+        <g fill="none" stroke="#9DB4C2" strokeWidth="2" strokeLinecap="round">
+          <path d="M18 64 Q50 58 82 64" /><path d="M24 48 Q50 42 76 48" /><path d="M36 34 Q50 31 64 34" />
+          <path d="M30 80 L30 66 M70 80 L70 66 M40 61 L40 47 M60 61 L60 47 M50 45 L50 33 M28 50 L28 62 M72 50 L72 62" />
+        </g>
+        <path d="M36 80 L36 68 Q36 54 50 54 Q64 54 64 68 L64 80 Z" fill="#3E5A6B" stroke={dk ? '#FFFFFF' : '#2C4352'} strokeWidth="2.6" strokeLinejoin="round" />
+      </g>
+    ),
+    // An insect: a green beetle seen from above, its head, its two wing covers parted down the middle, six legs and two feelers.
+    insect: (
+      <g>
+        <g fill="none" stroke={dk ? '#CDEBD3' : '#244F2C'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M33 44 L22 38 L16 30" /><path d="M31 58 L18 58 L12 54" /><path d="M34 72 L24 80 L22 90" />
+          <path d="M67 44 L78 38 L84 30" /><path d="M69 58 L82 58 L88 54" /><path d="M66 72 L76 80 L78 90" />
+          <path d="M45 22 Q40 12 32 9" /><path d="M55 22 Q60 12 68 9" />
+        </g>
+        <ellipse cx="50" cy="60" rx="20" ry="26" fill="#4E9A5A" stroke={dk ? '#CDEBD3' : '#244F2C'} strokeWidth="3" />
+        <path d="M50 36 L50 86" stroke={dk ? '#CDEBD3' : '#244F2C'} strokeWidth="2.6" />
+        <circle cx="50" cy="29" r="9" fill="#2F6B3A" stroke={dk ? '#CDEBD3' : '#244F2C'} strokeWidth="3" />
+        <path d="M40 48 Q42 42 47 41" fill="none" stroke="#9ED4A6" strokeWidth="2.6" strokeLinecap="round" />
+      </g>
+    ),
+    // An octopus: a round purple head with two eyes and a smile, and its eight arms, curling at their tips.
+    octopus: (
+      <g>
+        <g fill="none" strokeLinecap="round">
+          {['M33 52 Q22 64 12 62', 'M36 56 Q28 72 20 80', 'M41 58 Q38 76 32 88', 'M47 59 Q47 78 43 91', 'M53 59 Q53 78 57 91', 'M59 58 Q62 76 68 88', 'M64 56 Q72 72 80 80', 'M67 52 Q78 64 88 62'].map((d) => <g key={d}><path d={d} stroke={dk ? '#F0C8EC' : '#5E2A57'} strokeWidth="9" /><path d={d} stroke="#B565A7" strokeWidth="4.6" /></g>)}
+        </g>
+        <ellipse cx="50" cy="36" rx="24" ry="24" fill="#B565A7" stroke={dk ? '#F0C8EC' : '#5E2A57'} strokeWidth="3" />
+        <circle cx="41" cy="36" r="5.2" fill="#FFFFFF" /><circle cx="59" cy="36" r="5.2" fill="#FFFFFF" />
+        <circle cx="42" cy="37" r="2.6" fill="#1A1412" /><circle cx="60" cy="37" r="2.6" fill="#1A1412" />
+        <path d="M44 47 Q50 52 56 47" fill="none" stroke="#5E2A57" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M34 26 Q38 18 46 16" fill="none" stroke="#D99ACF" strokeWidth="3" strokeLinecap="round" />
+      </g>
+    ),
+    // An otter floating on its back on a strip of water, as otters rest (round one's screen read, pass NK: side on, on four short legs, it
+    // read as any small brown animal, a rat or a beaver, both with another first sound): its head up at the left with a pale muzzle,
+    // whiskers and a small ear, its front paws together on its pale chest, its hind feet up and its tail at the right, in the water's edge.
+    otter: (
+      <g>
+        <g transform="translate(50 57) scale(1.06) translate(-50 -57)">
+          <path d="M80 59 Q91 60 94 66 Q88 68 79 65 Z" fill="#8B5A2B" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="2.4" strokeLinejoin="round" />
+          <ellipse cx="54" cy="59" rx="28" ry="9.5" fill="#8B5A2B" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="3" />
+          <ellipse cx="57" cy="53.5" rx="20" ry="4.6" fill="#D9B48A" />
+          <ellipse cx="73" cy="48" rx="3.4" ry="5.6" fill="#7A4E24" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="2.2" transform="rotate(-15 73 48)" />
+          <ellipse cx="80" cy="49" rx="3.4" ry="5.6" fill="#7A4E24" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="2.2" transform="rotate(15 80 49)" />
+          <circle cx="23" cy="53" r="12" fill="#8B5A2B" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="3" />
+          <circle cx="31" cy="44.5" r="3.4" fill="#7A4E24" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="2" />
+          <ellipse cx="17" cy="48" rx="7.5" ry="5.6" fill="#D9B48A" transform="rotate(-25 17 48)" />
+          <ellipse cx="12.5" cy="44.5" rx="2.6" ry="2" fill="#1A1412" /><circle cx="24" cy="47.5" r="2" fill="#1A1412" />
+          <path d="M14 47 L7 45 M14 49 L7 51 M16 50 L9 56" fill="none" stroke="#4A2E14" strokeWidth="1.2" strokeLinecap="round" />
+          <circle cx="42" cy="51" r="3.6" fill="#7A4E24" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="2" /><circle cx="48" cy="50" r="3.6" fill="#7A4E24" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="2" />
+        </g>
+        <path d="M3 66 Q10 61 17 66 Q24 71 31 66 Q38 61 45 66 Q52 71 59 66 Q66 61 73 66 Q80 71 87 66 Q93 62 97 65 L97 82 Q50 86 3 82 Z" fill="#7FC4E6" fillOpacity="0.9" stroke={dk ? '#BFE3F5' : '#2F6F95'} strokeWidth="2.4" strokeLinejoin="round" />
+      </g>
+    ),
   }[base] || <circle cx="50" cy="50" r="30" fill={grey} />;
   // A look after ~ (pass MP) draws the same thing another way, and its name stays the thing's own, so a screen reader hears block;
   // since pass MW a look that is a state its line names is said with it (pictureLookName: a broken crayon, a sleeping baby).
@@ -1665,6 +1780,9 @@ const SHAPE_PATHS = {
   // Six straight sides. The plain hexagon is regular, the long one is stretched and still a hexagon.
   hexagon: { plain: 'M92 50 L71 86.4 L29 86.4 L8 50 L29 13.6 L71 13.6 Z', long: 'M6 50 L26 16 L74 16 L94 50 L74 84 L26 84 Z', turned: 'M50 8 L86.4 29 L86.4 71 L50 92 L13.6 71 L13.6 29 Z' },
   trapezoid: { plain: 'M10 78 L90 78 L70 22 L30 22 Z', tall: 'M22 90 L78 90 L66 10 L34 10 Z' },
+  // An oval (pass NK, PK4 V.B.1): round with no corners, like a circle, but longer one way than the other, drawn as an ellipse below,
+  // lying down (plain), standing up tall, or tipped over (tilted), each the same oval turned.
+  oval: { plain: null },
 };
 // A shape's drawn body in a box 100 units wide: a circle, or the path for its look. A small look (pass MA, PK3.V.C.4: a child
 // recognizes common shapes regardless of size) is the same shape drawn smaller, so a small circle is still a circle. ShapePic
@@ -1677,6 +1795,8 @@ function shapeBody(name, color, variant = null, tile = false, edgeW = 4, screenP
   const paths = SHAPE_PATHS[base] || SHAPE_PATHS.rectangle; const edge = swatchEdge(color, 4, tile);   // Q90's edge, on all four colors
   // A small drawing's edge is widened to edgeW (pass NF), so it stays a pixel and a half wide on the screen; a fill with no edge gets none.
   if (edge.stroke && screenPx) { edge.strokeWidth = edgeW; edge.vectorEffect = 'non-scaling-stroke'; } else if (edge.stroke && edgeW > 4) edge.strokeWidth = edgeW;
+  if (base === 'oval') { const [rx, ry, turn] = look === 'tall' ? [26, 42, 0] : look === 'tilted' ? [42, 26, -35] : look === 'small' ? [24, 15, 0] : [42, 26, 0];
+    return <ellipse cx="50" cy="50" rx={rx} ry={ry} transform={turn ? `rotate(${turn} 50 50)` : undefined} fill={color} {...edge} />; }
   return base === 'circle' ? <circle cx="50" cy="50" r={look === 'small' ? 20 : 38} fill={color} {...edge} />
     : <path d={paths[look] || paths.plain} fill={color} strokeLinejoin="round" {...edge} />;
 }
@@ -1686,7 +1806,10 @@ function shapeBody(name, color, variant = null, tile = false, edgeW = 4, screenP
 // shape on an answer tile (28 to 35 pixels) gains up to two fifths of a pixel of edge, in both themes.
 function ShapePic({ name, size = 90, color = C.green, variant = null, tile = false }) {
   const raw = String(name).split('#')[0]; const [base, tilde] = raw.split('~'); const look = variant || tilde || 'plain';
-  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={look === 'plain' ? base : `${look} ${base}`} style={{ display: 'block', margin: '0 auto' }}>{shapeBody(name, color, variant, tile, Math.max(4, 150 / size))}</svg>;
+  // Its label says a look as the lessons say it (round one's code read, pass NK: "tilted oval" and "leaning rhombus", where the lessons say
+  // tipped over and leaning over), SHAPE_LOOK_PHRASE's words after the shape, and any other look as before.
+  const phrase = SHAPE_LOOK_PHRASE[base + '~' + look];
+  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={look === 'plain' ? base : phrase ? `${base}, ${phrase}` : `${look} ${base}`} style={{ display: 'block', margin: '0 auto' }}>{shapeBody(name, color, variant, tile, Math.max(4, 150 / size))}</svg>;
 }
 // Fair shares (pass KY, TEKS 1.6G and 1.6H): a circle, a square or a rectangle cut into pieces, with some pieces shaded.
 // `cut` names the cut (none, half, half-across, half-slant, fourths, fourths-strips, fourths-x, unequal-two, unequal-four)
@@ -1856,6 +1979,9 @@ function JoinedPic({ figure = 'square-2tri', size = 120 }) {
 const PrintFitContext = React.createContext(null);
 const allPrint = (v) => !!v && (v.kind === 'print' || (v.kind === 'pair' && allPrint(v.a) && allPrint(v.b)));
 const allWriting = (v) => !!v && (v.kind === 'print' || (v.kind === 'letters' && !v.highlight) || (v.kind === 'pair' && allWriting(v.a) && allWriting(v.b)));
+// Sentences drawn on one line (pass NK, End marks' lines 5, 10 and 11) are fitted together as prints are, so three sentences, or a sentence's
+// two writings, draw at one size.
+const allLines = (v) => !!v && ((v.kind === 'letters' && !!v.line) || (v.kind === 'pair' && allLines(v.a) && allLines(v.b)));
 function PrintFitGroup({ children }) {
   const sizes = useRef(new Map()); const [least, setLeast] = useState(null);
   const value = React.useMemo(() => ({
@@ -1921,7 +2047,7 @@ function GrownUpCard({ card, onReady }) {
       <p data-card-how="" data-cue-room="" style={{ margin: '0 0 8px', fontSize: 14, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' }}>{card.how}</p>
       {/* A lone capital keeps the word before it on its line (the letter J, Does J), so a line never starts with the letter alone, and since
           pass NH the letter I draws in the serif type, as a run of small l's does (cardRuns). */}
-      <p data-card-say="" data-cue-room="" style={{ margin: 0, fontSize: 19, fontWeight: 600, lineHeight: 1.4, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' }}>{cardWords(keepLoneCapitals(card.say), 'say', cardRuns)}</p>
+      <p data-card-say="" data-cue-room="" style={{ margin: 0, fontSize: 19, fontWeight: 600, lineHeight: 1.4, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' }}>{cardWords(keepLoneLetters(card.say), 'say', cardRuns)}</p>
       {card.sounds && <>
         {/* One sound to a line, in the buttons' order, so a grown-up finds each button's sound at a glance. Since pass NH (Q97 (a)) the list
             stands straight under the card's words ("Listen to these sounds."), since the grown-up reads it aloud before Ready, as Q97 (a)
@@ -2340,15 +2466,19 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // Its rows and the pair itself drop their 6-pixel bands (round one's screen check, pass MX: 36 pixels a pair, so Next stays on a
     // 375 by 667 phone on One cat, two cats' second line and four more lines sit clear of the fold).
     const tight = (v) => (rowed && v && v.kind === 'row' ? { ...v, tight: true } : v);
+    // A stacked pair's two rows draw at one scale (round one's code read, pass NK): each row scaled to its own largest picture, so on Any
+    // size, any turn's tenth line the big red triangle in the top row drew 88 pixels wide, as big as the plain triangle in the row below. Each
+    // row is handed the other's pictures (peers) and scales to the largest of both, so big and little hold across the two rows.
+    const peered = (v, other) => (stack && v && v.kind === 'row' && other && other.kind === 'row' ? { ...v, peers: (other.items || []).slice(0, 3) } : v);
     const half = (v, i) => { if (!v.kind) return <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />;
       return <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ position: 'relative', animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', ...rowWide(v), ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null), ...(v.step ? stepTile(true) : null) }}>{shrinkOf(v) ? <div style={{ transform: 'scale(0.85)' }}><Picture visual={v} note={false} bare big={bigHalf(v)} lesson={lessonHalf(v)} /></div> : <Picture visual={v} note={false} bare big={bigHalf(v)} lesson={lessonHalf(v)} />}{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div>; };
-    const drawn = <div data-pair="" style={{ padding: rowed ? 0 : '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? (rowed ? 2 : 10) : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null), ...(rowed ? { width: '100%', maxWidth: Math.round(110 / 0.31), margin: '0 auto' } : null) }}>{half(grown(tight(oneBeside(first, second))), 0)}{half(grown(tight(oneBeside(second, first))), 1)}</div>;
+    const drawn = <div data-pair="" style={{ padding: rowed ? 0 : '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? (rowed ? 2 : 10) : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null), ...(rowed ? { width: '100%', maxWidth: Math.round(110 / 0.31), margin: '0 auto' } : null) }}>{half(grown(peered(tight(oneBeside(first, second)), second)), 0)}{half(grown(peered(tight(oneBeside(second, first)), first)), 1)}</div>;
     // Writings shown together are fitted together (pass NF, EARMARKS A102): a pair whose pictures are all prints, a stacked pair inside it
     // too, is one group (PrintFitGroup), each print fitted to its own room as before and all of them then drawn at the smallest of those
     // sizes, the size the longest needs, so a line that compares writings draws them at one size. Spaces between words' line 7 drew Brown
     // bears splash. at 22 pixels in the light theme and 20.5 in the dark beside two at 28 on a 320-pixel phone. Only the outermost such
     // pair makes the group (printGroup says one is already open), so a stacked pair inside it joins its group.
-    return allPrint(visual) && !printGroup ? <PrintFitGroup>{drawn}</PrintFitGroup> : drawn;
+    return (allPrint(visual) || allLines(visual)) && !printGroup ? <PrintFitGroup>{drawn}</PrintFitGroup> : drawn;
   }
   // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
   // three things shows all three. Each cell takes the same share of the width and each picture a share of its cell in proportion
@@ -2358,8 +2488,12 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   // (pass MO), the gold number practice will put on it (Three steps' line on the numbers).
   if (visual.kind === 'row') {
     const items = (visual.items || []).slice(0, 3);
-    const nominal = (v) => at(v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : typeof v.size === 'number' ? v.size : 110);   // the questions' 88, 58 and 34, scaled (and by k for a question's or a lesson's own row, pass MH)
-    const most = Math.max(...items.map(nominal));
+    // A shape drawn big or little (an item's scale, pass NK) keeps its size beside the others in a row, as Item draws it alone (1.35 and
+    // 0.55 times), since every picture in a row fills its own cell (round one's screen read, pass NK: Any size, any turn's first line said
+    // "one is big, one is little" over three triangles drawn the same size).
+    const itemScale = (v) => (v.kind === 'item' ? (v.scale === 'big' ? 1.35 : v.scale === 'small' ? 0.55 : 1) : 1);
+    const nominal = (v) => at((v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : typeof v.size === 'number' ? v.size : 110) * itemScale(v));   // the questions' 88, 58 and 34, scaled (and by k for a question's or a lesson's own row, pass MH)
+    const most = Math.max(...[...items, ...(visual.peers || [])].map(nominal));   // and the other row's in a stacked pair (peers, above)
     // A row whose pictures carry steps draws each in a tile (stepTile) and spaces the tiles a little wider, since three framed tiles
     // crowded a 320-pixel phone (round two's story check).
     const tiled = items.some((v) => v.step);
@@ -2394,6 +2528,9 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // Words and expressions ("ethos pathos logos", "5x + 3 = 2x + 15") are shown as one centered
     // line that wraps. Only short runs of single letters are spelled out large, one by one.
     const tokens = visual.text.split(' ');
+    // A sentence drawn on one line (line: true; pass NK, End marks, since round two's screen read): fitted to its room, at the words' 28 pixels
+    // or smaller, never wrapped, so the mark a question asks about stays at its sentence's end; on a tablet it grows as the lesson's letters do.
+    if (visual.line) return <p data-line-sentence="" style={{ fontWeight: 700, margin: '6px 0', textAlign: 'center', color: B.green, lineHeight: 1.3 }}><FitText size={visual.grow || lessonGrows ? Math.round(28 * k) : 28} min={14}>{visual.text}</FitText></p>;
     if ((tokens.some((t) => t.length > 1) || /[\d+=-]/.test(visual.text)) && visual.text.replace(/\s/g, '').length > 4 && !visual.highlight) {   // a number sentence of single digits is one line too (pass LB)
       return <p style={{ fontSize: 28, fontWeight: 700, margin: '6px 0', textAlign: 'center', color: B.green, lineHeight: 1.3, wordBreak: 'break-word' }}>{visual.text}</p>;
     }
@@ -3701,10 +3838,15 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
   @media (max-width: 999px) { .edu-logout-chip { right: auto !important; left: 50% !important; transform: translateX(-50%); } }
-  /* On a phone, while a sheet is open, the educator's countdown chip moves to the top, above the sheet's card, where a sheet keeps 56
-     pixels clear (pass NJ, round one's screen read: at the foot it lay over a sheet's only button, and room at the sheet's end helped
-     only once it was scrolled, round two's code read). */
-  @media (max-width: 999px) { body.edu-has-sheet .edu-logout-chip { top: 12px !important; bottom: auto !important; } .edu-sheet:not([data-sheet-placed]) { padding-top: 56px !important; } }
+  /* On a phone or a tablet, while a sheet is open, the educator's countdown chip hides until its last ten seconds, and then shows where it
+     always sits, centered at the foot (pass NK, Mikey's answer to Q104: "B and keep at the bottom"). Pass NJ had moved it to the top over
+     an open sheet, into 56 pixels the sheet kept clear, where it lay over a scrolled sheet's words; at the foot it had lain over a sheet's
+     only button as it opened. The sheet's room at its top is its own 24 pixels again. Since round one's screen read the chip is hidden by
+     its opacity, not taken off the page, so a screen reader keeps it as the same status line and can tell its last ten seconds when they come;
+     and while the chip can show, a sheet keeps 68 pixels at its foot (its 24 and the chip's 12 and 32), so scrolled to its end no word or
+     button of it lies under the chip. As a sheet taller than the screen opens, the chip in its last ten seconds lies over the words at the
+     foot of the screen until the sheet is scrolled, where Mikey's answer keeps it. */
+  @media (max-width: 999px) { body.edu-has-sheet .edu-logout-chip:not([data-last-ten]) { opacity: 0 !important; } body.edu-has-chip .edu-sheet:not([data-sheet-placed]) { padding-bottom: 68px !important; } }
   @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.frame}; pointer-events: none; z-index: 50; } }
 .edu-side { display: none; }
 .edu-page-stars { display: none; }
@@ -5403,7 +5545,7 @@ const TOUR = [
   ['Welcome to your classroom', 'add', null, 'below-add', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
   ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'flush-right-low', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
   ['Backups live on this device', 'backup', null, 'over-life-by-backup', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a password-protected drive folder, which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
-  ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Every question starts on, and you can turn off any you'd rather skip.</>],   // pass NJ: the line was "Students only see the questions you approve." (Mikey's words; Q100)
+  ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />All questions are active by default. However, you can remove any you'd rather skip.</>],   // pass NL: Mikey's answer to Q107, "B", his Q100 line with remove for turn off, as the Wonder Questions page says it since his word in the pass; pass NK: his words, his answer to Q100 (b); pass NJ had Claude's "Every question starts on, and you can turn off any you'd rather skip.", and before it his "Students only see the questions you approve."
   ['Life skills', 'life', null, 'over-exp-by-life', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
   ['Reading', 'reading', null, 'by-reading', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
   ['Experiments', 'experiments', null, 'under-exp', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
@@ -5541,12 +5683,12 @@ function Overlay({ children, z = 100, onClick, role, label, modal, className, bg
   const [place, setPlace] = useState(() => overlayPlace(sheet));
   useEffect(() => { const t = setTimeout(() => setPlace(overlayPlace(sheet)), 150); return () => clearTimeout(t); }, []);
   const lay = sheet ? { overflowY: 'auto', padding: '24px 12px' } : { display: 'flex', alignItems: start ? 'flex-start' : 'center', justifyContent: 'center', padding: pad, ...(scroll ? { overflowY: 'auto' } : {}) };
-  // A sheet carries edu-sheet: on a phone it keeps 56 pixels clear at its top, and the educator's countdown chip moves there while a sheet
-  // is open, so the chip never lies over a sheet's card or its last button at rest (pass NJ, round one's screen read: it crossed the Wonder
-  // sheet's Turn it off at the foot; the CSS is beside .edu-logout-chip's). Since round three's code read the 56 pixels give way where
-  // overlayPlace placed the sheet (data-sheet-placed: in a frame as tall as the page, the claude.ai preview, !important had beaten its room and
-  // opened the card at the frame's top, out of sight), and the body carries edu-has-sheet while any sheet is open, so the chip moves in a
-  // browser that does not know :has too.
+  // A sheet carries edu-sheet, and the body carries edu-has-sheet while any sheet is open (counted, so the last to close removes it; a body
+  // class, since browsers before Safari 15.4, Chrome 105 and Firefox 121 drop :has): on a phone or a tablet the educator's countdown chip
+  // hides then until its last ten seconds, and shows at the foot, where it always sits (pass NK, Mikey's answer to Q104, "B and keep at the
+  // bottom"; the CSS is beside .edu-logout-chip's). In pass NJ the chip moved to the sheet's top, into 56 pixels the sheet kept clear, and
+  // lay over a scrolled sheet's words (Q104); at the foot it had lain over the Wonder sheet's only button as it opened. data-sheet-placed
+  // marks a sheet overlayPlace placed (a frame as tall as the page, the claude.ai preview), which the tour test reads.
   useEffect(() => {
     if (!sheet || typeof document === 'undefined') return undefined;
     openSheets += 1; document.body.classList.add('edu-has-sheet');
@@ -11450,7 +11592,20 @@ function PageStars() {
 
 const EDUCATOR_IDLE_MS = 60 * 1000; // an educator stays signed in for a quiet minute; the chip counts the whole minute down as a reminder not to hand the device over too soon
 
+// The body carries edu-has-chip while the educator's countdown chip is drawn, which keeps a sheet's 68 pixels at its foot (pass NK, round
+// three's whole read of RULES-AUDIT: the rule was keyed on :has(), which browsers before Chrome 105 and Firefox 121 drop, so there a
+// sheet kept its own 24 pixels and the chip in its last ten seconds lay over a scrolled sheet's last words); counted, as the sheets are,
+// so the last chip to go removes it.
+let chipsDrawn = 0;
+function useChipOnBody(on) {
+  useEffect(() => {
+    if (!on || typeof document === 'undefined') return undefined;
+    chipsDrawn += 1; document.body.classList.add('edu-has-chip');
+    return () => { chipsDrawn = Math.max(0, chipsDrawn - 1); if (!chipsDrawn) document.body.classList.remove('edu-has-chip'); };
+  }, [on]);
+}
 function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkthrough = false, themeSwitch = null }) {
+  useChipOnBody(logoutIn !== null);
   return (
     <>
       <style>{WONDER_ANIMATION() + PRINT_STYLES() + KID_ANIMATION()}</style>
@@ -11460,7 +11615,7 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkth
       {stars && <PageStars />}
       {/* While an educator is signed in, a small chip counts down to sign-out on every screen. Moving the mouse, typing or clicking resets it to sixty. */}
       {logoutIn !== null && (
-        <div role="status" className="edu-no-print edu-logout-chip" style={{ position: 'fixed', bottom: 12, right: 12, zIndex: 60, background: logoutIn <= 10 ? '#24291F' : 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontFamily: FONT, fontSize: 13, fontWeight: 600, pointerEvents: 'none' }}>
+        <div role="status" className="edu-no-print edu-logout-chip" data-last-ten={logoutIn <= 10 ? '' : undefined} style={{ position: 'fixed', bottom: 12, right: 12, zIndex: 60, background: logoutIn <= 10 ? '#24291F' : 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontFamily: FONT, fontSize: 13, fontWeight: 600, pointerEvents: 'none' }}>
           Logging out in {logoutIn}
         </div>
       )}
@@ -12112,8 +12267,6 @@ function EduSphereScreens() {
   const [newTint, setNewTint] = useState('');
   const [pictureFor, setPictureFor] = useState(null);          // student whose picture is being changed
   const [wizardPin, setWizardPin] = useState('');            // optional PIN typed while adding
-  const [wizardWonder, setWizardWonder] = useState(true);    // Wonder questions on for the student being added
-  const [showWonderWhy, setShowWonderWhy] = useState(false);   // the i beside the Wonder switch
   const [pinFor, setPinFor] = useState(null);                  // student whose PIN is being set on their card
   const [wonderPopupFor, setWonderPopupFor] = useState(null);
   const [actionItems, setActionItems] = useState({});                   // per student: lessons stuck after a review, writings waiting (pass LG)
@@ -12911,6 +13064,8 @@ function EduSphereScreens() {
   // Answer sizes: a question's choices share one size, so 4 never towers over -3 or 1/6 beside it.
   const choiceFont = (choices) => {
     if (!choices || !choices.length) return 18;
+    // Since pass NK three end marks stand bigger, 48 (End marks, and grade 1's Read the sentence): at 34 a period was a dot of four pixels.
+    if (choices.length > 1 && choices.every((c) => /^[.?!]$/.test(c))) return 48;
     if (choices.every((c) => /^[A-Za-z<>=.?!]$/.test(c))) return 34;   // a letter, a comparison sign (pass KT) or an end mark (pass KU)
     if (choices.every((c) => /^-?[\d.,\/ ]+$/.test(c))) { const longest = Math.max(...choices.map((c) => c.length)); return longest <= 2 ? 34 : longest <= 3 ? 26 : longest <= 6 ? 22 : 18; }
     return 18;
@@ -13400,7 +13555,7 @@ function EduSphereScreens() {
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
     traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic, opts = null) => { gameIntroNext.current = !!(opts && opts.intro); setColoring(pic); setScreen('coloring'); }, setColoringLeft: (n) => setColorLeft(n), openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setStoryVoiceOn(canSpeak()); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setStoryVoiceOn(canSpeak()); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
     // Test-only (pass MH): one round of a single named question, so a browser check can look at any kind of question on screen.
-    showQuestion: (genId, seed = 1, fromModule = null) => { const home = (fromModule && getModule(fromModule)) || COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [moduleQuestion(genId, seed, home.id)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), quietFor: (ms) => { studentQuietSince.current = Date.now() - Number(ms || 0); return onStudentScreen; }, goTo: (name, arg) => {
+    showQuestion: (genId, seed = 1, fromModule = null) => { const home = (fromModule && getModule(fromModule)) || COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [moduleQuestion(genId, seed, home.id)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), quietFor: (ms) => { studentQuietSince.current = Date.now() - Number(ms || 0); return onStudentScreen; }, educatorQuietFor: (ms) => { setLastActive(Date.now() - Number(ms || 0)); return true; }, goTo: (name, arg) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
@@ -14509,7 +14664,7 @@ function EduSphereScreens() {
     // Since pass NF (EARMARKS A98) the dots, the tens, an array and a clock are handed the paper flag too, as a lesson's own picture hands it
     // (PictureInner), and a look's dots take it from tile (LookGroup), so in More Info's boxes they draw as they do on a lesson's paper:
     // until then the tens and an array stayed the dark theme's mint there, the dots had no rim, and a clock drew a night-green face.
-    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} tile={!paper} paper={paper} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} paper={paper} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} tile={!paper} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} tile={!paper} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} tile={!paper} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)} tile={!paper} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} paper={paper} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} tile={!paper} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} paper={paper} /> : /^print:/.test(c) ? <PrintWords text={c.slice(6)} size={Math.round(22 * k)} paper={paper} /> : /^[A-Za-z]$/.test(c) && loneLetterAmongPictures(q.choices) ? <span data-tile-letter="" style={{ display: 'block', fontSize: Math.round(LETTER_TILE * k), fontWeight: 700, lineHeight: 1.1 }}>{c}</span> : c);
+    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} tile={!paper} paper={paper} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} paper={paper} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} tile={!paper} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} tile={!paper} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} tile={!paper} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)} tile={!paper} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} paper={paper} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} tile={!paper} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} paper={paper} /> : /^print:/.test(c) ? <PrintWords text={c.slice(6)} size={Math.round(22 * k)} paper={paper} /> : sentenceWritings(q.choices) ? <FitText size={Math.round(26 * k)} min={14} style={{ fontWeight: 700 }}>{c}</FitText> : /^[A-Za-z]$/.test(c) && loneLetterAmongPictures(q.choices) ? <span data-tile-letter="" style={{ display: 'block', fontSize: Math.round(LETTER_TILE * k), fontWeight: 700, lineHeight: 1.1 }}>{c}</span> : c);
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
@@ -14517,6 +14672,9 @@ function EduSphereScreens() {
     // picture above them at SHORT_PICTURES of their size, so Check answer ends above the fold (pass MZ, EARMARKS A80); two answers with
     // no picture above end high enough at full size, so they keep it (round one's screen check: 167 such screens ended at 640 at most).
     const shortPictures = shortPhone() && q.type === 'choice' && Array.isArray(q.choices) && q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c))) && (!!q.visual || q.choices.length >= 3);
+    // Answers that are all shapes keep 2 pixels above and below there, not 6 (round one's screen read, pass NK: three big shapes on Rectangles'
+    // same-shape question ended Check answer at 675 on a 375 by 667 phone in the dark theme, and four on Any size, any turn's at 669).
+    const itemAnswers = shortPictures && q.choices.every((c) => /^item:/.test(String(c)));
     // The grown-up's card (Q91 (a), Mikey's answer in pass NG; grownUpCard in logic.mjs): with no voice, a letters question whose whole
     // words would print the sound or word to say shows, in the answers' place, a card with those words for the grown-up and a Ready
     // button, until Ready; what prints above the card and, after Ready, above the answers is cardQuestion's, what a device with a voice
@@ -14596,7 +14754,10 @@ function EduSphereScreens() {
             // Since round one's screen read (pass NF) a grid whose choices are two or more prints is one print group (PrintGroupIf, PrintFitGroup),
             // as a lesson's pair of prints is (EARMARKS A102): at 320 by 568 each tile fitted its writing alone, and since the writing that
             // has its spaces is the widest, the answer drew smallest (Brown bears splash. at 20 pixels beside 21 and 22).
-            <PrintGroupIf on={q.choices.filter((c) => /^print:/.test(String(c))).length >= 2}><div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : grownCard && grownCard.sounds ? 'repeat(auto-fit, minmax(70px, 1fr))' : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c)) || /^print:/.test(String(c))) || loneLetterAmongPictures(q.choices) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>
+            // Since pass NK four single letters, one of them in both its sizes, stand two by two on a phone and four in a row wider (Small
+            // letters' tap: three and one had left the fourth tile alone on its row). Round two's code read: the rule had read any four single
+            // letters, and so grew nine older banks by a row at 375 wide, where four had fitted one row; lettersInBothSizes (logic.mjs) reads it.
+            <PrintGroupIf on={q.choices.filter((c) => /^print:/.test(String(c))).length >= 2 || sentenceWritings(q.choices)}><div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.length === 4 && lettersInBothSizes(q.choices) ? `repeat(${typeof window !== 'undefined' && window.innerWidth < 700 ? 2 : 4}, minmax(0, 1fr))` : q.choices.every((c) => /^(\d+|[A-Za-z]|[.?!])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : grownCard && grownCard.sounds ? 'repeat(auto-fit, minmax(70px, 1fr))' : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c)) || /^print:/.test(String(c))) || loneLetterAmongPictures(q.choices) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>
               {q.choices.map((c) => {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
@@ -14618,7 +14779,8 @@ function EduSphereScreens() {
                 // A picture's name for a screen reader (pass MO, round one's screen check: the four corners of Two ideas read "square,
                 // circle, square, circle", since a drawn shape names its shape alone); a word choice is its own name. The app's voice
                 // still never says a picture choice.
-                const pictureName = describeChoice(c) !== c ? describeChoice(c) : undefined;
+                // Since pass NK the question too, so a letter among both sizes is said big or small, an end mark by its name (describeChoice).
+                const pictureName = describeChoice(c, q) !== c ? describeChoice(c, q) : undefined;
                 // A heard choice (pass MX) prints Tap to hear beside a speaker for a pre-reader while the voice can speak, and a screen
                 // reader hears the sentence itself, as a child hears it when the button is tapped (printedChoice).
                 const heard = readAloud ? printedChoice(q, c, canSpeak()) : null;
@@ -14631,7 +14793,7 @@ function EduSphereScreens() {
                   // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
                   <button key={c} type="button" data-choice={c} data-heard-choice={heard ? '' : undefined} data-choice-last={c === q.choices[q.choices.length - 1] ? '' : undefined} aria-label={heard ? c : cardNumber ? `Button ${cardNumber}` : pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
-                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: `${shortPictures ? 6 : 12}px 10px ${standIn ? 34 : shortPictures ? 6 : 12}px`, ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
+                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: `${shortPictures ? (itemAnswers ? 2 : 6) : 12}px 10px ${standIn ? 34 : shortPictures ? (itemAnswers ? 2 : 6) : 12}px`, ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {heard ? <HeardChoice text={heard} /> : cardNumber ? <span data-card-number={cardNumber} style={{ fontSize: 28, fontWeight: 700 }}>{cardNumber}</span> : choiceFace(c, shortPictures ? SHORT_PICTURES : 1)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
@@ -14688,7 +14850,7 @@ function EduSphereScreens() {
                 const nudged = stepNudge === c;
                 if (nudged) border = C.clay;
                 return (
-                  <button key={c} type="button" data-choice={c} data-step={placed ? at + 1 : undefined} data-hint={hint ? '' : undefined} data-nudged={nudged ? '' : undefined} className={hint ? 'edu-breathe' : nudged ? 'edu-wobble' : undefined} aria-pressed={placed} aria-label={describeChoice(c) + (placed ? ', number ' + (at + 1) : hint ? ', the next one to tap' : '')}
+                  <button key={c} type="button" data-choice={c} data-step={placed ? at + 1 : undefined} data-hint={hint ? '' : undefined} data-nudged={nudged ? '' : undefined} className={hint ? 'edu-breathe' : nudged ? 'edu-wobble' : undefined} aria-pressed={placed} aria-label={describeChoice(c, q) + (placed ? ', number ' + (at + 1) : hint ? ', the next one to tap' : '')}
                     onClick={() => { if (checked) return; if (nextStep && !placed && c !== nextStep) { setStepNudge(c); return; } const next = placed ? orderPicked.slice(0, at) : orderPicked.length < q.pick ? [...orderPicked, c] : null; if (!next) return; if (readAloud && !placed) playTap(); setOrderPicked(next); setGiven(next.join(' | ')); }}
                     style={{ position: 'relative', minWidth: 0, minHeight: 96, padding: '14px 8px', borderRadius: 12, background: bg, border: `${placed || hint || nudged ? 3 : 2}px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {choiceFace(c, q.items.length > 4 ? 0.85 : 1)}
@@ -14762,7 +14924,7 @@ function EduSphereScreens() {
                   their lines end short of it. The explanation keeps it as one block, its words and its picture together (a spacing bank's
                   explanation shows its sentence as print fitted to its box, PrintWords, and "splash." and "dog." sat under the cue after the
                   right tap). The box keeps its full width and color; only what is in it steps aside. */}
-              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneCapitals(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
+              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneLetters(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
               {(wasCorrect || !readAloud) && (
                 <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}>
                   <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>
@@ -15518,22 +15680,36 @@ function EduSphereScreens() {
         {showWonderTip && (
           <TipText>
             <p style={{ margin: '0 0 8px' }}>After every two practice rounds, whether it went well or not, a reflection question is introduced. Each question is written toward one of four aims: curiosity about the world, failure as the way learning happens, naming and handling feelings, and the idea that hard days are normal yet, we always get through them.</p>
-            <p style={{ margin: '0 0 8px' }}>These questions rotate. A student never sees the same question more than twice and after a bad practice round, questions about failure and feelings are prioritized. Student answers are never stored and only questions you leave on will ever appear.</p>
-            <p style={{ margin: 0 }}>Note: By never storing student answers, there is no pressure for them to answer a certain way. They are free to answer as themselves then they'll see other perspectives to expand their way of thinking. This also keeps The Wise Human compliant with privacy laws.</p>
+            <p style={{ margin: '0 0 8px' }}>These questions rotate. A student never sees the same question more than twice and after a bad practice round, questions about failure and feelings are prioritized. Student answers are never stored and only questions you approve will ever appear.</p>
+            <p style={{ margin: '0 0 8px' }}>Note: By never storing student answers, there is no pressure for them to answer a certain way. They are free to answer as themselves then they'll see other perspectives to expand their way of thinking. This also keeps The Wise Human compliant with privacy laws.</p>
+            {/* Pass NK (Mikey: "Can move underneath the i tip tool on the top right of the page.  Just create a space below the text that is
+                already nestled under that I"): the privacy line the card under the title carried until this pass. */}
+            <p data-wonder-tip-privacy="" style={{ margin: 0 }}>Responses are never recorded for privacy reasons.</p>
           </TipText>
         )}
         <p style={{ color: C.muted, marginTop: 0, marginBottom: 26, fontSize: 15, textAlign: 'center' }}>Thought-provoking questions sprinkled between learning modules. Wonder Questions are designed not only to help information stick, but to promote emotional intelligence, curiosity, critical thinking and positive views of failure.</p>
 
         <div data-wonder-all={allOff ? 'off' : 'on'} style={{ ...card, marginTop: 22, background: allOff ? C.goldSoft : C.greenSoft, borderColor: allOff ? C.gold : C.greenSoft }}>
-          <p style={{ margin: 0, fontSize: 16, fontWeight: 600, textAlign: 'center' }}>
-            {allOff ? (onCount > 0 ? `Off, with ${onCount} turned on` : 'Off for every student') : onCount < WONDER.length ? `On, with ${WONDER.length - onCount} turned off` : `All ${WONDER.length} on`}
-          </p>
-          <p style={{ margin: '6px 0 10px', fontSize: 15, textAlign: 'center' }}>{allOff ? 'Only the questions you turn on below reach your students.' : 'Every question starts on. Open any question below to read it or turn it off.'} Responses are never recorded for privacy reasons.</p>
-          {/* With all off, the questions a school turned off by name stay off when all are turned on again (round two's code read: the
-              button's words were untrue for a school with a removal, and nothing said so before the tap). */}
-          {allOff && keptOff > 0 && <p data-wonder-kept-off="" style={{ margin: '0 0 10px', fontSize: 14, textAlign: 'center' }}>{keptOff === 1 ? 'The question you turned off by name stays off when you turn them all\u00A0on.' : `The ${keptOff} questions you turned off by name stay off when you turn them all\u00A0on.`}</p>}
-          {allOff ? <Btn full kind="secondary" onClick={() => apply(setAllWonder(wonderReview, true))}>Turn them all on</Btn>
-            : <p style={{ margin: '-6px 0 -4px', fontSize: 13, textAlign: 'center' }}><button type="button" data-wonder-all-off="" onClick={() => apply(setAllWonder(wonderReview, false))} style={{ ...linkBtn, fontSize: 13, padding: '13px 16px', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Turn them all off</button></p>}
+          {/* Pass NL. Mikey, looking at the card as it stood before pass NJ ("402 to review" above "Students only see what you approve.
+              Responses are never recorded for privacy reasons."): "We can remove the 402 line and change the remaining text to: Students
+              only see what you approve (yes, let's stick with this terminology over turn on and turn off)."; and his answer to Q105, "Q105 -
+              B", which put his pass NK line ("View, Remove or Approve below.") in the words of the page's buttons; and, later in the pass,
+              "Q105, yeah the on and turn off can change to Approved and Remove". So the card's count line is gone (it said All 406 on, or
+              On, with N turned off), his sentence is the card's words, in both states, and every on and off word of the page is approve
+              and remove (round one's screen read had found Q105 (b)'s line, "View, turn off or turn on below.", right under his sentence in
+              the words he set aside, and taken it out). "you approve." holds together, since at 320 pixels "approve." stood alone on the
+              card's last line (the same read). With all removed, a line above it still says so (Removed for every student, or Removed, with
+              N approved), Claude's reading, told to Mikey: a school that removed every question should read that in words, not only in the
+              card's gold. Through pass NK this card said
+              "View, Remove or Approve below." alone under the count, and through pass NJ "Every question starts on. Open any question below
+              to read it or turn it off.", then the privacy line, which moved into the tip above in pass NK. */}
+          {allOff && <p data-wonder-off-line="" style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 600, textAlign: 'center' }}>{onCount > 0 ? `Removed, with ${onCount} approved` : 'Removed for every student'}</p>}
+          <p data-wonder-card-approve="" style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>Students only see what you{'\u00A0'}approve.</p>
+          {/* With all removed, the questions a school removed by name stay removed when all are approved again (round two's code read:
+              the button's words were untrue for a school with a removal, and nothing said so before the tap). */}
+          {allOff && keptOff > 0 && <p data-wonder-kept-off="" style={{ margin: '0 0 10px', fontSize: 14, textAlign: 'center' }}>{keptOff === 1 ? 'The question you removed by name stays removed when you approve them\u00A0all.' : `The ${keptOff} questions you removed by name stay removed when you approve them\u00A0all.`}</p>}
+          {allOff ? <Btn full kind="secondary" onClick={() => apply(setAllWonder(wonderReview, true))}>Approve them all</Btn>
+            : <p style={{ margin: '-6px 0 -4px', fontSize: 13, textAlign: 'center' }}><button type="button" data-wonder-all-off="" onClick={() => apply(setAllWonder(wonderReview, false))} style={{ ...linkBtn, fontSize: 13, padding: '13px 16px', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Remove them all</button></p>}
         </div>
 
         {LIFE_STAGES.map((stage, stageIndex) => {
@@ -15549,7 +15725,7 @@ function EduSphereScreens() {
                 style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: stageBg, border: 'none', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', color: stageLight ? '#24291F' : '#fff', marginBottom: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 18, fontWeight: 600 }}>{stage.title}</span>
-                  <span data-wonder-stage-state="" style={{ fontSize: 14, opacity: stageLight ? 0.85 : 1, whiteSpace: 'nowrap' }}>{inStage.length === 0 ? 'none yet' : onHere === inStage.length ? 'all on' : onHere === 0 ? 'all off' : allOff ? `${onHere} on` : `${inStage.length - onHere} off`} {stageOpen ? '▴' : '▾'}</span>
+                  <span data-wonder-stage-state="" style={{ fontSize: 14, opacity: stageLight ? 0.85 : 1, whiteSpace: 'nowrap' }}>{inStage.length === 0 ? 'none yet' : onHere === inStage.length ? 'all approved' : onHere === 0 ? 'all removed' : allOff ? `${onHere} approved` : `${inStage.length - onHere} removed`} {stageOpen ? '▴' : '▾'}</span>
                 </div>
                 {/* Full white on the two darker stages (pass NJ, round one's screen read: Teen's words read 3.81 to 1 at 0.85). */}
                 <p style={{ margin: '4px 0 0', fontSize: 14, opacity: stageLight ? 0.85 : 1, fontWeight: 400 }}>{stage.blurb}</p>
@@ -15561,8 +15737,8 @@ function EduSphereScreens() {
                 if (!stageOpen) return null;
                 const row = (w) => {
                   const on = isWonderOn(wonderReview, w.id);
-                  const tone = on ? 'available' : 'off';   // green for on, as the student's own Wonder switch shows it
-                  const state = on ? 'On' : 'Off';
+                  const tone = on ? 'available' : 'off';   // green for approved, as the student's own Wonder switch shows on
+                  const state = on ? 'Approved' : 'Removed';   // Mikey, pass NL: "the on and turn off can change to Approved and Remove"
                   return (
                     <button key={w.id} type="button" data-wonder-row={w.id} onClick={() => { setReviewing(w.id); setOpenVoices([]); }}
                       style={{ ...card, display: 'block', width: '100%', textAlign: 'center', padding: 14, cursor: 'pointer', border: `1px solid ${C.line}`, background: on || C.mode === 'dark' ? C.surface : '#EDEFEA', fontFamily: FONT, color: on ? C.ink : C.muted }}>
@@ -15571,7 +15747,7 @@ function EduSphereScreens() {
                     </button>
                   );
                 };
-                // Every question in view, in the order a student meets them, each with its On or Off (pass NJ: until then the questions
+                // Every question in view, in the order a student meets them, each with its Approved or Removed (On or Off from pass NJ to NL; until then the questions
                 // awaiting review stayed in view and the reviewed ones folded away).
                 return <>{inStage.map(row)}</>;
               })()}
@@ -15579,7 +15755,7 @@ function EduSphereScreens() {
           );
         })}
 
-        <p style={{ color: C.muted, fontSize: 13, marginTop: 120, lineHeight: 1.6, textAlign: 'center' }}>Wonder questions are written to sit comfortably with families of all beliefs. No individual voice is implied correct and no question or answer will ever argue for or against religion. Although we think faith is important, we strive to remain neutral for the benefit of all. If a question doesn't suit your community, turn it off.</p>
+        <p style={{ color: C.muted, fontSize: 13, marginTop: 120, lineHeight: 1.6, textAlign: 'center' }}>Wonder questions are written to sit comfortably with families of all beliefs. No individual voice is implied correct and no question or answer will ever argue for or against religion. Although we think faith is important, we strive to remain neutral for the benefit of all. If a question doesn't suit your community, remove it.</p>
         {saveNote && <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', marginTop: 32 }}>{saveNote}</p>}
 
         {/* Reviewing one question opens over the page rather than pushing everything down.
@@ -15591,7 +15767,7 @@ function EduSphereScreens() {
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, fontWeight: 400, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '0 40px' }}>
                 <Tag tone={isWonderOn(wonderReview, reviewingQuestion.id) ? 'available' : 'locked'}>
-                  {isWonderOn(wonderReview, reviewingQuestion.id) ? 'On' : 'Off'}
+                  {isWonderOn(wonderReview, reviewingQuestion.id) ? 'Approved' : 'Removed'}
                 </Tag>
 
               </div>
@@ -15649,13 +15825,13 @@ function EduSphereScreens() {
                 <p style={{ margin: '2px 0 0', fontSize: 15, textAlign: 'center' }}>{wholeHyphens(reviewingQuestion.closing)}</p>
               </div>
 
-              {/* What the tap did, said where the tap is (pass NJ, round one's screen read: the sheet's On or Off is a screen above its button). */}
-              <p role="status" data-wonder-sheet-state="" style={{ margin: '16px 0 0', fontSize: 15, fontWeight: 600, textAlign: 'center', color: isWonderOn(wonderReview, reviewingQuestion.id) ? C.green : C.muted }}>{isWonderOn(wonderReview, reviewingQuestion.id) ? 'On for your students.' : 'Off for your students.'}</p>
+              {/* What the tap did, said where the tap is (pass NJ, round one's screen read: the sheet's tag is a screen above its button). */}
+              <p role="status" data-wonder-sheet-state="" style={{ margin: '16px 0 0', fontSize: 15, fontWeight: 600, textAlign: 'center', color: isWonderOn(wonderReview, reviewingQuestion.id) ? C.green : C.muted }}>{isWonderOn(wonderReview, reviewingQuestion.id) ? 'Approved for your students.' : 'Removed for your students.'}</p>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 10, justifyContent: 'center' }}>
                 {isWonderOn(wonderReview, reviewingQuestion.id) ? (
-                  <Btn kind="secondary" onClick={() => apply(setWonderOn(wonderReview, reviewingQuestion.id, false))}>Turn it off</Btn>
+                  <Btn kind="secondary" onClick={() => apply(setWonderOn(wonderReview, reviewingQuestion.id, false))}>Remove</Btn>
                 ) : (
-                  <Btn onClick={() => apply(setWonderOn(wonderReview, reviewingQuestion.id, true))}>Turn it on</Btn>
+                  <Btn onClick={() => apply(setWonderOn(wonderReview, reviewingQuestion.id, true))}>Approve</Btn>
                 )}
               </div>
             </div>
@@ -16125,7 +16301,7 @@ function EduSphereScreens() {
         )}
         <div style={{ height: 10 }} />
 
-        <div className="edu-narrow" data-tour="add"><Btn full onClick={() => { setAdding(true); setRosterError(''); setRosterInput(''); setNewLevel(''); setNewPicture(''); setNewTint(''); setWizardPin(''); setWizardWonder(true); setShowWonderWhy(false); }}>Add someone new</Btn></div>
+        <div className="edu-narrow" data-tour="add"><Btn full onClick={() => { setAdding(true); setRosterError(''); setRosterInput(''); setNewLevel(''); setNewPicture(''); setNewTint(''); setWizardPin(''); }}>Add someone new</Btn></div>
         <div style={{ height: 14 }} />
         {visible.length > 1 && (
           <div className="edu-narrow" style={{ marginTop: 10, marginBottom: 28 }}>
@@ -16203,19 +16379,19 @@ function EduSphereScreens() {
               </div>
             </>
           )}
-          <div style={{ marginTop: 26 }}>
+          {/* The PIN is the setup's last choice since pass NL. Mikey's answer to Q106: "let's remove the wonder question segment altogether
+              when adding a new student.   They don't need to see it at that time anymore." Through pass NK a Wonder Questions heading, its i
+              tip (ending with his "All questions are active by default. However, you can turn off any you'd rather skip (see bottom of My
+              Classroom).") and an On and Off switch stood here. A new student starts with Wonder on (addStudent's default), and each
+              student's card in My Classroom keeps its own Wonder switch. */}
+          <div style={{ marginTop: 26, marginBottom: 20 }}>
             <HeadWithInfo onClick={() => setShowPinWhy(!showPinWhy)} label="About the PIN" open={showPinWhy}>PIN (optional)</HeadWithInfo>
             {showPinWhy && <TipText>Four digits the student types after tapping their name, so nobody opens the wrong record.</TipText>}
             <PinInput value={wizardPin} onChange={setWizardPin} placeholder="PIN"
               style={{ fontFamily: FONT, fontSize: 18, letterSpacing: 6, padding: '10px 14px', width: 200, boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, display: 'block', margin: '0 auto', textAlign: 'center' }} />
           </div>
-          <div style={{ marginTop: 26, marginBottom: 20 }}>
-            <HeadWithInfo onClick={() => setShowWonderWhy(!showWonderWhy)} label="About wonder questions" open={showWonderWhy}>Wonder Questions</HeadWithInfo>
-            {showWonderWhy && <TipText>Wonder Questions are optional thought-provoking questions sprinkled between learning modules.<br /><br />They're designed to help students reframe failure as an effective way to learn and promote curiosity, emotional resilience and, most importantly, right-hemispheric thinking.<br /><br />Every question starts on, and you can turn off any you'd rather skip (see bottom of <strong>My{'\u00A0'}Classroom</strong>).</TipText>}
-            <SegToggle size="big" options={[['on', 'On'], ['off', 'Off']]} value={wizardWonder ? 'on' : 'off'} onChange={(v) => setWizardWonder(v === 'on')} ariaLabel="Wonder Questions" />
-          </div>
           <Btn full onClick={async () => {
-            const r = addStudent(roster, rosterInput, new Date().toISOString(), { level: newLevel, picture: newPicture, tint: newTint, startGrade: newStartGrade || null, pin: wizardPin, wonder: wizardWonder });
+            const r = addStudent(roster, rosterInput, new Date().toISOString(), { level: newLevel, picture: newPicture, tint: newTint, startGrade: newStartGrade || null, pin: wizardPin });
             await applyRoster(r.roster, r.error);
             if (!r.error) {
               // A new student starts with the recommended courses for their level, not every course there is.
@@ -16225,7 +16401,7 @@ function EduSphereScreens() {
                 const starter = makeCoursesEnabledEvent(recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], newLevel, newStartGrade || null), new Date().toISOString());
                 await saveRecord({ ...rec, events: [...rec.events, starter] });
               }
-              setRosterInput(''); setNewLevel(''); setNewStartGrade(''); setNewPicture(''); setNewTint(''); setWizardPin(''); setWizardWonder(true); setShowWonderWhy(false); setAdding(false);
+              setRosterInput(''); setNewLevel(''); setNewStartGrade(''); setNewPicture(''); setNewTint(''); setWizardPin(''); setAdding(false);
             }
           }}>Add</Btn>
           {rosterError && <p style={{ color: C.clayInk, fontSize: 14, margin: '10px 0 0' }}>{rosterError}</p>}
@@ -16344,10 +16520,11 @@ function EduSphereScreens() {
                       <p style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 700 }}>Wonder Questions</p>
                       <p style={{ margin: '0 0 6px', fontSize: 15, color: C.muted }}>Currently: <strong style={{ color: wonderOnFor(st) ? C.green : C.ink }}>{wonderOnFor(st) ? 'On' : 'Off'}</strong></p>
                       {/* How many of the pool this school lets students see (2026-09-29, Mikey): the count follows the Wonder Questions page and grows
-                          with the pool. Since pass NJ every question starts on, so it counts the questions on, where it counted the ones approved. */}
-                      <p style={{ margin: wonderOnCount(wonderReview) === 0 ? '0 0 6px' : '0 0 18px', fontSize: 14, color: C.muted }} data-wonder-on={wonderOnCount(wonderReview)}>{wonderOnCount(wonderReview)} of {WONDER.length} Wonder Questions on for students</p>
+                          with the pool. Since pass NJ every question starts on, so it counts the questions on, where it counted the ones approved, and since
+                          pass NL it says so in Mikey's words ("the on and turn off can change to Approved and Remove"). */}
+                      <p style={{ margin: wonderOnCount(wonderReview) === 0 ? '0 0 6px' : '0 0 18px', fontSize: 14, color: C.muted }} data-wonder-on={wonderOnCount(wonderReview)}>{wonderOnCount(wonderReview)} of {WONDER.length} Wonder Questions approved for students</p>
                       {/* With every question off for the school, this student's On meets none (pass NJ, round one's screen read). */}
-                      {wonderOnCount(wonderReview) === 0 && <p data-wonder-none="" style={{ margin: '0 0 18px', fontSize: 14, color: C.ink }}>Your school has every question off, so this student meets none.</p>}
+                      {wonderOnCount(wonderReview) === 0 && <p data-wonder-none="" style={{ margin: '0 0 18px', fontSize: 14, color: C.ink }}>Your school has removed every question, so this student meets none.</p>}
                       <SegToggle size="big" options={[['on', 'On'], ['off', 'Off']]} value={wonderOnFor(st) ? 'on' : 'off'} onChange={(v) => applyRoster(setStudentWonder(roster, st.id, v === 'on'))} ariaLabel="Wonder Questions" />
                       <Btn kind="secondary" onClick={() => setWonderPopupFor(null)}>Close</Btn>
                     </div>
@@ -16461,8 +16638,13 @@ function EduSphereScreens() {
         {FEATURES.reflection && (
           <div data-tour="wonder" style={{ ...card, background: C.featWonder, borderColor: C.featWonderLine, color: C.featInk, display: 'flex', flexDirection: 'column' }}>
             <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Wonder Questions</p>
-            {/* Since pass NJ every question starts on (Mikey: "give them the option to opt out when they visit the wonder questions page"). */}
-            <p data-wonder-card="" style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>{wonderOnCount(wonderReview) === 0 ? 'Off for every student. Turn them back on any time.' : wonderOnCount(wonderReview) < WONDER.length ? `${wonderOnCount(wonderReview)} of ${WONDER.length} on for your students.` : 'On for your students. Read any question, or turn off the ones you\'d rather\u00A0skip.'}</p>
+            {/* Pass NL: the card's words are Mikey's two sentences ("Wonder Questions, active by default, are deep, thought-provoking
+                questions to help kids think.  Keep what you like, remove what you don't."; WONDER_CARD_LINE in src/logic.mjs), the same in
+                every state, and its title and its Wonder Questions button stay as they were, the button the way to the page. Through pass NK
+                the line was his "Our optional thought-provoking Wonder Questions are currently active for all students." with Claude's words
+                for the other states, then "Click here to view or make changes.", "Click here" a link to the page. The line keeps
+                thought-provoking whole (partsWhole), which broke at its hyphen at 320 pixels in pass NK's round one screen read. */}
+            <p data-wonder-card="" style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>{partsWhole(WONDER_CARD_LINE, 'wc')}</p>
             <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('wonder-review')} style={C.mode === 'dark' ? { background: '#695D98', color: '#FFFFFF', borderColor: '#695D98' } : null}>Wonder Questions</Btn></div>
           </div>
         )}

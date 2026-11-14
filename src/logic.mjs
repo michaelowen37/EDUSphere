@@ -1559,6 +1559,10 @@ export function askedNames(q) {
 export function choiceSpeaks(q, c) {
   const x = String(c);
   if (x.includes(':')) return false;
+  // A lone end mark stays quiet too (pass NK, End marks), since a question asks for it by its name, and a voice reading it would say it.
+  // Grade 1's Read the sentence (r1-end-mark) is reached as well, on purpose: a mark is a shape to match there, and a device's voice
+  // reads a lone mark its own way or not at all (round two's code read, pass NK, found the reach).
+  if (/^[.?!]$/.test(x)) return false;
   if (/^[A-Za-z]$/.test(x)) return ((q && q.choices) || []).some((o) => !String(o).includes(':') && String(o).length > 1);
   return true;
 }
@@ -1617,14 +1621,23 @@ export function printedQuestion(q, voice = true) {
 // 3's Letters and sounds' and pre-K 4's Hear it in the name's, At the end of the name's, Start or end of the name's and Hear it in a word's
 // picture banks (which picture starts, or ends, with the sound the letter shown says) and Write it by its sounds' last sound and word banks,
 // which with no voice printed the pictures' names in the buttons' order beside the letter (below, GROWN_UP_CARD_HIDES). And since pass NI
-// the five banks of pre-K 4's new Q, V and Y, as every letters bank joins it (44).
+// the five banks of pre-K 4's new Q, V and Y, as every letters bank joins it (44). Since pass NK the ten banks of pre-K 4's A, E and I and
+// O and U join it too (54), the four that show the letter a question asks about (A, E and I's and O and U's picture and yes or no banks)
+// on GROWN_UP_CARD_HIDES as well. And since pass NK's second wave the four banks of pre-K 4's Small letters that name a letter (58), its yes
+// or no, which shows the small letter it asks about, hiding it, its card the question alone ("Is this the small x?"), as the sign word kind's
+// is; its fifth, whether a big letter and a small one shown are the same letter, names none and prints alike with a voice and without.
+// Since pass NL the four of each of Almost the same and More small letters that name a letter join it (66), Small letters' kinds made by
+// one maker (smallLetterBanks), each yes or no hiding its letter as Small letters' does.
 export const GROWN_UP_CARD_BANKS = new Set(['p3-ls-letter', 'p3-ls-sound', 'p3-ls-first', 'p3-ls-yesno', 'p3-look-name',
   'p4-name-letter', 'p4-name-sound', 'p4-name-first', 'p4-name-yesno', 'p4-end-letter', 'p4-end-sound', 'p4-end-first', 'p4-end-yesno',
   'p4-soe-letter', 'p4-soe-sound', 'p4-soe-first', 'p4-soe-yesno', 'p4-wbs-first', 'p4-wbs-last', 'p4-wbs-yesno',
   'p4-hiw-letter', 'p4-hiw-sound', 'p4-hiw-first', 'p4-hiw-yesno',
   'p3-tap-ab', 'p3-ab-in-word', 'p3-ab-look-alike', 'pl-tap-letter', 'pl-is-letter', 'pl-hear-first', 'pl-hear-more', 'pl-hear-ltf',
   'p3-ls-pic', 'p4-name-pic', 'p4-end-pic', 'p4-soe-pic', 'p4-hiw-pic', 'p4-wbs-end', 'p4-wbs-word',
-  'p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-pic', 'p4-qvy-first', 'p4-qvy-yesno']);
+  'p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-pic', 'p4-qvy-first', 'p4-qvy-yesno',
+  'p4-aei-first', 'p4-aei-pic', 'p4-aei-both', 'p4-aei-or', 'p4-aei-yesno', 'p4-ou-first', 'p4-ou-pic', 'p4-ou-name', 'p4-ou-or', 'p4-ou-yesno',
+  'p4-sml-tap', 'p4-sml-big', 'p4-sml-find', 'p4-sml-yesno',
+  'p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno']);
 // The letters questions waiting on Mikey's word. Pass NG's eight letter-name kinds waited here on Q96 until his answer in pass NH
 // ("Q96 - A") moved them to the card's list; the rules test holds every letters bank of a read-aloud course to the card's list or this
 // one, so a new letters bank cannot go unread, and one that should wait for a question of his goes here with its number. Since pass NH's
@@ -1686,6 +1699,13 @@ export const GROWN_UP_CARD_HIDES = new Map([
   ['p4-wbs-end', cardWithoutLetter], ['p4-wbs-word', cardNamesHeard],
   // Since pass NI, Q, V and Y's three kinds that show the letter they ask about, as their twins in the letters lessons before it.
   ['p4-qvy-sound', cardSoundsOnly], ['p4-qvy-yesno', cardWithoutLetter], ['p4-qvy-pic', cardWithoutLetter],
+  // Since pass NK, A, E and I's and O and U's two kinds that show the letter they ask about, as their twins before them: the yes or no
+  // says the word alone ("Listen to this word. Ant."), and the picture kind the pictures' names alone.
+  ['p4-aei-yesno', cardWithoutLetter], ['p4-aei-pic', cardWithoutLetter], ['p4-ou-yesno', cardWithoutLetter], ['p4-ou-pic', cardWithoutLetter],
+  // Since pass NK's second wave, Small letters' yes or no: the letter shown hides while its card says the question, as the sign word kind's.
+  ['p4-sml-yesno', (q) => String(q.prompt)],
+  // Since pass NL, Almost the same's and More small letters' yes or no, made as Small letters' is.
+  ['p4-kpuy-yesno', (q) => String(q.prompt)], ['p4-eirt-yesno', (q) => String(q.prompt)],
 ]);
 // The kinds whose setup names no letter and points at what Ready shows, so it prints after Ready, above it: the sign word kind's (pass NH)
 // and Write it by its sounds' word kind's (pass NI), each with that setup and what the card's first line tells the grown-up to read the
@@ -1720,8 +1740,10 @@ export function isLettersQuestion(q) {
 // read found "Cuh-sss is not the sound / N says." at 375 pixels in the reason, which the card's words already kept whole). The word I is
 // a letter only after "letter" or "Does" and is left alone anywhere else (since round two's code read: "may I" and "yesterday I" were
 // joined in the reasons of 17 banks outside the letters lessons, where a line may start with I as any line may; since the third read,
-// "Does I", as a lesson about I would ask, is joined, since the word I never follows Does).
-export function keepLoneCapitals(text) { return String(text).replace(/(\w+) ([A-Z])(?=[\s.,?!]|$)/g, (m, word, cap) => (cap === 'I' && word !== 'letter' && word !== 'Does' ? m : `${word}\u00A0${cap}`)); }
+// "Does I", as a lesson about I would ask, is joined, since the word I never follows Does; since pass NL's round one screen read "big I",
+// as More small letters names the letter I's big size, since its line 3 broke at 320 pixels as "Look at big / I, one tall line" and the
+// grown-up's card drew "Tap the big I." in the sans-serif bar of a small l; and "Big I", as a sentence may start, since round two).
+export function keepLoneCapitals(text) { return String(text).replace(/(\w+) ([A-Z])(?=[\s.,?!]|$)/g, (m, word, cap) => (cap === 'I' && !['letter', 'Does', 'big', 'Big'].includes(word) ? m : `${word}\u00A0${cap}`)); }
 // The sound of L written out (lll, Lll, fff-lll) is a run of small l's, and in the app's sans-serif type a small l and a capital I are
 // the same bar, so "Lll." read "LII" and "Button 2, lll." read like the number III (pass NG, round one's screen read, on the grown-up's
 // card). ellRuns splits a text into its plain parts and its runs of l's, every odd piece a run, so the screen draws each run in a serif
@@ -5212,7 +5234,7 @@ function PREK3_MODULES() { return [
         { say: 'This road sign is a triangle turned upside down. Count its corners, one, two, three.', show: { kind: 'shape', name: 'triangle', variant: 'turned' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation), in part, since the lesson recognizes the triangle beside the circle and the square, big and little, tall and thin, and turned upside down, while the rectangle waits (EARMARKS E12), and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 36 to 48 month progression reads "Recognizes and names typical circle, square, and sometimes a triangle. With adult support, matches some shapes that are different sizes and orientations."'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation), in part, since the lesson recognizes the triangle beside the circle and the square, big and little, tall and thin, and turned upside down, while the rectangle is taught in Rectangles, at any size and turn, and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 36 to 48 month progression reads "Recognizes and names typical circle, square, and sometimes a triangle. With adult support, matches some shapes that are different sizes and orientations."'],
     generators: ['p3-tap-three-shapes', 'p3-name-three-shapes', 'p3-tap-three-shapes', 'p3-name-three-shapes', 'p3-tap-three-shapes'],
   },
   {
@@ -5549,6 +5571,42 @@ function PREK3_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.C.1 (Child\'s speech is understood by familiar adults and peers.), in part, since the lesson teaches what helps a friend and a teacher understand a child, words said slowly and clearly while the child turns toward them, where very fast words or turning away may not be understood, while the child\'s own speech, understood as the child says it, is the child\'s own talk (EARMARKS E12), and Head Start ELOF Goal P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, whose 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", since the lesson teaches the tone and volume for different situations, a whisper when a baby is sleeping and in the library, an inside voice with a teacher in the classroom, a big outside voice for a friend far away on the playground, and a kind, soft voice for a friend who is sad and for asking a turn, each said the way it sounds, and a child using a voice to fit each place, with support from the grown-ups around them, is the lesson at work (sometimes says how often a child does so, which makes no part), while the conversations of two or three turns are taught in Talking with a friend and Talk about it.'],
     generators: ['p3-vfit-voice', 'p3-vfit-where', 'p3-vfit-kind', 'p3-vfit-yesno', 'p3-vfit-clear'],
   },
+  // Rectangles (pass NK, PK3 V.B.1, the rectangle Circle and square and Triangles left waiting; built ahead of Domain V's turn at Mikey's
+  // word with Any size, any turn, from his two "What Does Not Belong?" worksheets; Claude's design). A rectangle has four corners, and the
+  // long rectangle the lessons show two long sides and two short ones (pass ML's rule: a square is a rectangle too, so no sentence says a
+  // rectangle has two long sides); standing up tall or long and thin, big or little, it is still a rectangle; and which shape does not
+  // belong, looking at the shape alone. No question sets a square beside a rectangle (SHAPE_NEVER).
+  {
+    id: 'rectangles-too',
+    skill: 'Shapes',
+    order: 21,
+    requires: ['triangles-too'],
+    requiresWhy: 'Rectangles tells a rectangle from the circle, the square and the triangle at any size and turn, so it builds on Triangles, which sets the triangle beside the circle and the square, big and little, and turned upside down.',
+    title: 'Rectangles',
+    tagline: 'Still a rectangle',
+    lesson: {
+      paragraphs: ['A rectangle has four corners. A long rectangle has two long sides and two short ones, like a door.', 'Standing up tall, long and thin, big or little, a rectangle is still a rectangle. Size, turn and color do not change a shape.', 'To find the shape that does not belong, look at the shape only, not how big it is, how it is turned, or its color.'],
+      keyIdea: 'A long rectangle has four corners, two long sides and two short ones. Size, turn and color do not change a shape.',
+      example: { kind: 'item', shape: 'rectangle', colour: 'blue', caption: 'A rectangle.' },
+      script: [
+        { say: 'This is a rectangle. It has four corners. Two of its sides are long, and two are short.', show: { kind: 'item', shape: 'rectangle', colour: 'blue' } },
+        { say: 'Count the corners with me. One, two, three, four.', show: { kind: 'item', shape: 'rectangle', colour: 'blue' } },
+        { say: 'A door is a rectangle too, standing up tall like this green one, with two long sides and two short ones.', show: { kind: 'pair', a: { kind: 'icon', name: 'door' }, b: { kind: 'item', shape: 'rectangle~tall', colour: 'green' } } },
+        { say: 'A big red rectangle and a little yellow rectangle are both rectangles. Size does not change the shape.', show: { kind: 'row', items: [{ kind: 'item', shape: 'rectangle', colour: 'red', scale: 'big' }, { kind: 'item', shape: 'rectangle', colour: 'yellow', scale: 'small' }] } },
+        { say: 'Is this a rectangle? Yes. It is long and thin, and it is still a rectangle.', show: { kind: 'item', shape: 'rectangle~thin', colour: 'yellow' } },
+        { say: 'Is this a rectangle? No. It has three corners, so it is a triangle, tall and thin.', show: { kind: 'item', shape: 'triangle~thin', colour: 'blue' } },
+        { say: 'What shape is this? It is a square, turned on its corner, and its four sides are all the same length.', show: { kind: 'item', shape: 'square~turned', colour: 'green' } },
+        { say: 'Which one is the triangle? The one with three corners, the blue one, even upside down. The red circle has no corners, and the yellow rectangle has four.', show: { kind: 'row', items: [{ kind: 'item', shape: 'circle', colour: 'red' }, { kind: 'item', shape: 'triangle~turned', colour: 'blue' }, { kind: 'item', shape: 'rectangle', colour: 'yellow' }] } },
+        { say: 'Look at this red rectangle. Which one is the same shape? The blue one standing up tall is a rectangle too, and the green one is a triangle.', show: { kind: 'pair', stack: true, a: { kind: 'item', shape: 'rectangle', colour: 'red' }, b: { kind: 'row', items: [{ kind: 'item', shape: 'triangle', colour: 'green' }, { kind: 'item', shape: 'rectangle~tall', colour: 'blue' }] } } },
+        { say: 'Now let\'s play a game. Look at the shape only, not how big it is, how it is turned, or its color. Which shape does not belong? The circle does not belong, because the other two are rectangles.', show: { kind: 'row', items: [{ kind: 'item', shape: 'rectangle', colour: 'red', scale: 'big' }, { kind: 'item', shape: 'circle', colour: 'blue' }, { kind: 'item', shape: 'rectangle~tall', colour: 'yellow' }] } },
+        { say: 'Now you try. Look at these three, and say which one does not belong.', show: { kind: 'row', items: [{ kind: 'item', shape: 'triangle~thin', colour: 'green' }, { kind: 'item', shape: 'triangle~turned', colour: 'red' }, { kind: 'item', shape: 'square', colour: 'blue', scale: 'small' }] }, voices: [['Look at these three, and say which one does not belong.', 'tell', 'turn']] },
+        { say: 'The square does not belong. The other two are triangles, the tall thin one and the one upside down.', show: { kind: 'row', items: [{ kind: 'item', shape: 'triangle~thin', colour: 'green' }, { kind: 'item', shape: 'triangle~turned', colour: 'red' }, { kind: 'item', shape: 'square', colour: 'blue', scale: 'small' }] } },
+        { say: 'A shape keeps its name when it is big or little, turned, or a new color. The red rectangle, the blue triangle and the green square keep theirs.', show: { kind: 'row', items: [{ kind: 'item', shape: 'rectangle~thin', colour: 'red' }, { kind: 'item', shape: 'triangle~turned', colour: 'blue' }, { kind: 'item', shape: 'square~turned', colour: 'green' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation.), since the lesson recognizes the long rectangle, with four corners, two long sides and two short ones, big and little, standing up tall and long and thin, and a door as one, beside the circle, the square turned on its corner and the triangle upside down, in four colors, and asks which shape does not belong among three, two of them one shape in different sizes, turns and colors, which one is a shape named, which one is the same shape as one shown, whether a shape shown is a shape named and what shape one shown is, so with Circle and square and Triangles it is taught whole, and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 36 to 48 month progression reads "Recognizes and names typical circle, square, and sometimes a triangle. With adult support, matches some shapes that are different sizes and orientations.", in part, since the lesson matches shapes that are different sizes and orientations, the voice the adult support, while composing shapes waits (EARMARKS E12).'],
+    generators: ['p3-rect-odd', 'p3-rect-name', 'p3-rect-same', 'p3-rect-yesno', 'p3-rect-what'],
+  },
 ]; }
 
 function PREK3_READING_MODULES() { return [
@@ -5613,7 +5671,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Look around the room. Many plates are round like a circle, and some windows are square.', show: { kind: 'pair', a: { kind: 'icon', name: 'plate' }, b: { kind: 'icon', name: 'window' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation), in part, since the lesson recognizes the circle and the square, big and little, and a square turned on its corner, while the triangle is taught in Very First Steps\' Triangles and the rectangle waits (EARMARKS E12), and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 36 to 48 month progression reads "Recognizes and names typical circle, square, and sometimes a triangle. With adult support, matches some shapes that are different sizes and orientations.", in part, since the triangle is taught in Very First Steps\' Triangles.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation), in part, since the lesson recognizes the circle and the square, big and little, and a square turned on its corner, while the triangle is taught in Very First Steps\' Triangles and the rectangle is taught in Rectangles, at any size and turn, and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 36 to 48 month progression reads "Recognizes and names typical circle, square, and sometimes a triangle. With adult support, matches some shapes that are different sizes and orientations.", in part, since the triangle is taught in Very First Steps\' Triangles.'],
     generators: ['p3-tap-shape', 'p3-name-shape', 'p3-shape-by-corners', 'p3-shape-thing', 'p3-same-shape-any-size'],
   },
   {
@@ -7177,7 +7235,7 @@ function PREK_MODULES() { return [
         { say: 'Draw a triangle in the air with your finger. One, two, three corners!', show: { kind: 'shape', name: 'triangle' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation), in part, since the lesson names the circle, the square, the triangle and the rectangle and tells them apart by their corners and sides, while the oval and the rhombus, and these shapes in different sizes and orientations, wait (EARMARKS E13), and V.D.1 (sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different), in part, since the lesson finds the shape that is the same and the one that is different, while describing how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson compares four shapes by their corners and sides, while shapes of different sizes and orientations wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation), in part, since the lesson names the circle, the square, the triangle and the rectangle and tells them apart by their corners and sides, while the oval and the rhombus, and these shapes in different sizes and orientations, are taught in Any size, any turn, and V.D.1 (sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different), in part, since the lesson finds the shape that is the same and the one that is different, while describing how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson compares four shapes by their corners and sides, while shapes of different sizes and orientations are taught in Any size, any turn, and composing shapes waits (EARMARKS E13).'],
     generators: ['pm-same-shape', 'pm-different-shape', 'pm-shape-corners', 'pm-tap-shape', 'pm-same-shape'],
   },
   {
@@ -7204,7 +7262,7 @@ function PREK_MODULES() { return [
         { say: 'Try it at home. Roll a ball, then stack two blocks.', show: { kind: 'pair', a: { kind: 'solid', name: 'sphere' }, b: { kind: 'solid', name: 'cube' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.2 (recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones), since the lesson recognizes and names all four, the cube, the sphere, the cone and the cylinder, and real things shaped like them, a block, a ball, an ice cream cone and a can, V.D.1 (sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different), in part, since the lesson finds the solid that is the same and the one that is different, while describing how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and VI.B.1 (identifies and compares observable properties of objects such as color, shape, texture, and size), since the lesson identifies and compares the shapes of solids, a sphere round all over, a cube with flat sides and corners and a cylinder with a curved side and a flat end, and what each shape lets a thing do, spheres roll and cubes stack, and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson recognizes and compares four solid shapes and names a cube\'s flat sides and corners, while shapes of different sizes and orientations wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.2 (recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones), since the lesson recognizes and names all four, the cube, the sphere, the cone and the cylinder, and real things shaped like them, a block, a ball, an ice cream cone and a can, V.D.1 (sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different), in part, since the lesson finds the solid that is the same and the one that is different, while describing how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and VI.B.1 (identifies and compares observable properties of objects such as color, shape, texture, and size), since the lesson identifies and compares the shapes of solids, a sphere round all over, a cube with flat sides and corners and a cylinder with a curved side and a flat end, and what each shape lets a thing do, spheres roll and cubes stack, and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson recognizes and compares four solid shapes and names a cube\'s flat sides and corners, while flat shapes of different sizes and orientations are taught in Any size, any turn, and composing shapes waits (EARMARKS E13).'],
     generators: ['pm-same-solid', 'pm-different-solid', 'pm-solid-like', 'pm-solid-do', 'pm-same-solid'],
   },
   {
@@ -7413,7 +7471,7 @@ function PREK_MODULES() { return [
         { say: 'Look for these shapes around you. A button is round, a cracker can be square, and a heart can be on a card.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination) and V.B.1 (names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation), in part, since the lesson names a circle, a square and a triangle, with a star and a heart, and describes their corners and points, while the rectangle is named in Match the shapes, and the oval, the rhombus and shapes of different sizes and orientations wait (EARMARKS E13), and Head Start ELOF Goals P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws five closed shapes all the way around, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13) and letter-like forms are traced in First Sounds and Letters, and P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson recognizes five shapes and counts their corners, while shapes of different sizes and orientations wait (EARMARKS E13), and sides are taught in Match the shapes.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination) and V.B.1 (names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation), in part, since the lesson names a circle, a square and a triangle, with a star and a heart, and describes their corners and points, while the rectangle is named in Match the shapes, and the oval, the rhombus and shapes of different sizes and orientations are taught in Any size, any turn, and Head Start ELOF Goals P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws five closed shapes all the way around, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13) and letter-like forms are traced in First Sounds and Letters, and P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson recognizes five shapes and counts their corners, while shapes of different sizes and orientations are taught in Any size, any turn, sides in Match the shapes, and composing shapes waits (EARMARKS E13).'],
     generators: ["kn-trace-shape", "kn-trace-shape", "kn-trace-shape", "kn-trace-shape", "kn-trace-shape"],
   },
   {
@@ -7716,6 +7774,43 @@ function PREK_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.1 (uses language for multiple purposes and in various settings), since the lesson teaches four purposes for words, asking for something, telling what happened, asking a question and saying how you feel, each with words a child can use, and a voice to fit each setting, a whisper in the library and when a baby is sleeping, an inside voice in the classroom and at the doctor\'s office, and a big outside voice on the playground, and a child using them is the lesson at work, and Head Start ELOF Goals P-LC 3 (varies the amount of information provided to meet the demands of the situation), whose 48 to 60 month progression reads "Uses language, spoken or sign, for a variety of purposes and can typically provide sufficient detail in order to get needs met from a variety of adults.", since the lesson teaches language for a variety of purposes and the detail that gets a need met from a variety of adults, a teacher, a doctor, a grandma and a grandpa, my ear hurts and not just it hurts, while typically says how often a child does so, which makes no part, and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, for the second sentence of its 48 to 60 month progression, "With increasing independence, varies tone and volume of expression to match the social situation.", since the lesson teaches the volume that matches each setting and a kind, soft voice for a friend who is sad, while varying them with increasing independence is the child\'s own (EARMARKS E13), and its first sentence is taught in Let\'s play together.'],
     generators: ['p4-fit-voice', 'p4-fit-why', 'p4-fit-say', 'p4-fit-enough', 'p4-fit-yesno'],
   },
+  // Any size, any turn (pass NK, PK4 V.B.1 whole; built ahead of Domain V's turn because Mikey asked for it: his two "Shape-Up What Does
+  // Not Belong?" worksheets, from Mary Gilfeather's Mathematics Pentathlon Program, "Find the shape that does not belong with the other
+  // shapes on the line. Focus on shape only."; Claude's design, every set and drawing the app's own). The oval and the rhombus join Match
+  // the shapes' four, and all six keep their names big or little, turned, or a new color; which shape does not belong among four, three of
+  // them one shape drawn differently. A square is a rectangle too, and a rhombus by the word's first sense, and a circle an oval by its
+  // broad sense (Merriam-Webster), so no question sets those two against each other (SHAPE_NEVER), where the worksheets do.
+  {
+    id: 'any-size-any-turn',
+    skill: 'Shapes',
+    order: 25,
+    requires: ['match-the-shapes'],
+    requiresWhy: 'Any size, any turn names the circle, the square, the rectangle and the triangle again at new sizes and turns and adds the oval and the rhombus, so it builds on Match the shapes, which tells the four apart by their corners and sides.',
+    title: 'Any size, any turn',
+    tagline: 'A shape keeps its name',
+    lesson: {
+      paragraphs: ['A shape keeps its name when it is big or little, turned, or a new color. A triangle upside down is still a triangle, and a square turned on its corner is still a square.', 'An oval is round, with no corners, but it is longer one way than the other, like an egg. A rhombus has four straight sides, all the same length. Many rhombuses lean, with two pointy corners and two wide ones, and some people call one a diamond.', 'To find the shape that does not belong, look at the shape only, not how big it is, how it is turned, or its color.'],
+      keyIdea: 'A shape keeps its name when it is big or little, turned, or a new color. Look at the shape only.',
+      example: { kind: 'row', items: [{ kind: 'item', shape: 'triangle', colour: 'red', scale: 'big' }, { kind: 'item', shape: 'triangle~turned', colour: 'yellow' }], caption: 'Two triangles.' },
+      script: [
+        { say: 'A shape keeps its name when it is big or little, turned, or a new color. Look at these three triangles, a big red one, a little blue one, and a yellow one upside down.', show: { kind: 'row', items: [{ kind: 'item', shape: 'triangle', colour: 'red', scale: 'big' }, { kind: 'item', shape: 'triangle', colour: 'blue', scale: 'small' }, { kind: 'item', shape: 'triangle~turned', colour: 'yellow' }] } },
+        { say: 'These are triangles too, a green one wide and flat and a red one tall and thin. Each one has three straight sides and three corners.', show: { kind: 'row', items: [{ kind: 'item', shape: 'triangle~wide', colour: 'green' }, { kind: 'item', shape: 'triangle~thin', colour: 'red' }] } },
+        { say: 'This is an oval. It is round, with no corners, but it is longer one way than the other, like an egg.', show: { kind: 'item', shape: 'oval', colour: 'green' } },
+        { say: 'Here are two ovals and a triangle. Which one is the triangle? The one with corners, the red one in the middle. Is the blue one a triangle? No, it is an oval standing up tall, and the yellow one is an oval tipped over.', show: { kind: 'row', items: [{ kind: 'item', shape: 'oval~tall', colour: 'blue' }, { kind: 'item', shape: 'triangle', colour: 'red' }, { kind: 'item', shape: 'oval~tilted', colour: 'yellow' }] } },
+        { say: 'This is a rhombus. It has four straight sides, all the same length, with two pointy corners and two wide ones. Some people call it a diamond.', show: { kind: 'item', shape: 'rhombus', colour: 'yellow' } },
+        { say: 'A rhombus lying on its side, or leaning over, is still a rhombus. These two are rhombuses too.', show: { kind: 'row', items: [{ kind: 'item', shape: 'rhombus~wide', colour: 'green' }, { kind: 'item', shape: 'rhombus~leaning', colour: 'blue' }] } },
+        { say: 'What shape is this? It is a square, turned on its corner. Its four sides are all the same length, and its four corners are all the same.', show: { kind: 'item', shape: 'square~turned', colour: 'red' } },
+        { say: 'Look at these rectangles. The red one lies down, the yellow one stands up tall, and the green one is long and thin. Is each one still a rectangle? Yes. Each one has two long sides and two short ones.', show: { kind: 'row', items: [{ kind: 'item', shape: 'rectangle', colour: 'red' }, { kind: 'item', shape: 'rectangle~tall', colour: 'yellow' }, { kind: 'item', shape: 'rectangle~thin', colour: 'green' }] } },
+        { say: 'Look at this red circle. Which one is the same shape, the blue square or the little blue circle? The little blue circle. Size and color do not change a shape.', show: { kind: 'pair', stack: true, a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'row', items: [{ kind: 'item', shape: 'square', colour: 'blue' }, { kind: 'item', shape: 'circle', colour: 'blue', scale: 'small' }] } } },
+        { say: 'Now let\'s play a game. Look at the shape only, not how big it is, how it is turned, or its color. Which shape does not belong? The square does not belong. The other three are triangles, even the one upside down.', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'item', shape: 'triangle', colour: 'red', scale: 'big' }, { kind: 'item', shape: 'triangle~thin', colour: 'blue' }] }, b: { kind: 'row', items: [{ kind: 'item', shape: 'square', colour: 'yellow', scale: 'small' }, { kind: 'item', shape: 'triangle~turned', colour: 'green' }] } } },
+        { say: 'Now you try. Look at these four, and say which one does not belong.', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'item', shape: 'oval', colour: 'green' }, { kind: 'item', shape: 'oval~tall', colour: 'red' }] }, b: { kind: 'row', items: [{ kind: 'item', shape: 'rhombus', colour: 'blue', scale: 'small' }, { kind: 'item', shape: 'oval~tilted', colour: 'yellow' }] } }, voices: [['Look at these four, and say which one does not belong.', 'tell', 'turn']] },
+        { say: 'The rhombus does not belong. The other three are ovals, even the one standing up tall and the one tipped over.', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'item', shape: 'oval', colour: 'green' }, { kind: 'item', shape: 'oval~tall', colour: 'red' }] }, b: { kind: 'row', items: [{ kind: 'item', shape: 'rhombus', colour: 'blue', scale: 'small' }, { kind: 'item', shape: 'oval~tilted', colour: 'yellow' }] } } },
+        { say: 'A shape keeps its name when it is big or little, turned, or a new color. The red triangle, the blue oval and the green rhombus keep theirs. Look at the shape only.', show: { kind: 'row', items: [{ kind: 'item', shape: 'triangle~turned', colour: 'red' }, { kind: 'item', shape: 'oval~tall', colour: 'blue' }, { kind: 'item', shape: 'rhombus~wide', colour: 'green' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.B.1 (names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.), since the lesson names the oval and the rhombus, which with Match the shapes\' circle, square, rectangle and triangle makes the six the outcome names, and names each of the six big and little, turned and in four colors, a triangle upside down, tall and thin and wide and flat, a square turned on its corner, a rectangle standing up tall and long and thin, an oval standing up tall and tipped over and a rhombus lying on its side and leaning over, and asks which shape does not belong among four, three of them one shape in different sizes, turns and colors, which one is a shape named, which one is the same shape as one shown, whether a shape shown is a shape named and what shape one shown is, and the child names a shape aloud in a turn of their own, saying which one does not belong, for a grown-up to hear, so with Match the shapes it is taught whole, and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson recognizes and compares six shapes of different sizes and orientations and names the sides and corners of a triangle, a rhombus and a square turned on its corner, while composing shapes waits (EARMARKS E13).'],
+    generators: ['p4-turn-odd', 'p4-turn-name', 'p4-turn-same', 'p4-turn-yesno', 'p4-turn-what'],
+  },
 ]; }
 
 // Pre-K reading. Listening and looking, nothing to read. Rhymes, first sounds, and a
@@ -7846,7 +7941,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Find the letter when you hear its name. Every letter has one, A, B, C, D, E, M and S.', show: { kind: 'letters', text: 'A   B   C   D   E   M   S' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson teaches seven capital letters, A, B, C, D, E, M and S, each by its name and its shape, and asks the child to find each one when its name is heard, to say whether a letter is the one named and to find one by its shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with the tracing lessons\' six more, L, T, O, I, H and F, the course asks thirteen letters by name, so five more capital letters and fifteen small letters wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters by name and shape, and with the tracing lessons\' six more the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the twenty-one Hear it in the name, At the end of the name, Start or end of the name, Hear it in a word and Q, V and Y teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson teaches seven capital letters, A, B, C, D, E, M and S, each by its name and its shape, and asks the child to find each one when its name is heard, to say whether a letter is the one named and to find one by its shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with the tracing lessons\' six more, L, T, O, I, H and F, the course asks thirteen letters by name, with O and U\'s U and V fifteen, and with Small letters\' W, X and Z eighteen, the eighteen the outcome asks, and with Small letters\' seven small letters and Almost the same\'s and More small letters\' eight, fifteen small letters, as many as the outcome asks, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters by name and shape, and with the tracing lessons\' six more the course asks thirteen by name, half of the alphabet, and with O and U\'s U fourteen, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment wait (EARMARKS E13), while the seven letters lessons, from Hear it in the name to O and U, teach the sounds of all twenty-six, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['pl-tap-letter', 'pl-is-letter', 'pl-letter-look', 'pl-tap-letter', 'pl-is-letter'],
   },
   {
@@ -7869,7 +7964,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Start at the dot and follow the arrow every time, so your hand learns to make each letter the same way.', show: { kind: 'trace', text: 'O' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and O when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while a name\'s letters written from left to right are taught in Write your name, and writing words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and O by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the twenty-one Hear it in the name, At the end of the name, Start or end of the name, Hear it in a word and Q, V and Y teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson asks the child to tap L, T and O when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, and with O and U\'s U and V fifteen, and Small letters\' W, X and Z eighteen, the eighteen the outcome asks, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with Small letters\' seven small letters and Almost the same\'s and More small letters\' eight, fifteen small letters, as many as the outcome asks, IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while a name\'s letters written from left to right are taught in Write your name, and writing words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and O by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, and with O and U\'s U fourteen, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment wait (EARMARKS E13), while the seven letters lessons, from Hear it in the name to O and U, teach the sounds of all twenty-six, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-hear-first', 'pl-lines-first'],
   },
@@ -7893,7 +7988,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For H, lift your finger after each line, then start the next one at its dot and follow the arrow.', show: { kind: 'trace', text: 'H' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap I, H and E when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while a name\'s letters written from left to right are taught in Write your name, and writing words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for I, H and E by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the twenty-one Hear it in the name, At the end of the name, Start or end of the name, Hear it in a word and Q, V and Y teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson asks the child to tap I, H and E when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, and with O and U\'s U and V fifteen, and Small letters\' W, X and Z eighteen, the eighteen the outcome asks, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with Small letters\' seven small letters and Almost the same\'s and More small letters\' eight, fifteen small letters, as many as the outcome asks, IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while a name\'s letters written from left to right are taught in Write your name, and writing words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for I, H and E by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, and with O and U\'s U fourteen, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment wait (EARMARKS E13), while the seven letters lessons, from Hear it in the name to O and U, teach the sounds of all twenty-six, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-hear-more', 'pl-lines-more'],
   },
@@ -7917,7 +8012,7 @@ function PREK_READING_MODULES() { return [
         { say: 'L, T and F use the same two moves, down and then across, in different places. Start at the dot and follow the arrow.', show: { kind: 'letters', text: 'L   T   F' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while a name\'s letters written from left to right are taught in Write your name, and writing words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the twenty-one Hear it in the name, At the end of the name, Start or end of the name, Hear it in a word and Q, V and Y teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, and with O and U\'s U and V fifteen, and Small letters\' W, X and Z eighteen, the eighteen the outcome asks, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with Small letters\' seven small letters and Almost the same\'s and More small letters\' eight, fifteen small letters, as many as the outcome asks, IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while a name\'s letters written from left to right are taught in Write your name, and writing words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, and with O and U\'s U fourteen, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment wait (EARMARKS E13), while the seven letters lessons, from Hear it in the name to O and U, teach the sounds of all twenty-six, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-hear-ltf', 'pl-lines-ltf'],
   },
@@ -8781,7 +8876,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For some letters, the sound is at the start of the name. B says buh, T says tuh, and K says cuh.', show: { kind: 'letters', text: 'B   T   K' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, B says buh, T says tuh, K says cuh, J says juh and Z says zzz, each heard at the very start of the letter\'s name, with words that start with each sound, ball and bed, tie and table, kite and key, jar and jellyfish, and zebra and zipper, finds the letter that says a sound heard in a game, says that Z does not say tuh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while At the end of the name teaches five more, Start or end of the name four more, Hear it in a word four more and Q, V and Y three more, twenty-one in all, past the twenty the outcome asks, and the vowels, past what it asks, wait for lessons of their own (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of T and J at the start of their names and says them, and says the sound of B from its shape, in turns of their own, each turn ending its line, before the voice says them, while At the end of the name and Start or end of the name each have the child say three more, Hear it in a word two more and Q, V and Y two more, thirteen in all, and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while At the end of the name teaches five more, Start or end of the name four more, Hear it in a word four more, Q, V and Y three more, and the sounds of the vowels wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, B says buh, T says tuh, K says cuh, J says juh and Z says zzz, each heard at the very start of the letter\'s name, with words that start with each sound, ball and bed, tie and table, kite and key, jar and jellyfish, and zebra and zipper, finds the letter that says a sound heard in a game, says that Z does not say tuh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while At the end of the name teaches five more, Start or end of the name four more, Hear it in a word four more, Q, V and Y three more, A, E and I three more and O and U two more, twenty-six in all, every letter of the alphabet, past the twenty the outcome asks, and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of T and J at the start of their names and says them, and says the sound of B from its shape, in turns of their own, each turn ending its line, before the voice says them, while At the end of the name and Start or end of the name each have the child say three more, Hear it in a word two more, Q, V and Y two more, A, E and I two more and O and U two more, seventeen in all, past the fifteen the outcome asks, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while At the end of the name teaches five more, Start or end of the name four more, Hear it in a word four more, Q, V and Y three more, A, E and I three more and O and U two more, naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-name-letter', 'p4-name-sound', 'p4-name-pic', 'p4-name-first', 'p4-name-yesno'],
   },
   // At the end of the name (pass ND, the standards review of Domain III's letters and their sounds, EARMARKS E13): PK4 III.C.2 and III.C.3,
@@ -8822,7 +8917,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For some letters, the sound is at the end of the name. M says mmm, S says sss, and F says fff.', show: { kind: 'letters', text: 'M   S   F' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, M says mmm, S says sss, F says fff, L says lll and R says rrr, each heard at the end of the letter\'s name, with words that start with each sound, moon and map, sun and sock, fan and fish, log and lamp, rock and rain, finds the letter that says a sound heard in a game, says that F does not say sss, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name teaches five more, Start or end of the name four more, Hear it in a word four more and Q, V and Y three more, twenty-one in all, past the twenty the outcome asks, and the vowels, past what it asks, wait for lessons of their own (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of S and L at the end of their names and says them, and says the sound of M from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name and Start or end of the name each have the child say three more, Hear it in a word two more and Q, V and Y two more, thirteen in all, and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while Hear it in the name teaches five more, Start or end of the name four more, Hear it in a word four more, Q, V and Y three more, and the sounds of the vowels wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, M says mmm, S says sss, F says fff, L says lll and R says rrr, each heard at the end of the letter\'s name, with words that start with each sound, moon and map, sun and sock, fan and fish, log and lamp, rock and rain, finds the letter that says a sound heard in a game, says that F does not say sss, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name teaches five more, Start or end of the name four more, Hear it in a word four more, Q, V and Y three more, A, E and I three more and O and U two more, twenty-six in all, every letter of the alphabet, past the twenty the outcome asks, and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of S and L at the end of their names and says them, and says the sound of M from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name and Start or end of the name each have the child say three more, Hear it in a word two more, Q, V and Y two more, A, E and I two more and O and U two more, seventeen in all, past the fifteen the outcome asks, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while Hear it in the name teaches five more, Start or end of the name four more, Hear it in a word four more, Q, V and Y three more, A, E and I three more and O and U two more, naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-end-letter', 'p4-end-sound', 'p4-end-pic', 'p4-end-first', 'p4-end-yesno'],
   },
   // Spaces between words (pass ND, Domain IV beside Domain III's letters and their sounds, EARMARKS E13): PK4 IV.C.5, "demonstrates use
@@ -8907,7 +9002,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Some letters have their sound in their name. P and D have it at the start, and N and X have it at the end.', show: { kind: 'letters', text: 'P  D  N  X' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches four letters and the sound each one makes, P says puh and D says duh, each heard at the very start of the letter\'s name, and N says nnn and X says cuh-sss, each heard at the end of the letter\'s name, with words that start with each sound, pig and pie, dog and duck, and nest and net, and words that end with X\'s, box and fox, finds the letter that says a sound heard in a game, says that N does not say puh, and asks which letter says a sound heard, which sound a letter says, which picture starts or ends with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name and At the end of the name teach ten more, Hear it in a word four more and Q, V and Y three more, twenty-one in all, past the twenty the outcome asks, and the vowels, past what it asks, wait for lessons of their own (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of D and N in their names and says them, and says the sound of P from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name and At the end of the name have the child say six more, Hear it in a word two more and Q, V and Y two more, thirteen in all, and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of four letters, three of which the child says in turns of their own, while Hear it in the name and At the end of the name teach ten more, Hear it in a word four more, Q, V and Y three more, and the sounds of the vowels wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches four letters and the sound each one makes, P says puh and D says duh, each heard at the very start of the letter\'s name, and N says nnn and X says cuh-sss, each heard at the end of the letter\'s name, with words that start with each sound, pig and pie, dog and duck, and nest and net, and words that end with X\'s, box and fox, finds the letter that says a sound heard in a game, says that N does not say puh, and asks which letter says a sound heard, which sound a letter says, which picture starts or ends with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name and At the end of the name teach ten more, Hear it in a word four more, Q, V and Y three more, A, E and I three more and O and U two more, twenty-six in all, every letter of the alphabet, past the twenty the outcome asks, and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of D and N in their names and says them, and says the sound of P from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name and At the end of the name have the child say six more, Hear it in a word two more, Q, V and Y two more, A, E and I two more and O and U two more, seventeen in all, past the fifteen the outcome asks, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of four letters, three of which the child says in turns of their own, while Hear it in the name and At the end of the name teach ten more, Hear it in a word four more, Q, V and Y three more, A, E and I three more and O and U two more, naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-soe-letter', 'p4-soe-sound', 'p4-soe-pic', 'p4-soe-first', 'p4-soe-yesno'],
   },
   // Write it by its sounds (pass NE, Domain IV beside Domain III's letters and their sounds, EARMARKS E13): PK4 IV.C.3, "writes familiar
@@ -8999,7 +9094,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For these four letters, we hear the sound in a word. C says cuh, G says guh, H says huh, and W says wuh.', show: { kind: 'letters', text: 'C  G  H  W' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches four letters and the sound each one makes in lots of words, C says cuh and G says guh, though C\'s name starts with sss and G\'s with juh, and H says huh and W says wuh, though H\'s name ends with chuh and W\'s starts with duh, with words that start with each sound, cat and cup, goat and guitar, hat and house, and window and watermelon, says that K says cuh too but cat and cup are written with C, finds the picture that starts with C\'s sound and the letter that says a sound heard in a game, says that H does not say wuh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name, At the end of the name and Start or end of the name teach fourteen more and Q, V and Y three more, twenty-one in all, past the twenty the outcome asks, and the vowels, past what it asks, wait for lessons of their own (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child says the sound of C from the words it starts and the sound of H from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name, At the end of the name and Start or end of the name have the child say nine more and Q, V and Y two more, thirteen in all, and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of four letters, two of which the child says in turns of their own, while the three lessons before it teach fourteen more, Q, V and Y three more, and the sounds of the vowels wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches four letters and the sound each one makes in lots of words, C says cuh and G says guh, though C\'s name starts with sss and G\'s with juh, and H says huh and W says wuh, though H\'s name ends with chuh and W\'s starts with duh, with words that start with each sound, cat and cup, goat and guitar, hat and house, and window and watermelon, says that K says cuh too but cat and cup are written with C, finds the picture that starts with C\'s sound and the letter that says a sound heard in a game, says that H does not say wuh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name, At the end of the name and Start or end of the name teach fourteen more, Q, V and Y three more, A, E and I three more and O and U two more, twenty-six in all, every letter of the alphabet, past the twenty the outcome asks, and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child says the sound of C from the words it starts and the sound of H from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name, At the end of the name and Start or end of the name have the child say nine more, Q, V and Y two more, A, E and I two more and O and U two more, seventeen in all, past the fifteen the outcome asks, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of four letters, two of which the child says in turns of their own, while the three lessons before it teach fourteen more, Q, V and Y three more, A, E and I three more and O and U two more, naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-hiw-letter', 'p4-hiw-sound', 'p4-hiw-pic', 'p4-hiw-first', 'p4-hiw-yesno'],
   },
   // Q, V and Y (pass NI, the standards review of Domain III's III.C.2 and III.C.3 for pre-K 4's last three consonants; Claude's design):
@@ -9007,7 +9102,7 @@ function PREK_READING_MODULES() { return [
   // not (van and fan); Q's name starts with cuh, but in lots of words Q says kwuh, cuh and wuh said together (queen and quilt); and Y's name
   // starts with wuh, but Y says yuh (yo-yo and yarn). The child says V's sound and Y's in turns of their own, finds the van by V's sound,
   // and hears a game (Kwuh. Which letter says it, Q or Y?) and a yes or no (Huh. Does Y say it?). With the four letters lessons before it,
-  // the sounds of twenty-one letters, past the twenty III.C.2 asks; the vowels wait (EARMARKS A42). Every claim about a name's or a word's
+  // the sounds of twenty-one letters, past the twenty III.C.2 asks; the vowels waited (EARMARKS A42) for A, E and I and O and U (pass NK). Every claim about a name's or a word's
   // sounds was read in Merriam-Webster first (QVY4_LETTERS).
   {
     id: 'q-v-and-y',
@@ -9038,7 +9133,7 @@ function PREK_READING_MODULES() { return [
         { say: 'So Q says kwuh, V says vvv, and Y says yuh. For Q and Y, listen to the start of a word, not to the name.', show: { kind: 'letters', text: 'Q  V  Y' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches three letters and the sound each one makes, V says vvv, heard at the very start of its name, and Q says kwuh and Y says yuh in lots of words, though Q\'s name starts with cuh and Y\'s with wuh, with words that start with each sound, queen and quilt, van and volcano, and yo-yo and yarn, says that for V and for F the top teeth touch the lip but V buzzes and F does not, so van starts with vvv and fan with fff, finds the picture that starts with V\'s sound and the letter that says a sound heard in a game, says that Y does not say huh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name, At the end of the name, Start or end of the name and Hear it in a word teach eighteen more, so the five lessons teach the sounds of twenty-one letters, past the twenty the outcome asks, and the vowels, past what it asks, wait for lessons of their own (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child says the sound of V from the words it starts and the sound of Y from its shape, in turns of their own, each turn ending its line, before the voice says them, while the four lessons before it have the child say eleven more, thirteen in all, and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of three letters, two of which the child says in turns of their own, while the four lessons before it teach eighteen more and the sounds of the vowels wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches three letters and the sound each one makes, V says vvv, heard at the very start of its name, and Q says kwuh and Y says yuh in lots of words, though Q\'s name starts with cuh and Y\'s with wuh, with words that start with each sound, queen and quilt, van and volcano, and yo-yo and yarn, says that for V and for F the top teeth touch the lip but V buzzes and F does not, so van starts with vvv and fan with fff, finds the picture that starts with V\'s sound and the letter that says a sound heard in a game, says that Y does not say huh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name, At the end of the name, Start or end of the name and Hear it in a word teach eighteen more and A, E and I and O and U five more, so the seven lessons teach the sounds of all twenty-six letters, past the twenty the outcome asks, and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child says the sound of V from the words it starts and the sound of Y from its shape, in turns of their own, each turn ending its line, before the voice says them, while the four lessons before it have the child say eleven more and A, E and I and O and U four more, seventeen in all, past the fifteen the outcome asks, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of three letters, two of which the child says in turns of their own, while the four lessons before it teach eighteen more and A, E and I and O and U five more, naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-qvy-pic', 'p4-qvy-first', 'p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-yesno'],
   },
   // Write your name (pass NI, the standards review of Domain IV's IV.C.1 for pre-K 4, beside Q, V and Y; Claude's design): a name is a word
@@ -9078,6 +9173,247 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.1 (writes first name using letters in the proper sequence with adult support as needed.), in part, since the lesson teaches that a name is a word whose letters always go in the same order, written from left to right with the big first letter first, shows a name\'s letters set apart in their order, L, u and z, shows that letters mixed up do not make the name, has the child say the first letter of a name and find the letter that comes right after its big first letter in a game, checks a try at writing a name against a grown-up\'s writing and finds which of three tries has the letters in the same order, and asks which letter comes first, which comes right after the big first letter and which comes last, which of three tries has the letters in the same order, and whether a try\'s letters are in the same order, each by a tap, with a grown-up\'s writing to look at, and has the child ask a grown-up to write their name and write it under theirs, one letter at a time, in a turn of their own, while the child\'s own writing of their first name, on paper with a grown-up, is the child\'s and the classroom\'s, since the app keeps no names and nothing a child writes (EARMARKS E13), and IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since the lesson teaches that a name is written from left to right and checked letter by letter from left to right, while top to bottom is taught in the tracing lessons, where every letter starts at the top and each line down goes from top to bottom, and writing words from left to right along a line and the child\'s own writing wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson names the letters of five names a grown-up wrote, a big first letter and small ones after it, each said in its place in its name and never asked by its name alone, while the letters of a child\'s own name are a grown-up\'s to show, since the app keeps no names.'],
     generators: ['p4-wyn-first', 'p4-wyn-next', 'p4-wyn-last', 'p4-wyn-right', 'p4-wyn-yesno'],
+  },
+  // A, E and I (pass NK, the standards review of Domain III's III.C.2 and III.C.3 for pre-K 4's first three vowels; Claude's design):
+  // the letters A, E and I, whose names the child knows from Big letters and the tracing lessons, and the sound each says in lots of
+  // words, which its name does not tell: A the sound at the start of apple and ant, E at the start of elephant and elf, and I at the
+  // start of igloo and insect. The voice never says a vowel's sound alone (the app's own short vowels stay on trial, EARMARKS A42), so
+  // each sound is said by the words it starts, as kindergarten's Sounding out says it ("a says the sound at the start of apple"). The
+  // child says A's sound and I's in turns of their own, finds the ant by A's sound, hears a game (Elephant. Which letter, E or I?) and a
+  // no (insect does not start with A's sound), and the letter A is named "the letter A" where a voice could read it as the word a. With
+  // the six letters lessons before it, the child says fifteen letters' sounds, the fifteen III.C.3 asks. Every claim about a name's or a
+  // word's sounds was read in Merriam-Webster first (AEI4_LETTERS); egg, whose two ways of saying it start differently, is not used.
+  {
+    id: 'a-e-and-i',
+    skill: 'Letters',
+    order: 38,
+    requires: ['q-v-and-y'],
+    requiresWhy: 'A, E and I learns the sounds three letters say in lots of words, which their names do not tell, so it builds on Q, V and Y, which learns to listen to the start of a word when a letter\'s name does not tell its sound.',
+    title: 'A, E and I',
+    tagline: 'Their names, and the sounds they say',
+    lesson: {
+      paragraphs: ['You know the names of the letters A, E and I. But in lots of words, each one says a sound that its name does not tell.', 'The letter A says the sound at the start of apple and ant. E says the sound at the start of elephant and elf, and I says the sound at the start of igloo and insect.', 'To find the letter that says the sound a word starts with, say the word slowly, and listen to its very start.'],
+      keyIdea: 'In lots of words, the letter A says the sound at the start of apple. E says the sound at the start of elephant, and I the sound at the start of igloo.',
+      example: { kind: 'pair', a: { kind: 'letters', text: 'A' }, b: { kind: 'icon', name: 'apple' }, caption: 'The letter A says the sound at the start of apple.' },
+      pictures: [],
+      script: [
+        { say: 'Let\'s learn the sounds of three letters you know, the letters A, E and I.', show: { kind: 'letters', text: 'A  E  I' } },
+        { say: 'This is the letter A. Its name is A, but in lots of words, the letter A says a different sound, the sound at the start of apple and ant.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'A' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'apple' }, { kind: 'icon', name: 'ant' }] } } },
+        { say: 'This is the letter E. Its name is E, but in lots of words, E says the sound at the start of elephant and elf.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'E' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'elephant' }, { kind: 'icon', name: 'elf' }] } } },
+        { say: 'This is the letter I. Its name is I, but in lots of words, I says the sound at the start of igloo and insect.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'I' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'igloo' }, { kind: 'icon', name: 'insect' }] } } },
+        { say: 'Listen to this word, apple. Which letter says the sound apple starts with? It is the letter A, because apple starts with the sound the letter A says.', show: { kind: 'pair', a: { kind: 'letters', text: 'A' }, b: { kind: 'icon', name: 'apple' } } },
+        { say: 'Now you try. Look at this letter, and say the sound it says at the start of apple and ant.', show: { kind: 'letters', text: 'A' }, voices: [['Look at this letter, and say the sound it says at the start of apple and ant.', 'tell', 'turn']] },
+        { say: 'The letter A says the sound at the start of apple. Did you say it too? Listen to these three, the elf, the ant and the igloo. Which one starts with the sound the letter A says? The ant does.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'A' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'elf' }, { kind: 'icon', name: 'ant' }, { kind: 'icon', name: 'igloo' }] } } },
+        { say: 'Now you try again. Look at this letter, and say the sound it says at the start of igloo.', show: { kind: 'letters', text: 'I' }, voices: [['Look at this letter, and say the sound it says at the start of igloo.', 'tell', 'turn']] },
+        { say: 'It is the letter I. Did you say it? Now listen to these two words, igloo and insect. Which letter says the sound they both start with? The letter I.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'I' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'igloo' }, { kind: 'icon', name: 'insect' }] } } },
+        { say: 'Now you try, and let\'s play a game. Listen to this word. Elephant. Which letter says the sound elephant starts with, E or I?', show: { kind: 'pair', a: { kind: 'letters', text: 'E' }, b: { kind: 'letters', text: 'I' } }, voices: [['Which letter says the sound elephant starts with, E or I?', 'ask', 'turn']] },
+        { say: 'It is E. Elephant starts with the sound that E says, and so does elf.', show: { kind: 'pair', a: { kind: 'letters', text: 'E' }, b: { kind: 'icon', name: 'elephant' } } },
+        { say: 'Now listen to this word. Insect. Does insect start with the sound the letter A says? No, it does not. Insect starts with the sound that I says.', show: { kind: 'pair', a: { kind: 'letters', text: 'A' }, b: { kind: 'icon', name: 'insect' } } },
+        { say: 'So in lots of words, the letter A says the sound at the start of apple, E says the sound at the start of elephant, and I says the sound at the start of igloo.', show: { kind: 'letters', text: 'A  E  I' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child says the sound the letter A says in lots of words, the sound at the start of apple and ant, and the sound the letter I says, the sound at the start of igloo, in turns of their own, each turn ending its line, before the voice says the words that start with them, which with the thirteen the five letters lessons before it have the child say makes fifteen, the fifteen the outcome asks, so it is taught whole across the six lessons, and III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), past what it asks, since the lesson teaches three letters whose names do not tell the sound each says in lots of words, the letter A the sound at the start of apple and ant, E the sound at the start of elephant and elf, and I the sound at the start of igloo and insect, finds the picture that starts with the sound A says and the letter that says the sound a word starts with in a game, says that insect does not start with the sound A says, and asks which letter says the sound a word starts with, which of two letters says it, which picture starts with the sound a letter says, which letter says the sound two words both start with and whether a word starts with the sound a letter says, so with the five letters lessons before it the sounds of twenty-four letters are taught, past the twenty the outcome asks, and O and U, the last two, are taught in O and U, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of three letters, two of which the child says in turns of their own, while naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    generators: ['p4-aei-pic', 'p4-aei-first', 'p4-aei-both', 'p4-aei-or', 'p4-aei-yesno'],
+  },
+  // O and U (pass NK, beside A, E and I; Claude's design): the last two vowels, O the sound at the start of octopus and otter and U the
+  // sound at the start of umbrella and up, each said by the words it starts as A, E and I's are; U told from V by its round bottom, and
+  // U asked by name for the first time in the course; octopus and umbrella told apart in a game, since the two sounds are near; and the
+  // five letters named vowels, as kindergarten's Sounding out names them. The banks review A and E beside O and U by the two words the
+  // lines say for them (ant and elephant, OU4_REVIEW), so every picture a bank shows is drawn in these lines. With the six letters
+  // lessons before it the sounds of all twenty-six letters are taught. Up has no picture: an arrow pointing up would be named arrow,
+  // which starts with A's sound, so up is said and never shown.
+  {
+    id: 'o-and-u',
+    skill: 'Letters',
+    order: 39,
+    requires: ['a-e-and-i'],
+    requiresWhy: 'O and U learns the sounds the last two vowels say in lots of words and tells them from A and E, so it builds on A, E and I, which learns that a vowel\'s name does not tell the sound it says in lots of words.',
+    title: 'O and U',
+    tagline: 'The last two vowels',
+    lesson: {
+      paragraphs: ['You know the letter O, and U is new. In lots of words, each one says a sound that its name does not tell.', 'O says the sound at the start of octopus and otter. U says the sound at the start of umbrella and up. U and V look a little alike, but the bottom of U is round, and the bottom of V is a point.', 'A, E, I, O and U are called vowels. Listen to the very start of a word to hear which vowel it starts with.'],
+      keyIdea: 'In lots of words, O says the sound at the start of octopus, and U says the sound at the start of umbrella and up.',
+      example: { kind: 'pair', a: { kind: 'letters', text: 'O' }, b: { kind: 'icon', name: 'octopus' }, caption: 'O says the sound at the start of octopus.' },
+      pictures: [],
+      script: [
+        { say: 'Let\'s learn the sounds of two more letters, the letters O and U.', show: { kind: 'letters', text: 'O  U' } },
+        { say: 'This is the letter O. Its name is O, but in lots of words, O says the sound at the start of octopus and otter.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'O' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'octopus' }, { kind: 'icon', name: 'otter' }] } } },
+        { say: 'This is the letter U. Its name is U, but in lots of words, U says the sound at the start of umbrella and up.', show: { kind: 'pair', a: { kind: 'letters', text: 'U' }, b: { kind: 'icon', name: 'umbrella' } } },
+        { say: 'U and V look a little alike, so look closely. The bottom of U is round, and the bottom of V is a point. O is round all the way around, and U is open at its top. Which one is U? The one with a round bottom, open at its top.', show: { kind: 'letters', text: 'O   U   V' } },
+        { say: 'Listen to this word, otter. Which letter says the sound otter starts with? It is O, because otter starts with the sound that O says.', show: { kind: 'pair', a: { kind: 'letters', text: 'O' }, b: { kind: 'icon', name: 'otter' } } },
+        { say: 'Now you try. Look at this letter, and say the sound it says at the start of octopus and otter.', show: { kind: 'letters', text: 'O' }, voices: [['Look at this letter, and say the sound it says at the start of octopus and otter.', 'tell', 'turn']] },
+        { say: 'O says the sound at the start of octopus. Did you say it too? Listen to these three, the umbrella, the octopus and the ant. Which one starts with the sound that O says? The octopus does.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'O' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'umbrella' }, { kind: 'icon', name: 'octopus' }, { kind: 'icon', name: 'ant' }] } } },
+        { say: 'Now you try again. Look at this letter, and say the sound it says at the start of umbrella and up.', show: { kind: 'letters', text: 'U' }, voices: [['Look at this letter, and say the sound it says at the start of umbrella and up.', 'tell', 'turn']] },
+        { say: 'It is U, and U says the sound at the start of umbrella and up. Did you say it?', show: { kind: 'pair', a: { kind: 'letters', text: 'U' }, b: { kind: 'icon', name: 'umbrella' } } },
+        { say: 'Now you try, and let\'s play a game. Listen to this word. Umbrella. Which letter says the sound umbrella starts with, O or U?', show: { kind: 'pair', a: { kind: 'letters', text: 'O' }, b: { kind: 'letters', text: 'U' } }, voices: [['Which letter says the sound umbrella starts with, O or U?', 'ask', 'turn']] },
+        { say: 'It is U. Umbrella starts with the sound that U says, and octopus starts with the sound that O says.', show: { kind: 'pair', a: { kind: 'letters', text: 'U' }, b: { kind: 'icon', name: 'umbrella' } } },
+        { say: 'Now listen to this word. Elephant. Does elephant start with the sound that O says? No, it does not. Elephant starts with the sound that E says.', show: { kind: 'pair', a: { kind: 'letters', text: 'O' }, b: { kind: 'icon', name: 'elephant' } } },
+        { say: 'So in lots of words, O says the sound at the start of octopus, and U says the sound at the start of umbrella. A, E, I, O and U are called vowels.', show: { kind: 'letters', text: 'A E I O U' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), past what it asks, since the lesson teaches the last two letters whose names do not tell the sound each says in lots of words, O the sound at the start of octopus and otter and U the sound at the start of umbrella and up, finds the picture that starts with the sound O says and the letter that says the sound a word starts with in a game, says that elephant does not start with the sound O says, names the five letters A, E, I, O and U vowels, and asks which letter says the sound a word starts with, which of O and U says it, which picture starts with the sound a letter says and whether a word starts with the sound a letter says, so with the six letters lessons before it the sounds of all twenty-six letters are taught, and III.C.3 (produces at least 15 distinct letter-sound correspondences.), past what it asks, since the child says the sounds O and U say in lots of words, in turns of their own, each turn ending its line, before the voice says the words that start with them, which with the fifteen the six lessons before it have the child say makes seventeen, and III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson tells U from V by its round bottom, and O, round all the way around, from both and asks the child to tap O, U and V when each is heard, U and V for the first time in the course, which with Big letters\' seven and the tracing lessons\' six makes fifteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and Small letters asks three more big letters, W, X and Z, which makes the eighteen the outcome asks, and seven small letters, and Almost the same and More small letters eight more, fifteen small letters, as many as the outcome asks, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of two letters, both of which the child says in turns of their own, while naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    generators: ['p4-ou-pic', 'p4-ou-first', 'p4-ou-name', 'p4-ou-or', 'p4-ou-yesno'],
+  },
+  // Small letters (pass NK, PK4 III.C.1 in part, built with End marks in the pass's second wave; Claude's design): every letter has a big
+  // shape and a small shape, the same letter with the same name, and seven small letters look just like their big letters, only smaller,
+  // in the screens' letters (the system's sans-serif): c, o, s, v, w, x and z (SML4_LETTERS). With these seven a big letter is tall and a
+  // small one short. The lesson says so of these seven only, since small b, d, f, h, k, l and t reach up as tall as a big letter (the
+  // kindergarten tracing lesson says it of l and t; round two's lesson read, pass NK, found it said of every letter in the third paragraph).
+  // With it the course asks eighteen big letters by name, W, X and Z for the first time, and seven small ones; since pass NL the small
+  // letters shaped a little or wholly unlike their big ones come after it, in Almost the same (k, p, u and y) and More small letters (e, i, r
+  // and t).
+  {
+    id: 'small-letters',
+    skill: 'Letters',
+    order: 40,
+    requires: ['o-and-u'],
+    requiresWhy: 'Small letters finds the small shapes of seven letters, among them V, which O and U tells from U by the point at its bottom, so it builds on O and U, the last lesson to name a big letter.',
+    title: 'Small letters',
+    tagline: 'The same letter, only smaller',
+    lesson: {
+      paragraphs: ['Every letter has a big shape and a small shape. Big O and small o are the same letter, with the same name.', 'These seven small letters, c, o, s, v, w, x and z, look just like their big letters, only smaller.', 'With these seven letters, the big letter is tall and the small one is short. Look at the shape to find the letter, and at its size to tell big from small.'],
+      keyIdea: 'Big and small, it is the same letter. Small c, o, s, v, w, x and z look just like their big letters, only smaller.',
+      example: { kind: 'letters', text: 'O   o', caption: 'Big O and small o.' },
+      script: [
+        { say: 'Every letter has a big shape and a small shape. This is big O, and this is small o, the same letter with the same name.', show: { kind: 'letters', text: 'O   o' } },
+        { say: 'Small o looks just like big O, only smaller, and each one goes all the way around. Big O is tall, and small o is short.', show: { kind: 'letters', text: 'O   o' } },
+        { say: 'Some other small letters look just like their big letters too. This is big C and small c, each one curved, with an open side. And this is big S and small s, each one curvy like a snake.', show: { kind: 'letters', text: 'C   c   S   s' } },
+        { say: 'Look at big V and small v. Each one has a point at its bottom. Big W and small w are next, and each one has two points at its bottom.', show: { kind: 'letters', text: 'V   v   W   w' } },
+        { say: 'Big X and small x are each two lines that cross. And big Z and small z each have a slanted line between two lines across.', show: { kind: 'letters', text: 'X   x   Z   z' } },
+        { say: 'Which one is the small s? The short one. Big S is tall, and small s is short, with the same curvy shape.', show: { kind: 'letters', text: 'S   s' } },
+        { say: 'Is this the small x? Yes. It is two lines that cross, just like big X, only smaller.', show: { kind: 'letters', text: 'x' } },
+        { say: 'Is this the small v? No. It is a different letter, with two points at its bottom, so it is the small w.', show: { kind: 'letters', text: 'w' } },
+        { say: 'Here is the small z. Which big letter goes with it? The big Z, with the same shape, only taller.', show: { kind: 'letters', text: 'z   Z' } },
+        { say: 'Which small letter goes with the big C? The small c, curved with an open side, just like the big C.', show: { kind: 'letters', text: 'C   c' } },
+        { say: 'Are these two the same letter, one big and one small? Yes. Big W and small w are the same letter.', show: { kind: 'letters', text: 'W   w' } },
+        { say: 'Now you try. Point to each small letter, and say its name.', show: { kind: 'letters', text: 'c o s v w x z' }, voices: [['Point to each small letter, and say its name.', 'tell', 'turn']] },
+        { say: 'Big or small, it is the same letter. Small c, o, s, v, w, x and z look just like their big letters, only smaller.', show: { kind: 'letters', text: 'c o s v w x z' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson teaches that every letter has a big shape and a small shape, the same letter with the same name, and seven small letters that look just like their big letters, only smaller, c, o, s, v, w, x and z, each by its name and its shape, with these seven a big letter tall and a small one short, and asks the child to find a letter when its name and its size are heard, to find the big letter that goes with a small one and the small letter that goes with a big one, to say whether a small letter is the one named and whether a big letter and a small one are the same letter, so with Big letters\' seven, the tracing lessons\' six and O and U\'s U and V the course asks eighteen big letters by name, W, X and Z for the first time, as the outcome asks, and seven small letters, while naming them aloud is the child\'s own talk, for a grown-up to hear, and eight more small letters are taught in the two lessons after it, Almost the same and More small letters, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters\' small shapes, and with the letters lessons before it the course names eighteen of the twenty-six, while the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    generators: ['p4-sml-tap', 'p4-sml-big', 'p4-sml-find', 'p4-sml-yesno', 'p4-sml-same'],
+  },
+  // End marks (pass NK, PK4 III.E.4 whole and IV.C.6 in part, built with Small letters; Claude's design): a sentence starts with a big
+  // letter and ends with a mark, a period when it tells, a question mark when it asks and an exclamation point when it is said with a
+  // strong feeling, each mark by its name, its shape and what it tells (END4_MARKS, END4_LOOK, END4_DOES). Merriam-Webster, read on
+  // November 13, 2026: period, "a point . used to mark the end (as of a declarative sentence or an abbreviation)"; question mark, "a mark ?
+  // used in writing and printing at the conclusion of a sentence to indicate a direct question"; exclamation point, "a mark ! used
+  // especially after an interjection or exclamation to indicate forceful utterance or strong feeling". Every sentence a bank uses is one
+  // the lines say (END4_SENTENCES), each starting with W or C, two letters whose small shapes are their big shapes made smaller (Small
+  // letters), so telling a sentence's big first letter from a small one is telling big from small and nothing else.
+  {
+    id: 'end-marks',
+    skill: 'Writing',
+    order: 41,
+    requires: ['voice-tells-more', 'small-letters'],
+    requiresWhy: 'End marks reads the mark at the end of a sentence that asks, tells or is said with a strong feeling, and the big letter at its start, so it builds on My voice tells more, which hears a voice ask and tell, and on Small letters, which tells a big letter from a small one.',
+    title: 'End marks',
+    tagline: 'Period, question mark, exclamation point',
+    lesson: {
+      paragraphs: ['In English, a sentence starts with a big letter and ends with a mark.', 'A period, one little dot, ends a sentence that tells. To end a sentence that asks, we use a question mark, a curl with a dot under it. An exclamation point, a line with a dot under it, ends a sentence said with a strong feeling.', 'When you write a sentence, start it with a big letter, and put a mark at its end.'],
+      keyIdea: 'In English, a sentence starts with a big letter. A period ends a sentence that tells, a question mark one that asks, and an exclamation point one said with a strong feeling.',
+      example: { kind: 'letters', text: 'Can you see a cat?', line: true, caption: 'A big C at the start, and a question mark at the end.' },
+      script: [
+        { say: 'In English, a sentence starts with a big letter and ends with a mark, like this one. We see a cat.', show: { kind: 'letters', text: 'We see a cat.', line: true }, voices: [['We see a cat.', 'tell']] },
+        { say: 'We see a cat. It starts with a big W, and at its end is one little dot, a period. A period ends a sentence that tells.', show: { kind: 'letters', text: 'We see a cat.', line: true }, voices: [['We see a cat.', 'tell']] },
+        { say: 'This sentence starts with a big C, and it asks. Can you see a cat? A question mark ends a sentence that asks. It is a curl with a dot under it.', show: { kind: 'letters', text: 'Can you see a cat?', line: true }, voices: [['Can you see a cat?', 'ask']] },
+        { say: 'This one is said with a strong feeling. We see a cat! An exclamation point ends it. It is a line with a dot under it.', show: { kind: 'letters', text: 'We see a cat!', line: true }, voices: [['We see a cat!', 'happy']] },
+        { say: 'Listen to these three. We see the sun. It tells, so it ends with a period. Can you see the sun? It asks, so it ends with a question mark. We see the sun! It has a strong feeling, so it ends with an exclamation point.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'We see the sun.', line: true }, b: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'Can you see the sun?', line: true }, b: { kind: 'letters', text: 'We see the sun!', line: true } } }, voices: [['We see the sun.', 'tell'], ['Can you see the sun?', 'ask'], ['We see the sun!', 'happy']] },
+        { say: 'Here are a period, a question mark and an exclamation point. Which mark ends a sentence that asks? The question mark.', show: { kind: 'letters', text: '.   ?   !' } },
+        { say: 'Look at the mark at the end of this sentence. What does the mark show, telling, asking, or a strong feeling? Telling. It ends with a period, one little dot, so we say it like this. We can run.', show: { kind: 'letters', text: 'We can run.', line: true }, voices: [['We can run.', 'tell']] },
+        { say: 'Listen. Can we run? It asks, so a question mark goes at its end.', show: { kind: 'letters', text: 'Can we run?', line: true }, voices: [['Can we run?', 'ask']] },
+        { say: 'Is this a question mark? No. It is a different mark, a line with a dot under it, so it is an exclamation point.', show: { kind: 'letters', text: '!' } },
+        { say: 'A sentence starts with a big letter. Which one starts that way? The one with the big W, since the other one starts with a small w.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'We can run!', line: true }, b: { kind: 'letters', text: 'we can run!', line: true } } },
+        { say: 'And these two? The one with the big C starts the way a sentence does. The other one starts with a small c.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'can we run?', line: true }, b: { kind: 'letters', text: 'Can we run?', line: true } } },
+        { say: 'When you write a sentence, start it with a big letter, and put a mark at its end. We can run! For a strong feeling, write an exclamation point.', show: { kind: 'letters', text: 'We can run!', line: true }, voices: [['We can run!', 'happy']] },
+        { say: 'Now you try. Draw a question mark in the air with your finger, a curl and then a dot.', show: { kind: 'letters', text: '?' }, voices: [['Draw a question mark in the air with your finger, a curl and then a dot.', 'tell', 'turn']] },
+        { say: 'A sentence starts with a big letter. It ends with a period when it tells, a question mark when it asks, and an exclamation point when it has a strong feeling.', show: { kind: 'letters', text: '.   ?   !' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.4 (can identify some conventional features of print that communicate meaning including end punctuation and case.), since the lesson teaches three end marks, a period that ends a sentence that tells, a question mark that ends one that asks and an exclamation point that ends one said with a strong feeling, each by its name, its shape and what it tells, and that a sentence starts with a big letter, and asks the child to find each mark by its name, to tell what the mark at a sentence\'s end shows, telling, asking or a strong feeling, to choose the mark for a sentence heard, to say whether a mark is the one named and to find the sentence that starts with a big letter, so it is taught whole, and IV.C.6 (experiments with and uses punctuation when writing.), in part, since the lesson teaches starting a sentence with a big letter and putting a mark at its end when writing, has the child choose the mark for a sentence heard and draw a question mark in the air in a turn of their own, while the child\'s own writing with punctuation, with a grown-up and on paper, waits (EARMARKS E13), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson connects a voice that tells, asks or speaks with a strong feeling to the mark that ends a written sentence, and teaches two of print\'s conventions, a sentence\'s big first letter and its end mark, while holding a book and following it left to right wait.'],
+    generators: ['p4-mark-name', 'p4-mark-means', 'p4-mark-heard', 'p4-mark-yesno', 'p4-mark-start'],
+  },
+  // Almost the same (pass NL, PK4 III.C.1, with More small letters after it; Claude's design): small k, p, u and y, four small letters that
+  // look a lot like their big letters, each with one small change (KPUY4_LETTERS, and what each looks like at each size in the lines' own
+  // words: KPUY4_LOOK, KPUY4_BIG_LOOK, KPUY4_GOES). Children know a small letter better when they know its big letter and when the two look
+  // alike (Pence Turnbull, Bowles, Skibbe, Justice and Wiggins, 2010, "Theoretical Explanations for Preschoolers' Lowercase Alphabet
+  // Knowledge", Journal of Speech, Language, and Hearing Research 53(6), pages 1757 to 1768, read in its abstract: "Uppercase familiarity
+  // was the strongest predictor of children's lowercase alphabet knowledge", and uppercase-lowercase similarity predicted it too), so after
+  // Small letters' seven, which look just like their big letters, come four that look a lot like theirs, each of whose big letters the
+  // letters lessons before it name. Small k is about as tall as big K in the screens' letters, so no line tells them apart by size: its arms
+  // are short. The banks are Small letters' five kinds (smallLetterBanks).
+  {
+    id: 'almost-the-same',
+    skill: 'Letters',
+    order: 42,
+    requires: ['small-letters'],
+    requiresWhy: 'Almost the same finds four small letters that look a lot like their big letters, each with one small change, so it builds on Small letters, which learns that every letter has a big shape and a small shape and finds seven that look just like their big letters.',
+    title: 'Almost the same',
+    tagline: 'Small k, p, u and y',
+    lesson: {
+      paragraphs: ['Four small letters look a lot like their big letters, each with one small change: k, p, u and y.', 'Small k has a tall line, like big K, and two short arms. Small u is round at its bottom, like big U, with a line all the way down its right side.', 'Two of them hang down low, below the other letters. Small p is round at its top, like big P, and small y is like a small v with a long tail.'],
+      keyIdea: 'Small k, p, u and y look a lot like their big letters, each with one small change.',
+      example: { kind: 'letters', text: 'K   k', caption: 'Big K and small k.' },
+      script: [
+        { say: 'Let\'s learn four small letters that look a lot like their big letters, each with one small change: small k, p, u and y.', show: { kind: 'letters', text: 'k p u y' } },
+        { say: 'This is big K, and this is small k. Big K has a tall line and two long arms, and small k has a tall line too, with two short arms.', show: { kind: 'letters', text: 'K   k' } },
+        { say: 'This is big P, and this is small p. Big P is tall, with a round part at its top, and small p is round at its top, like big P, and hangs down low.', show: { kind: 'letters', text: 'P   p' } },
+        { say: 'This is big U, and this is small u. Big U is round at its bottom and open at its top. Small u is round at its bottom too, like big U, with a line all the way down its right side.', show: { kind: 'letters', text: 'U   u' } },
+        { say: 'This is big Y, and this is small y. Big Y has two arms that meet, and a line straight down. Small y is like a small v with a long tail that hangs down low.', show: { kind: 'letters', text: 'Y   y   v' } },
+        { say: 'Which one is the small y? The one with a long tail that hangs down low. Big Y has a line straight down.', show: { kind: 'letters', text: 'Y   y' } },
+        { say: 'Is this the small k? Yes. It has a tall line and two short arms, so it is the small k.', show: { kind: 'letters', text: 'k' } },
+        { say: 'Is this the small u? No. It is a different letter. It is round at its top and hangs down low, so it is the small p.', show: { kind: 'letters', text: 'p' } },
+        { say: 'Here is the small y. Which big letter goes with it? The big Y, since the small y has two arms at its top, like the big Y, and a long tail that hangs down low.', show: { kind: 'letters', text: 'y   Y' } },
+        { say: 'Which small letter goes with the big K? The small k, with a tall line, like the big K, and two short arms.', show: { kind: 'letters', text: 'K   k' } },
+        { say: 'Are these two the same letter, one big and one small? Yes. Big U and small u are the same letter.', show: { kind: 'letters', text: 'U   u' } },
+        { say: 'Now you try. Point to each small letter, and say its name.', show: { kind: 'letters', text: 'k p u y' }, voices: [['Point to each small letter, and say its name.', 'tell', 'turn']] },
+        { say: 'Small k, p, u and y look a lot like their big letters, each with one small change. Small p and small y hang down low.', show: { kind: 'letters', text: 'k p u y' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson teaches four small letters that look a lot like their big letters, each with one small change, k, p, u and y, each by its name and its shape at both sizes, small k with a tall line and two short arms, small p round at its top and hanging down low, small u round at its bottom with a line all the way down its right side, and small y like a small v with a long tail, and asks the child to find a letter when its name and its size are heard, to find the big letter that goes with a small one and the small letter that goes with a big one, to say whether a small letter is the one named and whether a big letter and a small one are the same letter, and gives the child a turn to point to each small letter and say its name, so with Small letters\' seven the course asks eleven small letters by name, and four more are asked in More small letters, and it asks big K, P and Y by name for the first time, while naming them aloud is the child\'s own talk, for a grown-up to hear, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches four letters\' small shapes, while the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    generators: ['p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-kpuy-same'],
+  },
+  // More small letters (pass NL, PK4 III.C.1 in part, with Small letters and Almost the same; Claude's design): small e, i, r and t,
+  // four small letters with shapes of their own (EIRT4_LETTERS, and what each looks like at each size in the lines' own words: EIRT4_LOOK,
+  // EIRT4_BIG_LOOK), each learned with its name and the big letter it goes with. With Small letters' seven and Almost the same's four, the
+  // course asks fifteen small letters by name, as many as III.C.1 asks. The four are among the letters seen most often in English print,
+  // which the study above found predicts a small letter known too, and none of them looks like another letter the lessons teach: small n
+  // waits, since turned upside down it is small u, and h and m with it, each a shape of n's; small d waits for small b, its mirror image, since
+  // shape is what most often makes children mix up letters (Treiman, Kessler and Pollo, 2006, "Learning about the letter name subset of the
+  // vocabulary", Applied Psycholinguistics, read in its abstract, of capital letters: "Similarity of letter shape was the major determinant
+  // of confusion errors"); and small a waits, since the screens' small a, with its curve over the top, is not the a a child traces
+  // (TRACE_LETTERS draws it as a bowl and a line). Their names ee and tee rhyme, so e and t are never named by ear side by
+  // side (EIRT4_RHYME). The banks are Small letters' five kinds (smallLetterBanks).
+  {
+    id: 'more-small-letters',
+    skill: 'Letters',
+    order: 43,
+    requires: ['almost-the-same'],
+    requiresWhy: 'More small letters finds four small letters whose shapes are different from their big letters, so it builds on Almost the same, which finds four small letters that change a little from their big letters.',
+    title: 'More small letters',
+    tagline: 'Small e, i, r and t',
+    lesson: {
+      paragraphs: ['Some small letters look different from their big letters, so we learn each small shape and the big letter it goes with: e, i, r and t.', 'Small e is round, with a line across its middle. Look for a short line with a dot on top, and you have found small i.', 'Then come small r, a short line with a little curve at its top, and small t, a line with a short line across it and a little curve at its bottom.'],
+      keyIdea: 'Small e, i, r and t have different shapes from their big letters, so we learn each small shape, its name and the big letter it goes with.',
+      example: { kind: 'letters', text: 'E   e', caption: 'Big E and small e.' },
+      script: [
+        { say: 'Some small letters look different from their big letters, so we learn each small shape. Let\'s learn four of them: small e, i, r and t.', show: { kind: 'letters', text: 'e i r t' } },
+        { say: 'This is big E, and this is small e. Big E has a tall line and three lines across, and small e is round, with a line across its middle.', show: { kind: 'letters', text: 'E   e' } },
+        { say: 'This is big I, and this is small i. Look at big I, one tall line, and small i, a short line with a dot on top.', show: { kind: 'letters', text: 'I   i' } },
+        { say: 'This is big R, and this is small r. Big R has a tall line, with a round part at its top and a leg. Small r is short, with a little curve at its top.', show: { kind: 'letters', text: 'R   r' } },
+        { say: 'This is big T, and this is small t. Big T is straight, with a line across its very top and a line down its middle. Small t is a line with a short line across it, and a little curve at its bottom.', show: { kind: 'letters', text: 'T   t' } },
+        { say: 'Which one is the small i? The one with a dot on top. Its line is short, and the tall line next to it is big I.', show: { kind: 'letters', text: 'I   i' } },
+        { say: 'Is this the small e? Yes. It is round, with a line across its middle, so it is the small e.', show: { kind: 'letters', text: 'e' } },
+        { say: 'Is this the small r? No. It is a different letter. It is a line with a short line across it, and a little curve at its bottom, so it is the small t.', show: { kind: 'letters', text: 't' } },
+        { say: 'Here is the small r. Which big letter goes with it? The big R goes with the small r, which is short, with a little curve at its top.', show: { kind: 'letters', text: 'r   R' } },
+        { say: 'Which small letter goes with the big T? The small t. It goes with the big T, and it has a little curve at its bottom.', show: { kind: 'letters', text: 'T   t' } },
+        { say: 'Are these two the same letter, one big and one small? Yes. Big E and small e are the same letter, with different shapes.', show: { kind: 'letters', text: 'E   e' } },
+        { say: 'Now you try. Point to each small letter, and say its name.', show: { kind: 'letters', text: 'e i r t' }, voices: [['Point to each small letter, and say its name.', 'tell', 'turn']] },
+        { say: 'Small e, i, r and t have different shapes from their big letters, so we learn each small letter\'s shape, its name and the big letter it goes with.', show: { kind: 'letters', text: 'e i r t' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson teaches four small letters whose shapes are different from their big letters, e, i, r and t, each by its name and its shape at both sizes, small e round with a line across its middle, small i a short line with a dot on top, small r a short line with a little curve at its top, and small t a line with a short line across it and a little curve at its bottom, and asks the child to find a letter when its name and its size are heard, to find the big letter that goes with a small one and the small letter that goes with a big one, to say whether a small letter is the one named and whether a big letter and a small one are the same letter, and gives the child a turn to point to each small letter and say its name, so with Small letters\' seven and Almost the same\'s four the course asks fifteen small letters by name, as many as the outcome asks, and with the letters lessons before them, Almost the same\'s K, P and Y and this lesson\'s R, twenty-two big letters, past the eighteen it asks, while naming them aloud is the child\'s own talk, for a grown-up to hear, the big letters above all, which no lesson gives a turn (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches four letters\' small shapes, while the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    generators: ['p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno', 'p4-eirt-same'],
   },
 ]; }
 
@@ -33139,6 +33475,480 @@ Object.assign(GENERATORS, {
   'p4-qvy-yesno': (rng) => qvyYesNo(rng),
 });
 
+// A, E and I and O and U (pass NK, the standards review of Domain III's III.C.2 and III.C.3 for pre-K 4's vowels; Claude's design):
+// each vowel's name tells a sound it says in some words, but in lots of words it says another, which the lessons say by the words it
+// starts, since a device voice reads a vowel letter alone as its name and the app's own short vowels stay on trial (EARMARKS A42). Each
+// claim about a letter's name or a word's first sound was read in Merriam-Webster on November 13, 2026: A "ˈā", E "ˈē", I "ˈī", O "ˈō",
+// U "ˈyü"; apple "ˈa-pəl", ant "ˈant", elephant "ˈe-lə-fənt", elf "ˈelf", igloo "ˈi-(ˌ)glü", insect "ˈin-ˌsekt", octopus "ˈäk-tə-pəs",
+// otter "ˈä-tər", umbrella "ˌəm-ˈbre-lə" (especially in the South "ˈəm-ˌbre-", the same first sound) and up "ˈəp". Egg, which kindergarten's
+// Sounding out uses for E, is printed "ˈeg, ˈāg", two ways that start differently, so neither lesson uses it. Every question is a heard
+// question, as the other letters lessons' are: it prints none of the words or letters it asks about while the voice can speak, a
+// question about a word is keyed to the word, and the letter A is named "the letter A" in a question, where a voice could read it as the
+// word a.
+export const AEI4_LETTERS = { A: ['apple', 'ant'], E: ['elephant', 'elf'], I: ['igloo', 'insect'] };
+// The two never shown side by side: an ant is an insect too, so a child told the ant does not start with I's sound could be asked to
+// call it the wrong thing.
+export const AEI4_APART = [['ant', 'insect']];
+// O and U's own words, and the two letters they review by the two words their lines say for them (line 7's ant and line 12's elephant).
+// Up is said and never shown, so only the banks that say a word and show none ask about it (OU4_HEARD, below).
+export const OU4_LETTERS = { O: ['octopus', 'otter'], U: ['umbrella'] };
+export const OU4_REVIEW = { A: ['ant'], E: ['elephant'] };
+// The words its game and its yes or no say, heard and never shown: O's and U's own and up, which every line that names U's sound says.
+// With umbrella U's only picture, a round that had asked about umbrella left the game O (O was the answer 68 times in 100 in first rounds,
+// the lead's own count before round one), since a round never asks about one word twice.
+export const OU4_HEARD = { O: ['octopus', 'otter'], U: ['umbrella', 'up'] };
+// The first-sound bank draws O and U three times to each review letter's once (as Q, V and Y's QVY4_WEIGHT does), so most questions
+// are about O and U and a review letter is still sometimes the answer.
+export const OU4_WEIGHT = { O: 3, U: 3, A: 1, E: 1 };
+const vowTok = (w) => 'icon:' + w;
+const vowShow = (w) => ({ kind: 'icon', name: w });
+const aeiLetterOf = (w) => Object.keys(AEI4_LETTERS).find((x) => AEI4_LETTERS[x].includes(w));
+const ouAll = { ...OU4_LETTERS, ...OU4_REVIEW }; const ouHeard = { ...OU4_HEARD, ...OU4_REVIEW };
+const ouLetterOf = (w) => Object.keys(ouAll).find((x) => ouAll[x].includes(w));
+// An explanation names only the word its question asks about (round one's code read, pass NK: ", like ant" after apple named a second word,
+// and in 1,790 of 2,000 first rounds of A, E and I and 1,501 of O and U a later question asked about the word an explanation had just said,
+// since a round keeps apart only the words a question is about, aboutWords). Two words heard together are both its words (aeiBothOf).
+const apartOk = (ws) => !AEI4_APART.some(([p, q]) => ws.includes(p) && ws.includes(q));
+// A word heard and its picture, and the letter that says the sound it starts with among A, E and I.
+function aeiFirstOf(rng) {
+  const x = pick(rng, Object.keys(AEI4_LETTERS)); const w = pick(rng, AEI4_LETTERS[x]); const others = shuffle(rng, Object.keys(AEI4_LETTERS).filter((y) => y !== x));
+  return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which letter says the sound ' + w + ' starts with?', printed: 'Which letter says the sound the word starts with?', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [w],
+    explain: capFirst(w) + ' starts with the sound the letter ' + x + ' says.', visual: { ...vowShow(w), size: 72 }, explainVisual: null,
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The letter ' + o, why: 'does not say the sound ' + w + ' starts with.', printedWhy: 'does not say the sound the word starts with.' }])), alsoRight: [] };
+}
+// A letter shown, and the picture that starts with the sound it says among three, one word of each letter (never the ant beside the
+// insect), their names said in the buttons' order.
+function aeiPicOf(rng) {
+  const x = pick(rng, Object.keys(AEI4_LETTERS)); const w = pick(rng, AEI4_LETTERS[x]);
+  const rest = Object.keys(AEI4_LETTERS).filter((y) => y !== x);
+  const fits = rest.map((y) => AEI4_LETTERS[y]).reduce((acc, ws) => acc.flatMap((a) => ws.map((b) => [...a, b])), [[]]).filter((ws) => apartOk([w, ...ws]));
+  const others = pick(rng, fits); const shown = shuffle(rng, [w, ...others]);
+  return { type: 'choice', story: 'This is the letter ' + x + '. Now listen to these three. ' + ncNames(shown), keyStory: 'This is the letter ' + x + '.', printedStory: 'Look at the letter, and listen.', prompt: 'Which one starts with the sound the letter ' + x + ' says?', printed: 'Which one starts with the sound this letter says?', choices: shown.map(vowTok), answer: vowTok(w), aboutWords: [w],
+    explain: capFirst(w) + ' starts with the sound the letter ' + x + ' says.', visual: lsLetter(x), explainVisual: vowShow(w),
+    whyNot: Object.fromEntries(others.map((o) => [vowTok(o), { name: 'The ' + o, why: 'starts with the sound the letter ' + aeiLetterOf(o) + ' says.' }])), alsoRight: [] };
+}
+// Two words heard that start with the same sound, and the letter that says it among A, E and I (line 9 works it, igloo and insect).
+function aeiBothOf(rng) {
+  const x = pick(rng, Object.keys(AEI4_LETTERS)); const ws = shuffle(rng, AEI4_LETTERS[x]); const others = shuffle(rng, Object.keys(AEI4_LETTERS).filter((y) => y !== x));
+  return { type: 'choice', story: 'Listen to these two words. ' + ncNames(ws), printedStory: 'Listen to the two words.', prompt: 'Which letter says the sound they both start with?', printed: 'Which letter says the sound both words start with?', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [ws[0], ws[1]],
+    explain: capFirst(ws[0]) + ' and ' + ws[1] + ' both start with the sound the letter ' + x + ' says.', visual: { kind: 'pair', a: vowShow(ws[0]), b: vowShow(ws[1]) }, explainVisual: null,
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The letter ' + o, why: 'does not say the sound ' + ws[0] + ' starts with.', printedWhy: 'does not say the sound the words start with.' }])), alsoRight: [] };
+}
+// The lesson's game (line 10): a word heard, and which of two of the three letters, both named, says the sound it starts with. As in the
+// lesson's game, the word is heard and not shown, so O and U's game can ask about up, which has no picture (OU4_HEARD), and neither game
+// tells a word by whether it has one.
+function aeiOrOf(rng) {
+  const x = pick(rng, Object.keys(AEI4_LETTERS)); const w = pick(rng, AEI4_LETTERS[x]); const o = pick(rng, Object.keys(AEI4_LETTERS).filter((y) => y !== x)); const two = shuffle(rng, [x, o]);
+  return { type: 'choice', story: 'Listen to this word. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which letter says the sound ' + w + ' starts with, the letter ' + two[0] + ' or the letter ' + two[1] + '?', printed: 'Which letter says the sound the word starts with?', choices: two, answer: x, aboutWords: [w],
+    explain: capFirst(w) + ' starts with the sound the letter ' + x + ' says.', visual: null, explainVisual: { ...vowShow(w), size: 72 },
+    whyNot: { [o]: { name: 'The letter ' + o, why: 'does not say the sound ' + w + ' starts with.', printedWhy: 'does not say the sound the word starts with.' } }, alsoRight: [] };
+}
+// A letter shown and a word heard, and whether the word starts with the sound the letter says, half the time each; a No's word is one of
+// another letter's.
+function aeiYesNo(rng) {
+  const x = pick(rng, Object.keys(AEI4_LETTERS)); const yes = rng() < 0.5; const y = yes ? x : pick(rng, Object.keys(AEI4_LETTERS).filter((z) => z !== x)); const w = pick(rng, AEI4_LETTERS[y]);
+  const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+  return { type: 'choice', story: 'This is the letter ' + x + '. Listen to this word. ' + capFirst(w) + '.', printedStory: 'Look at this letter, and listen to the word.', prompt: 'Does ' + w + ' start with the sound the letter ' + x + ' says?', printed: 'Does the word start with the sound this letter says?', choices: yesNo(rng), answer, aboutWords: [w],
+    explain: yes ? 'Yes. ' + capFirst(w) + ' starts with the sound the letter ' + x + ' says.' : 'No. ' + capFirst(w) + ' starts with the sound the letter ' + y + ' says.', visual: lsLetter(x), explainVisual: null,
+    whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean ' + w + ' does not start with the sound the letter ' + x + ' says, but it does.' : 'would mean ' + w + ' starts with the sound the letter ' + x + ' says, but it does not.' } }, alsoRight: [] };
+}
+// O and U's banks. A word heard and its picture, and the letter that says the sound it starts with among three: O, U and a review
+// letter, or, for a review word, its letter with O and U.
+const ouPick = (rng) => pick(rng, Object.entries(OU4_WEIGHT).flatMap(([x, k]) => Array(k).fill(x)));
+const ouChoicesFor = (rng, x) => (OU4_LETTERS[x] ? [Object.keys(OU4_LETTERS).find((y) => y !== x), pick(rng, Object.keys(OU4_REVIEW))] : Object.keys(OU4_LETTERS));
+function ouFirstOf(rng) {
+  const x = ouPick(rng); const w = pick(rng, ouAll[x]); const others = ouChoicesFor(rng, x);
+  return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which letter says the sound ' + w + ' starts with?', printed: 'Which letter says the sound the word starts with?', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [w],
+    explain: capFirst(w) + ' starts with the sound the letter ' + x + ' says.', visual: { ...vowShow(w), size: 72 }, explainVisual: null,
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The letter ' + o, why: 'does not say the sound ' + w + ' starts with.', printedWhy: 'does not say the sound the word starts with.' }])), alsoRight: [] };
+}
+// A letter shown, drawn as the first-sound bank draws it (O and U three times to each review letter's once), and the picture that starts
+// with the sound it says among three: O's word, the umbrella and a review word, one of them the letter's own (round one's lesson read: with
+// O or U always the letter, never the ant or the elephant had read 50 in 100).
+function ouPicOf(rng) {
+  const x = ouPick(rng); const w = pick(rng, ouAll[x]);
+  const oWord = x === 'O' ? w : pick(rng, OU4_LETTERS.O); const review = OU4_REVIEW[x] ? w : pick(rng, Object.values(OU4_REVIEW).flat());
+  const others = [oWord, 'umbrella', review].filter((o) => o !== w); const shown = shuffle(rng, [w, ...others]);
+  return { type: 'choice', story: 'This is the letter ' + x + '. Now listen to these three. ' + ncNames(shown), keyStory: 'This is the letter ' + x + '.', printedStory: 'Look at the letter, and listen.', prompt: 'Which one starts with the sound the letter ' + x + ' says?', printed: 'Which one starts with the sound this letter says?', choices: shown.map(vowTok), answer: vowTok(w), aboutWords: [w],
+    explain: capFirst(w) + ' starts with the sound the letter ' + x + ' says.', visual: lsLetter(x), explainVisual: vowShow(w),
+    whyNot: Object.fromEntries(others.map((o) => [vowTok(o), { name: 'The ' + o, why: 'starts with the sound the letter ' + ouLetterOf(o) + ' says.' }])), alsoRight: [] };
+}
+// The lesson's game (line 10): a word heard, and which of O and U, both named, says the sound it starts with; the two sounds are near.
+function ouOrOf(rng) {
+  const x = pick(rng, Object.keys(OU4_HEARD)); const w = pick(rng, OU4_HEARD[x]); const o = Object.keys(OU4_HEARD).find((y) => y !== x); const two = shuffle(rng, ['O', 'U']);
+  return { type: 'choice', story: 'Listen to this word. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which letter says the sound ' + w + ' starts with, ' + two[0] + ' or ' + two[1] + '?', printed: 'Which letter says the sound the word starts with?', choices: two, answer: x, aboutWords: [w],
+    explain: capFirst(w) + ' starts with the sound the letter ' + x + ' says.', visual: null, explainVisual: w === 'up' ? lsLetter('U') : { ...vowShow(w), size: 72 },
+    whyNot: { [o]: { name: 'The letter ' + o, why: 'does not say the sound ' + w + ' starts with.', printedWhy: 'does not say the sound the word starts with.' } }, alsoRight: [] };
+}
+// O, U or V named, and that letter among the three (line 4: U and V look a little alike, the bottom of U is round and V's a point, and O
+// is round all the way around, where U and V are open at the top). Since round one's lesson read V is asked too, the first time the course
+// asks it by its name: offered and never right, never V had read 50 in 100.
+export const OU4_NAME_CHOICES = ['O', 'U', 'V'];
+// The reason for each wrong letter beside each letter asked, by what tells the two apart in line 4's words.
+export const OU4_NAME_WHY = {
+  U: { V: 'has a point at its bottom, and the bottom of U is round.', O: 'is round all the way around, and U is open at its top.' },
+  V: { U: 'has a round bottom, and the bottom of V is a point.', O: 'is round all the way around, and the bottom of V is a point.' },
+  O: { U: 'is open at its top, and O is round all the way around.', V: 'has a point at its bottom, and O is round all the way around.' },
+};
+function ouNameOf(rng) {
+  const x = pick(rng, OU4_NAME_CHOICES); const others = OU4_NAME_CHOICES.filter((y) => y !== x);
+  // Each reason says only what line 4 says of each letter's look (round one's lesson read: "goes all the way around" and "like a circle"
+  // were no line's words).
+  const why = (o) => OU4_NAME_WHY[x][o];
+  return { type: 'choice', story: null, prompt: 'Tap the letter ' + x + '.', printed: 'Tap the letter you hear.', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [x.toLowerCase()],
+    explain: x === 'U' ? 'This is U. Its bottom is round, and it is open at its top.' : x === 'V' ? 'This is V. Its bottom is a point.' : 'This is O. It is round all the way around.', visual: null, explainVisual: lsLetter(x),
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The letter ' + o, why: why(o) }])), alsoRight: [] };
+}
+// A letter shown and a word heard, and whether the word starts with the sound the letter says, half the time each. The letter is drawn
+// as the first-sound bank draws it (O and U three times to each review letter's once), and a No's word is its partner's: O's is U's and
+// U's is O's, the near pair the game tells apart, and A's is E's and E's is A's (OU4_PARTNER). So each word is a Yes as often as a No,
+// where a No drawn from any other letter's words had made a review word always No and O's and U's words Yes three times in four, so that
+// "Yes unless it is the ant or the elephant" read 83 in 100 (the lead's own count before round one).
+export const OU4_PARTNER = { O: 'U', U: 'O', A: 'E', E: 'A' };
+function ouYesNo(rng) {
+  const x = ouPick(rng); const yes = rng() < 0.5; const y = yes ? x : OU4_PARTNER[x]; const w = pick(rng, ouHeard[y]);
+  const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+  return { type: 'choice', story: 'This is the letter ' + x + '. Listen to this word. ' + capFirst(w) + '.', printedStory: 'Look at this letter, and listen to the word.', prompt: 'Does ' + w + ' start with the sound the letter ' + x + ' says?', printed: 'Does the word start with the sound this letter says?', choices: yesNo(rng), answer, aboutWords: [w],
+    explain: yes ? 'Yes. ' + capFirst(w) + ' starts with the sound the letter ' + x + ' says.' : 'No. ' + capFirst(w) + ' starts with the sound the letter ' + y + ' says.', visual: lsLetter(x), explainVisual: null,
+    whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean ' + w + ' does not start with the sound the letter ' + x + ' says, but it does.' : 'would mean ' + w + ' starts with the sound the letter ' + x + ' says, but it does not.' } }, alsoRight: [] };
+}
+Object.assign(GENERATORS, {
+  // A, E and I (pre-K 4), three choices each but the game's two and the yes or no.
+  'p4-aei-first': (rng) => aeiFirstOf(rng),
+  'p4-aei-pic': (rng) => aeiPicOf(rng),
+  'p4-aei-both': (rng) => aeiBothOf(rng),
+  'p4-aei-or': (rng) => aeiOrOf(rng),
+  'p4-aei-yesno': (rng) => aeiYesNo(rng),
+  // O and U (pre-K 4), the same, with its name bank.
+  'p4-ou-first': (rng) => ouFirstOf(rng),
+  'p4-ou-pic': (rng) => ouPicOf(rng),
+  'p4-ou-name': (rng) => ouNameOf(rng),
+  'p4-ou-or': (rng) => ouOrOf(rng),
+  'p4-ou-yesno': (rng) => ouYesNo(rng),
+});
+
+// Any size, any turn and Rectangles (pass NK, the standards review of Domain V's V.B.1 at both ages, built ahead of Domain V's own turn
+// because Mikey asked for it: on November 13, 2026 he attached two worksheets, "Shape-Up What Does Not Belong?" from Mary Gilfeather's
+// Mathematics Pentathlon Program ("Find the shape that does not belong with the other shapes on the line. Focus on shape only."), "very
+// good for exercising the brain. If you are able to include something similar in some way, it would be cool. Could even be just a game
+// if it doesn't make sense in a lesson."). V.B.1 asks for exactly this, "regardless of size and orientation", so it is a lesson at each
+// age, with a which-does-not-belong bank; Claude's design, every set and drawing the app's own, nothing copied from the worksheets.
+// In plain terms: a shape keeps its name when it is big or little, turned, or a new color. Each question draws shapes in the app's own
+// looks (SHAPE_PATHS in the screens: a triangle tall and thin, wide and flat or upside down, a square turned on its corner, a rectangle
+// standing up tall or long and thin, an oval standing up tall or tipped over, a rhombus lying on its side or leaning over), at three sizes
+// and in four colors, and asks for the shape alone. One accuracy rule the worksheets do not keep: a square is a rectangle too and a
+// rhombus by the first sense of the word (a rhombus is "a parallelogram with four equal sides and sometimes one with no right angles",
+// Merriam-Webster), and an oval is "having the shape of an egg" and "also broadly elliptical" (Merriam-Webster): the lessons' oval is the
+// first sense, the egg's shape, longer one way than the other, but by the broad sense some would call a circle, an ellipse round all the
+// way, an oval too, a caution only (round one's lesson read); so no question ever sets those two shapes against each other (SHAPE_NEVER): asked which
+// one does not belong, a child who knows a square is a rectangle would be right to say none, and asked "Is this a rectangle?" of a
+// square, Yes would be true. Two of a pair are never on one
+// screen even as two wrong choices (othersFor). A sentence about a rectangle in general says the long rectangle (pass ML's rule), and one
+// about a rhombus in general only its four sides the same length, since a square is a rhombus with no pointy corners.
+export const SHAPE_LOOK_PHRASE = { 'oval~tall': 'standing up tall', 'oval~tilted': 'tipped over', 'triangle~thin': 'tall and thin', 'triangle~wide': 'wide and flat', 'triangle~turned': 'upside down', 'square~turned': 'turned on its corner', 'rectangle~tall': 'standing up tall', 'rectangle~thin': 'long and thin', 'rhombus~wide': 'lying on its side', 'rhombus~leaning': 'leaning over' };
+export const SHAPE_NEVER = [['square', 'rectangle'], ['square', 'rhombus'], ['circle', 'oval']];
+export const SHAPE_COLOURS = ['red', 'blue', 'yellow', 'green'];
+export const SHAPE_SCALES = ['big', '', 'small'];
+// Pre-K 4's six shapes (V.B.1: "circles, squares, rectangles, triangles, ovals, and rhombi"), each in the looks its lesson draws, and
+// pre-K 3's four (V.B.1: "circles, squares, rectangles, and triangles"), in the looks Circle and square, Triangles and its own lesson draw.
+// Each age's words for what a shape has, as its lesson's lines say them: has, a reason's short clause, and says, an explanation's sentence.
+// Every shape is asked about as often as the others (round reads, pass NK: pre-K 3's rectangle drawn twice as often let a child who always
+// tapped the rectangle score 51 percent on What shape is this).
+export const TURN4 = { shapes: ['circle', 'oval', 'triangle', 'square', 'rectangle', 'rhombus'], looks: { circle: ['plain'], oval: ['plain', 'tall', 'tilted'], triangle: ['plain', 'thin', 'wide', 'turned'], square: ['plain', 'turned'], rectangle: ['plain', 'tall', 'thin'], rhombus: ['plain', 'wide', 'leaning'] }, odd: 4,
+  has: { circle: 'is round, with no corners', oval: 'is round and longer one way, like an egg', triangle: 'has three straight sides and three corners', square: 'has four straight sides, all the same length', rectangle: 'has two long sides and two short ones', rhombus: 'has four straight sides, all the same length' },
+  says: { circle: 'A circle is round, with no corners.', oval: 'An oval is round, with no corners, but it is longer one way than the other, like an egg.', triangle: 'A triangle has three straight sides and three corners.', square: 'A square has four straight sides, all the same length, and four corners, all the same.', rectangle: 'A long rectangle has four corners, two long sides and two short sides.', rhombus: 'A rhombus has four straight sides, all the same length.' } };
+export const RECT3 = { shapes: ['circle', 'triangle', 'square', 'rectangle'], looks: { circle: ['plain'], triangle: ['plain', 'thin', 'turned'], square: ['plain', 'turned'], rectangle: ['plain', 'tall', 'thin'] }, odd: 3,
+  has: { circle: 'is round, with no corners', triangle: 'has three corners', square: 'has four sides, all the same length', rectangle: 'has two long sides and two short ones' },
+  says: { circle: 'A circle is round, with no corners.', triangle: 'A triangle has three corners.', square: 'A square has four corners, and its four sides are all the same length.', rectangle: 'A long rectangle has four corners, two long sides and two short sides.' } };
+export const shapeTogether = (a, b) => a !== b && !SHAPE_NEVER.some(([p, q]) => (a === p && b === q) || (a === q && b === p));
+const anA = (s) => (/^[aeiou]/.test(s) ? 'an ' : 'a ') + s;
+// A shape named in a sentence about it in general: the rectangle is the long rectangle (pass ML's rule).
+const shapeCalled = (s) => (s === 'rectangle' ? 'long rectangle' : s);
+const shapePlural = (s) => (s === 'rhombus' ? 'rhombuses' : s + 's');
+// Every look is written, plain too ("item:square~plain-red-small"), so a screen reader hears each shape as these lessons say it, "the little
+// red square" (describeChoice reads a look with shapeWords), where a token with no look met an older pattern that says small (pass MQ's,
+// for More learning words, whose lesson says small).
+const shapeTok = (shape, look, colour, scale, i) => 'item:' + shape + '~' + (look || 'plain') + '-' + colour + (scale ? '-' + scale : '') + (i === undefined ? '' : '#' + i);
+// A shape choice's parts back from its token: its shape, look, color and size.
+export function shapeParts(tok) { const m = /^item:([a-z]+)(?:~([a-z]+))?-([a-z]+)(?:-(big|small))?(?:#\d+)?$/.exec(String(tok)); return m ? { shape: m[1], look: m[2] || 'plain', colour: m[3], scale: m[4] || '' } : null; }
+// How a shape is said: its size (pre-K says little), its color, its name, and its look after a comma ("the big red triangle, upside down");
+// and its size and color alone, which tell it from the others in a question, since no two share a color ("the big red one").
+export function shapeWords(tok) { const p = shapeParts(tok); if (!p) return String(tok); const look = SHAPE_LOOK_PHRASE[p.shape + '~' + p.look]; return shapeSizeColour(tok) + ' ' + p.shape + (look ? ', ' + look : ''); }
+export function shapeSizeColour(tok) { const p = shapeParts(tok); return (p.scale === 'big' ? 'big ' : p.scale === 'small' ? 'little ' : '') + p.colour; }
+const shapeVisual = (shape, look, colour, scale) => ({ kind: 'item', shape: shape + (look && look !== 'plain' ? '~' + look : ''), colour, ...(scale ? { scale } : {}) });
+// The looks and sizes a shape is drawn in. A thin look is never drawn little (round one's screen read, pass NK: the little long and thin
+// rectangle drew 27.8 by 9.5 pixels on an answer tile, a dash, the one shape under 12 pixels on its short side).
+const shapeLookSizes = (cfg, shape) => cfg.looks[shape].flatMap((look) => SHAPE_SCALES.filter((scale) => !(look === 'thin' && scale === 'small')).map((scale) => [look, scale]));
+// n of one shape, each drawn differently from the others (no two with the same look and size), in colors none of them share.
+function shapeVariants(rng, cfg, shape, n) { return shuffle(rng, shapeLookSizes(cfg, shape)).slice(0, n); }
+function shapeBanks(cfg, tag) {
+  const together = (a) => cfg.shapes.filter((s) => shapeTogether(a, s));
+  // The shape a question is about, each as often as the others; and n shapes to stand beside it, each of which may stand beside it and
+  // beside each other (SHAPE_NEVER), so a square and a rectangle never share a screen even as two wrong choices.
+  const pickShape = (rng) => pick(rng, cfg.shapes);
+  const othersFor = (rng, a, n) => { const out = []; for (const s of shuffle(rng, together(a))) if (out.length < n && out.every((t) => shapeTogether(s, t))) out.push(s); return out; };
+  // Which shape does not belong: cfg.odd - 1 of one shape, each a different look or size, and one of a shape that may stand beside it.
+  // The shape of the three (or two) and the odd one are an ordered pair drawn evenly from the pairs that may stand together (round one's
+  // lesson read, pass NK: with the shape drawn first and the odd one among its partners, pre-K 3's circle and triangle were the odd one
+  // twice as often as the square and the rectangle, which each have two partners to their three).
+  const pairs = cfg.shapes.flatMap((x) => together(x).map((y) => [x, y]));
+  const odd = (rng) => { const [a, b] = pick(rng, pairs); const colours = shuffle(rng, SHAPE_COLOURS);
+    const same = shapeVariants(rng, cfg, a, cfg.odd - 1); const ob = pick(rng, shapeLookSizes(cfg, b));
+    const toks = [...same.map(([l, s], i) => shapeTok(a, l, colours[i], s, i)), shapeTok(b, ob[0], colours[cfg.odd - 1], ob[1], cfg.odd - 1)]; const answer = toks[toks.length - 1];
+    return { type: 'choice', story: 'Look at the shape only, not how big it is, how it is turned, or its color.', prompt: 'Which shape does not belong?', choices: shuffle(rng, toks), answer, aboutWords: [b],
+      explain: 'The ' + b + ' does not belong. The other ' + (cfg.odd === 4 ? 'three' : 'two') + ' are ' + shapePlural(a) + '. A shape keeps its name when it is big or little, turned, or a new color.', visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(toks.slice(0, -1).map((t) => [t, { name: 'The ' + shapeSizeColour(t) + ' one', why: 'is ' + anA(a) + ', like ' + (cfg.odd === 4 ? 'two of the others' : 'the other one') + '.' }])), alsoRight: [] }; };
+  // Tap the shape named: it in a look, a size and a color, beside two shapes that may stand beside it.
+  const name = (rng) => { const a = pickShape(rng); const others = othersFor(rng, a, 2); const colours = shuffle(rng, SHAPE_COLOURS);
+    const toks = [a, ...others].map((s, i) => { const [l, sc] = shapeVariants(rng, cfg, s, 1)[0]; return shapeTok(s, l, colours[i], sc); }); const answer = toks[0];
+    return { type: 'choice', story: null, prompt: 'Tap the ' + a + '.', choices: shuffle(rng, toks), answer, aboutWords: [a],
+      explain: 'This is the ' + shapeWords(answer) + '. ' + cfg.says[a], visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(toks.slice(1).map((t) => { const s = shapeParts(t).shape; return [t, { name: 'The ' + shapeSizeColour(t) + ' one', why: 'is ' + anA(s) + ', not ' + anA(a) + '.' }]; })), alsoRight: [] }; };
+  // The same shape as the one shown: the one shown drawn plain at its middle size, as its lesson first draws it, and the answer it again
+  // in another look or size and another color, beside two shapes that may stand beside it. The one shown is always plain (the rules test's
+  // pre-K rule, round reads): drawn in every look and size it made 4,608 questions, more than 76,800 seeds reach, so their mutants went
+  // unread; drawn plain it makes 504, and every look and size is still the answer's.
+  const same = (rng) => { const a = pickShape(rng); const others = othersFor(rng, a, 2); const colours = shuffle(rng, SHAPE_COLOURS);
+    const shown = ['plain', '']; const again = pick(rng, shapeLookSizes(cfg, a).filter(([l, s]) => !(l === 'plain' && s === ''))); const toks = [shapeTok(a, again[0], colours[1], again[1]), ...others.map((s, i) => { const [l, sc] = shapeVariants(rng, cfg, s, 1)[0]; return shapeTok(s, l, colours[i + 2], sc); })];
+    // Printed without "Here is a shape." while the voice says it (round two's screen read, pass NK: the setup's third line put Check answer
+    // under a 375 by 667 phone's fold when the three answers were big).
+    return { type: 'choice', story: 'Here is a shape. Look at the shape only, not how big it is, how it is turned, or its color.', printedStory: 'Look at the shape only, not how big it is, how it is turned, or its color.', prompt: 'Which one is the same shape?', choices: shuffle(rng, toks), answer: toks[0], aboutWords: [a],
+      explain: 'They are both ' + shapePlural(a) + '. ' + cfg.says[a], visual: shapeVisual(a, shown[0], colours[0], shown[1]), explainVisual: null,
+      whyNot: Object.fromEntries(toks.slice(1).map((t) => { const s = shapeParts(t).shape; return [t, { name: 'The ' + shapeSizeColour(t) + ' one', why: 'is ' + anA(s) + ', and this shape is ' + anA(a) + '.' }]; })), alsoRight: [] }; };
+  // Is this a shape named? Yes half the time, in any look, size and color; a No's shape is one that may stand beside the one named. Read
+  // by the shape shown alone it is right 58 to 60 percent of the time at pre-K 3, where the square and the rectangle each stand beside two
+  // shapes and the circle and the triangle beside three (round one's lesson read, pass NK). Drawing every pair as often as every other
+  // brought that to chance and pushed the four-cornered shape's read in rounds from 53.3 to 55.7 percent, past its bound, since a round asks
+  // about each shape once while it can; round two kept this draw, the two leans recorded with their bounds in the rules test.
+  const yesno = (rng) => { const a = pickShape(rng); const yes = rng() < 0.5; const s = yes ? a : pick(rng, together(a)); const [l, sc] = shapeVariants(rng, cfg, s, 1)[0]; const colour = pick(rng, SHAPE_COLOURS);
+    const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Look at the shape only, not how big it is, how it is turned, or its color.', prompt: 'Is this ' + anA(a) + '?', choices: shuffle(rng, ['Yes', 'No']), answer, aboutWords: [a],
+      explain: yes ? 'Yes. It is the ' + shapeWords(shapeTok(s, l, colour, sc)) + '. ' + cfg.says[a] : 'No. It is ' + anA(s) + '. ' + cfg.says[s], visual: shapeVisual(s, l, colour, sc), explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean it is not ' + anA(a) + ', but it is still ' + anA(a) + '.' : 'would mean it is ' + anA(a) + ', but it is ' + anA(s) + '.' } }, alsoRight: [] }; };
+  // What shape is this: its name among three that may stand beside it.
+  const what = (rng) => { const a = pickShape(rng); const others = othersFor(rng, a, 2); const [l, sc] = shapeVariants(rng, cfg, a, 1)[0]; const colour = pick(rng, SHAPE_COLOURS);
+    return { type: 'choice', story: 'Look at the shape only, not how big it is, how it is turned, or its color.', prompt: 'What shape is this?', choices: shuffle(rng, [a, ...others]), answer: a, aboutWords: [a],
+      explain: 'It is ' + anA(a) + '. ' + cfg.says[a], visual: shapeVisual(a, l, colour, sc), explainVisual: null,
+      whyNot: Object.fromEntries(others.map((s) => [s, { name: capFirst(anA(shapeCalled(s))), why: cfg.has[s] + '.' }])), alsoRight: [] }; };
+  return { [tag + '-odd']: odd, [tag + '-name']: name, [tag + '-same']: same, [tag + '-yesno']: yesno, [tag + '-what']: what };
+}
+Object.assign(GENERATORS, shapeBanks(TURN4, 'p4-turn'), shapeBanks(RECT3, 'p3-rect'));
+
+// Small letters (pass NK, built in the pass's second wave): the seven small letters shaped just like their big letters, only smaller, in
+// the screens' letters, and what each looks like in the lines' own words (SML4_LOOK). Every question asks for a letter by its size and its
+// name, or pairs a small letter with its big one; a question that names a letter prints its words without the letter while the voice can
+// speak, and the grown-up's card says it with no voice (GROWN_UP_CARD_BANKS). A big letter is a capital token ('X') and a small one its
+// small letter ('x'); describeChoice says which size each is wherever a question offers both, since a screen reader reads X and x alike.
+export const SML4_LETTERS = ['c', 'o', 's', 'v', 'w', 'x', 'z'];
+export const SML4_LOOK = { c: 'is curved, with an open side', o: 'goes all the way around', s: 'is curvy like a snake', v: 'has a point at its bottom', w: 'has two points at its bottom', x: 'is two lines that cross', z: 'has a slanted line between two lines across' };
+// The three letters whose names rhyme, see, vee and zee, are never on a screen together where a letter is named by ear (round two's lesson
+// read, pass NK: the small c was asked beside the small z, whose names differ only in voicing). The pair bank names no letter, so it keeps
+// every pair.
+export const SML4_RHYME = ['c', 'v', 'z'];
+// The small letters lessons' five banks, one maker for every lesson that teaches small letters (pass NL; pass NK wrote them for Small
+// letters alone, and the maker asks Small letters' tap, yes or no and same questions as pass NK did, word for word, which the rules test
+// holds by a digest; its big and find questions changed in pass NL, the screens below, and a second digest holds them as they now stand). A lesson gives its letters, what each looks like at each size, the words its explanations and reasons say,
+// and the letters whose names rhyme, which are never named by ear side by side.
+//   - tap: tap the letter named by its size and its name, small or big half the time, among four: it, its other size, and another letter in
+//     both sizes, so a child who knows the sizes and not the letters, or the letters and not the sizes, is right half the time. The other
+//     size's reason says only what the tapped letter is, never the letter asked (Small letters' says how its two sizes differ, the big
+//     letters tall and the small ones short), which leaves two to tap (pass NK's round two lesson read: a reason that also ruled out a
+//     letter left one; pass NL's round one lesson read: a reason that gave the asked letter's look named the answer and printed the small
+//     letter the print hides, and one that named the big letter asked was held back every time). Each letter's two sizes stand side by side, either size first and either letter on top, so a phone's two by two
+//     puts a letter's sizes on one row, where they can be compared (pass NK's round two screen read: shuffled as four, the asked letter and
+//     its other size shared a row in 352 of 1,000 questions).
+//   - big: a small letter shown, and the big letter that goes with it among three.
+//   - find: a big letter named, and the small letter that goes with it among three.
+//     Both show a screen of three letters that never holds two whose names rhyme, each letter asked as often as the screens it stands on and
+//     its screen drawn evenly among them, so every letter shown is the answer a third of the time (pass NL's round one lesson read: with
+//     ee and tee the two wrong choices, More small letters' third letter was the answer every time, and a child who knew that and no
+//     letter scored 63 percent; Small letters' see, vee and zee did the same, 54 to 55).
+//   - yesno: a small letter shown and one named, and whether it is the one named, half the time each; a No's letter is another small letter
+//     drawn evenly. A No says what the letter shown looks like and not its name, so the question is about the letter asked alone
+//     (aboutWords): with the letter shown named and keyed too, a No met the round's other questions about letters more often than a Yes,
+//     and rounds as built asked Yes 64 percent of the time (the rules test's blind read, pass NK's second wave).
+//   - same: a big letter and a small letter shown side by side, and whether they are the same letter, half the time each. A No names the big
+//     letter's own small letter and not the one shown, so the question is about the big letter alone (aboutWords), as the yes or no is.
+// A letter is asked as often as it has letters to stand beside, so every letter is as likely to be the answer as to stand beside it, and a
+// yes or no's Yes as likely as its No for every letter shown (pass NK: drawn evenly with c, v and z kept apart, o, s, w and x stood beside
+// an answer more often than c, v and z, and a yes or no read by the letter shown alone rose from 50 to 57 in 100). A big letter is a
+// capital token ('X') and a small one its small letter ('x'); describeChoice says which size each is wherever a question offers both, since
+// a screen reader reads X and x alike. A question that names a letter prints its words without the letter while the voice can speak, and
+// the grown-up's card says it with no voice (GROWN_UP_CARD_BANKS).
+function smallLetterBanks(cfg, tag) {
+  const big = (x) => x.toUpperCase();
+  const name = (c) => (c === c.toLowerCase() ? 'the small ' : 'the big ') + c;   // "the small x", "the big X"
+  const other = (c) => ({ name: capFirst(name(c)), why: 'is a different letter. It ' + cfg.look(c) + '.' });
+  const apart = (x) => cfg.letters.filter((z) => z !== x && !(cfg.rhyme.includes(x) && cfg.rhyme.includes(z)));
+  const ASKED = cfg.letters.flatMap((x) => apart(x).map(() => x));
+  const asked = (rng) => pick(rng, ASKED);
+  const SCREENS = cfg.letters.flatMap((a, i) => cfg.letters.slice(i + 1).flatMap((b, j) => cfg.letters.slice(i + j + 2).map((c) => [a, b, c])))
+    .filter((s) => s.filter((z) => cfg.rhyme.includes(z)).length <= 1);
+  const SCREEN_ASKED = SCREENS.flatMap((s) => s.map((x) => [x, s.filter((z) => z !== x)]));
+  const screen = (rng) => { const [x, two] = pick(rng, SCREEN_ASKED); return [x, shuffle(rng, two)]; };
+  const tap = (rng) => {
+    const x = asked(rng); const y = pick(rng, apart(x)); const isBig = rng() < 0.5; const ask = isBig ? big(x) : x; const twin = isBig ? x : big(x);
+    return { type: 'choice', story: null, prompt: 'Tap ' + name(ask) + '.', printed: 'Tap the letter you hear.', choices: shuffle(rng, [shuffle(rng, [x, big(x)]), shuffle(rng, [y, big(y)])]).flat(), answer: ask, aboutWords: [x],
+      explain: cfg.tapExplain(ask, x), visual: null, explainVisual: lsLetter(big(x) + '   ' + x),
+      whyNot: { [twin]: { name: capFirst(name(twin)), why: cfg.twinWhy(twin) }, [y]: other(y), [big(y)]: other(big(y)) }, alsoRight: [] };
+  };
+  const bigOf = (rng) => {
+    const [x, two] = screen(rng); const others = two.map(big);
+    return { type: 'choice', story: 'Here is the small ' + x + '.', printedStory: 'Here is a small letter.', prompt: 'Which big letter goes with it?', choices: shuffle(rng, [big(x), ...others]), answer: big(x), aboutWords: [x],
+      explain: cfg.bigExplain(x), visual: lsLetter(x), explainVisual: lsLetter(x + '   ' + big(x)),
+      whyNot: Object.fromEntries(others.map((o) => [o, other(o)])), alsoRight: [] };
+  };
+  const find = (rng) => {
+    const [x, others] = screen(rng);
+    return { type: 'choice', story: null, prompt: 'Which small letter goes with the big ' + big(x) + '?', printed: 'Which small letter goes with the big letter you hear?', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [x],
+      explain: cfg.findExplain(x), visual: null, explainVisual: lsLetter(big(x) + '   ' + x),
+      whyNot: Object.fromEntries(others.map((o) => [o, other(o)])), alsoRight: [] };
+  };
+  const yesno = (rng) => {
+    const x = asked(rng); const yes = rng() < 0.5; const shown = yes ? x : pick(rng, apart(x));
+    const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: 'Is this the small ' + x + '?', printed: 'Is this the small letter you hear?', choices: yesNo(rng), answer, aboutWords: [x],
+      explain: yes ? cfg.yesExplain(x) : 'No. It is a different letter. It ' + cfg.look(shown) + '.', visual: lsLetter(shown), explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean it is not the small ' + x + ', but it is.' : 'would mean it is the small ' + x + ', but it is a different letter.' } }, alsoRight: [] };
+  };
+  const same = (rng) => {
+    const x = pick(rng, cfg.letters); const yes = rng() < 0.5; const s = yes ? x : pick(rng, cfg.letters.filter((z) => z !== x));
+    const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes'; const pair = big(x) + ' and small ' + x;
+    return { type: 'choice', story: null, prompt: 'Are these two the same letter, one big and one small?', choices: yesNo(rng), answer, aboutWords: [x],
+      explain: yes ? cfg.sameYes(x) : cfg.sameNo(x), visual: lsLetter(big(x) + '   ' + s), explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean they are different letters, but big ' + pair + ' are the same letter.' : 'would mean they are the same letter, but the small one is not the small ' + x + '.' } }, alsoRight: [] };
+  };
+  return { [tag + '-tap']: tap, [tag + '-big']: bigOf, [tag + '-find']: find, [tag + '-yesno']: yesno, [tag + '-same']: same };
+}
+// Small letters' words (pass NK): each of its seven letters looks just like its big letter, only smaller, so a letter's look is the same at
+// both sizes, and with these seven a big letter is tall and a small one short.
+const SML4 = {
+  letters: SML4_LETTERS, rhyme: SML4_RHYME, look: (c) => SML4_LOOK[c.toLowerCase()],
+  tapExplain: (ask, x) => (ask !== x ? 'This is the big ' + ask + '. The small ' + x + ' looks just like it, only smaller.' : 'This is the small ' + x + '. It looks just like the big ' + x.toUpperCase() + ', only smaller.'),
+  twinWhy: (twin) => (twin === twin.toLowerCase() ? 'is short, and the big letters here are tall.' : 'is tall, and the small letters here are short.'),
+  bigExplain: (x) => 'The big ' + x.toUpperCase() + '. It has the same shape as the small ' + x + ', only taller.',
+  findExplain: (x) => 'The small ' + x + '. It looks just like the big ' + x.toUpperCase() + ', only smaller.',
+  yesExplain: (x) => 'Yes. It is the small ' + x + ', and it looks just like the big ' + x.toUpperCase() + ', only smaller.',
+  sameYes: (x) => 'Yes. Big ' + x.toUpperCase() + ' and small ' + x + ' are the same letter, with the same shape.',
+  sameNo: (x) => 'No. They are different letters. The small ' + x + ' looks just like big ' + x.toUpperCase() + ', only smaller.',
+};
+
+// Almost the same (pass NL, PK4 III.C.1): small k, p, u and y, four small letters that look a lot like their big letters, each with one small
+// change, and what each looks like at each size in the lines' own words. Small k is about as tall as big K in the screens' letters, so no
+// line, explanation or reason tells k from K by size: its arms are short. Small p and small y hang down low, below the other letters. Their
+// names, kay, pee, you and why, rhyme with none of the others', so every pair stands side by side.
+export const KPUY4_LETTERS = ['k', 'p', 'u', 'y'];
+export const KPUY4_LOOK = { k: 'has a tall line and two short arms', p: 'is round at its top and hangs down low', u: 'has a line all the way down its right side', y: 'is like a small v with a long tail' };
+export const KPUY4_BIG_LOOK = { K: 'has a tall line and two long arms', P: 'is tall, with a round part at its top', U: 'is round at its bottom and open at its top', Y: 'has two arms that meet, and a line straight down' };
+// How each small letter goes with its big one, said after "It" or the letter's name.
+export const KPUY4_GOES = { k: 'has a tall line, like the big K, and two short arms', p: 'is round at its top, like the big P, and hangs down low', u: 'is round at its bottom, like the big U, with a line all the way down its right side', y: 'has two arms at its top, like the big Y, and a long tail that hangs down low' };
+// The other size of the letter asked, when it is tapped: its size and its own look, and nothing of the letter asked, so the reason leaves
+// two to tap (pass NL's round one lesson read).
+export const KPUY4_TWIN = { K: 'is a big letter, with two long arms', k: 'is a small letter, with two short arms', P: 'is a big letter, tall, with a round part at its top', p: 'is a small letter, and it hangs down low', U: 'is a big letter, round at its bottom and open at its top', u: 'is a small letter, with a line all the way down its right side', Y: 'is a big letter, with a line straight down', y: 'is a small letter, with a long tail' };
+const KPUY4 = {
+  letters: KPUY4_LETTERS, rhyme: [], look: (c) => (c === c.toLowerCase() ? KPUY4_LOOK[c] : KPUY4_BIG_LOOK[c]),
+  tapExplain: (ask, x) => (ask !== x ? 'This is the big ' + ask + '. It ' + KPUY4_BIG_LOOK[ask] + '.' : 'This is the small ' + x + '. It ' + KPUY4_GOES[x] + '.'),
+  twinWhy: (twin) => KPUY4_TWIN[twin] + '.',
+  bigExplain: (x) => 'The big ' + x.toUpperCase() + ' goes with it. The small ' + x + ' ' + KPUY4_GOES[x] + '.',
+  findExplain: (x) => 'The small ' + x + '. It ' + KPUY4_GOES[x] + '.',
+  yesExplain: (x) => 'Yes. It is the small ' + x + '. It ' + KPUY4_GOES[x] + '.',
+  sameYes: (x) => 'Yes. Big ' + x.toUpperCase() + ' and small ' + x + ' are the same letter. The small one ' + KPUY4_GOES[x] + '.',
+  sameNo: (x) => 'No. They are different letters. The big ' + x.toUpperCase() + ' goes with the small ' + x + ', which ' + KPUY4_GOES[x] + '.',
+};
+// More small letters (pass NL, PK4 III.C.1): small e, i, r and t, four small letters with shapes of their own, and what each looks like at
+// each size in the lines' own words. Their names ee and tee rhyme, so e and t are never named by ear side by side, as Small letters keeps
+// see, vee and zee apart; the pair bank names no letter in its question, so it keeps every pair, and its explanation, after the answer,
+// names the big letter's own small letter beside the one shown.
+export const EIRT4_LETTERS = ['e', 'i', 'r', 't'];
+export const EIRT4_LOOK = { e: 'is round, with a line across its middle', i: 'is a short line with a dot on top', r: 'is short, with a little curve at its top', t: 'is a line with a short line across it' };
+export const EIRT4_BIG_LOOK = { E: 'has a tall line and three lines across', I: 'is one tall line', R: 'has a round part at its top and a leg', T: 'has a line across its very top' };
+export const EIRT4_TWIN = { E: 'is a big letter, with a tall line and three lines across', e: 'is a small letter, and it is round', I: 'is a big letter, one tall line', i: 'is a small letter, with a dot on top', R: 'is a big letter, with a leg', r: 'is a small letter, with a little curve at its top', T: 'is a big letter, with a line across its very top', t: 'is a small letter, with a little curve at its bottom' };
+export const EIRT4_RHYME = ['e', 't'];
+const EIRT4 = {
+  letters: EIRT4_LETTERS, rhyme: EIRT4_RHYME, look: (c) => (c === c.toLowerCase() ? EIRT4_LOOK[c] : EIRT4_BIG_LOOK[c]),
+  tapExplain: (ask, x) => (ask !== x ? 'This is the big ' + ask + '. It ' + EIRT4_BIG_LOOK[ask] + '.' : 'This is the small ' + x + '. It goes with the big ' + x.toUpperCase() + ', and it ' + EIRT4_LOOK[x] + '.'),
+  twinWhy: (twin) => EIRT4_TWIN[twin] + '.',
+  bigExplain: (x) => 'The big ' + x.toUpperCase() + '. It goes with the small ' + x + ', which ' + EIRT4_LOOK[x] + '.',
+  findExplain: (x) => 'The small ' + x + '. It goes with the big ' + x.toUpperCase() + ', and it ' + EIRT4_LOOK[x] + '.',
+  yesExplain: (x) => 'Yes. It is the small ' + x + '. It ' + EIRT4_LOOK[x] + '.',
+  sameYes: (x) => 'Yes. Big ' + x.toUpperCase() + ' and small ' + x + ' are the same letter, with different shapes.',
+  sameNo: (x) => 'No. They are different letters. The big ' + x.toUpperCase() + ' goes with the small ' + x + ', which ' + EIRT4_LOOK[x] + '.',
+};
+
+// End marks (pass NK, built in the pass's second wave): the three marks, each by its name, its shape and what it tells, in the lines' own
+// words, and the nine sentences the lines say, three ways each (END4_SENTENCES). A mark tapped stays quiet (choiceSpeaks), since the
+// question asks for its name; the voice says a heard sentence in the manner its mark tells (VOICE_MANNERS: tell, ask, and happy for a strong
+// feeling), and with no voice a grown-up's line says it without its mark (unvoicedStory), since a printed mark beside the marks to tap
+// would answer by its shape.
+export const END4_MARKS = { '.': 'period', '?': 'question mark', '!': 'exclamation point' };
+export const END4_LOOK = { '.': 'is one little dot', '?': 'is a curl with a dot under it', '!': 'is a line with a dot under it' };
+export const END4_DOES = { '.': 'tells', '?': 'asks', '!': 'has a strong feeling' };
+export const END4_SENTENCES = [['We see a cat.', 'Can you see a cat?', 'We see a cat!'], ['We see the sun.', 'Can you see the sun?', 'We see the sun!'], ['We can run.', 'Can we run?', 'We can run!']];
+const END4_ALL = END4_SENTENCES.flat();
+const END4_MANNER = { '.': 'tell', '?': 'ask', '!': 'happy' };
+const END4_SAY = { '.': 'telling, your voice going down at the end', '?': 'asking, your voice going up at the end', '!': 'with a strong feeling, happy and excited' };
+// What each mark shows, the means bank's three answers (round two's lesson read, pass NK: asked what the sentence does, "We see the sun!"
+// scored It tells wrong, though it does tell, said with a strong feeling; the mark shows the strong feeling).
+export const END4_SHOWS = { '.': 'Telling', '?': 'Asking', '!': 'A strong feeling' };
+const endMark = (s) => s.slice(-1);
+// A sentence drawn on one line, fitted to its room (line: true; round two's screen read, pass NK: drawn as words it wrapped at 320 and on a
+// dark 375, leaving the mark the question is about alone on a second line).
+const endLine = (s) => ({ kind: 'letters', text: s, line: true });
+const endAn = (m) => (m === '!' ? 'an ' : 'a ') + END4_MARKS[m];
+// Tap the mark named, among the three (line 6).
+function endNameOf(rng) {
+  const m = pick(rng, Object.keys(END4_MARKS)); const others = Object.keys(END4_MARKS).filter((o) => o !== m);
+  return { type: 'choice', story: null, prompt: 'Tap the ' + END4_MARKS[m] + '.', printed: 'Tap the mark you hear.', choices: shuffle(rng, Object.keys(END4_MARKS)), answer: m, aboutWords: [END4_MARKS[m]],
+    explain: 'This is the ' + END4_MARKS[m] + '. It ' + END4_LOOK[m] + '.', visual: null, explainVisual: lsLetter(m),
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The ' + END4_MARKS[o], why: END4_LOOK[o] + '.' }])), alsoRight: [] };
+}
+// A sentence shown and not said, and what the mark at its end shows (line 7): the voice never reads it, since the way it said the sentence
+// would answer by ear. A wrong answer's reason gives the mark that shows it and that mark's look, and not the mark this sentence ends with,
+// so the child still reads the end of the sentence (as the heard bank's reason leaves the ear's work to the child).
+function endMeansOf(rng) {
+  const s = pick(rng, END4_ALL); const m = endMark(s); const others = Object.keys(END4_SHOWS).filter((o) => o !== m);
+  return { type: 'choice', story: 'Look at the mark at the end of this sentence.', prompt: 'What does the mark show, telling, asking, or a strong feeling?', choices: shuffle(rng, Object.values(END4_SHOWS)), answer: END4_SHOWS[m], aboutWords: [s],
+    explain: END4_SHOWS[m] + '. It ends with ' + endAn(m) + ', which ' + END4_LOOK[m] + '.', visual: endLine(s), explainVisual: null,
+    whyNot: Object.fromEntries(others.map((o) => [END4_SHOWS[o], { name: END4_SHOWS[o], why: 'is what ' + endAn(o) + ' shows, ' + END4_LOOK[o].replace(/^is /, '') + '.' }])), alsoRight: [] };
+}
+// A sentence heard and not shown, and the mark that goes at its end (line 8). A wrong mark's reason says what that mark ends and not what
+// the sentence heard does, which is the ear's work (round two's lesson read, pass NK: "and this one has a strong feeling" left one mark).
+function endHeardOf(rng) {
+  const s = pick(rng, END4_ALL); const m = endMark(s); const others = Object.keys(END4_MARKS).filter((o) => o !== m);
+  return { type: 'choice', story: 'Listen. ' + s, voices: [[s, END4_MANNER[m]]], printedStory: 'Listen to the sentence.', unvoicedStory: 'For the grown-up: say this sentence ' + END4_SAY[m] + ': "' + s.slice(0, -1) + '"', prompt: 'Which mark goes at its end?', choices: shuffle(rng, Object.keys(END4_MARKS)), answer: m, aboutWords: [s],
+    explain: 'The ' + END4_MARKS[m] + '. The sentence ' + END4_DOES[m] + ', so ' + endAn(m) + ' goes at its end.', visual: null, explainVisual: endLine(s),
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The ' + END4_MARKS[o], why: 'ends a sentence that ' + (o === '!' ? 'is said with a strong feeling' : END4_DOES[o]) + '.' }])), alsoRight: [] };
+}
+// A mark shown and one named, and whether it is the one named, half the time each; a No's mark is another drawn evenly (line 9). A No says
+// what the mark shown looks like beside the look of the one asked, and names only the one asked (aboutWords), as Small letters' yes or no does.
+function endYesNo(rng) {
+  const m = pick(rng, Object.keys(END4_MARKS)); const yes = rng() < 0.5; const shown = yes ? m : pick(rng, Object.keys(END4_MARKS).filter((o) => o !== m));
+  const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+  return { type: 'choice', story: null, prompt: 'Is this ' + endAn(m) + '?', choices: yesNo(rng), answer, aboutWords: [END4_MARKS[m]],
+    explain: yes ? 'Yes. It is ' + endAn(m) + '. It ' + END4_LOOK[m] + '.' : 'No. It ' + END4_LOOK[shown] + ', and ' + endAn(m) + ' ' + END4_LOOK[m] + '.', visual: lsLetter(shown), explainVisual: null,
+    whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean it is not ' + endAn(m) + ', but it is.' : 'would mean it is ' + endAn(m) + ', but it is a different mark.' } }, alsoRight: [] };
+}
+// A sentence written two ways, with a big first letter and with a small one, and the one that starts as a sentence does (line 10).
+function endStartOf(rng) {
+  const s = pick(rng, END4_ALL); const low = s[0].toLowerCase() + s.slice(1);
+  return { type: 'choice', story: 'A sentence starts with a big letter.', prompt: 'Which one starts that way?', choices: shuffle(rng, [s, low]), answer: s, aboutWords: [s],
+    explain: 'This one. It starts with a big ' + s[0] + '.', visual: null, explainVisual: null,
+    whyNot: { [low]: { name: 'The one with a small ' + low[0], why: 'starts with a small letter. A sentence starts with a big one.' } }, alsoRight: [] };
+}
+Object.assign(GENERATORS, {
+  // Small letters (pre-K 4): four letters for the tap, three for the pairs, and the two yes or nos, from smallLetterBanks (pass NL).
+  ...smallLetterBanks(SML4, 'p4-sml'),
+  // Almost the same and More small letters (pre-K 4, pass NL): the same five kinds, for small k, p, u and y and small e, i, r and t.
+  ...smallLetterBanks(KPUY4, 'p4-kpuy'),
+  ...smallLetterBanks(EIRT4, 'p4-eirt'),
+  // End marks (pre-K 4): three marks for each kind but the start of a sentence's two.
+  'p4-mark-name': (rng) => endNameOf(rng),
+  'p4-mark-means': (rng) => endMeansOf(rng),
+  'p4-mark-heard': (rng) => endHeardOf(rng),
+  'p4-mark-yesno': (rng) => endYesNo(rng),
+  'p4-mark-start': (rng) => endStartOf(rng),
+});
+
 // Write it by its sounds (pass NE, PK4 IV.C.3): each word the lesson's lines say, with the letter for its first sound and the letter for
 // its last sound, each spelled with that letter first and that letter last; and the sound each of those letters says, as the letters
 // lessons teach it. Every question is a tap, and nothing a child writes is asked for or kept; a word heard is never printed while the voice
@@ -37821,8 +38631,18 @@ export const DRAWING_NAMES = { outside: 'drawing of the sun and a ball', rain: '
 // screen reader say what it is (the app's stop is the raised hand).
 export const LOOK_NAMES = { 'sign~stop': 'stop sign' };
 // Turns a choice like 'dots:4' into words a child can hear: "the group with 4".
-export function describeChoice(choice) {
+export function describeChoice(choice, q = null) {
   const raw = String(choice).replace(/#\d+$/, '');
+  // An end mark by its name (pass NK, End marks, and grade 1's Read the sentence), since a screen reader may read a lone mark as nothing.
+  if (Object.prototype.hasOwnProperty.call(END4_MARKS, raw)) return 'the ' + END4_MARKS[raw];
+  // Since pass NK (Small letters and End marks): a letter whose other size is among the choices, which are all letters, is said big or
+  // small, since a screen reader reads X and x alike, and a sentence among others that differ only in the size of their first letter is
+  // said with that letter's size. Round two's code read: the letter rule had read any choices holding a small letter and a big one, and so
+  // named the words I and a "big I" and "small a" in Reading words' first, last and next, and every letter of Write your name's three.
+  if (q && Array.isArray(q.choices)) { const cs = q.choices.map(String);
+    if (/^[A-Za-z]$/.test(raw) && cs.every((c) => /^[A-Za-z]$/.test(c)) && cs.some((c) => c !== raw && c.toLowerCase() === raw.toLowerCase())) return (raw === raw.toUpperCase() ? 'big ' : 'small ') + raw;
+    if (raw.length > 1 && /^[A-Za-z]/.test(raw) && cs.includes(raw) && sentenceWritings(cs)) return raw.replace(/[.?!]$/, '') + ', starting with a ' + (raw[0] === raw[0].toUpperCase() ? 'big ' : 'small ') + raw[0];
+  }
   const m = /^dots:(\d+)$/.exec(raw);
   if (m) return `the group with ${m[1]}`;
   const fc = /^face:([a-z]+)$/.exec(raw);   // a feeling face (pass MD)
@@ -37841,6 +38661,8 @@ export function describeChoice(choice) {
   const drawn = /^icon:drawing~([a-z]+)$/.exec(raw); if (drawn && DRAWING_NAMES[drawn[1]]) return `the ${DRAWING_NAMES[drawn[1]]}`;
   if (/^icon:/.test(raw) && LOOK_NAMES[raw.slice(5)]) return `the ${LOOK_NAMES[raw.slice(5)]}`;
   const looked = /^icon:([a-z]+(?:-[a-z]+)*)~[a-z]+$/.exec(raw); if (looked) return `the ${looked[1]}`;   // a hyphenated name whole (round two's code read)
+  // A shape in a look (pass NK, Any size, any turn and Rectangles: item:triangle~turned-red-big) is said with its look, as its lessons say it.
+  if (/^item:[a-z]+~[a-z]+-/.test(raw) && shapeParts(raw)) return 'the ' + shapeWords(raw);
   const it = /^item:([a-z]+)-([a-z]+)$/.exec(raw); if (it) return `the ${it[2]} ${it[1]}`;
   // A shape with a size (pass MQ: More learning words' small red square, and Same and different's bigger and smaller ones, which a
   // screen reader had heard by their shape alone).
@@ -39303,6 +40125,13 @@ export function wonderVoiceSpoken(label) { const v = wonderVoice(label); return 
 // over, up to three short ones share a row, and a list with any choice longer than a short word stacks one a row, so no
 // answer spills out of its chip on a phone (the independent check measured "Sometimes" at 360 pixels).
 export function evenColumns(n) { return n <= 3 ? Math.max(1, n) : n % 3 === 0 ? 3 : n % 2 === 0 ? 2 : 1; }
+// Choices that are one sentence written two ways, with a big first letter and with a small one (pass NK, End marks' start bank): a screen
+// reader hears each with its first letter's size (describeChoice), and the screen draws them bold and fitted together, since the first
+// letter's size is all that tells them apart (round two's screen read: at the tiles' 18 pixels, W stood 14 pixels tall beside w's 10).
+export function sentenceWritings(choices) { const cs = (choices || []).map(String); return cs.length > 1 && cs.every((c) => c.length > 1 && /^[A-Za-z]/.test(c) && c.length === cs[0].length && c.slice(1) === cs[0].slice(1) && c[0].toLowerCase() === cs[0][0].toLowerCase()) && new Set(cs.map((c) => c[0])).size > 1; }
+// Choices that are single letters, one of them in both its sizes (pass NK, Small letters' tap): four of them stand two by two on a phone
+// (ui.jsx). Round two's code read: the rule had read any four single letters, and so grew nine older banks by a row at 375 wide.
+export function lettersInBothSizes(choices) { const cs = (choices || []).map(String); return cs.length > 1 && cs.every((c) => /^[A-Za-z]$/.test(c)) && cs.some((c) => cs.some((d) => d !== c && d.toLowerCase() === c.toLowerCase())); }
 export function chipColumns(options) { return (options || []).some((o) => String(o).length > 8) ? 1 : evenColumns((options || []).length); }
 export const WONDER = [
   {
@@ -45455,6 +46284,182 @@ export const WONDER = [
     ],
     closing: 'What is something fun you can do all by yourself?',
   },
+  // Pass NK: four early world questions, the thinnest early theme (32 before): the moon that seems to come along, a tickle from
+  // your own hand, fingertips wrinkly after a bath, and a face upside down in a spoon. Written by Fable to the Wonder brief.
+  // Sources, each read online on November 13, 2026. The moon: NASA Science, Moon Facts ("The Moon is an average of 238,855 miles
+  // (384,400 kilometers) away. That means 30 Earth-sized planets could fit in between Earth and the Moon."), and EarthSky, Deborah
+  // Byrd, April 19, 2024 (the moon seems to follow a car because it is so distant next to the things by the road, which whiz by;
+  // any distance driven is very small beside a quarter million miles). The tickle: Blakemore, Frith and Wolpert, "Spatio-temporal
+  // prediction modulates the perception of self-produced stimuli", Journal of Cognitive Neuroscience 11(5), 551 to 559, 1999, University
+  // College London (sixteen volunteers; a robot drew foam across the right palm, moved through a second robot by the person's own left hand
+  // or by the robot alone, and the self-made touch was rated less tickly), and the scanner study before it, Blakemore, Wolpert and Frith,
+  // "Central cancellation of self-produced tickle sensation", Nature Neuroscience 1(7), 635 to 640, 1998 (six volunteers; the brain's
+  // touch areas answered a self-made touch less; round two's Wonder check, pass NK: the robot's ratings had been credited to it), and Blakemore's
+  // own account in Scientific American, August 4, 2003 (the cerebellum predicts the sensation, and the prediction is used to cancel
+  // the response); the newest test is Proelss and others, "The human tickle response and mechanisms of self-tickle suppression",
+  // Philosophical Transactions of the Royal Society B, 2022, Humboldt University in Berlin (twelve volunteers tickled by a partner
+  // on the feet and underarms; tickling themselves at the same time made the partner's tickles less ticklish; the authors say much
+  // is still unknown; read in Medical Xpress's and The Medical Republic's reports, the journal's own page not opening); the feather
+  // is BrainFacts.org, Society for Neuroscience, February 8, 2021 ("You can induce knismesis, the itchy-tickly sensation, with a
+  // feather or your fingers to a certain extent"). The wrinkles: The Conversation's Curious Kids ("if you cut or damage certain
+  // nerves, the skin on hands or feet won't wrinkle when wet") and Newcastle University's release and Nature's news story of 2013
+  // (blood vessels narrowing under the skin, an active process, and the treads of a car's tires as the comparison); Kareklas, Nettle and Smulders,
+  // Biology Letters, 2013 (20 adults moved wet marbles 12 percent faster with wrinkled fingers); Haseleu and others, PLOS ONE,
+  // 2014 (40 volunteers, no difference; both as Science News reported them, January 13, 2014); Davis, PLOS ONE 16(7), 2021 (546
+  // visitors to the Science Museum in London, 516 analyzed; wrinkly fingers lowered the grip force needed for a wet object to
+  // about that for a dry one); and Laytin and German, Journal of the Mechanical Behavior of Biomedical Materials, May 2025 (three
+  // people, a hand soaked 30 minutes and again at least a day later, the folds in the same places; Science News Explores, July 9,
+  // 2025). The voices say wet things, never marbles, which a small child can choke on. The spoon: a hollow mirror crosses the
+  // light, so the picture is upside down, and from closer than its focus the picture is upright and bigger; a bulging mirror
+  // spreads the light, upright and smaller (Evident Scientific's concave mirror tutorial, whose example is a spoon, and Essential
+  // University Physics, chapter 31, as Vaia prints its answer). The painter is Parmigianino, Self-Portrait in a Convex Mirror, 1523
+  // to 1524, at 21, on a wooden panel made convex, his hand in front (Smarthistory, Kunsthistorisches Museum, Vienna); his name is
+  // left out of the voice because a device voice cannot be trusted to say it. Everything else is a voice's own memory or noticing.
+  {
+    id: 'w-early-moon-follows-me',
+    theme: 'world',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'At night, the moon seems to come along wherever you go. Is the moon following you?',
+    options: ['Yes', 'No', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'Dad drove, and I watched. Fence posts zipped past. Far hills went slowly. The moon is much farther, so it seemed to stay.' },
+      { voice: 'An artist says', says: 'The moon looked like a balloon tied to our car! It bobbed over every roof. At home, I painted its string silver.' },
+      { voice: 'A grandparent of faith says', says: 'I once thought God sent the moon just for me. Now I know it shines on everyone. It still feels like a gift.' },
+      { voice: 'A skeptic says', says: 'I was sure the moon followed our car. But it followed my cousin\'s car too, the other way! Can one moon go two ways?' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'On night rides home from my grandparents\' house, my dad drove and I watched out the window. I began to notice how things passed us. The fence posts beside the road flew by so fast that I could not count them. A barn across the field slid by slowly. The hills far behind it hardly seemed to move. The farther away a thing was, the slower it passed. The moon is much farther away than any hill. It is so far that about thirty Earths could sit in a row between here and there. Next to that, a whole night of driving is hardly a step. So the moon stays in nearly the same part of the sky while everything near us slides away behind, and it seems to keep up with the car. Years later I read that people who study the sky explain it the very same way.' },
+      { voice: 'An artist', says: 'Late one night, on the ride home from the fair, the moon bobbed along above the rooftops outside my window. It ducked behind a barn and popped out on the other side. It slid behind a hill and came right back. To me it looked like a silver balloon, tied to our car by a string too thin to see. The next morning I painted it that way, with our little car on the road and the moon floating above it. I painted the string in silver so that it would show. My mom looked at my picture and asked about the string. I told her I knew there was no string. I was not painting what the moon is. I was painting what the ride felt like, and that part was true.' },
+      { voice: 'A grandparent of faith', says: 'The road home from my grandmother\'s house was long and dark, and as a small girl I was a little afraid of it. Then I would find the moon in my window, and it stayed there the whole way home. I decided that God had sent it along just for me. I whispered a thank you every time. Years later I learned how far away the moon is, and that it shines on every road at once. I wondered whether knowing that would spoil my thank you. It did not spoil it at all. A light that reaches everyone still reached me, on my road, when I needed it. I am old now, and I ride in the back seat again, beside my grandchildren. When the moon comes along with us, it still feels like a gift to me.' },
+      { voice: 'A skeptic', says: 'For a long time I was sure the moon followed our car, and only ours. It was there when we left my aunt\'s house, and it was still there when we got home. Then my cousin told me the moon had followed her car home that same night. That bothered me, because she lives the other way from my aunt\'s house. How could one moon go two ways at once? So we made a plan. After the next visit, each of us watched from the back seat the whole way home, and the next day we told each other what we saw. The moon had stayed with both cars. So it could not have been following either one of us. Something else had to be going on, and I had to let go of my favorite idea. I did not mind as much as I expected. Now when I feel sure of something, I look for a way to check it.' },
+    ],
+    closing: 'What would you tell the moon about your day?',
+  },
+  {
+    id: 'w-early-tickle-myself',
+    theme: 'world',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A tickle from someone else can make you laugh. Can you tickle yourself?',
+    options: ['Yes', 'No', 'A little bit'],
+    simple: [
+      { voice: 'A scientist says', says: 'My friend\'s tickle made me squeal. My own finger did almost nothing! Scientists think my brain knows my own touch is coming.' },
+      { voice: 'An artist says', says: 'Dad wiggled his fingers in the air, and I laughed before he touched me! I think a tickle starts with the waiting.' },
+      { voice: 'A grandparent of faith says', says: 'My grandmother said the best tickles and hugs come from somebody else. I believe we are made to need each other.' },
+      { voice: 'A skeptic says', says: 'A friend said you cannot tickle yourself. I tried a feather on my own foot. It tickled a little! The answer was in between.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'One night in bed, I tried to tickle my own ribs, and nothing happened. That puzzled me, because one wiggly finger from my best friend could make me squeal. Scientists have tested this very thing. In one study in England, people felt a soft tickle on the palm of one hand. Sometimes they moved the tickler themselves, and sometimes a machine moved it for them. The very same touch felt less tickly when they made it themselves. The scientists think the brain guesses what your own hand is about to do. The touch is no surprise, so the brain turns the feeling down. In a newer study in Germany, a partner tickled twelve people. When they tickled themselves at the same moment, the partner\'s tickles felt less ticklish too. Nobody understands everything about tickling yet. For now, my best guess is that my brain is not surprised by my own fingers.' },
+      { voice: 'An artist', says: 'My dad had a tickle game that I loved. He held his hands up high and wiggled his fingers, and he brought them down very, very slowly. I was laughing before one finger touched me! He stopped as soon as I said stop, and then I asked him to do it again. One day I tried to draw what a tickle feels like. I drew sparkly little stars on my ribs. Then I drew his wiggling fingers, still up in the air, and I put the most stars there. For me, the best part of a tickle came before the touch, in not knowing when. I still love that part of any surprise, the moment just before.' },
+      { voice: 'A grandparent of faith', says: 'My sister and I spent a whole afternoon trying to tickle ourselves, and we gave up. That evening I told my grandmother about it. She said some of the best things are ones you cannot give yourself. A tickle from your own hand is a small one, she said, and so is a hug from your own arms. Even a surprise needs somebody else. She did not think that was a mistake in how we are made. I think she was right. I believe we are made to need each other, and that the needing is a gift. So I am glad when my grandchildren ask me for a tickle. And when one of them says stop, I stop.' },
+      { voice: 'A skeptic', says: 'A friend at school told me that you cannot tickle yourself, and he said it as if it were a rule. I like to check rules. That night I tried my own ribs, and he was right. I tried under my arms, and he was right again. Then I ran a feather very lightly across the bottom of my own foot. It tickled, just a little! It was a small, itchy sort of tickle, and it did not make me laugh, but it was there. So the answer was not yes, and it was not no. I had been asking a yes or no question about something that comes in sizes. Now, before I answer yes or no, I ask whether a little bit might be the true answer.' },
+    ],
+    closing: 'Where is your most ticklish spot?',
+  },
+  {
+    id: 'w-early-wrinkly-fingers',
+    theme: 'world',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'After a long bath, your fingertips look wrinkly. Why do you think they do that?',
+    options: ['They soak up water', 'To help me hold wet things', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'Do wrinkly fingers hold wet things better? One test said yes. One said no! Scientists are still finding out, and I like that.' },
+      { voice: 'An artist says', says: 'Dad wrapped me in a towel. My wrinkly fingertip had hills and rivers! I drew its map before it went away.' },
+      { voice: 'A grandparent of faith says', says: 'My bath wrinkles went away. Grandmother\'s wrinkles stayed, and she did not mind. She said each line was a day God gave her.' },
+      { voice: 'A skeptic says', says: 'Dad counted while I grabbed bath toys with smooth fingers, then wrinkly ones. Wrinkly won! But I had practice by then. Was it fair?' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'My fingertips came out of every bath wrinkly, and for years I never asked why. Here is what I have read since. A finger whose nerves have been hurt stays smooth in water. So the wrinkles are not just water soaking in. They are something the body does. Nerves tell the tiny tubes that carry blood in a fingertip to squeeze tight, and the skin on top pulls in and folds. Why would a body do that? One idea is that wrinkles help us hold wet things, the way the grooves on a tire help on a wet road. Scientists have tested the idea. In one test, twenty people moved wet things faster with wrinkly fingers. A second team tried it with forty people and found no difference. A third test, with about five hundred visitors to a museum in London, found that wrinkly fingers needed less of a squeeze to hold a wet thing. So the question is still open, and I like an open question.' },
+      { voice: 'An artist', says: 'After my bath one night, my dad wrapped me in a towel, and I held one finger up close to my eye. The tip was covered in soft little hills, with thin rivers running between them. It looked like the map of a tiny country. I wanted to keep it, so I ran for my crayons and drew the map as fast as I could. When I looked again, the hills on my finger had gone flat. After the next bath I drew it again, and the two maps looked almost the same to me. Not long ago I read that two scientists took pictures of wet, wrinkly fingers on two different days. The folds came back in the same places. I like knowing that my little country is still there, waiting for the next bath.' },
+      { voice: 'A grandparent of faith', says: 'One evening after my bath, I showed my grandmother my wrinkly fingers. She held her hand up next to mine. My wrinkles were already fading. Hers stayed just where they were, on her fingers and all across the backs of her hands. I asked her if she had been in the bath too long. She laughed until she had to sit down. Then she told me that mine came from one bath, and hers came from all her years. She was not sorry about a single one. She said each line was a day that God had given her, and she had spent those days washing babies, kneading bread and holding hands. My own hands look like hers now. When my granddaughter holds her bath fingers up to mine, I remember that, and I am glad of every line.' },
+      { voice: 'A skeptic', says: 'My dad told me that wrinkly fingers might be for holding wet things, and I wanted to see for myself. So we made a test at bath time, with Dad right beside the tub. At the start, with smooth fingers, I moved ten bath toys from the water into a bowl while he counted. At the end, with wrinkly fingers, I did it again. The wrinkly fingers won easily. I was ready to shout that we had proved it. Then Dad asked me one question. Was I faster because of the wrinkles, or because it was my second try? I could not tell which. So on the next nights I practiced first, moving the toys with smooth fingers until I stopped getting faster. Only then did we wait for the wrinkles and count once more. Some nights the wrinkly fingers won, and some nights the smooth ones did. I never found out for sure. I did learn to ask what else could have made me win.' },
+    ],
+    closing: 'What is your favorite thing about bath time?',
+  },
+  {
+    id: 'w-early-spoon-upside-down',
+    theme: 'world',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Look into a shiny spoon, and your face is upside down. What happens if you turn the spoon over?',
+    options: ['My face flips back', 'It stays upside down', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'At breakfast, I turned my spoon over and over. The inside flipped my face. The round back did not! So the side matters.' },
+      { voice: 'An artist says', says: 'The back of my spoon gave me a giant nose! A shiny doorknob made me tiny. I think every curve draws a new me.' },
+      { voice: 'A grandparent of faith says', says: 'My grandson showed me my face in a spoon. Seventy years of soup, and I never looked! I believe children help us see.' },
+      { voice: 'A skeptic says', says: 'I thought the inside flips everything. Then I held my finger very close. The finger in the spoon stood right side up!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'A tiny upside-down boy looked back at me from my spoon one morning, and I forgot all about my oatmeal. I turned the spoon over. On the round back, the boy was right side up again, with a very big nose. I flipped the spoon back and forth until my breakfast went cold. Here is what I found out when I was older. A flat mirror keeps your head at the top and your chin at the bottom. The scooped side of a spoon curves in like a tiny bowl. Light from the top of your face bounces off it heading down, and light from your chin bounces off heading up. The two pass each other on the way to your eyes, so top and bottom trade places. The back of the spoon curves the other way and spreads the light apart. Nothing trades places there, so you stay right side up, only smaller. My spoon was not playing a trick. Its shape decided what I saw.' },
+      { voice: 'An artist', says: 'Once I found my face in a spoon, I started looking for it everywhere. The back of the spoon gave me a giant nose and tiny ears. A shiny round doorknob made my whole face as small as a button. In the side of a tall, shiny cup, I was stretched as thin as a noodle. None of them looked quite like me, and every one of them was me. Much later, in a museum book, I saw a painting that made me laugh out loud. About five hundred years ago, a young painter in Italy painted himself the way a round, bulging mirror showed him. His hand is in front, and it looks huge! He even painted it on a round piece of wood that bulges out like the mirror. He could have fixed his giant hand. He kept it, and so I keep my giant nose when I draw my spoon face.' },
+      { voice: 'A grandparent of faith', says: 'Last winter my grandson held up his soup spoon and told me to look inside it. There I was, upside down, with my collar at the top and my hair at the bottom. Then he turned the spoon over, and I was right side up, with a nose like a potato. We laughed so hard that he nearly dropped the spoon. I have stirred with spoons for seventy years, and I had never once looked into one. It took a boy of four to show me. I have come to believe that children are given to us partly for this. They look at what the rest of us stopped looking at long ago. When I say my prayers at night, I ask to keep looking at the world the way he does.' },
+      { voice: 'A skeptic', says: 'After I saw my upside-down face in a spoon, I felt sure of one thing. The scooped side flips whatever it shows, every time. I wanted to see how far that went. My face was upside down in it. The window behind me was upside down in it. I held up one finger and moved it slowly toward the spoon, and my finger was upside down too. Closer and closer it came. When it was almost touching, the finger in the spoon was suddenly right side up, and bigger than before! I moved my finger back, and it flipped again. So what I felt sure of was true from far away and not true from very close. I had only looked from one place. Now I try a thing from near and from far before I say every time.' },
+    ],
+    closing: 'With a grown-up, find something shiny. What does your face look like in it?',
+  },
+  // Pass NL: one early question for each of the two smallest early themes, failure and ups-and-downs (33 each before the pass). The
+  // baby learning to walk: Adolph, Cole, Komati and others, 2012, "How Do You Learn to Walk? Thousands of Steps and Dozens of Falls per
+  // Day", Psychological Science 23(11), pages 1387 to 1394, read on PubMed Central (PMC3591461) on November 14, 2026. Its abstract:
+  // "12- to 19-month-olds averaged 2368 steps and fell 17 times/hour", and "After walking onset, natural locomotion dramatically
+  // improved: Infants took more steps, traveled farther distances, and fell less." Its Results: "walking infants took 2367.6
+  // steps/hour, traveled 701.2 m/hour, and fell 17.4 times/hour", of 116 walkers aged 11.8 to 19.3 months watched at play in a
+  // laboratory playroom (the scientist's "more than a hundred babies", "from about one year old to about a year and a half", "more than two
+  // thousand steps" and "about seventeen times", one fall every three and a half minutes, so "every few minutes"). The paper says
+  // nothing of how a baby takes a fall or gets up, so the laughing, the pushed hands and the getting up are each a voice's own memory,
+  // and crawlers fell too (the abstract's "fall rates were comparable"), so no voice says crawling is safe from falls. The skeptic's
+  // little sister is the one docs/CHARACTERS.md gives Mike, and the grandparent's godson is her godson there. The day after a big day:
+  // every line is a voice's own memory or noticing, and the scientist's reason (he had gotten used to the spinning, and to the big
+  // day) is said as what he decided, never as a finding; the skeptic's big brother is the one docs/CHARACTERS.md gives Mike.
+  {
+    id: 'w-early-baby-learning-to-walk',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A baby is learning to walk. She takes a step and falls down, again and again. Is she doing it wrong?',
+    options: ['Yes', 'No', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'My baby cousin fell again and again. Scientists counted the falls of babies like her. They fell about seventeen times an hour!' },
+      { voice: 'An artist says', says: 'I watched the baby next door plop down by her mom and laugh. Nobody had told her to feel bad about falling!' },
+      { voice: 'A grandparent of faith says', says: 'My godson wobbled toward my open arms. He fell three times, and I cheered each try. I believe God cheers like that.' },
+      { voice: 'A skeptic says', says: 'My little sister fell, and I ran to help. She pushed my hands away! Next time Mom and I just watched her stand up.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'When my baby cousin was learning to walk, she fell so often that I began to wonder about it. Was she falling more than other babies? Years later, I found a study that answered my question. Scientists watched more than a hundred babies who were learning to walk, from about one year old to about a year and a half, while the babies played. They counted every step and every fall. In one hour, a baby took more than two thousand steps, on average, and fell about seventeen times. That is a fall every few minutes! Then the scientists looked at the babies who had been walking longer. Those babies took more steps, and they fell less. So my cousin was not doing it wrong. She was doing what new walkers do, and every wobbly hour was her practice. I think of her whenever one of my experiments does not work.' },
+      { voice: 'An artist', says: 'The baby next door learned to walk one summer, out on the grass, and I watched from our steps with my sketchbook. She held her arms up high, the way a dancer does, and her feet went wide apart. She took three steps and plopped down onto her bottom, right beside her mom. Then she laughed out loud and clapped for herself! I tried to draw her, and every drawing came out wobbly. I think wobbly was the right way to draw her. What I remember best is her face. She did not look sorry when she fell. Nobody had told her yet that falling was something to feel bad about. When I learn something new now, like a new kind of paint, I try to fall the way she did.' },
+      { voice: 'A grandparent of faith', says: 'My godson took his first steps across my kitchen floor, and I was there to see it. I knelt down a little way off and held my arms open. He let go of the chair and came toward me, wobbling like a little boat. He sat down hard three times before he reached me. Each time, I stayed where I was, and I cheered when he stood back up. I did not think of his falls as mistakes. They were part of his coming to me. When he reached my arms at last, we were both laughing. I believe God watches us learn in much the same way, glad at every try. I am old now, and I am still learning new things. It helps me to remember those open arms.' },
+      { voice: 'A skeptic', says: 'My little sister fell a lot while she was learning to walk, and I thought her falls were a problem that I had to fix. Every time she sat down hard, I ran over and stood her back up. One day she pushed my hands away. She was mad at me, not at the floor! My mom said we could try something. The next time, we would both stay where we were and just watch, and that is what we did. My sister fell, looked around, rolled onto her hands and knees, and pushed herself up. It took her a long time, and she grinned the whole way. I had been sure that falling meant something was going wrong. I began to think that getting up was a part she wanted to practice too.' },
+    ],
+    closing: 'What would you tell a baby who just fell down?',
+  },
+  {
+    id: 'w-early-day-after-a-big-day',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Yesterday was a big, fun day. Today is a plain day at home, and you feel a little sad. Is that okay?',
+    options: ['Yes', 'No', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'Dad lifted me off the merry-go-round, and standing still felt strange. The plain day at home the next morning felt the same way.' },
+      { voice: 'An artist says', says: 'After the parade, Mom found a paper streamer in my hood. I taped it over my bed. A bit of the big day stayed!' },
+      { voice: 'A grandparent of faith says', says: 'After a holiday, Grandmother and I took the leftover bread to a neighbor who lived alone. I believe a happy day is for sharing.' },
+      { voice: 'A skeptic says', says: 'I was sure only another fair could fix my sad day. Then my big brother and I raced toy cars, and I felt good!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'At the fair one summer, my dad let me ride the merry-go-round three times in a row. When he lifted me off, I stood on the grass, and standing still felt strange. For a minute the ground seemed too quiet, and I held on to his sleeve. Nothing was wrong with the grass. I had only gotten used to the spinning. The next morning, at home, I felt a little the same way. The house was quiet, breakfast was plain toast, and I felt a bit sad. I decided it was the merry-go-round feeling again. Yesterday had been so big and bright that I had gotten used to it, and a plain day felt strange beside it. So I did what I had done on the grass. I waited, and I watched. By the afternoon, the plain day felt like a good day again. Now, after a big day, I expect the plain one to feel strange for a while, and I know why.' },
+      { voice: 'An artist', says: 'Once a year a parade came down our street, and my mom and I watched from the curb as drums went by and streamers flew everywhere. The morning after, the street looked gray and empty, and I felt gray too. Then my mom laughed and pulled a long paper streamer out of the hood of my jacket. It was bright red, and it had ridden home with me without my knowing. I taped it to the wall over my bed. After that, I started looking for what a big day leaves behind. I have found sand in a shoe, a ticket in a pocket and a grass stain on one knee. I like to draw those small leftover things. A big day does not stay, but it does not vanish all at once, either. Little pieces of it come home with you, and they make the plain day after it a little brighter.' },
+      { voice: 'A grandparent of faith', says: 'In my faith, there are a few great feast days each year, and I loved them as a girl. We had candles, songs and the good dishes on the table. The day after a feast always felt small to me. One such morning, my grandmother wrapped the leftover bread in a cloth, and we walked it down the street to a neighbor who lived alone and had spent the feast by herself. I believe a happy day is meant to be shared, even after it is over. I still feel a little sad when a big day ends, and I let myself feel it. Then I find a way to share what is left of the day.' },
+      { voice: 'A skeptic', says: 'The day after the fair, I woke up sad, and I was sure that another fair was the only way to fix it. I asked my dad at breakfast, and he said the fair had packed up and gone. I asked for the zoo, and he said not today. I was mad at him for most of the morning. I believed that a big day was the only thing that could make the sad feeling go. After lunch, my big brother made a road across the kitchen floor with tape, and we raced our toy cars on it until the tape came up. At dinner, my dad asked how my day had been, and I said it was good. The feeling had gone, and no fair had come to take it away. I had been wrong about what it needed. A toy car race on a plain day had done what I was sure only a fair could do.' },
+    ],
+    closing: 'What is something you brought home from a fun day?',
+  },
   {
     id: 'w-early-hurt-by-words',
     theme: 'feelings',
@@ -45980,6 +46985,14 @@ export function setWonderOn(review, id, on) {
 }
 export function setAllWonder(review, on) { const s = wonderReviewState(review); return { version: 2, allOff: !on, hidden: s.hidden, shown: [] }; }
 export function wonderOnCount(review) { return WONDER.filter((w) => isWonderOn(review, w.id)).length; }
+// The classroom's Wonder card (pass NL). Mikey's words: "let's change the Wonder question card on my classroom page to:  Wonder Questions,
+// active by default, are deep, thought-provoking questions to help kids think.  Keep what you like, remove what you don't." The card says
+// them in every state, since both sentences hold whether a school has turned some questions off or all of them: the first says what the
+// questions are and how they start, the second what a school may do. Its title and its Wonder Questions button stay as they were. Until
+// pass NL the card said "Our optional thought-provoking Wonder Questions are currently active for all students." and then "Click here to
+// view or make changes.", his words of pass NK, with Claude's in his sentence's shape for the other states (wonderClassroomLine, gone
+// with them; its words in docs/DECISIONS.md's pass NK entry), and "Click here" a link to the page, Claude's.
+export const WONDER_CARD_LINE = "Wonder Questions, active by default, are deep, thought-provoking questions to help kids think. Keep what you like, remove what you don't.";
 
 
 // The four things a reflection is for. Every question carries one, and the rotation

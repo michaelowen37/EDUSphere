@@ -207,7 +207,7 @@ try { writeFileSync('/tmp/edu-frame-sheet-host.html', `<!doctype html><html><bod
   for (let i = 0; i < 3; i++) for (const name of ['Skip tour', 'Done', 'Not now', 'Later', 'Got it']) {
     const b = f.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().evaluate((el) => el.click()); await page.waitForTimeout(250); }
   }
-  await f.getByRole('button', { name: 'Wonder Questions' }).last().click();
+  await f.locator('[data-tour="wonder"]').getByRole('button', { name: 'Wonder Questions', exact: true }).click();
   await f.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-review', null, { timeout: 8000 });
   await page.waitForTimeout(500);
   await f.getByRole('button', { name: /^Growing up/ }).click(); await page.waitForTimeout(300);

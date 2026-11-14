@@ -92,8 +92,10 @@ const DEEP_GOLD = ((/const paperGold = \(\) => \(C\.mode === 'dark' \? '(#[0-9A-
 // since pass NF how many diagrams, of how many kinds, how many guides they hold, how many drawings More Info's boxes draw in how many
 // sheets, and how many clocks, ten-frames and fraction bars are read for their palette. The drawings were 1,399 when this check was written
 // and are 1,405 by pass NF's count, with no fix of pass NF's among them; since pass NI 1,411, with 234 drawings in 179 of More Info's
-// sheets, the six more drawn by the two new lessons, Q, V and Y and Write your name, their lines and their questions.
-const FLOORS = { drawings: 1411, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 234, sheets: 179, palette: 99 };
+// sheets, the six more drawn by the two new lessons, Q, V and Y and Write your name, their lines and their questions. Since pass NK (round
+// three's whole read of RULES-AUDIT found the floors still pass NI's) 1,519, with 423 drawings in 302 of More Info's sheets, its six
+// lessons' shapes, letters and marks, read on a copy of the tree after round three's fixes; the diagrams, guides and palette unchanged.
+const FLOORS = { drawings: 1519, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 423, sheets: 302, palette: 99 };
 // A picture's fields that only place or size it (a pair's frame, a step's number, a lesson's caption) are no part of its drawing, and a
 // name's #2 only tells two of one picture apart.
 const LAYOUT = ['size', 'step', 'frame', 'snap', 'gap', 'grow', 'tight', 'align', 'caption', 'another'];

@@ -11,17 +11,17 @@ New chats: read docs/NEW-CHAT.md first, then the pass packet it asks for (node t
 6. `docs/DESIGN.md`: how screens look and how words are written.
 7. `src/curriculum.mjs`: the plan against state standards, and what is still missing.
 8. `docs/RUNBOOK.md`: what to do when something breaks.
-Then `src/logic.mjs`, then `src/ui.jsx`, then the tests. Run `./check.sh` before and after any change.
+Then `src/logic.mjs`, then `src/ui.jsx`, then the tests. Run the fast tests a change touches after it, and `./check.sh`, which takes about two and a half hours, once a pass's first build is in and again at its end.
 
 Mastery-based learning for schools. Phase 0 = one browser file, no server, no
 accounts, no data leaves the device. Decisions and the phase 1 plan live in
 docs/DECISIONS.md. What to do when something breaks lives in docs/RUNBOOK.md. Step-by-step guides live in .claude/skills/.
 
 ## Commands
-- `./check.sh` — runs everything (rules tests, curriculum coverage, build, render smoke, syntax, browser click-through). Must end with `ALL CHECKS PASSED`. Run after every change and paste the last line.
+- `./check.sh` — runs everything (rules tests, curriculum coverage, build, render smoke, syntax, the browser tests). Must end with `ALL CHECKS PASSED`. It takes about two and a half hours (167 minutes in pass NK), so start it detached, as part two's Running check.sh line says, once a pass's first build is in and again at its end, run the fast tests a change touches after each change, and paste its last line.
 - `node tests/logic.test.mjs` — rules only; fastest loop while changing logic.
 - `tsc` prints one line `Cannot find module 'react'` — ignore that line only.
-- `./check.sh` step 10 is a real-browser click-through (`tests/e2e/click-through.mjs`, headless Chromium, six to nine minutes; the whole of check.sh takes about ten). If only step 10 fails, read its FAIL line: it names the screen and the tap.
+- `./check.sh` step 10 is a real-browser click-through (`tests/e2e/click-through.mjs`, headless Chromium, about nine minutes run alone, 525 seconds in pass NL on a passing run, not counting ./build.sh and node tests/e2e/make-page.mjs, which come first, since the page is made from the build). If step 10 fails, read its FAIL line in /tmp/edu_click_through.log: it names the screen and the tap.
 
 ## Layout
 - `src/logic.mjs` — content, question generators, mastery rules, event-log derivations, reports. No screens.
@@ -121,7 +121,7 @@ Add its standards to src/curriculum.mjs (every code, with the module ids that co
 - tools/content-diff.mjs <the last delivered copy> --scope <the pass's course ids> lists what a pass changed, course by course and item by item (tools/content-snapshot.mjs), outside its scope first; the final read starts from it.
 
 ## CLAUDE.md's parts (pass MS; part three since pass NG)
-- CLAUDE.md is three files (pass MS, Mikey: "If you need to break it into two documents feel free.  I would rather that than you having to summarize to save space.   I don't want important information to skip through the cracks."; part three since pass NG): this one; CLAUDE-PART-2.md, which holds, word for word, the two sections that stood here through pass MR, the dated lines a coder needs most and the context review's lines, and the lines added from pass NB to NF; and CLAUDE-PART-3.md, which holds, word for word, the lines added here from pass MS to NA, moved in pass NG to make room, and the lines added since pass NG. The two lines below import them, so Claude Code loads all three at the start of every session; a reader or a checker given only this file reads parts two and three as well. docs/CLAUDE-HISTORY.md keeps this file as it stood through pass MR, and the docs sync test fails if any of its lines is in none of the three. New lines go in part three's last section, and each part is held under 40,000 bytes; when part three is full, a part four is started and imported the same way, never summarized.
+- CLAUDE.md is three files (pass MS, Mikey: "If you need to break it into two documents feel free.  I would rather that than you having to summarize to save space.   I don't want important information to skip through the cracks."; part three since pass NG): this one; CLAUDE-PART-2.md, which holds, word for word, the two sections that stood here through pass MR, the dated lines a coder needs most and the context review's lines; and CLAUDE-PART-3.md, which holds an index of the lines added from pass MS to NK and the lines added since pass NL. Those 23 lines, each one pass's design record, moved word for word in pass NL to docs/CLAUDE-HISTORY.md, at Mikey's word ("Feel free to edit all Claude files at your discretion only when you think it's feasible to do so and that it won't impact our product as a whole."), and the index names each by its heading and the code names and files it mentions that grep finds best (part three says which), so a coder about to change one of those features greps for it there. The two lines below import parts two and three, so Claude Code loads all three at the start of every session; a reader or a checker given only this file reads parts two and three as well. docs/CLAUDE-HISTORY.md keeps this file as it stood through pass MR, and the docs sync test fails if any of its lines is in none of the three, or if a moved line is not in the history word for word and named in the index. New lines go in part three's last section, only when a coder needs one on most tasks, and each part is held under 40,000 bytes; when part three is full, a part four is started and imported the same way, never summarized.
 
 @CLAUDE-PART-2.md
 @CLAUDE-PART-3.md

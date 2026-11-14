@@ -72,23 +72,31 @@ const VOICED_ROOM = ['hear-it-in-a-word', 'look-and-write'];
 // Since pass NI (round two's whole read of RULES-AUDIT, which found them still pass NF's) the floors are pass NI's counts, read in three
 // whole runs, the last two after round two's fixes (the third read's card change is on a screen with no voice, which this test does not read): its two lessons bring the pre-K lines to 1157, the questions read to 673 and 674 and
 // the states the reach reads to 2954 and 3017 (2953 and 3016 in the first run, before round two's words); every count the same in both.
+// Since pass NK (check.sh's second run: the cue before a pick at light 320 by 568 on 7 questions, under pass NI's floor of 8; and
+// round three's whole read of RULES-AUDIT had found every floor still pass NI's) the floors
+// are pass NK's counts, read in two whole runs on a copy of the tree after round three's fixes, every count the same in both: its six
+// lessons bring the pre-K lines to 1236 and the questions read to 717 to 720, the reach to 3082 and 3194, and A, E and I's story a
+// sixth held story to read for the put-back.
+// Since pass NL (round three's whole read of RULES-AUDIT, which found every floor still pass NK's) the floors are pass NL's counts, read
+// in one whole run on the tree after round three's fixes, and again by check.sh: its two lessons bring the pre-K lines to 1262, the
+// questions read to 733 and 734, the reach to 3129 and 3238, and the story pages to 285.
 const FLOORS = {
-  lines: { preK: 1157, rest: 1158 },
+  lines: { preK: 1262, rest: 1158 },
   // Pre-K at 375 by 667 none, a ceiling as well as a floor (round one's code read: a verdict that read no line could not fail).
   // Since round two's code read (pass NF) the states the reach reads in each theme are the counts the code has (they were held only above
   // 1,000; 2,895 in the light theme on round two's copy, 2,896 since round two's fixes), and the held stories read for the put-back are the
   // five lesson stories held at light 320 by 568.
-  reach: { light: 2954, dark: 3017 }, putBacks: 5,
-  cueLines: { preK: { 'light 320 by 568': 48, 'light 375 by 667': 0, 'dark 320 by 568': 48, 'dark 375 by 667': 0 }, rest: { 'light 320 by 568': 92, 'light 375 by 667': 0, 'dark 320 by 568': 106, 'dark 375 by 667': 0 } },
-  screens: { 'light 320 by 568': 673, 'light 375 by 667': 673, 'dark 320 by 568': 674, 'dark 375 by 667': 674 },
+  reach: { light: 3129, dark: 3238 }, putBacks: 6,
+  cueLines: { preK: { 'light 320 by 568': 54, 'light 375 by 667': 0, 'dark 320 by 568': 54, 'dark 375 by 667': 0 }, rest: { 'light 320 by 568': 92, 'light 375 by 667': 0, 'dark 320 by 568': 106, 'dark 375 by 667': 0 } },
+  screens: { 'light 320 by 568': 734, 'light 375 by 667': 733, 'dark 320 by 568': 733, 'dark 375 by 667': 734 },
   // The cue after a first wrong tap at 320 by 568 in the light theme was on 477 questions in one whole run of pass NF's copy and 479 in
   // three, so its floor is the lower.
-  cueScreens: { wrong: { 'light 320 by 568': 489, 'light 375 by 667': 106, 'dark 320 by 568': 514, 'dark 375 by 667': 114 }, right: { 'light 320 by 568': 594, 'light 375 by 667': 298, 'dark 320 by 568': 602, 'dark 375 by 667': 298 } },
+  cueScreens: { wrong: { 'light 320 by 568': 539, 'light 375 by 667': 107, 'dark 320 by 568': 554, 'dark 375 by 667': 141 }, right: { 'light 320 by 568': 661, 'light 375 by 667': 318, 'dark 320 by 568': 656, 'dark 375 by 667': 330 } },
   // Since pass NF: the cue before a pick, the strips that keep room for the cue, the story pages read and those where the cue shows.
-  pick: { 'light 320 by 568': 8, 'light 375 by 667': 0, 'dark 320 by 568': 13, 'dark 375 by 667': 0 },
+  pick: { 'light 320 by 568': 7, 'light 375 by 667': 0, 'dark 320 by 568': 24, 'dark 375 by 667': 0 },
   strips: { 'light 320 by 568': 9, 'light 375 by 667': 0, 'dark 320 by 568': 11, 'dark 375 by 667': 0 },
   // 275 on the merged copy, pass NF's two new lessons' stories with them (273 on the engineer's copy).
-  stories: 277, storyCue: { 'light 320 by 568': 277, 'light 375 by 667': 277, 'dark 320 by 568': 277, 'dark 375 by 667': 277 },
+  stories: 285, storyCue: { 'light 320 by 568': 285, 'light 375 by 667': 285, 'dark 320 by 568': 285, 'dark 375 by 667': 285 },
   // The lines whose last two words are over 18 letters and spaces (A103 (c)).
   longPairs: 5,
 };
@@ -111,8 +119,10 @@ const zeroOr = (n, f) => (f === 0 ? n === 0 : n >= f);
 // (in Look and write's, Write it by its sounds' and Hear it in a word's banks), and the plant then finds 131 where it found 132 (round one's
 // screen read: the cue's own count after a first wrong tap, 477 in pass NE's build, has read 479 in every run since).
 // Since pass NI the plants' floors are its counts too, the same in its three runs: 268 questions after a first wrong tap and 194 after the
-// right one, and 169 and 96 story pages in each theme, its two lessons' stories among them.
-const PLANT_FLOORS = { lines: { 'light 320 by 568': 22, 'dark 320 by 568': 21 }, restLines: { 'light 320 by 568': 64, 'dark 320 by 568': 81 }, wrong: 268, right: 194, words: { 'light 320 by 568': 8, 'dark 320 by 568': 10 }, stories: { 'light 320 by 568': 169, 'light 375 by 667': 96, 'dark 320 by 568': 169, 'dark 375 by 667': 96 } };
+// right one, and 169 and 96 story pages in each theme, its two lessons' stories among them. Since pass NK they are its counts, the same in
+// its two runs: 25 pre-K lines in each theme, 294 questions after a first wrong tap and 216 after the right one, and 175 and 100 story pages.
+// Since pass NL they are its counts: 302 questions after a first wrong tap and 220 after the right one, and 176 and 102 story pages.
+const PLANT_FLOORS = { lines: { 'light 320 by 568': 25, 'dark 320 by 568': 25 }, restLines: { 'light 320 by 568': 64, 'dark 320 by 568': 81 }, wrong: 302, right: 220, words: { 'light 320 by 568': 8, 'dark 320 by 568': 10 }, stories: { 'light 320 by 568': 176, 'light 375 by 667': 102, 'dark 320 by 568': 176, 'dark 375 by 667': 102 } };
 // CUE_WORDS_ONLY=<lesson ids, comma-separated> reads only those lessons and their banks, for a focused look; it pins no floor.
 const ONLY = (process.env.CUE_WORDS_ONLY || '').split(',').map((x) => x.trim()).filter(Boolean);
 const early = L.COURSES.filter((c) => (c.grade === 'PK3' || c.grade === 'PK4') && c.readAloud);

@@ -36,6 +36,12 @@ const VH = 667;
 const SMALL = { width: 320, height: 568 };
 // How many seeds of each bank a child's view is read at (pass MZ, round one's code check: seed 1 alone missed two).
 const SEEDS = 6;
+// Since round one's screen read (pass NK) the shape banks are read at their tallest answers too: the three seeds among 1 to 400 whose answers
+// are drawn biggest (most big shapes, then fewest little ones), since three big shapes on Rectangles' same-shape question ended Check answer at
+// 675 at the fifth seed in 80 and seeds 1 to 6 reached only two of the nine such screens.
+const tallestSeeds = (g) => Array.from({ length: 400 }, (_, i) => i + 1).map((s) => { const q = L.generateQuestion(g, s); const k = (q.choices || []).filter((c) => /^item:/.test(String(c))).map((c) => (/-big(?:#\d+)?$/.test(c) ? 2 : /-small(?:#\d+)?$/.test(c) ? 0 : 1)); return [s, k.length ? k.reduce((a, b) => a + b, 0) : -1]; })
+  .filter(([, n]) => n >= 0).sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 3).map(([s]) => s);
+const seedsOf = (g) => (/^p[34]-(?:turn|rect)-/.test(g) ? [...new Set([...Array.from({ length: SEEDS }, (_, i) => i + 1), ...tallestSeeds(g)])] : Array.from({ length: SEEDS }, (_, i) => i + 1));
 // What this check reads, as floors at the counts the code has (round two's code check, pass MZ: floors of 800 lines and 300 banks were
 // guesses): since pass ND 1074 lines of 102 lessons, each read at two sizes; 427 banks at six seeds each; the lines whose Next is more than a
 // third below a 320 by 568 screen, where the cue shows (39 in the light theme, 39 in the dark: round two's content read moved it off Letters and sounds'
@@ -57,7 +63,13 @@ const SEEDS = 6;
 // since round two the cue on 48, 47 on round two's copy, and 5,148 sentences, since Write it by its sounds' line 13 has one more);
 // and opposites-and-same line 8 waits no more, since p32 keeps wide-open whole, so wide-open eyes. ends the line together.
 // Since pass NF's third read the lit floor is 5,298, since round two's content read gave Look and write's line 14 a second sentence (5,296 before).
-const FLOORS = { lines: 1157, banks: 457, cue: { light: 48, dark: 48 }, paintings: 112, whole: 210, lit: 5432 };   // since pass NI's two lessons (27 lines, 10 banks)
+// Pass NI's floors were 1,157 lines, 457 banks, 210 kept spans and 5,432 sentences lit (its two lessons, 27 lines and 10 banks); pass NK's
+// round two screen read took the test page's 8-pixel margin off, where the margin had made the cue's count 48, and round three's whole
+// read of RULES-AUDIT found the other floors still pass NI's, so since pass NK every floor is the count the margin-free run of 12:06 on
+// November 13 read (its six lessons, 79 lines and 30 banks; the cue on 40 lines in each theme; no lesson line of the six shows a painting).
+// Since pass NL every floor is the count its run of 12:51 AM on November 14 read (its two lessons, 26 lines and 10 banks; 234 kept
+// spans and 6,022 sentences lit, where pass NK's floors were 226 and 5,888; the cue still on 40 lines in each theme and 112 paintings).
+const FLOORS = { lines: 1262, banks: 497, cue: { light: 40, dark: 40 }, paintings: 112, whole: 234, lit: 6022 };
 // EARMARKS A82 decided (pass NC, round one's screen check): at 320 by 568 no pre-K lesson line ends on one lone word (25 of the 69 lines
 // past six lines did, where a browser balances nothing), a line past six lines wrapping pretty (LessonWords in ui.jsx). A line that
 // must end alone is named here by lesson and line with the reason; a wait for a line that no longer ends alone fails.
@@ -91,6 +103,10 @@ for (const theme of ['light', 'dark']) {
   const page = await ctx.newPage();
   const errors = []; page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
   await page.goto(new URL('./page.html', import.meta.url).href);
+  // The test page keeps the browser's 8-pixel body margin and the product has none, so it is taken off and every bottom read is the
+  // product's (round two's screen read, pass NK: with the margin a prompt wrapped in a column 16 pixels narrower than the product's, and
+  // Check answer read 675 where the product draws it at 637), as the grown-up's card test reads with the margin taken off (pass NI).
+  await page.addStyleTag({ content: 'body { margin: 0 !important; }' });
   const screenIs = (n) => page.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
   const tapIf = async (name) => { const b = page.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(250); return true; } return false; };
   await screenIs('welcome');
@@ -168,11 +184,13 @@ for (const theme of ['light', 'dark']) {
     // sentence, clause or item as any word may start a line ("Letters have sounds. / M says mmm", "C says cuh, / G says guh"), and
     // keepLoneLetters, which holds a letter only to a word, rightly leaves it; those are counted (sentences), and a letter after a word
     // still fails ("comes / m.", "then / n").
-    const after = lines.slice(1).map((l, i) => ({ w: l[0], before: lines[i][lines[i].length - 1] })).filter((x) => /^[b-zB-HJ-Z][.,?!]?$/.test(x.w));
+    // Since pass NL's round one screen read the letter I fails too where it follows big, as keepLoneCapitals holds it ("Look at big / I, one
+    // tall line" read as the word I at a line's start at 320 pixels).
+    const after = lines.slice(1).map((l, i) => ({ w: l[0], before: lines[i][lines[i].length - 1] })).filter((x) => /^[b-zB-HJ-Z][.,?!]?$/.test(x.w) || (/^I[.,?!]?$/.test(x.w) && /^big$/i.test(x.before)));
     const opens = (x) => /[.?!,;:]["\u201D\u2019)]?$/.test(x.before);
     const starts = after.filter((x) => !opens(x)).map((x) => x.w); const sentences = after.filter(opens).length;
     const last = lines[lines.length - 1] || []; return { lines: lines.length, alone: lines.length > 1 && last.length === 1 ? last[0] : null, wrap: p.style.textWrap, starts, sentences }; });
-  const loneOff = []; const loneSeen = new Set(); let loneLines = 0; let plantLone = null; const letterOff = []; let plantLetter = null; let letterSentences = 0;
+  const loneOff = []; const loneSeen = new Set(); let loneLines = 0; let plantLone = null; const letterOff = []; let plantLetter = null; let letterSentences = 0; let plantBigI = null;
   for (const m of lessons) {
     await page.evaluate((id) => window.__eduTest.openModule(id), m.id); await screenIs('lesson'); await page.waitForTimeout(500);
     for (let i = 0; i < m.lesson.script.length; i++) {
@@ -221,6 +239,11 @@ for (const theme of ['light', 'dark']) {
         await page.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); const w = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let x; window.__nbLetters = []; while ((x = w.nextNode())) if (x.textContent.includes('\u00A0')) { window.__nbLetters.push([x, x.textContent]); x.textContent = x.textContent.replace(/\u00A0/g, ' '); } });
         const set = await loneRead(); plantLetter = !!set && set.starts.length > 0;
         await page.evaluate(() => { for (const [x, s] of window.__nbLetters || []) x.textContent = s; delete window.__nbLetters; }); }
+      // Since pass NL: More small letters' line 3 with its no-break spaces set back, as round one drew it, puts "I," at a line's start after big.
+      if (plantBigI === null && key === 'more-small-letters line 3') {
+        await page.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); const w = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let x; window.__nbLetters = []; while ((x = w.nextNode())) if (x.textContent.includes('\u00A0')) { window.__nbLetters.push([x, x.textContent]); x.textContent = x.textContent.replace(/\u00A0/g, ' '); } });
+        const set = await loneRead(); plantBigI = !!set && set.starts.some((w) => /^I[.,?!]?$/.test(w));
+        await page.evaluate(() => { for (const [x, s] of window.__nbLetters || []) x.textContent = s; delete window.__nbLetters; }); }
       if (plantLone === null && lone && lone.lines > 6 && !lone.alone) {
         // Since pass NE the plant sets the line's no-break spaces back to spaces as well, since a line's last two words held together cannot
         // end alone under balance either.
@@ -245,7 +268,7 @@ for (const theme of ['light', 'dark']) {
   ok(`every line's row holds together at 375 by 667 and 320 by 568 in the ${theme} theme: Back, the speaker and Next with level tops, the dots centred under the speaker, no dot alone on a row (${rowsRead} rows read; a speaker pushed 6 pixels down, dots pushed 16 pixels right and a dot left alone caught)`, rowOff.length === 0 && rowsRead >= FLOORS.lines * 2 && plantTops === true && plantMiddle === true && plantAlone === true, { rowOff: rowOff.slice(0, 12), plantTops, plantMiddle, plantAlone });
   ok(`at 320 by 568 the scroll cue shows on a lesson line exactly when more than a third of Next is below the screen in the ${theme} theme, so it never sits on a Next two thirds of which show (${cueLines} lines read, the cue on ${cueShown}; a cue put over a Next wholly shown and a cue taken away from a Next a third hidden caught)`, cueOff.length === 0 && cueLines >= FLOORS.lines && cueShown >= FLOORS.cue[theme] && plantFake === true && plantGone === true, { cueOff: cueOff.slice(0, 12), plantFake, plantGone });
   ok(`every speech part kept whole on a pre-K lesson line stays on one line at 375 by 667 and 320 by 568 in the ${theme} theme, a blend, a run of a word's parts or sounds, a word said slowly and a run of beats, and inside its paragraph (pass NC, EARMARKS A82; ${wholeSeen} spans read; a span broken in two and a span run past its paragraph, planted, caught)`, wholeOff.length === 0 && wholeSeen >= FLOORS.whole && plantWhole === true && plantOutside === true, { off: wholeOff.slice(0, 4), seen: wholeSeen, floor: FLOORS.whole, plantWhole, plantOutside });
-  ok(`no line of a pre-K lesson line but its first starts with a lone letter at 320 by 568 in the ${theme} theme, each held to the word before it, a letter after a mark that starts a sentence or a clause aside (pass NI's round one screen read; ${loneLines} lines read; ${letterSentences} letters after a mark at a line's start passed over; Write your name's line 7 with its no-break spaces set back to spaces, planted, caught)`, letterOff.length === 0 && plantLetter === true, { letterOff: letterOff.slice(0, 4), plantLetter });
+  ok(`no line of a pre-K lesson line but its first starts with a lone letter at 320 by 568 in the ${theme} theme, each held to the word before it, a letter after a mark that starts a sentence or a clause aside (pass NI's round one screen read; ${loneLines} lines read; ${letterSentences} letters after a mark at a line's start passed over; Write your name's line 7 with its no-break spaces set back to spaces, and since pass NL More small letters' line 3, its big I after big, planted, caught)`, letterOff.length === 0 && plantLetter === true && plantBigI === true, { letterOff: letterOff.slice(0, 4), plantLetter, plantBigI });
   const loneStale = Object.keys(LONE_WAITS).filter((k) => !loneSeen.has(k));
   ok(`no pre-K lesson line ends on one lone word at 320 by 568 in the ${theme} theme, a line past six lines wrapping pretty (pass NC, EARMARKS A82; ${loneLines} lines read; ${Object.keys(LONE_WAITS).length} lines that must end alone named with their reasons, none stale; a long line set back to balance, its last two words parted, ended alone and was caught)`, loneOff.length === 0 && loneStale.length === 0 && loneLines >= FLOORS.lines && plantLone === true, { loneOff: loneOff.slice(0, 8), loneStale, plantLone });
   ok(`every pre-K lesson line breaks the same with each of its sentences lit in turn as with none lit, at 375 by 667 and 320 by 568 in the ${theme} theme, so the reading light never moves the words, each word read by its place (pass NC, EARMARKS A86; ${reflowRead} sentences lit; the old padding, planted, moved the words and was caught)`, reflowOff.length === 0 && reflowRead >= FLOORS.lit && plantReflow === true, reflowOff.slice(0, 4));
@@ -269,7 +292,7 @@ for (const theme of ['light', 'dark']) {
   const bankOff = []; const bankWaits = []; let banksRead = 0; let screensRead = 0; let notesSeen = 0; const skipped = []; let plantBank = null;
   for (const g of banks) {
     const home = early.flatMap((c) => c.modules).find((m) => m.generators.includes(g));
-    for (let seed = 1; seed <= SEEDS; seed++) {
+    for (const seed of seedsOf(g)) {
       await page.evaluate(([gen, s, mid]) => window.__eduTest.showQuestion(gen, s, mid), [g, seed, home.id]); await screenIs('practice'); await drawn();
       const got = await CHECK();
       // A bank with no Check answer is a tracing kind, which the child finishes by drawing; every seed of it is the same kind.
@@ -311,6 +334,7 @@ for (const theme of ['light', 'dark']) {
     await ctx.addInitScript(([t, art]) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* no storage */ } window.__eduArt = art; }, [theme, painted.map((x) => x.serial)]);
     const page = await ctx.newPage(); const errors = []; page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
     await page.goto(new URL('./page.html', out).href);
+    await page.addStyleTag({ content: 'body { margin: 0 !important; }' });   // the product's own margin, as above
     const screenIs = (n) => page.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
     const tapIf = async (name) => { const b = page.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(250); return true; } return false; };
     await screenIs('welcome');

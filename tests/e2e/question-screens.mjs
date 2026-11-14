@@ -1846,7 +1846,30 @@ const ponder = () => page.evaluate(() => {
           plantLone = set && !!(await loneLast(pg)); await pg.evaluate(() => { for (const [t, s] of window.__nb || []) t.textContent = s; delete window.__nb; }); } } }
     await ctx.close(); }
   ok(`a lesson line's last word never stands alone on its last line at 320, 340, 360, 375, 390 and 412 pixels wide in both themes, its last two words held together, and Write it by its sounds' F   X on one row under the fox at every width (round one's screen read, pass NE; ${LONE_LINES.length} lines, ${loneReads} reads; Big and little's no-break space set back to a space at 390, planted, caught; F X's box narrowed, planted, caught)`,
-    loneFaults.length === 0 && runFaults.length === 0 && loneReads === LONE_LINES.length * 12 && runReads === 12 && plantLone === true && plantRun === true, { loneFaults: loneFaults.slice(0, 8), runFaults, loneReads, plantLone, plantRun }); }
+    loneFaults.length === 0 && runFaults.length === 0 && loneReads === LONE_LINES.length * 12 && runReads === 12 && plantLone === true && plantRun === true, { loneFaults: loneFaults.slice(0, 8), runFaults, loneReads, plantLone, plantRun });
+  // Section 19 (pass NK, round one's code and screen reads): a shape keeps its size beside the others, big, plain and little in that order in a
+  // row and across a stacked pair's two rows (itemScale, and since the screen read a stacked pair's rows scaled together), and the oval standing
+  // up tall draws taller than wide, on Any size, any turn's lines 1, 4 and 10 at 375 by 667 and 320 by 568 in both themes; every picture given
+  // its cell's whole width, as before itemScale, planted, caught.
+  const rowWidths = (pg) => pg.evaluate(() => [...document.querySelectorAll('.edu-row-pic')].map((r) => [...r.querySelectorAll(':scope > div svg')].map((s) => Math.round(s.getBoundingClientRect().width))));
+  const sizeOff = (one, ten, oval) => { const out = []; const [r1] = one; const [top, bottom] = ten;
+    if (!(r1 && r1.length === 3 && r1[0] > r1[2] && r1[2] > r1[1])) out.push('line 1 ' + JSON.stringify(one));
+    if (!(top && bottom && top[0] > bottom[1] && bottom[1] > bottom[0] && Math.abs(top[1] - bottom[1]) <= 2)) out.push('line 10 ' + JSON.stringify(ten));
+    if (!(oval && oval[1] > oval[0] * 1.3)) out.push('line 4 tall oval ' + JSON.stringify(oval)); return out; };
+  const sizeFaults = []; let sizeReads = 0; let plantSizes = null;
+  for (const theme of ['light', 'dark']) for (const [w, h] of [[375, 667], [320, 568]]) { const { ctx, pg } = await openAs(theme, w, h);
+    await toLine(pg, 'any-size-any-turn', 1); const one = await rowWidths(pg);
+    await pg.locator('[data-lesson-nav] button[aria-label="Next"]').first().click({ force: true }); await pg.waitForTimeout(260);
+    await pg.locator('[data-lesson-nav] button[aria-label="Next"]').first().click({ force: true }); await pg.waitForTimeout(260);
+    await pg.locator('[data-lesson-nav] button[aria-label="Next"]').first().click({ force: true }); await pg.waitForTimeout(400);
+    const oval = await pg.evaluate(() => { const e = document.querySelector('.edu-row-pic ellipse'); if (!e) return null; const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; });
+    await toLine(pg, 'any-size-any-turn', 10); const ten = await rowWidths(pg); sizeReads += 1;
+    for (const f of sizeOff(one, ten, oval)) sizeFaults.push(`${theme} ${w}: ${f}`);
+    if (plantSizes === null) { await pg.evaluate(() => document.querySelectorAll('.edu-row-pic > div > div').forEach((d) => { d.setAttribute('data-was', d.getAttribute('style') || ''); d.style.width = '100%'; d.style.maxWidth = 'none'; }));
+      plantSizes = sizeOff(one, await rowWidths(pg), oval).some((f) => f.startsWith('line 10')); await pg.evaluate(() => document.querySelectorAll('[data-was]').forEach((d) => { d.setAttribute('style', d.getAttribute('data-was')); d.removeAttribute('data-was'); })); }
+    await ctx.close(); }
+  ok(`a shape keeps its size beside the others, big, plain and little in order in a row and across a stacked pair's two rows, and the oval standing up tall draws taller than wide (pass NK, round one's code and screen reads; Any size, any turn's lines 1, 4 and 10 on ${sizeReads} screens; every picture its cell's whole width, planted, caught)`,
+    sizeFaults.length === 0 && sizeReads === 4 && plantSizes === true, { sizeFaults, plantSizes }); }
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

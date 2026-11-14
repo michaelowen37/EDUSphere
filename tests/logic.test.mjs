@@ -449,6 +449,109 @@ const wynLastOf = (q) => { const n = wynName(q); if (!n || q.story !== 'Look at 
 const wynNextOf = (q) => { const n = wynName(q); const m = /^Which letter comes right after ([A-Za-z])\?$/.exec(q.prompt || ''); if (!n || !m || q.story !== 'Look at this name.' || n.indexOf(m[1]) < 0) return null; return mqOne(q, (c) => c === n[n.indexOf(m[1]) + 1]); };
 const wynRightOf = (q) => { const n = wynName(q); if (!n || q.story !== 'Here is ' + n + ', the way a grown-up wrote it.' || q.prompt !== 'Which one has its letters in the same order?' || !(q.choices || []).every((c) => /^print:/.test(c) && [...c.slice(6)].sort().join() === [...n].sort().join())) return null; return mqOne(q, (c) => c === 'print:' + n); };
 const wynYesNoOf = (q) => { const v = q.visual || {}; if (v.kind !== 'pair' || !v.stack || (v.a || {}).kind !== 'print' || (v.b || {}).kind !== 'print' || !WYN_NAMES.includes(v.a.text) || q.story !== 'Here is ' + v.a.text + ', the way a grown-up wrote it, and under it, a try at writing it.' || q.prompt !== 'Are the letters of the try in the same order?' || [...v.b.text].sort().join() !== [...v.a.text].sort().join()) return null; return v.b.text === v.a.text ? 'Yes' : 'No'; };
+// A, E and I and O and U (pass NK), from the dictionary reads their lines rest on (Merriam-Webster, November 13, 2026: A "ˈā", E "ˈē",
+// I "ˈī", O "ˈō", U "ˈyü"; apple "ˈa-pəl", ant "ˈant", elephant "ˈe-lə-fənt", elf "ˈelf", igloo "ˈi-(ˌ)glü", insect "ˈin-ˌsekt",
+// octopus "ˈäk-tə-pəs", otter "ˈä-tər", umbrella "ˌəm-ˈbre-lə" and up "ˈəp", each read for its first sound; egg's "ˈeg, ˈāg", two ways
+// that start differently, is why neither lesson uses it): each vowel and the words its lines say start with the sound it says in lots of
+// words; the letters each lesson's banks ask about; O and U's review words, line 7's ant and line 12's elephant; each letter's partner
+// in O and U's yes or no; and the pair never shown side by side, since an ant is an insect.
+const NK_WORDS = { A: ['apple', 'ant'], E: ['elephant', 'elf'], I: ['igloo', 'insect'], O: ['octopus', 'otter'], U: ['umbrella'] };
+const NK_FIRST = Object.fromEntries(Object.entries(NK_WORDS).flatMap(([l, ws]) => ws.map((w) => [w, l])));
+const NK_AEI = ['A', 'E', 'I']; const NK_OU = ['O', 'U']; const NK_OU_ALL = ['O', 'U', 'A', 'E'];
+const NK_REVIEW = { A: ['ant'], E: ['elephant'] }; const NK_PARTNER = { O: 'U', U: 'O', A: 'E', E: 'A' }; const NK_APART = [['ant', 'insect']];
+// The words O and U's game and yes or no say and never show: up, which has no picture, beside umbrella; its first sound is U's.
+const NK_HEARD_FIRST = { ...NK_FIRST, up: 'U' };
+const nkHeard = (q) => { const m = /^Listen\. ([A-Z][a-z]+)\.$/.exec(q.story || ''); return m ? m[1].toLowerCase() : null; };
+const nkHeardWord = (q) => { const m = /^Listen to this word\. ([A-Z][a-z]+)\.$/.exec(q.story || ''); return m ? m[1].toLowerCase() : null; };
+const nkFirstOf = (q, letters) => { const w = nkHeard(q); if (!w || !NK_FIRST[w] || !myShows(q, w) || q.prompt !== 'Which letter says the sound ' + w + ' starts with?' || !(q.choices || []).every((c) => letters.includes(c))) return null; return mqOne(q, (c) => c === NK_FIRST[w]); };
+const nkPicOf = (q, letters) => { const x = ndShown(q); const m = /^This is the letter ([A-Z])\. Now listen to these three\. /.exec(q.story || ''); if (!x || !letters.includes(x) || !m || m[1] !== x || !niNames(q, q.story) || q.prompt !== 'Which one starts with the sound the letter ' + x + ' says?') return null; return mqOne(q, (c) => NK_FIRST[myName(c)] === x); };
+const nkBothOf = (q) => { const m = /^Listen to these two words\. ([A-Z][a-z]+)\. ([A-Z][a-z]+)\.$/.exec(q.story || ''); if (!m || q.prompt !== 'Which letter says the sound they both start with?') return null; const a = m[1].toLowerCase(); const b = m[2].toLowerCase(); const v = q.visual || {};
+  if (!NK_FIRST[a] || NK_FIRST[a] !== NK_FIRST[b] || v.kind !== 'pair' || (v.a || {}).name !== a || (v.b || {}).name !== b || !(q.choices || []).every((c) => NK_AEI.includes(c))) return null; return mqOne(q, (c) => c === NK_FIRST[a]); };
+const nkOrOf = (q, letters) => { const w = nkHeardWord(q); const m = /^Which letter says the sound ([a-z]+) starts with, (?:the letter )?([A-Z]) or (?:the letter )?([A-Z])\?$/.exec(q.prompt || ''); if (!w || !m || m[1] !== w || !NK_HEARD_FIRST[w] || q.visual || [m[2], m[3]].join() !== (q.choices || []).join() || !(q.choices || []).every((c) => letters.includes(c))) return null; return mqOne(q, (c) => c === NK_HEARD_FIRST[w]); };
+const nkSaysIt = (q, letters) => { const x = ndShown(q); const m = /^This is the letter ([A-Z])\. Listen to this word\. ([A-Z][a-z]+)\.$/.exec(q.story || ''); if (!x || !letters.includes(x) || !m || m[1] !== x) return null; const w = m[2].toLowerCase(); if (!NK_HEARD_FIRST[w] || q.prompt !== 'Does ' + w + ' start with the sound the letter ' + x + ' says?') return null; return NK_HEARD_FIRST[w] === x ? 'Yes' : 'No'; };
+// O and U's name bank (since round one's lesson read): what tells each letter from the one asked, in line 4's own words, U's round bottom,
+// open at its top, V's point at its bottom and O round all the way around, and each letter's own explanation.
+const NK_OU_NAME_WHY = { U: { V: 'has a point at its bottom, and the bottom of U is round.', O: 'is round all the way around, and U is open at its top.' }, V: { U: 'has a round bottom, and the bottom of V is a point.', O: 'is round all the way around, and the bottom of V is a point.' }, O: { U: 'is open at its top, and O is round all the way around.', V: 'has a point at its bottom, and O is round all the way around.' } };
+const NK_OU_NAME_EXPLAIN = { U: 'This is U. Its bottom is round, and it is open at its top.', V: 'This is V. Its bottom is a point.', O: 'This is O. It is round all the way around.' };
+const nkNameOf = (q) => { const m = /^Tap the letter ([OUV])\.$/.exec(q.prompt || ''); if (!m || q.story !== null || q.visual || [...(q.choices || [])].sort().join() !== 'O,U,V') return null; return mqOne(q, (c) => c === m[1]); };
+// Any size, any turn and Rectangles (pass NK): each age's shapes and the looks its lesson draws, the three pairs never set against each
+// other (a square is a rectangle and a rhombus too, Merriam-Webster's rhombus being "a parallelogram with four equal sides and sometimes
+// one with no right angles", and a circle is a perfectly round oval), and the words for a shape choice: its shape, look, color and size.
+const NK_SHAPE_STORY = 'Look at the shape only, not how big it is, how it is turned, or its color.';
+const NK_SHAPES = { 4: ['circle', 'oval', 'triangle', 'square', 'rectangle', 'rhombus'], 3: ['circle', 'triangle', 'square', 'rectangle'] };
+const NK_LOOKS = { 4: { circle: ['plain'], oval: ['plain', 'tall', 'tilted'], triangle: ['plain', 'thin', 'wide', 'turned'], square: ['plain', 'turned'], rectangle: ['plain', 'tall', 'thin'], rhombus: ['plain', 'wide', 'leaning'] },
+  3: { circle: ['plain'], triangle: ['plain', 'thin', 'turned'], square: ['plain', 'turned'], rectangle: ['plain', 'tall', 'thin'] } };
+const NK_NEVER = [['square', 'rectangle'], ['square', 'rhombus'], ['circle', 'oval']];
+const nkApart = (a, b) => NK_NEVER.some(([p, q]) => (a === p && b === q) || (a === q && b === p));
+const nkItem = (tok) => { const m = /^item:([a-z]+)(?:~([a-z]+))?-(red|blue|yellow|green)(?:-(big|small))?(?:#\d+)?$/.exec(String(tok)); return m ? { shape: m[1], look: m[2] || 'plain', colour: m[3], scale: m[4] || '' } : null; };
+const nkShown = (v) => (v && v.kind === 'item' ? { shape: String(v.shape).split('~')[0], look: String(v.shape).split('~')[1] || 'plain', colour: v.colour, scale: v.scale || '' } : null);
+const nkOddOf = (q, age) => { if (q.story !== NK_SHAPE_STORY || q.prompt !== 'Which shape does not belong?' || (q.choices || []).length !== (age === 4 ? 4 : 3)) return null; const ss = q.choices.map((c) => (nkItem(c) || {}).shape);
+  if (!ss.every((s) => NK_SHAPES[age].includes(s))) return null; const kinds = [...new Set(ss)]; if (kinds.length !== 2 || nkApart(kinds[0], kinds[1])) return null; return mqOne(q, (c) => ss.filter((s) => s === nkItem(c).shape).length === 1); };
+const nkTapOf = (q, age) => { const m = /^Tap the ([a-z]+)\.$/.exec(q.prompt || ''); if (!m || !NK_SHAPES[age].includes(m[1]) || q.story !== null || q.visual) return null; const ss = (q.choices || []).map((c) => (nkItem(c) || {}).shape);
+  if (!ss.every((s) => NK_SHAPES[age].includes(s)) || ss.some((s) => nkApart(s, m[1]))) return null; return mqOne(q, (c) => nkItem(c).shape === m[1]); };
+const nkSameOf = (q, age) => { const v = nkShown(q.visual); if (!v || !NK_SHAPES[age].includes(v.shape) || q.story !== 'Here is a shape. ' + NK_SHAPE_STORY || q.prompt !== 'Which one is the same shape?') return null; const ss = (q.choices || []).map((c) => (nkItem(c) || {}).shape);
+  if (!ss.every((s) => NK_SHAPES[age].includes(s)) || ss.some((s) => nkApart(s, v.shape))) return null; return mqOne(q, (c) => nkItem(c).shape === v.shape); };
+const nkIsOf = (q, age) => { const v = nkShown(q.visual); const m = /^Is this an? ([a-z]+)\?$/.exec(q.prompt || ''); if (!v || !m || !NK_SHAPES[age].includes(m[1]) || !NK_SHAPES[age].includes(v.shape) || q.story !== NK_SHAPE_STORY || nkApart(v.shape, m[1])) return null; return v.shape === m[1] ? 'Yes' : 'No'; };
+const nkWhatOf = (q, age) => { const v = nkShown(q.visual); if (!v || q.prompt !== 'What shape is this?' || q.story !== NK_SHAPE_STORY || !(q.choices || []).every((c) => NK_SHAPES[age].includes(c)) || q.choices.some((c) => nkApart(c, v.shape))) return null; return mqOne(q, (c) => c === v.shape); };
+// Small letters and End marks (pass NK's second wave): the test's own tables, read by no code but the check that the code's are these.
+// The seven small letters shaped just like their big letters, what each looks like in the lines' words, the three end marks by their
+// names, looks and what each tells, and the nine sentences the lines say.
+const NK_SML = ['c', 'o', 's', 'v', 'w', 'x', 'z'];
+const NK_SML_LOOK = { c: 'is curved, with an open side', o: 'goes all the way around', s: 'is curvy like a snake', v: 'has a point at its bottom', w: 'has two points at its bottom', x: 'is two lines that cross', z: 'has a slanted line between two lines across' };
+const NK_MARKS = { '.': 'period', '?': 'question mark', '!': 'exclamation point' };
+const NK_MARK_LOOK = { '.': 'is one little dot', '?': 'is a curl with a dot under it', '!': 'is a line with a dot under it' };
+// What each mark shows (the means bank's answers, since round two's lesson read asked about the mark and not the sentence), and what a
+// sentence with that mark does, in the heard bank's explanation.
+const NK_MARK_SHOWS = { '.': 'Telling', '?': 'Asking', '!': 'A strong feeling' };
+const NK_MARK_SENTENCE = { '.': 'tells', '?': 'asks', '!': 'has a strong feeling' };
+// The letters whose names rhyme, never on a screen together where a letter is named by ear.
+const NK_SML_RHYME = ['c', 'v', 'z'];
+const NK_MARK_MANNER = { '.': 'tell', '?': 'ask', '!': 'happy' };
+const NK_MARK_SAY = { '.': 'telling, your voice going down at the end', '?': 'asking, your voice going up at the end', '!': 'with a strong feeling, happy and excited' };
+const NK_SENT = ['We see a cat.', 'Can you see a cat?', 'We see a cat!', 'We see the sun.', 'Can you see the sun?', 'We see the sun!', 'We can run.', 'Can we run?', 'We can run!'];
+const nkMarkOf = (name) => Object.keys(NK_MARKS).find((m) => NK_MARKS[m] === name);
+// Almost the same and More small letters (pass NL): the test's own tables, read by no code but the check that the code's are these. The
+// four small letters of each, what each looks like at each size in the lines' words, how each small letter goes with its big one, what
+// tells a letter's two sizes apart, and the letters whose names rhyme (ee and tee), never named by ear side by side.
+const NL_KPUY = ['k', 'p', 'u', 'y'];
+const NL_KPUY_LOOK = { k: 'has a tall line and two short arms', p: 'is round at its top and hangs down low', u: 'has a line all the way down its right side', y: 'is like a small v with a long tail' };
+const NL_KPUY_BIG = { K: 'has a tall line and two long arms', P: 'is tall, with a round part at its top', U: 'is round at its bottom and open at its top', Y: 'has two arms that meet, and a line straight down' };
+const NL_KPUY_GOES = { k: 'has a tall line, like the big K, and two short arms', p: 'is round at its top, like the big P, and hangs down low', u: 'is round at its bottom, like the big U, with a line all the way down its right side', y: 'has two arms at its top, like the big Y, and a long tail that hangs down low' };
+const NL_KPUY_TWIN = { K: 'is a big letter, with two long arms', k: 'is a small letter, with two short arms', P: 'is a big letter, tall, with a round part at its top', p: 'is a small letter, and it hangs down low', U: 'is a big letter, round at its bottom and open at its top', u: 'is a small letter, with a line all the way down its right side', Y: 'is a big letter, with a line straight down', y: 'is a small letter, with a long tail' };
+const NL_EIRT = ['e', 'i', 'r', 't'];
+const NL_EIRT_LOOK = { e: 'is round, with a line across its middle', i: 'is a short line with a dot on top', r: 'is short, with a little curve at its top', t: 'is a line with a short line across it' };
+const NL_EIRT_BIG = { E: 'has a tall line and three lines across', I: 'is one tall line', R: 'has a round part at its top and a leg', T: 'has a line across its very top' };
+const NL_EIRT_TWIN = { E: 'is a big letter, with a tall line and three lines across', e: 'is a small letter, and it is round', I: 'is a big letter, one tall line', i: 'is a small letter, with a dot on top', R: 'is a big letter, with a leg', r: 'is a small letter, with a little curve at its top', T: 'is a big letter, with a line across its very top', t: 'is a small letter, with a little curve at its bottom' };
+const NL_EIRT_RHYME = ['e', 't'];
+const nkLetterText = (q) => (q.visual && q.visual.kind === 'letters' ? String(q.visual.text) : null);
+// Tap the small x or the big X, among both sizes of two letters.
+const nkSmlTapOf = (q, LET = NK_SML) => { const m = /^Tap the (small|big) ([A-Za-z])\.$/.exec(q.prompt || ''); if (!m || q.story !== null || q.visual || q.printed !== 'Tap the letter you hear.' || (q.choices || []).length !== 4) return null;
+  const want = m[1] === 'big' ? m[2].toUpperCase() : m[2].toLowerCase(); if (m[2] !== want || !LET.includes(m[2].toLowerCase())) return null;
+  const lows = [...new Set(q.choices.map((c) => String(c).toLowerCase()))]; if (lows.length !== 2 || !lows.every((l) => LET.includes(l) && q.choices.includes(l) && q.choices.includes(l.toUpperCase()))) return null; return mqOne(q, (c) => c === want); };
+// The small x shown and named, and the big letter that goes with it.
+const nkSmlBigOf = (q, LET = NK_SML) => { const m = /^Here is the small ([a-z])\.$/.exec(q.story || ''); const v = nkLetterText(q); if (!m || v !== m[1] || q.printedStory !== 'Here is a small letter.' || q.prompt !== 'Which big letter goes with it?' || !LET.includes(v)) return null;
+  if (!(q.choices || []).every((c) => /^[A-Z]$/.test(c) && LET.includes(c.toLowerCase()))) return null; return mqOne(q, (c) => c === m[1].toUpperCase()); };
+// The big X named, and the small letter that goes with it.
+const nkSmlFindOf = (q, LET = NK_SML) => { const m = /^Which small letter goes with the big ([A-Z])\?$/.exec(q.prompt || ''); if (!m || q.story !== null || q.visual || q.printed !== 'Which small letter goes with the big letter you hear?') return null;
+  if (!(q.choices || []).every((c) => /^[a-z]$/.test(c) && LET.includes(c))) return null; return mqOne(q, (c) => c === m[1].toLowerCase()); };
+// A small letter shown and the small x named: whether it is the one named.
+const nkSmlIsOf = (q, LET = NK_SML) => { const m = /^Is this the small ([a-z])\?$/.exec(q.prompt || ''); const v = nkLetterText(q); if (!m || !v || !/^[a-z]$/.test(v) || !LET.includes(v) || q.printed !== 'Is this the small letter you hear?' || q.story !== null) return null; return v === m[1] ? 'Yes' : 'No'; };
+// A big letter and a small one shown side by side: whether they are the same letter.
+const nkSmlSameOf = (q, LET = NK_SML) => { const v = nkLetterText(q); const m = /^([A-Z])   ([a-z])$/.exec(v || ''); if (!m || q.prompt !== 'Are these two the same letter, one big and one small?' || q.story !== null || !LET.includes(m[1].toLowerCase()) || !LET.includes(m[2].toLowerCase())) return null; return m[1].toLowerCase() === m[2].toLowerCase() ? 'Yes' : 'No'; };
+// Tap the mark named, among the three.
+const nkMarkNameOf = (q) => { const m = /^Tap the (period|question mark|exclamation point)\.$/.exec(q.prompt || ''); if (!m || q.printed !== 'Tap the mark you hear.' || q.story !== null || q.visual || [...(q.choices || [])].sort().join('') !== '!.?') return null; return mqOne(q, (c) => c === nkMarkOf(m[1])); };
+// A sentence shown and not said, and what it does by its mark.
+const nkMarkMeansOf = (q) => { const s = nkLetterText(q); if (!s || !NK_SENT.includes(s) || q.story !== 'Look at the mark at the end of this sentence.' || q.prompt !== 'What does the mark show, telling, asking, or a strong feeling?' || q.voices) return null;
+  if ([...(q.choices || [])].sort().join('|') !== Object.values(NK_MARK_SHOWS).sort().join('|')) return null; return mqOne(q, (c) => c === NK_MARK_SHOWS[s.slice(-1)]); };
+// A sentence heard in its manner and not shown, and the mark at its end; with no voice a grown-up's line says it without its mark.
+const nkMarkHeardOf = (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); if (!m || !NK_SENT.includes(m[1]) || q.visual || q.printedStory !== 'Listen to the sentence.' || q.prompt !== 'Which mark goes at its end?') return null; const s = m[1];
+  if (!Array.isArray(q.voices) || q.voices.length !== 1 || q.voices[0][0] !== s || q.voices[0][1] !== NK_MARK_MANNER[s.slice(-1)] || q.unvoicedStory !== 'For the grown-up: say this sentence ' + NK_MARK_SAY[s.slice(-1)] + ': "' + s.slice(0, -1) + '"') return null;
+  if ([...(q.choices || [])].sort().join('') !== '!.?') return null; return mqOne(q, (c) => c === s.slice(-1)); };
+// A mark shown and one named: whether it is the one named.
+const nkMarkIsOf = (q) => { const m = /^Is this an? (period|question mark|exclamation point)\?$/.exec(q.prompt || ''); const v = nkLetterText(q); if (!m || !v || v.length !== 1 || !NK_MARKS[v] || q.story !== null) return null; return v === nkMarkOf(m[1]) ? 'Yes' : 'No'; };
+// A sentence written with a big first letter and with a small one: the one that starts as a sentence does.
+const nkMarkStartOf = (q) => { if (q.story !== 'A sentence starts with a big letter.' || q.prompt !== 'Which one starts that way?' || (q.choices || []).length !== 2) return null;
+  const big = q.choices.find((c) => NK_SENT.includes(c)); if (!big || !q.choices.includes(big[0].toLowerCase() + big.slice(1))) return null; return mqOne(q, (c) => /^[A-Z]/.test(c)); };
 const lwYesNoOf = (q) => { const v = q.visual || {}; if (q.story !== 'Look at this.' || q.prompt !== 'Is this a real letter?') return null; if (v.kind === 'letters' && LW_LETTERS[v.text]) return 'Yes'; if (v.kind === 'icon' && LW_MARKS.includes(v.name)) return 'No'; return null; };
 const PREK_DERIVE = {
   // Learning words (pre-K 3): the one just like the picture shown; the one not like the two alike; whether the counted row holds the
@@ -789,6 +892,17 @@ const PREK_DERIVE = {
   // Q, V and Y and Write your name (pass NI), each from the test's own tables (NI_LETTERS, NI_FIRST, WYN_NAMES).
   'p4-qvy-letter': (q) => niLetterOf(q), 'p4-qvy-sound': (q) => niSoundOf(q), 'p4-qvy-pic': (q) => niPicOf(q), 'p4-qvy-first': (q) => niFirstOf(q), 'p4-qvy-yesno': (q) => niSaysIt(q),
   'p4-wyn-first': (q) => wynFirstOf(q), 'p4-wyn-next': (q) => wynNextOf(q), 'p4-wyn-last': (q) => wynLastOf(q), 'p4-wyn-right': (q) => wynRightOf(q), 'p4-wyn-yesno': (q) => wynYesNoOf(q),
+  // A, E and I and O and U (pass NK), each from the test's own tables (NK_WORDS, NK_FIRST, NK_AEI, NK_OU).
+  'p4-aei-first': (q) => nkFirstOf(q, NK_AEI), 'p4-aei-pic': (q) => nkPicOf(q, NK_AEI), 'p4-aei-both': (q) => nkBothOf(q), 'p4-aei-or': (q) => nkOrOf(q, NK_AEI), 'p4-aei-yesno': (q) => nkSaysIt(q, NK_AEI),
+  'p4-ou-first': (q) => nkFirstOf(q, NK_OU_ALL), 'p4-ou-pic': (q) => nkPicOf(q, NK_OU_ALL), 'p4-ou-name': (q) => nkNameOf(q), 'p4-ou-or': (q) => nkOrOf(q, NK_OU), 'p4-ou-yesno': (q) => nkSaysIt(q, NK_OU_ALL),
+  // Any size, any turn and Rectangles (pass NK), each from the test's own tables (NK_SHAPES, NK_NEVER).
+  'p4-turn-odd': (q) => nkOddOf(q, 4), 'p4-turn-name': (q) => nkTapOf(q, 4), 'p4-turn-same': (q) => nkSameOf(q, 4), 'p4-turn-yesno': (q) => nkIsOf(q, 4), 'p4-turn-what': (q) => nkWhatOf(q, 4),
+  'p3-rect-odd': (q) => nkOddOf(q, 3), 'p3-rect-name': (q) => nkTapOf(q, 3), 'p3-rect-same': (q) => nkSameOf(q, 3), 'p3-rect-yesno': (q) => nkIsOf(q, 3), 'p3-rect-what': (q) => nkWhatOf(q, 3),
+  'p4-sml-tap': (q) => nkSmlTapOf(q), 'p4-sml-big': (q) => nkSmlBigOf(q), 'p4-sml-find': (q) => nkSmlFindOf(q), 'p4-sml-yesno': (q) => nkSmlIsOf(q), 'p4-sml-same': (q) => nkSmlSameOf(q),
+  // Almost the same and More small letters (pass NL): Small letters' five kinds, each with its lesson's own letters (NL_KPUY, NL_EIRT).
+  'p4-kpuy-tap': (q) => nkSmlTapOf(q, NL_KPUY), 'p4-kpuy-big': (q) => nkSmlBigOf(q, NL_KPUY), 'p4-kpuy-find': (q) => nkSmlFindOf(q, NL_KPUY), 'p4-kpuy-yesno': (q) => nkSmlIsOf(q, NL_KPUY), 'p4-kpuy-same': (q) => nkSmlSameOf(q, NL_KPUY),
+  'p4-eirt-tap': (q) => nkSmlTapOf(q, NL_EIRT), 'p4-eirt-big': (q) => nkSmlBigOf(q, NL_EIRT), 'p4-eirt-find': (q) => nkSmlFindOf(q, NL_EIRT), 'p4-eirt-yesno': (q) => nkSmlIsOf(q, NL_EIRT), 'p4-eirt-same': (q) => nkSmlSameOf(q, NL_EIRT),
+  'p4-mark-name': (q) => nkMarkNameOf(q), 'p4-mark-means': (q) => nkMarkMeansOf(q), 'p4-mark-heard': (q) => nkMarkHeardOf(q), 'p4-mark-yesno': (q) => nkMarkIsOf(q), 'p4-mark-start': (q) => nkMarkStartOf(q),
   'p4-space-kind': (q) => { const m = /^Which one is (a letter|a word|a picture)\?$/.exec(q.prompt || ''); const ch = q.choices || []; if (!m || q.story !== 'Look at these three.' || ch.length !== 3) return null;
     const isLetter = (c) => ND_KIND.letters.includes(ndPrinted(c)); const isWord = (c) => ND_KIND.words.includes(ndPrinted(c)); const isPicture = (c) => /^icon:/.test(c) && ND_KIND.pictures.includes(myName(c));
     if (!ch.every((c) => isLetter(c) || isWord(c) || isPicture(c))) return null; return mqOne(q, { 'a letter': isLetter, 'a word': isWord, 'a picture': isPicture }[m[1]]); },
@@ -1688,13 +1802,14 @@ const PREK_DERIVE = {
   { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
     // Since p17 of pass NF print is writing too (writing), a stacked pair of writing inside a stacked pair draws as the lesson's own
     // (nestWriting, lessonHalf), and a pair of prints is fitted as one group (EARMARKS A102: PrintFitGroup, and FitText's shown size).
+    // Since pass NK a pair of sentence lines (End marks) is fitted as one group the same way, so the group's line reads in that form.
     const RULE = "const wide = tall && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)) || (grows(first) && writing(second)) || (writing(first) && grows(second)) || (writing(first) && writing(second)));";
     const STACKED = "const stackedRun = tall && stack && !together;"; const BIG = "const bigHalf = (v) => wide || (stackedRun && writing(v)) || (upright && (grows(v) || counts(v))) || (stackedRun && nestWriting(v));";
-    const WRITING = "const writing = (v) => run(v) || (!!v && v.kind === 'print');"; const GROUP = 'return allPrint(visual) && !printGroup ? <PrintFitGroup>{drawn}</PrintFitGroup> : drawn;';
+    const WRITING = "const writing = (v) => run(v) || (!!v && v.kind === 'print');"; const GROUP = 'return (allPrint(visual) || allLines(visual)) && !printGroup ? <PrintFitGroup>{drawn}</PrintFitGroup> : drawn;';
     const SHOWN = 'const shown = group && group.least !== null ? Math.min(fs, group.least) : fs;';
     // Since pass NE (EARMARKS A93) a lesson's own letters grow too (lessonGrows), so the letter beside a drawing reads in that form.
     const GROW = "fontSize: visual.grow || lessonGrows ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6,";
-    const has = (src) => src.includes(RULE) && /const counts = \(v\) => !!v && v\.kind === 'dots';/.test(src) && src.includes("const run = (v) => { if (!v || v.kind !== 'letters' || v.highlight) return false; const ts = String(v.text).trim().split(/\\s+/); return ts.every((t) => /^[A-Za-z]+$/.test(t)) && (ts.every((t) => t.length === 1) || ts.join('').length <= 4); };") && src.includes(STACKED) && src.includes(BIG) && src.includes(WRITING) && src.includes(GROUP) && src.includes(SHOWN) && src.includes("fontSize: shown, whiteSpace: wrap ? 'normal' : 'nowrap'") && src.includes('const grown = (v) => ((wide || stackedRun) && writing(v) ? { ...v, grow: true } : v);') && src.includes('<Picture visual={v} note={false} bare big={bigHalf(v)} lesson={lessonHalf(v)} />') && src.includes('{half(grown(tight(oneBeside(first, second))), 0)}{half(grown(tight(oneBeside(second, first))), 1)}') && src.split(GROW).length === 2;
+    const has = (src) => src.includes(RULE) && /const counts = \(v\) => !!v && v\.kind === 'dots';/.test(src) && src.includes("const run = (v) => { if (!v || v.kind !== 'letters' || v.highlight) return false; const ts = String(v.text).trim().split(/\\s+/); return ts.every((t) => /^[A-Za-z]+$/.test(t)) && (ts.every((t) => t.length === 1) || ts.join('').length <= 4); };") && src.includes(STACKED) && src.includes(BIG) && src.includes(WRITING) && src.includes(GROUP) && src.includes(SHOWN) && src.includes("fontSize: shown, whiteSpace: wrap ? 'normal' : 'nowrap'") && src.includes('const grown = (v) => ((wide || stackedRun) && writing(v) ? { ...v, grow: true } : v);') && src.includes('<Picture visual={v} note={false} bare big={bigHalf(v)} lesson={lessonHalf(v)} />') && src.includes('{half(grown(peered(tight(oneBeside(first, second)), second)), 0)}{half(grown(peered(tight(oneBeside(second, first)), first)), 1)}') && src.split(GROW).length === 2;
     const old = ui.replace(RULE, 'const wide = tall && !stack && grows(first) && grows(second);');
     const a88 = ui.replace(RULE, 'const wide = tall && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)));');
     const kept = ui.replace(GROW, 'fontSize: 44, fontWeight: 700, letterSpacing: 6,');
@@ -1787,7 +1902,8 @@ const PREK_DERIVE = {
       storyLone: ['<RichText text={keepLoneLetters(t)} size={17} lineGap={12}', '<RichText text={t} size={17} lineGap={12}'],
       // Since the third read's code read: the card's three calls that hold a hyphenated word (cardWords), pinned, since no card's after line
       // has a hyphen today and only the browser test reads the words and the sound lines.
-      cardSay: ["{cardWords(keepLoneCapitals(card.say), 'say', cardRuns)}", "{withElls(keepLoneCapitals(card.say), 'say', cardRuns)}"],
+      // Since pass NK's round two screen read the card holds a lone small letter too (keepLoneLetters): "Here is the small / w." at 320.
+      cardSay: ["{cardWords(keepLoneLetters(card.say), 'say', cardRuns)}", "{cardWords(keepLoneCapitals(card.say), 'say', cardRuns)}"],
       cardSounds: ['{cardWords(`Button ${i + 1}, ${s}.`, `s${i}`)}', '{withElls(`Button ${i + 1}, ${s}.`, `s${i}`)}'],
       // Since the third read's screen read the after line's way back stands on a row of its own (the browser test reads its row).
       cardAfter: ["{againAt < 0 ? cardWords(card.after, 'after') : <>{cardWords(card.after.slice(0, againAt + 1), 'after')}<span data-card-again-line=\"\" style={{ display: 'block' }}>{cardWords(card.after.slice(againAt + 1), 'again')}</span></>}</p>}", '{card.after}</p>}'] };
@@ -2611,6 +2727,957 @@ const PREK_DERIVE = {
   const wynPlants = { yn: bigFirst(oldYn), next: neverBig(oldNext) };
   ok(`Write your name's yes or no is not answered by its big letter alone, nor its next letter's bank by never the big letter (pass NI, round one's lesson read; "Yes when the big letter is first" ${pct(wynRounds.yn)}% at most in rounds, ${pct(wynAlone.yn)}% alone, under 60; never the big letter ${pct(wynRounds.next)}% and ${pct(wynAlone.next)}%, under 55; the old draws rebuilt, planted, caught at ${pct(wynPlants.yn)} and ${pct(wynPlants.next)}%)`,
     Math.min(fewest(RW, 'p4-wyn-yesno'), fewest(RW, 'p4-wyn-next')) >= 300 && wynRounds.yn < 0.6 && wynAlone.yn < 0.6 && wynRounds.next < 0.55 && wynAlone.next < 0.55 && wynPlants.yn >= 0.6 && wynPlants.next >= 0.55, JSON.stringify({ wynAlone, wynRounds, wynPlants })); }
+// A, E and I and O and U (pass NK): their ten banks worked out from what each question says and shows by the test's own tables (NK_WORDS,
+// NK_FIRST), each near miss caught by the guard it names and no other, as pass NI's are: with that guard taken out of its derivation's own
+// text it gets an answer at every seed from 1 to 400, and with it in, none.
+{ const D = PREK_DERIVE; const NK_BANKS = [...L.getModule('a-e-and-i').generators, ...L.getModule('o-and-u').generators];
+  const otherLetterWord = (w, letters) => { const l = letters.find((y) => y !== NK_FIRST[w]); return NK_WORDS[l][0]; };
+  const swapLetter = (x, letters) => ({ ...x, story: x.story.replace(/^This is the letter ([A-Z])\./, (s, l) => 'This is the letter ' + letters.find((y) => y !== l) + '.') });
+  const NEAR = [
+    ['p4-aei-first', 'shown', (x) => ({ ...x, visual: { kind: 'icon', name: otherLetterWord(nkHeard(x), NK_AEI), size: 72 } })],
+    ['p4-aei-pic', 'story', (x) => swapLetter(x, NK_AEI)],
+    ['p4-aei-both', 'pair', (x) => { const m = /^Listen to these two words\. ([A-Z][a-z]+)\. ([A-Z][a-z]+)\.$/.exec(x.story); const b = otherLetterWord(m[1].toLowerCase(), NK_AEI); return { ...x, story: 'Listen to these two words. ' + m[1] + '. ' + b[0].toUpperCase() + b.slice(1) + '.', visual: { ...x.visual, b: { kind: 'icon', name: b } } }; }],
+    ['p4-aei-or', 'asked', (x) => ({ ...x, prompt: x.prompt.replace(/sound ([a-z]+) starts/, (s, w) => 'sound ' + otherLetterWord(w, NK_AEI) + ' starts') })],
+    ['p4-aei-yesno', 'story', (x) => swapLetter(x, NK_AEI)],
+    ['p4-ou-first', 'shown', (x) => ({ ...x, visual: { kind: 'icon', name: otherLetterWord(nkHeard(x), NK_OU_ALL), size: 72 } })],
+    ['p4-ou-pic', 'story', (x) => swapLetter(x, NK_OU)],
+    ['p4-ou-name', 'choices', (x) => { const w = x.choices.find((c) => c !== x.answer); return { ...x, choices: x.choices.map((c) => (c === w ? 'E' : c)) }; }],   // a wrong letter turned to E (V is asked too since round one's lesson read)
+    ['p4-ou-or', 'asked', (x) => ({ ...x, prompt: x.prompt.replace(/sound ([a-z]+) starts/, (s, w) => 'sound ' + otherLetterWord(w === 'up' ? 'umbrella' : w, NK_OU) + ' starts') })],
+    ['p4-ou-yesno', 'story', (x) => swapLetter(x, NK_OU)],
+  ];
+  const GUARDS = {
+    'p4-aei-first shown': ['nkFirstOf', ' || !myShows(q, w)', ''], 'p4-aei-pic story': ['nkPicOf', ' || m[1] !== x', ''],
+    'p4-aei-both pair': ['nkBothOf', ' || NK_FIRST[a] !== NK_FIRST[b]', ''], 'p4-aei-or asked': ['nkOrOf', ' || m[1] !== w', ''], 'p4-aei-yesno story': ['nkSaysIt', ' || m[1] !== x', ''],
+    'p4-ou-first shown': ['nkFirstOf', ' || !myShows(q, w)', ''], 'p4-ou-pic story': ['nkPicOf', ' || m[1] !== x', ''],
+    'p4-ou-name choices': ['nkNameOf', " || [...(q.choices || [])].sort().join() !== 'O,U,V'", ''], 'p4-ou-or asked': ['nkOrOf', ' || m[1] !== w', ''], 'p4-ou-yesno story': ['nkSaysIt', ' || m[1] !== x', ''],
+  };
+  const HELPERS = { nkFirstOf, nkPicOf, nkBothOf, nkOrOf, nkSaysIt, nkNameOf };
+  const without = (g, [where, from, to]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join(to);
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  // The plant: a near miss that also changes a second thing its derivation reads, so another guard still catches it with its own guard out.
+  const plantCaught = !!prove('p4-aei-first', 'shown', (x) => ({ ...x, visual: { kind: 'icon', name: otherLetterWord(nkHeard(x), NK_AEI), size: 72 }, prompt: 'Which letter makes the sound?' }));
+  ok('pass NK\'s ten banks (A, E and I and O and U) are worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    NK_BANKS.length === 10 && NK_BANKS.every((g) => typeof D[g] === 'function') && NEAR.length === NK_BANKS.length && NEAR.every(([g]) => NK_BANKS.includes(g)) && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What pass NK's ten banks may and may not do, read over seeds 1 to 400 by the test's own tables: what they print, what their lessons say
+// and draw, what they set side by side, what their reasons and explanations claim, every kind their lessons model, the code's tables
+// against the test's, and every word asked.
+{ const NK_LESSON = { 'p4-aei': 'a-e-and-i', 'p4-ou': 'o-and-u' }; const lessonOf = (g) => NK_LESSON[g.split('-').slice(0, 2).join('-')];
+  const BANKS = Object.values(NK_LESSON).flatMap((id) => L.getModule(id).generators); const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  // 1. Nothing printed while the voice can speak names a word or a letter the questions ask about. Plant: printed lines that name a word
+  //    and a letter, caught, and a clean one passed.
+  const WORDS = [...Object.keys(NK_FIRST), 'up']; const LETTERS = ['A', 'E', 'I', 'O', 'U', 'V'];
+  const leaks = (t) => { const s = String(t || ''); return WORDS.some((w) => new RegExp('(?:^|[^a-z-])' + w + '(?![a-z-])', 'i').test(s)) || LETTERS.some((l) => new RegExp('(?:^|\\s)' + l + '(?=[\\s,.?!]|$)').test(s)); };
+  const printedOf = (x) => [x.printedStory, x.printed, ...Object.values(x.whyNot || {}).map((w) => w.printedWhy).filter(Boolean)];
+  const leaked = BANKS.flatMap((g) => gen(g, 300).filter((x) => printedOf(x).some(leaks)).map((x) => g + ': ' + printedOf(x).find(leaks)));
+  const leakPlant = leaks('Listen to the word. Igloo.') && leaks('Which letter says the sound, E or I?') && !leaks('Which letter says the sound the word starts with?');
+  ok('pass NK\'s ten banks print none of the words or letters they ask about while the voice can speak: their printed setups, questions and reasons (3,000 questions; a printed word and letter planted, caught, and a clean line passed)', leaked.length === 0 && leakPlant, leaked.slice(0, 3).join(' | '));
+  // 2. Every word and letter the questions use is said in their own lesson's lines first and every picture they show is drawn there. Plants:
+  //    A, E and I's lines with insect never said, and O and U's with the otter never drawn, each caught.
+  const linesNow = (id) => L.getModule(id).lesson.script.map((l) => l.say); const showsNow = (id) => L.getModule(id).lesson.script.map((l) => l.show).filter(Boolean);
+  const used = (x) => { const out = new Set(x.aboutWords || []); for (const c of x.choices || []) { if (/^(?:icon|pic):/.test(c)) out.add(myName(c)); else if (c !== 'Yes' && c !== 'No') out.add(c); }
+    const names = /Now listen to these three\. ((?:[A-Z][a-z]+\. ?)+)$/.exec(x.story || ''); if (names) names[1].trim().split(' ').forEach((n) => out.add(n.replace('.', '').toLowerCase()));
+    for (const re of [/^Listen\. ([A-Z][a-z]+)\.$/, /Listen to this word\. ([A-Z][a-z]+)\.$/]) { const h = re.exec(x.story || ''); if (h) out.add(h[1].toLowerCase()); }
+    const two = /^Listen to these two words\. ([A-Z][a-z]+)\. ([A-Z][a-z]+)\.$/.exec(x.story || ''); if (two) { out.add(two[1].toLowerCase()); out.add(two[2].toLowerCase()); }
+    const asked = /^Tap the letter ([A-Z])\.$/.exec(x.prompt || ''); if (asked) out.add(asked[1]); const shown = ndShown(x); if (shown) out.add(shown); return [...out]; };
+  const saidIn = (lines, u) => (/^[A-Z]$/.test(u) ? lines.some((s) => new RegExp('\\b' + u + '\\b').test(s)) : lines.some((s) => new RegExp('(?:^|[^a-z-])' + u + '(?![a-z-])', 'i').test(s)));
+  const unsaid = (linesOf) => { const out = new Set(); for (const g of BANKS) for (const x of gen(g, 300)) for (const u of used(x)) if (!saidIn(linesOf(lessonOf(g)), u)) out.add(g + ': ' + u); return [...out]; };
+  const unsaidNow = unsaid(linesNow); const unsaidPlant = unsaid((id) => linesNow(id).map((s) => (id === 'a-e-and-i' ? s.replace(/insect/gi, 'beetle') : s)));
+  const drawnIn = (shows, name) => shows.some((v) => JSON.stringify(v).includes('"name":"' + name + '"'));
+  const lettersIn = (shows) => shows.flatMap((v) => { const out = []; const walk = (y) => { if (!y) return; if (y.kind === 'letters') out.push(...String(y.text).split(/\s+/)); if (y.a) walk(y.a); if (y.b) walk(y.b); (y.items || []).forEach(walk); }; walk(v); return out; });
+  const pictured = (x) => { const out = new Set(); for (const c of x.choices || []) if (/^(icon|pic):/.test(c)) out.add(myName(c)); const walk = (v) => { if (!v) return; if (['icon', 'pic'].includes(v.kind)) out.add(v.name); if (v.a) walk(v.a); if (v.b) walk(v.b); (v.items || []).forEach(walk); }; walk(x.visual); walk(x.explainVisual); return [...out]; };
+  const undrawn = (showsOf) => { const out = new Set(); for (const g of BANKS) for (const x of gen(g, 300)) { for (const p of pictured(x)) if (!drawnIn(showsOf(lessonOf(g)), p)) out.add(g + ': ' + p); for (const c of [...(x.choices || []).filter((c) => /^[A-Z]$/.test(c)), ndShown(x)].filter(Boolean)) if (!lettersIn(showsOf(lessonOf(g))).includes(c)) out.add(g + ': letter ' + c); } return [...out]; };
+  const undrawnNow = undrawn(showsNow); const undrawnPlant = undrawn((id) => showsNow(id).map((v) => (id === 'o-and-u' ? JSON.parse(JSON.stringify(v).split('"name":"otter"').join('"name":"octopus"')) : v)));
+  ok('every word and letter pass NK\'s banks use is said in their own lesson\'s lines first, and every picture and letter they show is drawn there (A, E and I with insect never said, and O and U with the otter never drawn, planted, caught)',
+    unsaidNow.length === 0 && unsaidPlant.some((u) => /: insect$/.test(u)) && undrawnNow.length === 0 && undrawnPlant.some((u) => /: otter$/.test(u)), JSON.stringify({ unsaidNow: unsaidNow.slice(0, 4), undrawnNow: undrawnNow.slice(0, 4) }));
+  // 3. What the banks set side by side: every letter offered is one of its bank's (A, E and I's three; O and U's first-sound bank O and U
+  //    with a review letter, the game O and U, the name bank O, U and V); the ant never beside the insect; no wrong picture starts with the
+  //    shown letter's sound; O and U's first-sound bank always offers O and U; and its yes or no's No word is the shown letter's partner's.
+  //    Plants: a fourth letter, the ant beside the insect, a wrong picture of the shown letter, O and U's first-sound bank without U, and a
+  //    No word of another letter, each caught.
+  const apart = (ws) => NK_APART.some(([p, q]) => ws.includes(p) && ws.includes(q));
+  const offOf = (g, x) => { const ch = x.choices || []; const pics = ch.filter((c) => /^icon:/.test(c)).map(myName);
+    if (/^p4-aei-(first|both|or)$/.test(g) && !ch.every((c) => NK_AEI.includes(c))) return 'letters';
+    if (g === 'p4-ou-first') { if (!ch.every((c) => NK_OU_ALL.includes(c))) return 'letters'; if (!NK_OU.every((l) => ch.includes(l))) return 'O and U'; }
+    if (g === 'p4-ou-or' && [...ch].sort().join() !== 'O,U') return 'letters';
+    if (g === 'p4-ou-name' && [...ch].sort().join() !== 'O,U,V') return 'letters';
+    if (/pic$/.test(g)) { const x0 = ndShown(x); if (apart(pics)) return 'apart'; if (ch.filter((c) => c !== x.answer).some((c) => NK_FIRST[myName(c)] === x0)) return 'picture'; }
+    if (g === 'p4-ou-yesno') { const x0 = ndShown(x); const w = (/Listen to this word\. ([A-Z][a-z]+)\.$/.exec(x.story || '') || [])[1]; const l = w && NK_HEARD_FIRST[w.toLowerCase()]; if (l !== x0 && l !== NK_PARTNER[x0]) return 'partner'; }
+    return null; };
+  const offNow = BANKS.flatMap((g) => gen(g, 400).map((x) => offOf(g, x)).filter(Boolean).map((k) => g + ' ' + k));
+  const one = (g, f) => gen(g, 400).find(f);
+  const qF = one('p4-aei-first', () => true); const qP = one('p4-aei-pic', (x) => ndShown(x) === 'E'); const qO = one('p4-ou-first', (x) => x.answer === 'O'); const qY = one('p4-ou-yesno', (x) => ndShown(x) === 'O' && x.answer === 'No');
+  const offPlants = [
+    !!qF && offOf('p4-aei-first', { ...qF, choices: ['A', 'E', 'O'] }) === 'letters',
+    !!qP && offOf('p4-aei-pic', { ...qP, choices: ['icon:elephant', 'icon:ant', 'icon:insect'] }) === 'apart',
+    !!qP && offOf('p4-aei-pic', { ...qP, choices: ['icon:elephant', 'icon:elf', 'icon:igloo'] }) === 'picture',
+    !!qO && offOf('p4-ou-first', { ...qO, choices: ['O', 'A', 'E'] }) === 'O and U',
+    !!qY && offOf('p4-ou-yesno', { ...qY, story: 'This is the letter O. Listen to this word. Ant.' }) === 'partner',
+  ];
+  ok('no question of pass NK\'s ten banks offers a letter its bank does not ask about, shows the ant beside the insect or a wrong picture that starts with the shown letter\'s sound, leaves O or U out of O and U\'s first-sound bank, or plays O and U\'s yes or no a No word of any letter but the partner\'s (4,000 questions; five plants caught)',
+    offNow.length === 0 && offPlants.every(Boolean), JSON.stringify({ offNow: offNow.slice(0, 4), offPlants }));
+  // 4. Every reason and explanation is true by the tables. Plant: a reason that says the elf starts with the sound the letter I says.
+  const reasonTrue = (g, x, c, e) => { let m; const asked = (/^Tap the letter ([OUV])\.$/.exec(x.prompt || '') || [])[1];
+    if (g === 'p4-ou-name') return !!asked && c !== asked && (NK_OU_NAME_WHY[asked] || {})[c] === e.why;
+    if ((m = /^does not say the sound ([a-z]+) starts with\.$/.exec(e.why))) return !!NK_HEARD_FIRST[m[1]] && NK_HEARD_FIRST[m[1]] !== c;
+    if ((m = /^starts with the sound the letter ([A-Z]) says\.$/.exec(e.why))) return NK_FIRST[myName(c)] === m[1] && m[1] !== ndShown(x);
+    if ((m = /^would mean ([a-z]+) does not start with the sound the letter ([A-Z]) says, but it does\.$/.exec(e.why))) return NK_HEARD_FIRST[m[1]] === m[2];
+    if ((m = /^would mean ([a-z]+) starts with the sound the letter ([A-Z]) says, but it does not\.$/.exec(e.why))) return !!NK_HEARD_FIRST[m[1]] && NK_HEARD_FIRST[m[1]] !== m[2];
+    return false; };
+  const explainTrue = (g, x) => { let m; const e = String(x.explain || '');
+    if ((m = /^(?:Yes\. |No\. )?([A-Z][a-z]+) starts with the sound the letter ([A-Z]) says(?:, like ([a-z]+))?\.$/.exec(e))) { const w = m[1].toLowerCase(); return NK_HEARD_FIRST[w] === m[2] && (!m[3] || NK_HEARD_FIRST[m[3]] === m[2]); }
+    if ((m = /^([A-Z][a-z]+) and ([a-z]+) both start with the sound the letter ([A-Z]) says\.$/.exec(e))) return NK_FIRST[m[1].toLowerCase()] === m[3] && NK_FIRST[m[2]] === m[3];
+    if (g === 'p4-ou-name') return e === NK_OU_NAME_EXPLAIN[x.answer];
+    return false; };
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => [...Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.why), ...(explainTrue(g, x) ? [] : [g + ' explain: ' + x.explain])]));
+  const reasonCount = BANKS.reduce((k, g) => k + gen(g, 400).reduce((j, x) => j + Object.keys(x.whyNot || {}).length, 0), 0);
+  const qElf = one('p4-aei-pic', (x) => x.choices.includes('icon:elf') && x.answer !== 'icon:elf');
+  const reasonPlant = !!qElf && !reasonTrue('p4-aei-pic', qElf, 'icon:elf', { why: 'starts with the sound the letter I says.' });
+  ok('every reason and explanation pass NK\'s ten banks give is true by the test\'s own tables (' + reasonCount + ' reasons and 4,000 explanations read at seeds 1 to 400; the elf said to start with I\'s sound, planted, caught)', falseReasons.length === 0 && reasonCount >= 5000 && reasonPlant, falseReasons.slice(0, 3).join(' | '));
+  // 4b. No round asks about a word an earlier question's explanation said (round one's code read, pass NK: the both-bank kept apart only
+  //     its first word, and ", like ant" after apple named a second, so 788 and 1,790 of 2,000 first rounds of A, E and I asked a later
+  //     question about a word an explanation had just said). Read over 1,000 first rounds of each lesson by the words their tables say;
+  //     plant: every explanation given its old ", like" word again, caught.
+  const NK_LIKE = { apple: 'ant', ant: 'apple', elephant: 'elf', elf: 'elephant', igloo: 'insect', insect: 'igloo', octopus: 'otter', otter: 'octopus', umbrella: 'up' };
+  const NK_ALL_WORDS = [...Object.values(NK_WORDS).flat(), 'up'];
+  const namedIn = (t) => NK_ALL_WORDS.filter((w) => new RegExp('\\b' + w + '\\b', 'i').test(String(t || '')));
+  const echoRounds = (rounds, ex) => rounds.filter((core) => core.some((q, i) => { const said = namedIn(ex(q)); return core.slice(i + 1).some((r) => (r.aboutWords || []).some((w) => said.includes(w))); })).length;
+  const vowRounds = ['a-e-and-i', 'o-and-u'].map((id) => Array.from({ length: 1000 }, (_, i) => L.buildAttempt(id, i + 1, []).core));
+  const echoNow = vowRounds.map((rs) => echoRounds(rs, (q) => q.explain));
+  const echoPlant = vowRounds.map((rs) => echoRounds(rs, (q) => q.explain + (NK_LIKE[(q.aboutWords || [])[0]] ? ' Like ' + NK_LIKE[q.aboutWords[0]] + '.' : '')));
+  ok('no round of A, E and I or O and U asks about a word an earlier question\'s explanation said (round one\'s code read; 1,000 first rounds of each, ' + echoNow.join(' and ') + ' such rounds; the old ", like" words, planted, caught in ' + echoPlant.join(' and ') + ')',
+    echoNow.every((n) => n === 0) && echoPlant.every((n) => n >= 100), JSON.stringify({ echoNow, echoPlant }));
+  // 4c. End marks asks four kinds of question about three marks (pass NK's second wave), so in a round as built a name or yes-or-no
+  //     question often asks about a mark that an earlier means or heard question's explanation named ("The question mark. The sentence
+  //     asks, so a question mark goes at its end." before "Is this a question mark?"): 1,089 of 2,000 first rounds when round two's lesson
+  //     and code read measured it, and the lead's own read since. Kept and recorded, not redrawn, since every lesson's round shuffles its
+  //     banks and a mark keyed both ways would leave five questions for three marks; the fix (name and yes or no first, or a one-way key)
+  //     waits in EARMARKS A139. Held under 1,200 of 2,000 so a change that makes it worse is seen; plant: every round ordered with its
+  //     means and heard questions first, caught.
+  { const MARK_NAMES = { '.': 'period', '?': 'question mark', '!': 'exclamation point' };
+    const told = (q) => Object.entries(MARK_NAMES).filter(([, n]) => new RegExp(n, 'i').test(String(q.explain || ''))).map(([m, n]) => n);
+    const markEcho = (core) => core.some((q, i) => /p4-mark-(means|heard)$/.test(q.genId) && core.slice(i + 1).some((r) => /p4-mark-(name|yesno)$/.test(r.genId) && (r.aboutWords || []).some((w) => told(q).includes(w))));
+    const emRounds = Array.from({ length: 2000 }, (_, i) => L.buildAttempt('end-marks', i + 1, []).core);
+    const emNow = emRounds.filter(markEcho).length;
+    const emFirst = emRounds.filter((core) => markEcho([...core.filter((q) => /means|heard/.test(q.genId)), ...core.filter((q) => !/means|heard/.test(q.genId))])).length;
+    ok('End marks\' rounds ask a name or yes-or-no question about a mark an earlier explanation named in ' + emNow + ' of 2,000 first rounds, recorded and held under 1,200 (pass NK, round two\'s lesson and code read, 1,089; EARMARKS A139; every round ordered with its means and heard questions first, planted, ' + emFirst + ', caught)',
+      emNow > 0 && emNow < 1200 && emFirst >= 1200, JSON.stringify({ emNow, emFirst })); }
+  // 5. Every kind of question the ten banks ask is modeled by a line of its lesson that asks it or works it. Plant: each kind's model line
+  //    taken out, caught.
+  const KIND_LINES = { 'p4-aei-first': /Which letter says the sound [a-z]+ starts with\? It is/, 'p4-aei-pic': /Which one starts with the sound the letter [A-Z] says\?/, 'p4-aei-both': /Now listen to these two words, [a-z]+ and [a-z]+\. Which letter says the sound they both start with\? The letter [A-Z]/,
+    'p4-aei-or': /Which letter says the sound [a-z]+ starts with, [A-Z] or [A-Z]\?/, 'p4-aei-yesno': /Does [a-z]+ start with the sound the letter [A-Z] says\? No/,
+    'p4-ou-first': /Which letter says the sound [a-z]+ starts with\? It is/, 'p4-ou-pic': /Which one starts with the sound that [A-Z] says\?/, 'p4-ou-name': /Which one is [A-Z]\? The one with/,
+    'p4-ou-or': /Which letter says the sound [a-z]+ starts with, [A-Z] or [A-Z]\?/, 'p4-ou-yesno': /Does [a-z]+ start with the sound that [A-Z] says\? No/ };
+  const unmodeled = (linesOf) => BANKS.filter((g) => !linesOf(lessonOf(g)).some((s) => KIND_LINES[g].test(s)));
+  const caught = BANKS.filter((g) => unmodeled((id) => linesNow(id).filter((s) => !(id === lessonOf(g) && KIND_LINES[g].test(s)))).includes(g));
+  ok('every kind of question pass NK\'s ten banks ask is modeled by a line of its lesson that asks it or works it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + ')', BANKS.length === 10 && Object.keys(KIND_LINES).length === 10 && unmodeled(linesNow).length === 0 && caught.length === BANKS.length, unmodeled(linesNow).join(', '));
+  // 6. The code's tables are the test's: the letters and their words (AEI4_LETTERS, OU4_LETTERS), the review words (OU4_REVIEW), the pair
+  //    kept apart (AEI4_APART), the partners (OU4_PARTNER), the draw (OU4_WEIGHT) and the name bank's letters. Plant: E's words given egg.
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const tablesOk = (C) => same(C.AEI4_LETTERS, { A: NK_WORDS.A, E: NK_WORDS.E, I: NK_WORDS.I }) && same(C.OU4_LETTERS, { O: NK_WORDS.O, U: NK_WORDS.U }) && same(C.OU4_REVIEW, NK_REVIEW) && same(C.AEI4_APART, NK_APART) && same(C.OU4_PARTNER, NK_PARTNER) && same(C.OU4_WEIGHT, { O: 3, U: 3, A: 1, E: 1 }) && same(C.OU4_NAME_CHOICES, ['O', 'U', 'V']) && same(C.OU4_HEARD, { O: NK_WORDS.O, U: ['umbrella', 'up'] });
+  const tablePlant = !tablesOk({ ...L, AEI4_LETTERS: { ...L.AEI4_LETTERS, E: ['egg', 'elf'] } });
+  ok('the code\'s tables for A, E and I and O and U are the test\'s own, which their lines and dictionary reads rest on (E given egg, whose two ways of saying it start differently, planted, caught)', tablesOk(L) && tablePlant);
+  // 7. Every letter and word of the tables is asked or shown by the banks at seeds 1 to 400. Plant: every question about I taken away.
+  const aboutAll = (gs) => new Set(gs.flatMap((g) => gen(g, 400).flatMap((x) => [...(x.aboutWords || []), ...(x.choices || []).map((c) => (/^(?:icon|pic):/.test(c) ? myName(c) : c)), ndShown(x)].filter(Boolean))));
+  const aeiAbout = aboutAll(BANKS.filter((g) => g.startsWith('p4-aei'))); const ouAbout = aboutAll(BANKS.filter((g) => g.startsWith('p4-ou')));
+  const missingOf = (set, letters) => [...letters, ...letters.flatMap((l) => NK_WORDS[l]), ...(letters.includes('U') ? ['up'] : [])].filter((u) => !set.has(u));
+  const withoutI = new Set([...aeiAbout].filter((u) => !['I', 'igloo', 'insect'].includes(u)));
+  ok('every letter and word of pass NK\'s two lessons\' tables is asked or shown by their banks at seeds 1 to 400 (a bank with every question about I taken away, planted, caught)', missingOf(aeiAbout, NK_AEI).length === 0 && missingOf(ouAbout, NK_OU).length === 0 && missingOf(withoutI, NK_AEI).length > 0, [...missingOf(aeiAbout, NK_AEI), ...missingOf(ouAbout, NK_OU)].join(', '));
+}
+// A, E and I's and O and U's banks scored blind (pass NK; lesson brief items 25 to 27), alone at seeds 1 to 400 and in rounds as built:
+// 1,500 first rounds, 1,500 later rounds with the last two rounds' prompts avoided, 1,500 triple doses and 1,500 Quick Reviews. The rules a
+// child who knows no vowel's sound could follow: always the same letter (the most of any one letter as the answer of a letter bank), the
+// yes or no by its word alone and by its letter alone, its Yes share, and O and U's first-sound bank never the review letter. Bounds: one
+// letter under 46 percent of A, E and I's three-letter banks and under 56 of O and U's first-sound bank, its game's two letters each under
+// 60, a yes or no by its word or its letter under 62 and its Yes share between 40 and 60. Plant: O and U's yes or no with a No word drawn
+// from any other letter, as first built (the lead's count: "Yes unless it is the ant or the elephant" read 83 in 100), rebuilt by the
+// test's own seeded rule, caught.
+{ let sd = 31; const rnd = () => (sd = (sd * 1103515245 + 12345) % 2147483648) / 2147483648; const pickR = (a) => a[Math.floor(rnd() * a.length)];
+  const gen400 = (g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const most = (R, g, f) => Math.max(...groupsOf(R, g).map((qs) => (qs.length ? f(qs) : 0))); const fewest = (R, g) => Math.min(...groupsOf(R, g).map((x) => x.length));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const oneLetter = (qs) => Math.max(...['A', 'E', 'I', 'O', 'U'].map((l) => qs.filter((q) => q.answer === l).length / qs.length));
+  const ynWord = (q) => ((/Listen to this word\. ([A-Z][a-z]+)\.$/.exec(q.story || '') || [])[1] || '').toLowerCase();
+  const byKey = (key) => (qs) => { const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || { Yes: 0, No: 0 }; t[k][q.answer] += 1; } return Object.values(t).reduce((n, v) => n + Math.max(v.Yes, v.No), 0) / qs.length; };
+  const byWord = byKey(ynWord); const byLetter = byKey((q) => ndShown(q));
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const neverReview = (qs) => qs.reduce((n, q) => { const c = q.choices.filter((x) => NK_OU.includes(x)); return n + (c.includes(q.answer) ? 1 / c.length : 0); }, 0) / qs.length;
+  // Since round one's lesson read: the picture banks by one picture where it is offered and O and U's by never a review picture, and the
+  // name bank by one letter and by never V (O and U's picture bank had never the review picture read 50, and the name bank never V 50).
+  const VOW_WORDS = ['apple', 'ant', 'elephant', 'elf', 'igloo', 'insect', 'octopus', 'otter', 'umbrella'];
+  const onePic = (qs) => Math.max(...VOW_WORDS.map((w) => qs.reduce((n, q) => { const has = q.choices.includes('icon:' + w); return n + (has ? (q.answer === 'icon:' + w ? 1 : 0) : 1 / q.choices.length); }, 0) / qs.length));
+  const neverPicReview = (qs) => qs.reduce((n, q) => { const c = q.choices.filter((x) => !['icon:ant', 'icon:elephant'].includes(x)); return n + (c.includes(q.answer) ? 1 / c.length : 0); }, 0) / qs.length;
+  const neverV = (qs) => qs.reduce((n, q) => { const c = q.choices.filter((x) => x !== 'V'); return n + (c.includes(q.answer) ? 1 / c.length : 0); }, 0) / qs.length;
+  const RA = ofModule('a-e-and-i', 1500); const RO = ofModule('o-and-u', 1500);
+  const aeiThree = ['p4-aei-first', 'p4-aei-both'];
+  const r = { aeiOne: Math.max(...aeiThree.map((g) => Math.max(most(RA, g, oneLetter), oneLetter(gen400(g))))), aeiOr: Math.max(most(RA, 'p4-aei-or', oneLetter), oneLetter(gen400('p4-aei-or'))),
+    ouOne: Math.max(most(RO, 'p4-ou-first', oneLetter), oneLetter(gen400('p4-ou-first'))), ouOr: Math.max(most(RO, 'p4-ou-or', oneLetter), oneLetter(gen400('p4-ou-or'))),
+    ouNever: Math.max(most(RO, 'p4-ou-first', neverReview), neverReview(gen400('p4-ou-first'))),
+    aeiPic: Math.max(most(RA, 'p4-aei-pic', onePic), onePic(gen400('p4-aei-pic'))), ouPic: Math.max(most(RO, 'p4-ou-pic', onePic), onePic(gen400('p4-ou-pic')), most(RO, 'p4-ou-pic', neverPicReview), neverPicReview(gen400('p4-ou-pic'))),
+    ouName: Math.max(most(RO, 'p4-ou-name', oneLetter), oneLetter(gen400('p4-ou-name')), most(RO, 'p4-ou-name', neverV), neverV(gen400('p4-ou-name'))),
+    aeiWord: Math.max(most(RA, 'p4-aei-yesno', byWord), byWord(gen400('p4-aei-yesno'))), aeiLetter: Math.max(most(RA, 'p4-aei-yesno', byLetter), byLetter(gen400('p4-aei-yesno'))),
+    ouWord: Math.max(most(RO, 'p4-ou-yesno', byWord), byWord(gen400('p4-ou-yesno'))), ouLetter: Math.max(most(RO, 'p4-ou-yesno', byLetter), byLetter(gen400('p4-ou-yesno'))),
+    yesLo: Math.min(...[...groupsOf(RA, 'p4-aei-yesno'), ...groupsOf(RO, 'p4-ou-yesno')].filter((qs) => qs.length).map(yesShare)), yesHi: Math.max(...[...groupsOf(RA, 'p4-aei-yesno'), ...groupsOf(RO, 'p4-ou-yesno')].filter((qs) => qs.length).map(yesShare)) };
+  const N = Math.min(...aeiThree.map((g) => fewest(RA, g)), fewest(RA, 'p4-aei-yesno'), fewest(RO, 'p4-ou-first'), fewest(RO, 'p4-ou-yesno'));
+  const WT = [['O', 3], ['U', 3], ['A', 1], ['E', 1]].flatMap(([l, k]) => Array(k).fill(l)); const ALL = { O: ['octopus', 'otter'], U: ['umbrella'], A: ['ant'], E: ['elephant'] };
+  const oldYn = Array.from({ length: 400 }, () => { const x = pickR(['O', 'U']); const yes = rnd() < 0.5; const y = yes ? x : pickR(Object.keys(ALL).filter((z) => z !== x)); const w = pickR(ALL[y]); return { answer: yes ? 'Yes' : 'No', story: 'This is the letter ' + x + '. Listen to this word. ' + w[0].toUpperCase() + w.slice(1) + '.', visual: { kind: 'letters', text: x } }; });
+  const plant = byWord(oldYn); void WT;
+  ok(`A, E and I's and O and U's banks scored blind, alone and in rounds as built, stay under their bounds (pass NK; the most of first rounds, later rounds, triple doses, Quick Reviews and seeds 1 to 400 alone: one letter ${pct(r.aeiOne)}% of A, E and I's three-letter banks, ${pct(r.aeiOr)}% of its game; ${pct(r.ouOne)}% of O and U's first-sound bank, never the review letter ${pct(r.ouNever)}%, ${pct(r.ouOr)}% of its game; one picture ${pct(r.aeiPic)}% and ${pct(r.ouPic)}% of the picture banks (O and U's never the review picture too), one letter or never V ${pct(r.ouName)}% of O and U's name bank; the yes or no by its word ${pct(r.aeiWord)} and ${pct(r.ouWord)}%, by its letter ${pct(r.aeiLetter)} and ${pct(r.ouLetter)}%, Yes ${pct(r.yesLo)} to ${pct(r.yesHi)}%; the first draw of O and U's yes or no, rebuilt, planted, caught at ${pct(plant)}% by its word)`,
+    N >= 300 && r.aeiOne < 0.46 && r.aeiOr < 0.6 && r.ouOne < 0.56 && r.ouNever < 0.56 && r.ouOr < 0.6 && r.aeiPic < 0.46 && r.ouPic < 0.46 && r.ouName < 0.46 && r.aeiWord < 0.62 && r.ouWord < 0.62 && r.aeiLetter < 0.62 && r.ouLetter < 0.62 && r.yesLo >= 0.4 && r.yesHi <= 0.6 && plant >= 0.62, JSON.stringify({ r, N, plant })); }
+// Any size, any turn and Rectangles (pass NK): their ten banks worked out from what each question says and shows by the test's own tables
+// (NK_SHAPES, NK_NEVER), each near miss caught by the guard it names and no other: with that guard taken out of its derivation's own text
+// it gets an answer at every seed from 1 to 400, and with it in, none.
+{ const D = PREK_DERIVE; const NK_SH_BANKS = [...L.getModule('any-size-any-turn').generators, ...L.getModule('rectangles-too').generators];
+  const NEAR = [
+    ['p4-turn-odd', 'count', (x) => ({ ...x, choices: x.choices.filter((c) => c !== x.choices.find((d) => d !== x.answer)) })],
+    ['p4-turn-name', 'story', (x) => ({ ...x, story: NK_SHAPE_STORY })],
+    ['p4-turn-same', 'story', (x) => ({ ...x, story: NK_SHAPE_STORY })],
+    ['p4-turn-yesno', 'story', (x) => ({ ...x, story: null })],
+    ['p4-turn-what', 'story', (x) => ({ ...x, story: null })],
+    ['p3-rect-odd', 'count', (x) => ({ ...x, choices: [...x.choices, x.choices.find((d) => d !== x.answer).replace(/#\d+$/, '#7')] })],   // three of one shape and the odd one: pre-K 4's set at pre-K 3
+    ['p3-rect-name', 'story', (x) => ({ ...x, story: NK_SHAPE_STORY })],
+    ['p3-rect-same', 'story', (x) => ({ ...x, story: NK_SHAPE_STORY })],
+    ['p3-rect-yesno', 'story', (x) => ({ ...x, story: null })],
+    ['p3-rect-what', 'story', (x) => ({ ...x, story: null })],
+  ];
+  const GUARDS = {
+    'p4-turn-odd count': ['nkOddOf', " || (q.choices || []).length !== (age === 4 ? 4 : 3)", ''], 'p3-rect-odd count': ['nkOddOf', " || (q.choices || []).length !== (age === 4 ? 4 : 3)", ''],
+    'p4-turn-name story': ['nkTapOf', ' || q.story !== null', ''], 'p3-rect-name story': ['nkTapOf', ' || q.story !== null', ''],
+    'p4-turn-same story': ['nkSameOf', " || q.story !== 'Here is a shape. ' + NK_SHAPE_STORY", ''], 'p3-rect-same story': ['nkSameOf', " || q.story !== 'Here is a shape. ' + NK_SHAPE_STORY", ''],
+    'p4-turn-yesno story': ['nkIsOf', ' || q.story !== NK_SHAPE_STORY', ''], 'p3-rect-yesno story': ['nkIsOf', ' || q.story !== NK_SHAPE_STORY', ''],
+    'p4-turn-what story': ['nkWhatOf', ' || q.story !== NK_SHAPE_STORY', ''], 'p3-rect-what story': ['nkWhatOf', ' || q.story !== NK_SHAPE_STORY', ''],
+  };
+  const HELPERS = { nkOddOf, nkTapOf, nkSameOf, nkIsOf, nkWhatOf };
+  const without = (g, [where, from, to]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join(to);
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  const plantCaught = !!prove('p4-turn-odd', 'count', (x) => ({ ...x, choices: x.choices.filter((c) => c !== x.choices.find((d) => d !== x.answer)), prompt: 'Which one does not belong?' }));
+  ok('pass NK\'s ten shape banks (Any size, any turn and Rectangles) are worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    NK_SH_BANKS.length === 10 && NK_SH_BANKS.every((g) => typeof D[g] === 'function') && NEAR.length === NK_SH_BANKS.length && NEAR.every(([g]) => NK_SH_BANKS.includes(g)) && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What the ten shape banks may and may not do, read over seeds 1 to 400 by the test's own tables: the three pairs never set against each
+// other, the which-does-not-belong sets drawn differently, every shape and look drawn and said in its own lesson first, the reasons and
+// explanations true, every kind modeled by a line, the code's tables the test's, and every shape asked.
+{ const SH_LESSON = { 'p4-turn': ['any-size-any-turn', 4], 'p3-rect': ['rectangles-too', 3] }; const lessonOf = (g) => SH_LESSON[g.split('-').slice(0, 2).join('-')];
+  const BANKS = Object.values(SH_LESSON).flatMap(([id]) => L.getModule(id).generators); const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const shapesIn = (x) => [...(x.choices || []).map((c) => (nkItem(c) ? nkItem(c).shape : c)).filter((s) => NK_SHAPES[4].includes(s)), ...(nkShown(x.visual) ? [nkShown(x.visual).shape] : []), ...((/^(?:Tap the|Is this an?) ([a-z]+)[.?]$/.exec(x.prompt || '') || [])[1] ? [/^(?:Tap the|Is this an?) ([a-z]+)[.?]$/.exec(x.prompt)[1]] : [])];
+  // 1. No question sets a square beside a rectangle or a rhombus, or a circle beside an oval, as choices, as the shape shown or as the shape
+  //    asked about. Plants: a square among rectangles, "Is this a rectangle?" of a square, and an oval among circles, each caught.
+  const neverIn = (x) => { const ss = [...new Set(shapesIn(x))]; return ss.some((a) => ss.some((b) => nkApart(a, b))); };
+  const neverNow = BANKS.flatMap((g) => gen(g, 400).filter(neverIn).map((x) => g + ': ' + (x.prompt || '')));
+  const q1 = gen('p4-turn-odd', 400).find((x) => nkItem(x.answer).shape === 'triangle'); const q2 = gen('p4-turn-yesno', 400).find((x) => nkShown(x.visual).shape === 'square');
+  const neverPlants = [!!q1 && neverIn({ ...q1, choices: ['item:rectangle-red#0', 'item:rectangle~tall-blue#1', 'item:rectangle~thin-green-small#2', 'item:square-yellow#3'] }), !!q2 && neverIn({ ...q2, prompt: 'Is this a rectangle?' }), neverIn({ choices: ['item:circle-red#0', 'item:circle-blue-big#1', 'item:oval-green#2'], prompt: '' })];
+  ok('no question of the ten shape banks sets a square beside a rectangle or a rhombus, or a circle beside an oval, as choices, the shape shown or the shape asked about (4,000 questions; a square among rectangles, a square asked about as a rectangle and an oval among circles, planted, caught)', neverNow.length === 0 && neverPlants.every(Boolean), JSON.stringify({ neverNow: neverNow.slice(0, 3), neverPlants }));
+  // 2. Every which-does-not-belong set draws its same shapes differently (no two with the same look and size) and gives every choice a color
+  //    of its own; and every shape and look a question draws is drawn in its own lesson's lines first, every shape it asks or names said there.
+  //    Plants: two of the same shape drawn alike, a set with two of one color, and Any size, any turn's lines with the tipped-over oval never
+  //    drawn and the rhombus never said, each caught.
+  const oddOff = (x) => { const its = x.choices.map(nkItem); const same = its.filter((t) => t.shape !== nkItem(x.answer).shape); const keys = same.map((t) => t.look + '/' + t.scale);
+    if (new Set(keys).size !== keys.length) return 'alike'; if (new Set(its.map((t) => t.colour)).size !== its.length) return 'colors'; return null; };
+  const oddNow = BANKS.filter((g) => /-odd$/.test(g)).flatMap((g) => gen(g, 400).map(oddOff).filter(Boolean).map((k) => g + ' ' + k));
+  const qo = gen('p4-turn-odd', 400).find((x) => nkItem(x.answer).shape !== 'circle'); const sameOnes = qo.choices.filter((c) => c !== qo.answer);
+  const alikePlant = oddOff({ ...qo, choices: [qo.answer, sameOnes[0], sameOnes[0].replace(/#\d+$/, '#9'), sameOnes[2]] }) === 'alike';   // drawn alike is read before the colors
+  const colorPlant = oddOff({ ...qo, choices: [qo.answer, sameOnes[0], sameOnes[1], sameOnes[2].replace(/-(red|blue|yellow|green)/, '-' + nkItem(sameOnes[0]).colour)] }) === 'colors';
+  const linesNow = (id) => L.getModule(id).lesson.script.map((l) => l.say); const showsNow = (id) => L.getModule(id).lesson.script.map((l) => l.show).filter(Boolean);
+  const drawnLooks = (shows) => { const out = new Set(); const walk = (v) => { if (!v) return; if (v.kind === 'item') out.add(String(v.shape).split('~')[0] + '~' + (String(v.shape).split('~')[1] || 'plain')); if (v.a) walk(v.a); if (v.b) walk(v.b); (v.items || []).forEach(walk); }; shows.forEach(walk); return out; };
+  const looksOf = (x) => [...(x.choices || []).map(nkItem).filter(Boolean), ...(nkShown(x.visual) ? [nkShown(x.visual)] : [])].map((t) => t.shape + '~' + t.look);
+  const missing = (showsOf, linesOf) => { const out = new Set(); for (const g of BANKS) { const [id] = lessonOf(g); const drawn = drawnLooks(showsOf(id)); const lines = linesOf(id).join(' ').toLowerCase();
+    for (const x of gen(g, 300)) { for (const k of looksOf(x)) if (!drawn.has(k)) out.add(g + ': drawn ' + k); for (const s of new Set(shapesIn(x))) if (!new RegExp('\\b' + s + '\\b').test(lines)) out.add(g + ': said ' + s); } } return [...out]; };
+  const missNow = missing(showsNow, linesNow);
+  const missPlant = missing((id) => showsNow(id).map((v) => (id === 'any-size-any-turn' ? JSON.parse(JSON.stringify(v).split('oval~tilted').join('oval~tall')) : v)), (id) => linesNow(id).map((s) => (id === 'any-size-any-turn' ? s.replace(/rhombus/gi, 'kite') : s)));
+  ok('every which-does-not-belong set draws its same shapes differently and gives each choice a color of its own, and every shape and look the ten shape banks draw is drawn in their own lesson\'s lines first, every shape they ask or name said there (two drawn alike, two of one color, and Any size, any turn without its tipped-over oval or the word rhombus, planted, caught)',
+    oddNow.length === 0 && alikePlant && colorPlant && missNow.length === 0 && missPlant.some((m) => /drawn oval~tilted/.test(m)) && missPlant.some((m) => /said rhombus/.test(m)), JSON.stringify({ oddNow: oddNow.slice(0, 3), missNow: missNow.slice(0, 4), alikePlant, colorPlant }));
+  // 3. Every reason and explanation is true by the tables: a reason names a choice by its own size and color, says its own shape, and says
+  //    what a shape has in its age's own words. Plant: a reason that calls a triangle a square.
+  const HAS = { 4: { circle: 'is round, with no corners', oval: 'is round and longer one way, like an egg', triangle: 'has three straight sides and three corners', square: 'has four straight sides, all the same length', rectangle: 'has two long sides and two short ones', rhombus: 'has four straight sides, all the same length' },
+    3: { circle: 'is round, with no corners', triangle: 'has three corners', square: 'has four sides, all the same length', rectangle: 'has two long sides and two short ones' } };
+  const art = (s) => (/^[aeiou]/.test(s) ? 'an ' : 'a ') + s;
+  const sizeColour = (t) => (t.scale === 'big' ? 'big ' : t.scale === 'small' ? 'little ' : '') + t.colour;
+  const reasonTrue = (g, x, c, e) => { const [, age] = lessonOf(g); const t = nkItem(c); let m;
+    if (t) { if (e.name !== 'The ' + sizeColour(t) + ' one') return false;
+      if ((m = /^is (an? [a-z]+), like (?:two of the others|the other one)\.$/.exec(e.why))) return m[1] === art(t.shape) && x.choices.filter((d) => nkItem(d).shape === t.shape).length === x.choices.length - 1;
+      if ((m = /^is (an? [a-z]+), not (an? [a-z]+)\.$/.exec(e.why))) return m[1] === art(t.shape) && m[2] === art(/^Tap the ([a-z]+)\.$/.exec(x.prompt)[1]) && t.shape !== /^Tap the ([a-z]+)\.$/.exec(x.prompt)[1];
+      if ((m = /^is (an? [a-z]+), and this shape is (an? [a-z]+)\.$/.exec(e.why))) return m[1] === art(t.shape) && m[2] === art(nkShown(x.visual).shape) && t.shape !== nkShown(x.visual).shape;
+      return false; }
+    if (NK_SHAPES[age].includes(c)) return e.name === art(c === 'rectangle' ? 'long rectangle' : c).replace(/^a/, 'A') && e.why === HAS[age][c] + '.' && c !== nkShown(x.visual).shape;
+    if (c === 'Yes' || c === 'No') { const v = nkShown(x.visual).shape; const asked = /^Is this an? ([a-z]+)\?$/.exec(x.prompt)[1];
+      return c === 'No' ? v === asked && e.why === 'would mean it is not ' + art(asked) + ', but it is still ' + art(asked) + '.' : v !== asked && e.why === 'would mean it is ' + art(asked) + ', but it is ' + art(v) + '.'; }
+    return false; };
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.name + ' ' + e.why)));
+  const qr = gen('p4-turn-odd', 400).find((x) => nkItem(x.choices.find((c) => c !== x.answer)).shape === 'triangle'); const qrc = qr && qr.choices.find((c) => c !== qr.answer);
+  const reasonPlant = !!qrc && !reasonTrue('p4-turn-odd', qr, qrc, { name: 'The ' + sizeColour(nkItem(qrc)) + ' one', why: 'is a square, like two of the others.' });
+  ok('every reason the ten shape banks give is true by the test\'s own tables: each names its choice by its own size and color, says its own shape, and says what a shape has in its age\'s own words (seeds 1 to 400; a triangle called a square, planted, caught)', falseReasons.length === 0 && reasonPlant, falseReasons.slice(0, 3).join(' | '));
+  // 3b. Every explanation is true by the test's own sentences, and the code's sentences and look words are the test's (round one's code
+  //     read, pass NK: no check read the explanations or the says tables, so a No that named the shape asked, a which-does-not-belong that
+  //     named the wrong shape, and a rectangle in general said as "A rectangle" passed). Plants: a No naming the shape asked, and the
+  //     rhombus's sentence given two pointy corners and two wide ones (true of most rhombuses, not of a square), each caught.
+  const SAYS = { 4: { circle: 'A circle is round, with no corners.', oval: 'An oval is round, with no corners, but it is longer one way than the other, like an egg.', triangle: 'A triangle has three straight sides and three corners.', square: 'A square has four straight sides, all the same length, and four corners, all the same.', rectangle: 'A long rectangle has four corners, two long sides and two short sides.', rhombus: 'A rhombus has four straight sides, all the same length.' },
+    3: { circle: 'A circle is round, with no corners.', triangle: 'A triangle has three corners.', square: 'A square has four corners, and its four sides are all the same length.', rectangle: 'A long rectangle has four corners, two long sides and two short sides.' } };
+  const LOOK_SAID = { 'oval~tall': 'standing up tall', 'oval~tilted': 'tipped over', 'triangle~thin': 'tall and thin', 'triangle~wide': 'wide and flat', 'triangle~turned': 'upside down', 'square~turned': 'turned on its corner', 'rectangle~tall': 'standing up tall', 'rectangle~thin': 'long and thin', 'rhombus~wide': 'lying on its side', 'rhombus~leaning': 'leaning over' };
+  const plural = (s) => (s === 'rhombus' ? 'rhombuses' : s + 's'); const kindOfB = (g) => g.split('-').pop(); const sameJ = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const wordsOf = (t) => sizeColour(t) + ' ' + t.shape + (LOOK_SAID[t.shape + '~' + t.look] ? ', ' + LOOK_SAID[t.shape + '~' + t.look] : '');
+  const explainTrue = (g, x) => { const [, age] = lessonOf(g); const e = String(x.explain || ''); const v = nkShown(x.visual);
+    switch (kindOfB(g)) {
+      case 'odd': { const b = nkItem(x.answer).shape; const a = nkItem(x.choices.find((c) => c !== x.answer)).shape; return e === 'The ' + b + ' does not belong. The other ' + (age === 4 ? 'three' : 'two') + ' are ' + plural(a) + '. A shape keeps its name when it is big or little, turned, or a new color.'; }
+      case 'name': { const t = nkItem(x.answer); return e === 'This is the ' + wordsOf(t) + '. ' + SAYS[age][t.shape]; }
+      case 'same': return !!v && e === 'They are both ' + plural(v.shape) + '. ' + SAYS[age][v.shape];
+      case 'yesno': { const asked = /^Is this an? ([a-z]+)\?$/.exec(x.prompt)[1]; return x.answer === 'Yes' ? v.shape === asked && e === 'Yes. It is the ' + wordsOf(v) + '. ' + SAYS[age][asked] : v.shape !== asked && e === 'No. It is ' + art(v.shape) + '. ' + SAYS[age][v.shape]; }
+      case 'what': return !!v && e === 'It is ' + art(v.shape) + '. ' + SAYS[age][v.shape];
+      default: return false; } };
+  const falseExplains = BANKS.flatMap((g) => gen(g, 400).filter((x) => !explainTrue(g, x)).map((x) => g + ': ' + x.explain));
+  const qNo = gen('p4-turn-yesno', 400).find((x) => x.answer === 'No'); const askedNo = qNo && /^Is this an? ([a-z]+)\?$/.exec(qNo.prompt)[1];
+  const noPlant = !!qNo && !explainTrue('p4-turn-yesno', { ...qNo, explain: 'No. It is ' + art(askedNo) + '. ' + SAYS[4][askedNo] });
+  const saysOk = (C) => sameJ(C.TURN4.says, SAYS[4]) && sameJ(C.RECT3.says, SAYS[3]) && sameJ(C.SHAPE_LOOK_PHRASE, LOOK_SAID);
+  const saysPlant = !saysOk({ ...L, TURN4: { ...L.TURN4, says: { ...L.TURN4.says, rhombus: 'A rhombus has two pointy corners and two wide ones.' } } });
+  ok('every explanation the ten shape banks give is true by the test\'s own sentences, and the code\'s sentences and look words are the test\'s (seeds 1 to 400; a No naming the shape asked, and the rhombus given two pointy corners, planted, caught)',
+    falseExplains.length === 0 && noPlant && saysOk(L) && saysPlant, falseExplains.slice(0, 3).join(' | '));
+  // 3c. Every choice of the name and same banks has a color of its own, the same bank's shape shown a color none of them has, since a reason
+  //     names a choice by its size and color ("The red one"); and the same bank shows its shape plain and middle-sized, its answer drawn
+  //     another way (round one's code read: no check held either). Plants: every choice red, the shape shown in a look, and the answer drawn
+  //     as the shape shown, each caught.
+  const colorsOff = (x) => { const cs = x.choices.map((c) => nkItem(c).colour); const v = nkShown(x.visual); return new Set(cs).size !== cs.length || (!!v && cs.includes(v.colour)); };
+  const sameOff = (x) => { const v = nkShown(x.visual); const t = nkItem(x.answer); return !(v.look === 'plain' && v.scale === '') || (t.look === 'plain' && t.scale === ''); };
+  const colorsNow = BANKS.filter((g) => /-(?:name|same)$/.test(g)).flatMap((g) => gen(g, 400).filter(colorsOff).map((x) => g + ': ' + x.choices.join(',')));
+  const sameNow = BANKS.filter((g) => /-same$/.test(g)).flatMap((g) => gen(g, 400).filter(sameOff).map((x) => g + ': ' + JSON.stringify(x.visual) + ' ' + x.answer));
+  const qs0 = gen('p4-turn-same', 400)[0]; const sh0 = nkShown(qs0.visual).shape;
+  const redPlant = colorsOff({ ...qs0, choices: qs0.choices.map((c) => c.replace(/-(red|blue|yellow|green)/, '-red')) });
+  const lookPlant = sameOff({ ...qs0, visual: { ...qs0.visual, shape: sh0 + '~' + (NK_LOOKS[4][sh0].find((l) => l !== 'plain') || 'plain'), scale: 'big' } });
+  const answerPlant = sameOff({ ...qs0, answer: 'item:' + sh0 + '~plain-' + nkItem(qs0.answer).colour });
+  ok('every choice of the name and same banks has a color of its own and the shape shown another, and the same bank shows its shape plain and middle-sized with its answer drawn another way (seeds 1 to 400; every choice red, the shape shown in a look, and the answer drawn as the shape shown, planted, caught)',
+    colorsNow.length === 0 && sameNow.length === 0 && redPlant && lookPlant && answerPlant, JSON.stringify({ colorsNow: colorsNow.slice(0, 2), sameNow: sameNow.slice(0, 2) }));
+  // 3d. A screen reader hears every shape choice and answer as the lessons say it, its size (pre-K says little), color, shape and look
+  //     (describeChoice and describeAnswer; round one's code read: no check held the shape branch, and before every token wrote its look a
+  //     plain shape fell to an older branch that says small). Plant: a reader that drops the look, caught.
+  const heardAs = (c) => 'the ' + wordsOf(nkItem(c));
+  const readerOff = (describe) => BANKS.flatMap((g) => gen(g, 200).flatMap((x) => x.choices.filter((c) => nkItem(c) && describe(c, x) !== heardAs(c)).map((c) => g + ': ' + c + ' ' + describe(c, x))));
+  const readNow = readerOff((c, x) => L.describeChoice(c, x));
+  const answersNow = BANKS.flatMap((g) => gen(g, 200).filter((x) => nkItem(x.answer) && L.describeAnswer(x) !== heardAs(x.answer)).map((x) => g + ': ' + L.describeAnswer(x)));
+  const readPlant = readerOff((c) => { const t = nkItem(c); return 'the ' + sizeColour(t) + ' ' + t.shape; }).length > 0;
+  ok('a screen reader hears every shape choice and answer of the ten banks as the lessons say it, its size, color, shape and look (seeds 1 to 200; a reader that drops the look, planted, caught)', readNow.length === 0 && answersNow.length === 0 && readPlant, JSON.stringify({ readNow: readNow.slice(0, 3), answersNow: answersNow.slice(0, 3) }));
+  // 3e. No thin look is drawn little (round one's screen read: the little long and thin rectangle drew a dash 9.5 pixels tall on an answer
+  //     tile, the one shape under 12 pixels on its short side). Plant: a little long and thin rectangle, caught.
+  const thinLittle = (x) => [...(x.choices || []).map(nkItem).filter(Boolean), ...(nkShown(x.visual) ? [nkShown(x.visual)] : [])].some((t) => t.look === 'thin' && t.scale === 'small');
+  const thinNow = BANKS.flatMap((g) => gen(g, 400).filter(thinLittle).map(() => g));
+  ok('no shape bank draws a thin look little (seeds 1 to 400; a little long and thin rectangle, planted, caught)', thinNow.length === 0 && thinLittle({ choices: ['item:rectangle~thin-green-small'] }), [...new Set(thinNow)].join(', '));
+  // 4. Every kind of question the ten banks ask is modeled by a line of its lesson that asks it or works it. Plant: each kind's model line
+  //    taken out, caught.
+  const KIND_LINES = { odd: /Which shape does not belong\? The [a-z]+ does not belong/, name: /Which one is the [a-z]+\? The one with/, same: /Which one is the same shape/, yesno: /Is (?:this|it|each one) (?:still )?an? [a-z]+\? Yes/, what: /What shape is this\?/ };
+  const kindOf = (g) => g.split('-').pop();
+  const unmodeled = (linesOf) => BANKS.filter((g) => !linesOf(lessonOf(g)[0]).some((s) => KIND_LINES[kindOf(g)].test(s)));
+  const caught = BANKS.filter((g) => unmodeled((id) => linesNow(id).filter((s) => !(id === lessonOf(g)[0] && KIND_LINES[kindOf(g)].test(s)))).includes(g));
+  ok('every kind of question the ten shape banks ask is modeled by a line of its lesson that asks it or works it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + ')', BANKS.length === 10 && unmodeled(linesNow).length === 0 && caught.length === BANKS.length, unmodeled(linesNow).join(', '));
+  // 5. The code's tables are the test's: the shapes and looks each age draws, the pairs never set against each other, the colors and sizes.
+  //    Plant: the square allowed beside the rhombus, caught.
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const tablesOk = (C) => same(C.TURN4.shapes, NK_SHAPES[4]) && same(C.TURN4.looks, NK_LOOKS[4]) && same(C.RECT3.shapes, NK_SHAPES[3]) && same(C.RECT3.looks, NK_LOOKS[3]) && same(C.SHAPE_NEVER, NK_NEVER) && same(C.SHAPE_COLOURS, ['red', 'blue', 'yellow', 'green']) && same(C.SHAPE_SCALES, ['big', '', 'small']);
+  const tablePlant = !tablesOk({ ...L, SHAPE_NEVER: L.SHAPE_NEVER.filter(([a, b]) => !(a === 'square' && b === 'rhombus')) });
+  ok('the code\'s tables for Any size, any turn and Rectangles are the test\'s own (the square allowed beside the rhombus, planted, caught)', tablesOk(L) && tablePlant);
+  // 6. Every shape of each age, and every look of it, is asked about or drawn by its banks at seeds 1 to 400. Plant: every question about
+  //    the oval taken away.
+  const aboutOf = (gs) => { const out = new Set(); for (const g of gs) for (const x of gen(g, 400)) { for (const k of looksOf(x)) out.add(k); for (const s of shapesIn(x)) out.add(s); } return out; };
+  const want = (age) => [...NK_SHAPES[age], ...NK_SHAPES[age].flatMap((s) => NK_LOOKS[age][s].map((l) => s + '~' + l))];
+  const a4 = aboutOf(BANKS.filter((g) => g.startsWith('p4-turn'))); const a3 = aboutOf(BANKS.filter((g) => g.startsWith('p3-rect')));
+  const noOval = new Set([...a4].filter((u) => !/^oval/.test(u)));
+  ok('every shape of each age, and every look of it, is asked about or drawn by its banks at seeds 1 to 400 (every question about the oval taken away, planted, caught)', want(4).every((u) => a4.has(u)) && want(3).every((u) => a3.has(u)) && !want(4).every((u) => noOval.has(u)), JSON.stringify([...want(4).filter((u) => !a4.has(u)), ...want(3).filter((u) => !a3.has(u))]));
+  // 7. Which does not belong holds every first wrong tap's reason while another of its shape is open (pass MK's twin rule), since every
+  //    shape token writes its look, plain too (round one's lesson read: a plain token, written with no look, was no twin, so a first tap
+  //    on it heard "The blue one is a square, like the other one." while the other square was open). Plant: the twin written with no look,
+  //    heard.
+  const heldNow = ['p4-turn-odd', 'p3-rect-odd'].flatMap((g) => gen(g, 400).flatMap((x) => x.choices.filter((c) => c !== x.answer).filter((w) => !L.whyNotNamesOpenWrong(x, w, x.choices.filter((c) => c !== w))).map((w) => g + ': ' + w)));
+  const qp = gen('p3-rect-odd', 400)[0]; const w0 = qp.choices.find((c) => c !== qp.answer); const twin = qp.choices.find((c) => c !== qp.answer && c !== w0);
+  const plantQ = { ...qp, choices: qp.choices.map((c) => (c === twin ? twin.replace(/~[a-z]+-/, '-') : c)) };
+  const plantHeard = !L.whyNotNamesOpenWrong(plantQ, w0, plantQ.choices.filter((c) => c !== w0));
+  ok('which does not belong holds every first wrong tap\'s reason while another of its shape is open, every shape token writing its look (seeds 1 to 400 of both banks; a twin written with no look, planted, heard)', heldNow.length === 0 && plantHeard, heldNow.slice(0, 3).join(' | '));
+}
+// The ten shape banks scored blind (pass NK; lesson brief items 25 to 27), alone at seeds 1 to 400 and in rounds as built (1,500 first rounds,
+// later rounds, triple doses and Quick Reviews each): rules a child who knows no shape could follow. Which does not belong: always the
+// biggest, always the one drawn plain, always the first button, always one shape; the others: always the first button, always the one
+// drawn plain, and What shape is this and the same shape always one shape; the yes
+// or no by the shape shown alone and by the shape asked alone, and its Yes share. Bounds: which does not belong under 40 percent of pre-K 4's
+// four and under 50 of pre-K 3's three by any rule, the three-choice banks under 50, the yes or no by either alone under 62 and Yes between
+// 40 and 60. Plant: a which-does-not-belong set whose odd one is always drawn biggest, rebuilt by the test's own seeded rule, caught.
+{ let sd = 37; const rnd = () => (sd = (sd * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const gen400 = (g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const worst = (R, g, f) => Math.max(f(gen400(g)), ...groupsOf(R, g).filter((qs) => qs.length).map(f));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const SIZE = { big: 3, '': 2, small: 1 };
+  const biggest = (qs) => qs.reduce((n, q) => { const top = Math.max(...q.choices.map((c) => SIZE[nkItem(c).scale])); const at = q.choices.filter((c) => SIZE[nkItem(c).scale] === top); return n + (at.includes(q.answer) ? 1 / at.length : 0); }, 0) / qs.length;
+  const plain = (qs) => qs.reduce((n, q) => { const its = q.choices.filter((c) => nkItem(c) && nkItem(c).look === 'plain'); return n + (its.length && its.includes(q.answer) ? 1 / its.length : its.length ? 0 : 1 / q.choices.length); }, 0) / qs.length;
+  const firstBtn = (qs) => qs.filter((q) => q.choices[0] === q.answer).length / qs.length;
+  // Always one shape where it is offered, else any: the best of the six (pre-K 3's rectangle drawn twice as often read 51 percent on What
+  // shape is this, round reads).
+  const shapeOfChoice = (c) => (nkItem(c) ? nkItem(c).shape : String(c));
+  const byShape = (qs) => Math.max(...NK_SHAPES[4].map((w) => qs.reduce((n, q) => { const at = q.choices.filter((c) => shapeOfChoice(c) === w); return n + (at.length ? (at.includes(q.answer) ? 1 / at.length : 0) : 1 / q.choices.length); }, 0) / qs.length));
+  const byKey = (key) => (qs) => { const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || { Yes: 0, No: 0 }; t[k][q.answer] += 1; } return Object.values(t).reduce((n, v) => n + Math.max(v.Yes, v.No), 0) / qs.length; };
+  // Pre-K 3's one shape with four corners (round one's lesson read): a square is a rectangle too, so the two never meet, and every screen of
+  // its three-choice banks shows the circle, the triangle and one of them, right whenever the square or the rectangle is asked. The
+  // lesson's shapes set this bound at one half, recorded in the pass's DECISIONS entry. Rounds as built read 53.3 percent on What shape is
+  // this in first rounds and Quick Reviews (49.5 alone): the odd one is a circle or a triangle six times in ten, so the round's rule that
+  // asks about each shape once while it can leaves the round's other banks the square and the rectangle a little more often. Held under 55.
+  const fourCorners = (qs) => qs.reduce((n, q) => { const at = q.choices.filter((c) => ['square', 'rectangle'].includes(nkItem(c) ? nkItem(c).shape : String(c))); return n + (at.length ? (at.includes(q.answer) ? 1 / at.length : 0) : 1 / q.choices.length); }, 0) / qs.length;
+  const byShown = byKey((q) => nkShown(q.visual).shape); const byAsked = byKey((q) => q.prompt);
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const R4 = ofModule('any-size-any-turn', 1500); const R3 = ofModule('rectangles-too', 1500);
+  const r = { odd4: Math.max(worst(R4, 'p4-turn-odd', biggest), worst(R4, 'p4-turn-odd', plain), worst(R4, 'p4-turn-odd', firstBtn), worst(R4, 'p4-turn-odd', byShape)), odd3: Math.max(worst(R3, 'p3-rect-odd', biggest), worst(R3, 'p3-rect-odd', plain), worst(R3, 'p3-rect-odd', firstBtn), worst(R3, 'p3-rect-odd', byShape)),
+    three: Math.max(...['name', 'same'].flatMap((k) => [worst(R4, 'p4-turn-' + k, firstBtn), worst(R4, 'p4-turn-' + k, plain), worst(R3, 'p3-rect-' + k, firstBtn), worst(R3, 'p3-rect-' + k, plain)]), ...['same', 'what'].flatMap((k) => [worst(R4, 'p4-turn-' + k, byShape), worst(R3, 'p3-rect-' + k, byShape)]), worst(R4, 'p4-turn-what', firstBtn), worst(R3, 'p3-rect-what', firstBtn)),
+    four: Math.max(...['name', 'same', 'what'].map((k) => worst(R3, 'p3-rect-' + k, fourCorners))),
+    shown: Math.max(worst(R4, 'p4-turn-yesno', byShown), worst(R3, 'p3-rect-yesno', byShown)), asked: Math.max(worst(R4, 'p4-turn-yesno', byAsked), worst(R3, 'p3-rect-yesno', byAsked)),
+    yesLo: Math.min(...[...groupsOf(R4, 'p4-turn-yesno'), ...groupsOf(R3, 'p3-rect-yesno')].filter((qs) => qs.length).map(yesShare)), yesHi: Math.max(...[...groupsOf(R4, 'p4-turn-yesno'), ...groupsOf(R3, 'p3-rect-yesno')].filter((qs) => qs.length).map(yesShare)) };
+  const N = Math.min(...['odd', 'name', 'same', 'yesno', 'what'].flatMap((k) => [...groupsOf(R4, 'p4-turn-' + k), ...groupsOf(R3, 'p3-rect-' + k)].map((qs) => qs.length)));
+  // Recorded since round two (round one's lesson read measured it): in rounds, the shape no earlier question of the round was about, chosen
+  // among the shapes offered, since aboutWords keeps a round from asking about a shape twice while it can (the price of that rule, as for
+  // the letters). Every bank but the yes or no; bound 62 percent (chance a third or a quarter).
+  const notAsked = (R) => Math.max(...['first', 'later', 'doses', 'reviews'].map((k) => { let n = 0, t = 0; for (const round of R[k]) { const seen = new Set(); for (const q of round) { if (!/-yesno$/.test(q.genId)) { const cand = q.choices.filter((c) => !seen.has(shapeOfChoice(c))); t += 1; n += cand.length ? (cand.includes(q.answer) ? 1 / cand.length : 0) : 1 / q.choices.length; } for (const w of q.aboutWords || []) seen.add(String(w)); } } return t ? n / t : 0; }));
+  const asked = { four: notAsked(R4), three: notAsked(R3) };
+  const bigOdd = Array.from({ length: 400 }, () => { const sizes = ['', 'small', ''].map((s) => s); const odd = 'item:circle-red-big#3'; const others = sizes.map((s, i) => 'item:triangle-' + ['blue', 'yellow', 'green'][i] + (s ? '-' + s : '') + '#' + i); return { answer: odd, choices: [...others, odd].sort(() => rnd() - 0.5) }; });
+  const plant = biggest(bigOdd);
+  ok(`the ten shape banks scored blind, alone and in rounds as built, stay under their bounds (pass NK; which does not belong by the biggest, the one drawn plain, the first button or one shape at most ${pct(r.odd4)}% of pre-K 4's four and ${pct(r.odd3)}% of pre-K 3's three; the three-choice banks by the first button, the one drawn plain or one shape ${pct(r.three)}%, pre-K 3's by the one shape with four corners ${pct(r.four)}%, the bound its shapes set; the yes or no by the shape shown ${pct(r.shown)}% and by the shape asked ${pct(r.asked)}%, Yes ${pct(r.yesLo)} to ${pct(r.yesHi)}%; recorded: in rounds, the shape no earlier question was about ${pct(asked.four)}% at pre-K 4 and ${pct(asked.three)}% at pre-K 3; an odd one always drawn biggest, planted, caught at ${pct(plant)}%)`,
+    N >= 250 && r.odd4 < 0.4 && r.odd3 < 0.5 && r.three < 0.5 && r.four < 0.55 && r.shown < 0.62 && r.asked < 0.62 && r.yesLo >= 0.4 && r.yesHi <= 0.6 && plant >= 0.4 && asked.four < 0.62 && asked.three < 0.62, JSON.stringify({ r, N, plant, asked })); }
+// Small letters and End marks (pass NK's second wave): their ten banks worked out from what each question says and shows by the test's own
+// tables, each near miss caught by the guard it names and no other: with that guard taken out of its derivation's own text it gets an
+// answer at every seed from 1 to 400, and with it in, none.
+{ const D = PREK_DERIVE; const W2 = [...L.getModule('small-letters').generators, ...L.getModule('end-marks').generators];
+  const NEAR = [
+    ['p4-sml-tap', 'four', (x) => ({ ...x, choices: [...x.choices, x.choices.find((c) => c !== x.answer)] })],
+    ['p4-sml-big', 'shown', (x) => ({ ...x, visual: { kind: 'letters', text: NK_SML.find((l) => l !== x.visual.text) } })],
+    ['p4-sml-find', 'printed', (x) => ({ ...x, printed: x.prompt })],
+    ['p4-sml-yesno', 'printed', (x) => ({ ...x, printed: x.prompt })],
+    ['p4-sml-same', 'pair', (x) => ({ ...x, visual: { kind: 'letters', text: x.visual.text.slice(0, 1) + '   ' + x.visual.text.slice(-1).toUpperCase() } })],
+    ['p4-mark-name', 'printed', (x) => ({ ...x, printed: x.prompt })],
+    ['p4-mark-means', 'said', (x) => ({ ...x, story: x.story + ' ' + x.visual.text })],
+    ['p4-mark-heard', 'unvoiced', (x) => ({ ...x, unvoicedStory: x.unvoicedStory + /^Listen\. .+(.)$/.exec(x.story)[1] })],
+    ['p4-mark-yesno', 'story', (x) => ({ ...x, story: 'Look at this mark.' })],
+    ['p4-mark-start', 'story', (x) => ({ ...x, story: null })],
+  ];
+  const GUARDS = {
+    'p4-sml-tap four': ['nkSmlTapOf', ' || (q.choices || []).length !== 4', ''], 'p4-sml-big shown': ['nkSmlBigOf', ' || v !== m[1]', ''],
+    'p4-sml-find printed': ['nkSmlFindOf', " || q.printed !== 'Which small letter goes with the big letter you hear?'", ''], 'p4-sml-yesno printed': ['nkSmlIsOf', " || q.printed !== 'Is this the small letter you hear?'", ''],
+    'p4-sml-same pair': ['nkSmlSameOf', "const m = /^([A-Z])   ([a-z])$/.exec(v || '');", "const m = /^([A-Z])   ([A-Za-z])$/.exec(v || '');"], 'p4-mark-name printed': ['nkMarkNameOf', " || q.printed !== 'Tap the mark you hear.'", ''],
+    'p4-mark-means said': ['nkMarkMeansOf', " || q.story !== 'Look at the mark at the end of this sentence.'", ''], 'p4-mark-heard unvoiced': ['nkMarkHeardOf', " || q.unvoicedStory !== 'For the grown-up: say this sentence ' + NK_MARK_SAY[s.slice(-1)] + ': \"' + s.slice(0, -1) + '\"'", ''],
+    'p4-mark-yesno story': ['nkMarkIsOf', ' || q.story !== null', ''], 'p4-mark-start story': ['nkMarkStartOf', "if (q.story !== 'A sentence starts with a big letter.' || ", 'if (']
+  };
+  const HELPERS = { nkSmlTapOf, nkSmlBigOf, nkSmlFindOf, nkSmlIsOf, nkSmlSameOf, nkMarkNameOf, nkMarkMeansOf, nkMarkHeardOf, nkMarkIsOf, nkMarkStartOf };
+  const without = (g, [where, from, to]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join(to);
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  const plantCaught = !!prove('p4-mark-name', 'printed', (x) => ({ ...x, printed: x.prompt, choices: ['.', '?'] }));
+  ok('pass NK\'s second wave, Small letters\' and End marks\' ten banks, is worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    W2.length === 10 && W2.every((g) => typeof D[g] === 'function') && NEAR.length === W2.length && NEAR.every(([g]) => W2.includes(g)) && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What the ten banks may and may not do, read over seeds 1 to 400 by the test's own tables.
+{ const SL = L.getModule('small-letters'); const EM = L.getModule('end-marks'); const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const lineText = (m) => m.lesson.script.map((l) => l.say).join(' ');
+  // 1. Every letter a Small letters bank names is said in its lines in that size ("big X", "small x"), every look a reason gives is said
+  //    there, and every sentence an End marks bank uses is said there word for word, and every mark's name and look. Plants: Small letters'
+  //    lines without "small z", and End marks' without "Can we run?", each caught.
+  const smlMissing = (text) => { const t = text.toLowerCase(); const out = []; for (const l of NK_SML) { if (!t.includes('small ' + l)) out.push('small ' + l); if (!t.includes('big ' + l)) out.push('big ' + l); if (!t.includes(NK_SML_LOOK[l].replace(/^(?:is|has|goes) /, ''))) out.push(l + ' look'); } return out; };
+  const endMissing = (text) => { const out = NK_SENT.filter((s) => !text.includes(s)); for (const m of Object.keys(NK_MARKS)) { if (!text.toLowerCase().includes(NK_MARKS[m])) out.push(NK_MARKS[m]); if (!text.includes(NK_MARK_LOOK[m].replace(/^is /, ''))) out.push(m + ' look'); } return out; };
+  const sNow = smlMissing(lineText(SL)); const eNow = endMissing(lineText(EM));
+  const sPlant = smlMissing(lineText(SL).replace(/small z/g, 'small q')).includes('small z'); const ePlant = endMissing(lineText(EM).replace(/Can we run\?/g, 'Can we go?')).includes('Can we run?');
+  ok('every letter, look, sentence and mark pass NK\'s second wave asks about is said in its own lesson\'s lines first, a letter in each size it is asked in (Small letters\' lines without the small z, and End marks\' without "Can we run?", planted, caught)', sNow.length === 0 && eNow.length === 0 && sPlant && ePlant, JSON.stringify({ sNow, eNow }));
+  // 2. Every reason and explanation is true by the test's tables: a letter named by its size, said the same or a different letter, a
+  //    different letter by its own look; a mark by its own name and look, what it tells, and what the sentence ends with. Plant: a reason
+  //    that gives the small z the look of x, caught.
+  const smlName = (c) => (c === c.toLowerCase() ? 'The small ' : 'The big ') + c;
+  const reasonTrue = (g, x, c, e) => {
+    if (/^p4-sml-/.test(g) && /^[A-Za-z]$/.test(c)) { if (e.name !== smlName(c)) return false; const asked = x.answer; if (c.toLowerCase() === String(asked).toLowerCase()) return e.why === (asked === asked.toUpperCase() ? 'is short, and the big letters here are tall.' : 'is tall, and the small letters here are short.');
+      return e.why === 'is a different letter. It ' + NK_SML_LOOK[c.toLowerCase()] + '.'; }
+    if (g === 'p4-sml-yesno') { const asked = /^Is this the small ([a-z])\?$/.exec(x.prompt)[1]; const v = x.visual.text; return c === 'No' ? v === asked && e.why === 'would mean it is not the small ' + asked + ', but it is.' : v !== asked && e.why === 'would mean it is the small ' + asked + ', but it is a different letter.'; }
+    if (g === 'p4-sml-same') { const [b, s] = [x.visual.text[0], x.visual.text.slice(-1)]; const pair = 'big ' + b + ' and small ' + s; return c === 'No' ? b.toLowerCase() === s && e.why === 'would mean they are different letters, but ' + pair + ' are the same letter.' : b.toLowerCase() !== s && e.why === 'would mean they are the same letter, but the small one is not the small ' + b.toLowerCase() + '.'; }
+    if (NK_MARKS[c] && g === 'p4-mark-name') return e.name === 'The ' + NK_MARKS[c] && e.why === NK_MARK_LOOK[c] + '.';
+    const an = (m) => (m === '!' ? 'an ' : 'a ') + NK_MARKS[m];
+    if (NK_MARKS[c] && g === 'p4-mark-heard') { const m = x.answer; return c !== m && e.name === 'The ' + NK_MARKS[c] && e.why === 'ends a sentence that ' + ({ '.': 'tells', '?': 'asks', '!': 'is said with a strong feeling' })[c] + '.'; }
+    if (g === 'p4-mark-means') { const m = x.visual.text.slice(-1); const o = Object.keys(NK_MARK_SHOWS).find((k) => NK_MARK_SHOWS[k] === c); return !!o && o !== m && e.name === c && e.why === 'is what ' + an(o) + ' shows, ' + NK_MARK_LOOK[o].replace(/^is /, '') + '.'; }
+    if (g === 'p4-mark-yesno') { const asked = nkMarkOf(/^Is this an? (.+)\?$/.exec(x.prompt)[1]); const v = x.visual.text; return c === 'No' ? v === asked && e.why === 'would mean it is not ' + an(asked) + ', but it is.' : v !== asked && e.why === 'would mean it is ' + an(asked) + ', but it is a different mark.'; }
+    if (g === 'p4-mark-start') return /^[a-z]/.test(c) && e.name === 'The one with a small ' + c[0] && e.why === 'starts with a small letter. A sentence starts with a big one.';
+    return false; };
+  const BANKS = [...SL.generators, ...EM.generators];
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.name + ' ' + e.why)));
+  const qz = gen('p4-sml-find', 400).find((x) => x.choices.includes('z') && x.answer !== 'z');
+  const reasonPlant = !!qz && !reasonTrue('p4-sml-find', qz, 'z', { name: 'The small z', why: 'is a different letter. It ' + NK_SML_LOOK.x + '.' });
+  ok('every reason pass NK\'s second wave gives is true by the test\'s own tables: a letter by its size and its own look, a mark by its own name and look, what a sentence does and its first letter (seeds 1 to 400; the small z given the look of x, planted, caught)', falseReasons.length === 0 && reasonPlant, falseReasons.slice(0, 3).join(' | '));
+  // 3. Every kind of question the ten banks ask is modeled by a line of its lesson that asks it or works it. Plant: each kind's model line
+  //    taken out, caught.
+  const KIND_LINES = { 'p4-sml-tap': /Which one is the small [a-z]\? The short one/, 'p4-sml-big': /Here is the small [a-z]\. Which big letter goes with it\?/, 'p4-sml-find': /Which small letter goes with the big [A-Z]\?/,
+    'p4-sml-yesno': /Is this the small [a-z]\? (?:Yes|No)/, 'p4-sml-same': /Are these two the same letter, one big and one small\?/,
+    'p4-mark-name': /Which mark ends a sentence that asks\? The question mark/, 'p4-mark-means': /Look at the mark at the end of this sentence\. What does the mark show, telling, asking, or a strong feeling\? (?:Telling|Asking|A strong feeling)\./, 'p4-mark-heard': /Listen\. [A-Z][^.?!]+[.?!] It asks, so a question mark goes at its end/,
+    'p4-mark-yesno': /Is this a question mark\? No/, 'p4-mark-start': /A sentence starts with a big letter\. Which one starts that way\?/ };
+  const lessonOf = (g) => (/^p4-sml-/.test(g) ? SL : EM); const linesOf = (m, drop) => m.lesson.script.map((l) => l.say).filter((s) => !(drop && drop.test(s)));
+  const unmodeled = BANKS.filter((g) => !linesOf(lessonOf(g)).some((s) => KIND_LINES[g].test(s)));
+  const caught = BANKS.filter((g) => !linesOf(lessonOf(g), KIND_LINES[g]).some((s) => KIND_LINES[g].test(s)));
+  ok('every kind of question pass NK\'s second wave asks is modeled by a line of its lesson that asks it or works it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + ')', BANKS.length === 10 && unmodeled.length === 0 && caught.length === 10, unmodeled.join(', '));
+  // 4. The code's tables are the test's, every letter, mark and sentence is asked by the banks at seeds 1 to 400 (each letter in both sizes
+  //    where a bank asks both), and the prints: a question that names a letter or a mark prints without it while the voice can speak, and
+  //    a heard sentence prints nowhere, with no voice too, where its grown-up's line says it without its mark. Plants: a table with z left
+  //    out, and a heard sentence printed whole, each caught.
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const tablesOk = (C) => same(C.SML4_LETTERS, NK_SML) && same(C.SML4_LOOK, NK_SML_LOOK) && same(C.END4_MARKS, NK_MARKS) && same(C.END4_LOOK, NK_MARK_LOOK) && same(C.END4_SENTENCES.flat(), NK_SENT) && same(C.END4_SHOWS, NK_MARK_SHOWS) && same(C.END4_DOES, NK_MARK_SENTENCE) && same(C.SML4_RHYME, NK_SML_RHYME);
+  const tablePlant = !tablesOk({ ...L, SML4_LETTERS: NK_SML.filter((l) => l !== 'z') });
+  const asked = new Set(); for (const g of BANKS) for (const x of gen(g, 400)) { if (/^p4-sml-/.test(g)) { if (/^[A-Za-z]$/.test(String(x.answer))) asked.add(x.answer); for (const t of [x.visual && x.visual.text].filter(Boolean)) for (const ch of t.replace(/ /g, '')) asked.add(ch); } else { asked.add(String(x.answer).length === 1 ? x.answer : ''); if (x.visual && x.visual.kind === 'letters' && x.visual.text.length > 1) asked.add(x.visual.text); const h = /^Listen\. (.+)$/.exec(x.story || ''); if (h) asked.add(h[1]); } }
+  const wantAsked = [...NK_SML, ...NK_SML.map((l) => l.toUpperCase()), ...Object.keys(NK_MARKS), ...NK_SENT];
+  const printLeaks = (qs) => qs.filter((x) => { const v = L.printedQuestion(x, true); const said = /^Listen\. (.+)$/.exec(x.story || ''); return /\b(?:small|big) [A-Za-z]\b/.test(v.prompt + ' ' + (v.story || '')) || /^Tap the (?:period|question mark|exclamation point)\.$/.test(v.prompt) || (said && (String(v.story).includes(said[1]) || String(L.printedQuestion(x, false).story).includes(said[1]))); }).length;
+  const leaksNow = BANKS.reduce((n, g) => n + printLeaks(gen(g, 200)), 0);
+  const leakPlant = printLeaks(gen('p4-mark-heard', 50).map((x) => ({ ...x, printedStory: x.story }))) > 0;
+  ok('the code\'s tables for Small letters and End marks are the test\'s own, every letter in both sizes, mark and sentence is asked at seeds 1 to 400, and nothing a question asks by name or by ear prints, with a voice or without one, where a heard sentence\'s grown-up\'s line drops its mark (a table without z, and a heard sentence printed whole, planted, caught)', tablesOk(L) && tablePlant && wantAsked.every((w) => asked.has(w)) && leaksNow === 0 && leakPlant, JSON.stringify({ missing: wantAsked.filter((w) => !asked.has(w)), leaksNow }));
+  // 5. A screen reader hears a letter among both sizes by its size, an end mark by its name, and a sentence among its two writings with its
+  //    first letter's size; a tapped mark stays quiet and a phrase speaks. Plants: describeChoice without the question, which says x alone,
+  //    and the old choiceSpeaks, which let a mark speak, each caught.
+  const qt = gen('p4-sml-tap', 1)[0]; const qs = gen('p4-mark-start', 1)[0]; const qm = gen('p4-mark-means', 1)[0];
+  const said = qt.choices.map((c) => L.describeChoice(c, qt)); const saidOk = said.every((d, i) => d === (qt.choices[i] === qt.choices[i].toUpperCase() ? 'big ' : 'small ') + qt.choices[i]);
+  const marksOk = ['.', '?', '!'].every((m) => L.describeChoice(m) === 'the ' + NK_MARKS[m]) && qs.choices.every((c) => L.describeChoice(c, qs) === c.replace(/[.?!]$/, '') + ', starting with a ' + (/^[A-Z]/.test(c) ? 'big ' : 'small ') + c[0]);
+  const quiet = ['.', '?', '!'].every((m) => !L.choiceSpeaks({ choices: ['.', '?', '!'] }, m)) && qm.choices.every((c) => L.choiceSpeaks(qm, c));
+  const descPlant = L.describeChoice(qt.choices.find((c) => /^[a-z]$/.test(c))) === qt.choices.find((c) => /^[a-z]$/.test(c));
+  const oldSpeaks = (q, c) => { const x = String(c); if (x.includes(':')) return false; if (/^[A-Za-z]$/.test(x)) return ((q && q.choices) || []).some((o) => !String(o).includes(':') && String(o).length > 1); return true; };
+  const speakPlant = oldSpeaks({ choices: ['.', '?', '!'] }, '?') === true;
+  ok('a screen reader hears each of pass NK\'s second wave\'s choices by what tells it apart, a letter by its size, a mark by its name and a sentence by its first letter\'s size, and a tapped mark stays quiet while a phrase speaks (describeChoice without the question, and the old choiceSpeaks, planted, caught)', saidOk && marksOk && quiet && descPlant && speakPlant, JSON.stringify({ said, saidOk, marksOk, quiet }));
+}
+// Round two's lesson and code read of pass NK's second wave: every explanation true by the test's own tables, what each model line shows,
+// the words the banks stand on said in the lines, the letters kept apart by ear, a yes or no keyed on what it asks, the order of the
+// lessons, the even draw of the odd shape, the two-by-two grid and a screen reader's words in the older banks. Each check has a plant, and
+// every plant but the first stood for an undo that had passed every check the read could run.
+{ const SL = L.getModule('small-letters'); const EM = L.getModule('end-marks'); const BANKS = [...SL.generators, ...EM.generators];
+  const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1)); const an = (m) => (m === '!' ? 'an ' : 'a ') + NK_MARKS[m]; const big = (l) => l.toUpperCase();
+  // 1. Every explanation, as check 2 above reads every reason: twelve false explanations planted together had passed every check.
+  const explainTrue = (g, x) => { const e = x.explain;
+    if (g === 'p4-sml-tap') { const a = String(x.answer); const l = a.toLowerCase(); return a === big(l) ? e === 'This is the big ' + a + '. The small ' + l + ' looks just like it, only smaller.' : e === 'This is the small ' + l + '. It looks just like the big ' + big(l) + ', only smaller.'; }
+    if (g === 'p4-sml-big') { const l = x.visual.text; return x.answer === big(l) && e === 'The big ' + big(l) + '. It has the same shape as the small ' + l + ', only taller.'; }
+    if (g === 'p4-sml-find') { const l = String(x.answer); return e === 'The small ' + l + '. It looks just like the big ' + big(l) + ', only smaller.'; }
+    if (g === 'p4-sml-yesno') { const a = /^Is this the small ([a-z])\?$/.exec(x.prompt)[1]; const v = x.visual.text; return x.answer === 'Yes' ? v === a && e === 'Yes. It is the small ' + a + ', and it looks just like the big ' + big(a) + ', only smaller.' : v !== a && e === 'No. It is a different letter. It ' + NK_SML_LOOK[v] + '.'; }
+    if (g === 'p4-sml-same') { const b = x.visual.text[0]; const s = x.visual.text.slice(-1); return x.answer === 'Yes' ? b.toLowerCase() === s && e === 'Yes. Big ' + b + ' and small ' + s + ' are the same letter, with the same shape.' : b.toLowerCase() !== s && e === 'No. They are different letters. The small ' + b.toLowerCase() + ' looks just like big ' + b + ', only smaller.'; }
+    if (g === 'p4-mark-name') return e === 'This is the ' + NK_MARKS[x.answer] + '. It ' + NK_MARK_LOOK[x.answer] + '.';
+    if (g === 'p4-mark-means') { const m = x.visual.text.slice(-1); return x.answer === NK_MARK_SHOWS[m] && e === NK_MARK_SHOWS[m] + '. It ends with ' + an(m) + ', which ' + NK_MARK_LOOK[m] + '.'; }
+    if (g === 'p4-mark-heard') { const m = /^Listen\. .+(.)$/.exec(x.story)[1]; return x.answer === m && e === 'The ' + NK_MARKS[m] + '. The sentence ' + NK_MARK_SENTENCE[m] + ', so ' + an(m) + ' goes at its end.'; }
+    if (g === 'p4-mark-yesno') { const a = nkMarkOf(/^Is this an? (.+)\?$/.exec(x.prompt)[1]); const v = x.visual.text; return x.answer === 'Yes' ? v === a && e === 'Yes. It is ' + an(a) + '. It ' + NK_MARK_LOOK[a] + '.' : v !== a && e === 'No. It ' + NK_MARK_LOOK[v] + ', and ' + an(a) + ' ' + NK_MARK_LOOK[a] + '.'; }
+    if (g === 'p4-mark-start') { const s = String(x.answer); return /^[A-Z]/.test(s) && x.choices.includes(s[0].toLowerCase() + s.slice(1)) && e === 'This one. It starts with a big ' + s[0] + '.'; }
+    return false; };
+  const falseExplains = BANKS.flatMap((g) => gen(g, 400).filter((x) => !explainTrue(g, x)).map((x) => g + ': ' + x.explain));
+  const other = (m) => Object.keys(NK_MARKS).find((k) => k !== m);
+  const EXPLAIN_PLANTS = [
+    ['p4-sml-yesno', (x) => x.answer === 'No', (x) => ({ ...x, explain: 'No. It is a different letter. It ' + NK_SML_LOOK[/small ([a-z])\?$/.exec(x.prompt)[1]] + '.' })],
+    ['p4-sml-yesno', (x) => x.answer === 'Yes', (x) => ({ ...x, explain: x.explain.replace('only smaller', 'only bigger') })],
+    ['p4-sml-same', (x) => x.answer === 'No', (x) => ({ ...x, explain: x.explain.replace(/The small [a-z]/, 'The small ' + x.visual.text.slice(-1)) })],
+    ['p4-sml-same', (x) => x.answer === 'Yes', (x) => ({ ...x, explain: x.explain.replace('are the same letter', 'are different letters') })],
+    ['p4-sml-big', () => true, (x) => ({ ...x, explain: x.explain.replace('only taller', 'only smaller') })],
+    ['p4-sml-tap', (x) => /^[a-z]$/.test(x.answer), (x) => ({ ...x, explain: x.explain.replace('only smaller', 'only bigger') })],
+    ['p4-sml-find', () => true, (x) => ({ ...x, explain: x.explain.replace(/^The small [a-z]/, 'The small ' + x.choices.find((c) => c !== x.answer)) })],
+    ['p4-mark-name', () => true, (x) => ({ ...x, explain: 'This is the ' + NK_MARKS[x.answer] + '. It ' + NK_MARK_LOOK[other(x.answer)] + '.' })],
+    ['p4-mark-means', () => true, (x) => { const m = x.visual.text.slice(-1); return { ...x, explain: x.explain.replace(NK_MARK_LOOK[m], NK_MARK_LOOK[other(m)]) }; }],
+    ['p4-mark-heard', () => true, (x) => ({ ...x, explain: x.explain.replace('The sentence ' + NK_MARK_SENTENCE[x.answer], 'The sentence ' + NK_MARK_SENTENCE[other(x.answer)]) })],
+    ['p4-mark-yesno', (x) => x.answer === 'No', (x) => { const a = nkMarkOf(/^Is this an? (.+)\?$/.exec(x.prompt)[1]); return { ...x, explain: 'No. It ' + NK_MARK_LOOK[a] + ', and ' + an(a) + ' ' + NK_MARK_LOOK[x.visual.text] + '.' }; }],
+    ['p4-mark-start', (x) => /^W/.test(x.answer), (x) => ({ ...x, explain: 'This one. It starts with a big C.' })],
+  ];
+  const explainCaught = EXPLAIN_PLANTS.filter(([g, pick, plant]) => { const x = gen(g, 400).find(pick); if (!x) return false; const y = plant(x); return y.explain !== x.explain && !explainTrue(g, y); }).length;
+  ok('every explanation pass NK\'s second wave gives is true by the test\'s own tables: a letter by its size, its pair and its own look, a mark by its name, its look and what it shows, a sentence by what it does and its first letter (seeds 1 to 400; round two\'s twelve false explanations, planted one at a time, caught: ' + explainCaught + ' of ' + EXPLAIN_PLANTS.length + ')',
+    falseExplains.length === 0 && explainCaught === EXPLAIN_PLANTS.length, falseExplains.slice(0, 3).join(' | '));
+  // 2. What each model line shows is what it says, every sentence a line says is shown in that line, every sentence is shown in some line,
+  //    and a sentence starting with a small w and one with a small c are each shown (round two: Small letters' line 8 showing v, End marks'
+  //    line 9 showing a question mark, a pair of two different sentences, line 6 showing S alone, line 8's sentence shown as a lone mark and
+  //    line 5's three sentences shown as the sun, each had passed).
+  const shownTexts = (v) => (!v ? [] : v.kind === 'letters' ? [String(v.text)] : v.kind === 'pair' ? [...shownTexts(v.a), ...shownTexts(v.b)] : []);
+  const lo = (s) => s[0].toLowerCase() + s.slice(1); const tight = (t) => t.split(/ +/).join('');
+  const lineFaults = (m) => m.lesson.script.flatMap((l, i) => { const t = l.say; const sh = shownTexts(l.show); const at = m.id + ' line ' + (i + 1) + ' '; const out = []; let k;
+    if ((k = /Is this the small ([a-z])\? Yes\b/.exec(t)) && !(sh.length === 1 && sh[0] === k[1])) out.push(at + 'shows not the small ' + k[1]);
+    if ((k = /Is this the small ([a-z])\? No\b.*so it is the small ([a-z])\.$/.exec(t)) && !(k[1] !== k[2] && sh.length === 1 && sh[0] === k[2])) out.push(at + 'shows not the small ' + k[2]);
+    if ((k = /Which one is the small ([a-z])\?/.exec(t)) && !(sh.length === 1 && [...tight(sh[0])].sort().join('') === [big(k[1]), k[1]].sort().join(''))) out.push(at + 'shows not both sizes of ' + k[1]);
+    if ((k = /Here is the small ([a-z])\. Which big letter goes with it\? The big ([A-Z])\b/.exec(t)) && !(k[2] === big(k[1]) && sh.length === 1 && tight(sh[0]) === k[1] + k[2])) out.push(at + 'shows not the small ' + k[1] + ' and then its big letter');
+    if ((k = /Which small letter goes with the big ([A-Z])\? The small ([a-z])\b/.exec(t)) && !(k[2] === k[1].toLowerCase() && sh.length === 1 && tight(sh[0]) === k[1] + k[2])) out.push(at + 'shows not the big ' + k[1] + ' and then its small letter');
+    if ((k = /Is this an? (period|question mark|exclamation point)\? No\b.*so it is an? (period|question mark|exclamation point)\.$/.exec(t)) && !(k[1] !== k[2] && sh.length === 1 && sh[0] === nkMarkOf(k[2]))) out.push(at + 'shows not the ' + k[2]);
+    if ((k = /The one with the big ([A-Z])\b/.exec(t))) { const small = /starts with a small ([a-z])\b/.exec(t);
+      if (!(sh.length === 2 && NK_SENT.some((s) => s[0] === k[1] && sh.includes(s) && sh.includes(lo(s)))) || (small && small[1] !== k[1].toLowerCase())) out.push(at + 'shows not one sentence with the big ' + k[1] + ' and with a small one'); }
+    for (const s of NK_SENT) if (t.includes(s) && !sh.includes(s)) out.push(at + 'says "' + s + '" and does not show it');
+    return out; });
+  const shownIn = (m) => m.lesson.script.flatMap((l) => shownTexts(l.show));
+  const sentenceFaults = (m) => [...NK_SENT.filter((s) => !shownIn(m).includes(s)).map((s) => s + ' is shown in no line'), ...['W', 'C'].filter((f) => !shownIn(m).some((s) => s[0] === f.toLowerCase() && NK_SENT.includes(f + s.slice(1)))).map((f) => 'no sentence is shown starting with a small ' + f.toLowerCase())];
+  const faultsNow = [...lineFaults(SL), ...lineFaults(EM), ...sentenceFaults(EM)];
+  const withShow = (m, re, show) => ({ ...m, lesson: { ...m.lesson, script: m.lesson.script.map((l) => (re.test(l.say) ? { ...l, show } : l)) } });
+  const linePlants = [lineFaults(withShow(SL, /^Is this the small v\? No\b/, { kind: 'letters', text: 'v' })), lineFaults(withShow(EM, /^Is this a question mark\? No\b/, { kind: 'letters', text: '?' })),
+    lineFaults(withShow(EM, /The one with the big W\b/, { kind: 'pair', stack: true, a: { kind: 'letters', text: 'we can run!' }, b: { kind: 'letters', text: 'We can run.' } })), lineFaults(withShow(SL, /^Which one is the small s\?/, { kind: 'letters', text: 'S' })),
+    lineFaults(withShow(EM, /^Listen\. Can we run\?/, { kind: 'letters', text: '?' })), lineFaults(withShow(EM, /^Listen to these three\./, { kind: 'icon', name: 'sun' })),
+    sentenceFaults(withShow(EM, /The one with the big C\b/, { kind: 'pair', stack: true, a: { kind: 'letters', text: 'Can we run?' }, b: { kind: 'letters', text: 'Can we run?' } }))];
+  ok('every model line of Small letters and End marks shows what it says, every sentence a line says is shown in it, and every sentence and a small w and a small c at a sentence\'s start are shown in some line (round two\'s six undos and a lesson with no small c, planted, caught: ' + linePlants.filter((f) => f.length > 0).length + ' of ' + linePlants.length + ')',
+    faultsNow.length === 0 && linePlants.every((f) => f.length > 0), faultsNow.slice(0, 4).join(' | '));
+  // 3. The words the banks' explanations and reasons stand on are said in their lesson's lines (round two: "different" was in no line of
+  //    Small letters, where every No and every reason for another letter says it). Plant: Small letters' lines without "different", caught.
+  const WORDS = { 'small-letters': ['different letter', 'the same letter', 'only smaller', 'only taller', 'same shape', 'is tall', 'is short'], 'end-marks': ['different mark', 'big W', 'big C', 'small w', 'small c', 'one little dot', 'a curl with a dot under it', 'a line with a dot under it', 'goes at its end', 'show'] };
+  const bankText = (g) => gen(g, 200).map((x) => [x.explain, ...Object.values(x.whyNot || {}).map((e) => e.name + ' ' + e.why)].join(' ')).join(' ');
+  const linesSay = (m) => m.lesson.script.map((l) => l.say).join(' ');
+  const unsaid = (m, lines) => WORDS[m.id].filter((w) => m.generators.some((g) => bankText(g).includes(w)) && !lines.includes(w)).map((w) => m.id + ': ' + w);
+  const usedWords = [SL, EM].reduce((n, m) => n + WORDS[m.id].filter((w) => m.generators.some((g) => bankText(g).includes(w))).length, 0);
+  const unsaidNow = [...unsaid(SL, linesSay(SL)), ...unsaid(EM, linesSay(EM))]; const unsaidPlant = unsaid(SL, linesSay(SL).replace(/different/g, 'other')).length > 0;
+  ok('the words Small letters\' and End marks\' explanations and reasons stand on are said in their lesson\'s lines (' + usedWords + ' of ' + (WORDS['small-letters'].length + WORDS['end-marks'].length) + ' in the banks\' words; Small letters\' lines without "different", planted, caught)', unsaidNow.length === 0 && unsaidPlant && usedWords === 17, unsaidNow.join(', '));
+  // 4. The letters whose names rhyme, see, vee and zee, are never on a screen together where a letter is named by ear, and every other pair
+  //    is still asked (round two: the small c beside the small z on 127 of 3,000 taps). Plants: a tap with c beside z, and the tap's other
+  //    letter always c or o, each caught.
+  const namedLetter = (x) => { const k = /\b(?:small|big) ([A-Za-z])\b/.exec((x.story || '') + ' ' + x.prompt); return k ? k[1].toLowerCase() : null; };
+  const onScreen = (x) => [...(x.choices || []), ...(x.visual && x.visual.kind === 'letters' ? x.visual.text.split(/ +/) : [])].map((c) => String(c).toLowerCase()).filter((c) => /^[a-z]$/.test(c));
+  const rhymes = (qs) => qs.filter((x) => { const a = namedLetter(x); return a && NK_SML_RHYME.includes(a) && onScreen(x).some((c) => c !== a && NK_SML_RHYME.includes(c)); }).map((x) => x.genId + ': ' + x.prompt);
+  const allowed = new Set(NK_SML.flatMap((a) => NK_SML.filter((b) => b !== a && !(NK_SML_RHYME.includes(a) && NK_SML_RHYME.includes(b))).map((b) => a + b)));
+  const pairsOf = (qs) => new Set(qs.map((x) => { const a = namedLetter(x); const o = [...new Set(onScreen(x))].filter((c) => c !== a); return o.length === 1 ? a + o[0] : null; }).filter(Boolean));
+  const sameSet = (a, b) => a.size === b.size && [...a].every((v) => b.has(v));
+  const taps = gen('p4-sml-tap', 400); const nos = gen('p4-sml-yesno', 1200).filter((x) => x.answer === 'No');
+  const rhymeNow = rhymes(['p4-sml-tap', 'p4-sml-big', 'p4-sml-find', 'p4-sml-yesno'].flatMap((g) => gen(g, 400)));
+  const rhymePlant = rhymes([{ genId: 'p4-sml-tap', prompt: 'Tap the small c.', story: null, choices: ['c', 'C', 'z', 'Z'], visual: null }]).length === 1;
+  const coOnly = !sameSet(pairsOf(taps.filter((x) => onScreen(x).some((c) => c !== namedLetter(x) && ['c', 'o'].includes(c)))), allowed);
+  ok('Small letters never puts c, v or z on a screen beside another of the three where a letter is named by ear, and its tap and its yes or no still ask every other pair of the seven, ' + allowed.size + ' in all (seeds 1 to 400 and 1 to 1,200; a tap with c beside z, and the other letter always c or o, planted, caught)',
+    rhymeNow.length === 0 && sameSet(pairsOf(taps), allowed) && sameSet(pairsOf(nos), allowed) && allowed.size === 36 && rhymePlant && coOnly, rhymeNow.slice(0, 3).join(' | ') + ' ' + [...allowed].filter((p) => !pairsOf(taps).has(p) || !pairsOf(nos).has(p)).join(' '));
+  // 5. A yes or no keys on what it asks and nothing else (round two: End marks' keyed on the shown mark too had passed); the order of the
+  //    lessons; and which shape does not belong draws its pair of shapes evenly (round one's fix; round two: the old draw, a shape first
+  //    and then a partner, passed every check). Over seeds 1 to 4,000 the share whose three alike are squares is 3 in 24, and triangles 5 in
+  //    24, each within 2 points; the old draw gives 4 in 24 to each.
+  const asks = (x) => (x.genId === 'p4-sml-yesno' ? [/small ([a-z])\?$/.exec(x.prompt)[1]] : x.genId === 'p4-sml-same' ? [x.visual.text[0].toLowerCase()] : [/^Is this an? (.+)\?$/.exec(x.prompt)[1]]);
+  const keyFaults = ['p4-sml-yesno', 'p4-sml-same', 'p4-mark-yesno'].flatMap((g) => gen(g, 400).filter((x) => JSON.stringify(x.aboutWords) !== JSON.stringify(asks(x))).map((x) => g + ': ' + x.prompt));
+  const keyPlant = (() => { const x = gen('p4-mark-yesno', 400).find((q) => q.answer === 'No'); return JSON.stringify([...x.aboutWords, NK_MARKS[x.visual.text]]) !== JSON.stringify(asks(x)); })();
+  const needs = (m, want) => want.every((r) => (m.requires || []).includes(r)); const orderOk = needs(EM, ['voice-tells-more', 'small-letters']) && needs(SL, ['o-and-u']) && !needs({ requires: ['voice-tells-more'] }, ['voice-tells-more', 'small-letters']);
+  const pairs4 = NK_SHAPES[4].flatMap((a) => NK_SHAPES[4].filter((b) => b !== a && !nkApart(a, b)).map((b) => [a, b])); const alike = (qs, s) => qs.filter((x) => nkItem(x.choices.find((c) => c !== x.answer)).shape === s).length / qs.length;
+  const odd4 = gen('p4-turn-odd', 4000); const want = (s) => pairs4.filter(([a]) => a === s).length / pairs4.length; const oldDraw = 1 / NK_SHAPES[4].length;
+  const evenOk = pairs4.length === 24 && ['square', 'triangle'].every((s) => Math.abs(alike(odd4, s) - want(s)) < 0.02); const evenPlant = ['square', 'triangle'].every((s) => Math.abs(oldDraw - want(s)) >= 0.02);
+  ok('a yes or no of the second wave keys on what it asks alone, End marks needs My voice tells more and Small letters, Small letters needs O and U, and which shape does not belong draws its pair evenly (squares alike ' + Math.round(alike(odd4, 'square') * 1000) / 10 + '% and triangles ' + Math.round(alike(odd4, 'triangle') * 1000) / 10 + '% of 4,000, against 12.5 and 20.8; a key on the shown mark, End marks without Small letters and the old draw, planted, caught)',
+    keyFaults.length === 0 && keyPlant && orderOk && evenOk && evenPlant, keyFaults.slice(0, 3).join(' | '));
+  // 6. The two-by-two grid reads lettersInBothSizes, true for Small letters' tap and for none of the nine older banks that offer four single
+  //    letters (round two: the rule read any four single letters, and grew those nine by a row at 375 wide); the screen code uses it, and
+  //    draws three end marks at 48. A screen reader's words for every older bank's choices are the same with the question as without it
+  //    (round two: the letter rule named the words I and a "big I" and "small a" in Reading words, and Write your name's letters by size),
+  //    and an own property of Object is no mark. Plants: the old grid rule and the old letter rule, each caught.
+  const NINE = ['r-tap-letter', 'r-after', 'r-before', 'r-first-letter', 'rs-word-starts', 'rs-letter-for-sound', 'r-match-small', 'r-match-big', 's9-pair-letter'];
+  const fours = (g) => gen(g, 40).filter((x) => x && (x.choices || []).length === 4 && x.choices.every((c) => /^[A-Za-z]$/.test(String(c))));
+  // Since pass NL every small letters lesson's tap offers a letter in both sizes, Almost the same's and More small letters' as Small letters'.
+  const gridOk = taps.every((x) => L.lettersInBothSizes(x.choices)) && ['p4-kpuy-tap', 'p4-eirt-tap'].every((g) => gen(g, 200).every((x) => L.lettersInBothSizes(x.choices))) && NINE.every((g) => fours(g).length > 0 && fours(g).every((x) => !L.lettersInBothSizes(x.choices)));
+  const gridPlant = NINE.every((g) => fours(g).length > 0);   // the old rule read any four single letters, and these all are
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const pinned = ui.includes("q.choices.length === 4 && lettersInBothSizes(q.choices) ? `repeat(${typeof window !== 'undefined' && window.innerWidth < 700 ? 2 : 4}, minmax(0, 1fr))`") && ui.includes('if (choices.length > 1 && choices.every((c) => /^[.?!]$/.test(c))) return 48;');
+  // Since pass NL the banks Small letters' maker makes for Almost the same and More small letters are read with Small letters', not as older banks.
+  const olderBanks = [...new Set(L.COURSES.flatMap((c) => c.modules.flatMap((m) => m.generators || [])))].filter((g) => !BANKS.includes(g) && !/^p4-(?:kpuy|eirt)-/.test(g));
+  const oldRule = (c, x) => { const raw = String(c).replace(/#\d+$/, ''); const cs = x.choices.map(String); return /^[A-Za-z]$/.test(raw) && cs.some((d) => /^[a-z]$/.test(d)) && cs.some((d) => /^[A-Z]$/.test(d)) ? (raw === raw.toUpperCase() ? 'big ' : 'small ') + raw : L.describeChoice(c, x); };
+  const descChanged = []; const oldReached = new Set();
+  for (const g of olderBanks) for (const x of gen(g, 40)) { if (!x || !Array.isArray(x.choices)) continue; for (const c of x.choices) { if (L.describeChoice(c, x) !== L.describeChoice(c)) descChanged.push(g + ' ' + c); if (oldRule(c, x) !== L.describeChoice(c)) oldReached.add(g); } }
+  ok('the two-by-two grid reads lettersInBothSizes, true for Small letters\' tap (and since pass NL Almost the same\'s and More small letters\') and for none of the nine older banks of four single letters, the screen code uses it and draws three marks at 48, and a screen reader hears every older bank\'s choices alike with the question or without it (' + olderBanks.length + ' banks at seeds 1 to 40; the old grid rule and the old letter rule, which reached ' + oldReached.size + ' older banks, planted, caught)',
+    gridOk && gridPlant && pinned && descChanged.length === 0 && oldReached.size >= 6 && ['rw-first', 'rw-last', 'p4-wyn-first'].every((g) => oldReached.has(g)) && L.describeChoice('constructor') === 'constructor' && L.describeChoice('toString') === 'toString', descChanged.slice(0, 4).join(' | '));
+}
+// Round two's screen read of pass NK's second wave: End marks' sentences drawn on one line, the tap's two sizes side by side, the start bank's
+// two writings drawn bold and fitted together, and the same-shape banks printed without "Here is a shape.", each with a plant.
+{ const EM = L.getModule('end-marks'); const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const sentences = (v) => (!v ? [] : v.kind === 'letters' && /[A-Za-z]{2}/.test(String(v.text)) && / /.test(String(v.text)) && /[.?!]$/.test(String(v.text)) ? [v] : v.kind === 'pair' ? [...sentences(v.a), ...sentences(v.b)] : []);
+  const unlined = (vs) => vs.filter((v) => v.line !== true).map((v) => v.text);
+  const lineFaults = (m) => unlined(m.lesson.script.flatMap((l) => sentences(l.show)));
+  const bankFaults = (qs) => unlined(qs.flatMap((x) => [...sentences(x.visual), ...sentences(x.explainVisual)]));
+  const linedNow = [...lineFaults(EM), ...bankFaults(gen('p4-mark-means', 200)), ...bankFaults(gen('p4-mark-heard', 200))];
+  const linedCount = EM.lesson.script.flatMap((l) => sentences(l.show)).length;
+  const linePlant = bankFaults(gen('p4-mark-means', 20).map((x) => ({ ...x, visual: { kind: 'letters', text: x.visual.text } }))).length === 20;
+  // The tap: the first two choices are one letter's two sizes and the last two the other's.
+  const paired = (x) => x.choices[0].toLowerCase() === x.choices[1].toLowerCase() && x.choices[2].toLowerCase() === x.choices[3].toLowerCase() && x.choices[0] !== x.choices[1];
+  const taps = gen('p4-sml-tap', 400); const tapOk = taps.every(paired) && new Set(taps.map((x) => x.choices.indexOf(x.answer))).size === 4;
+  const tapPlant = !taps.slice(0, 40).map((x) => ({ ...x, choices: [x.choices[0], x.choices[2], x.choices[1], x.choices[3]] })).every(paired);
+  // The start bank's two writings: sentenceWritings true for it alone among every bank at seeds 1 to 40, and the screen code draws such
+  // choices bold, fitted together, and every sentence with line drawn on one line, fitted, three or two in a pair fitted together.
+  const banks = [...new Set(L.COURSES.flatMap((c) => c.modules.flatMap((m) => m.generators || [])))];
+  const writings = banks.filter((g) => gen(g, 40).some((x) => x && Array.isArray(x.choices) && L.sentenceWritings(x.choices)));
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const PINS = ["<PrintGroupIf on={q.choices.filter((c) => /^print:/.test(String(c))).length >= 2 || sentenceWritings(q.choices)}>", "sentenceWritings(q.choices) ? <FitText size={Math.round(26 * k)} min={14} style={{ fontWeight: 700 }}>{c}</FitText> :",
+    "if (visual.line) return <p data-line-sentence=\"\" style={{ fontWeight: 700, margin: '6px 0', textAlign: 'center', color: B.green, lineHeight: 1.3 }}><FitText size={visual.grow || lessonGrows ? Math.round(28 * k) : 28} min={14}>{visual.text}</FitText></p>;",
+    "return (allPrint(visual) || allLines(visual)) && !printGroup ? <PrintFitGroup>{drawn}</PrintFitGroup> : drawn;"];
+  const pinsOk = PINS.every((t) => ui.split(t).length === 2); const pinPlant = PINS.some((t) => ui.replace(t, '').split(t).length !== 2);
+  const fold = readFileSync(new URL('./e2e/fold-check.mjs', import.meta.url), 'utf8');
+  // The same banks print their setup without "Here is a shape." while the voice says it.
+  const SAME_PRINT = 'Look at the shape only, not how big it is, how it is turned, or its color.';
+  const sameOk = ['p4-turn-same', 'p3-rect-same'].every((g) => gen(g, 100).every((x) => x.printedStory === SAME_PRINT && L.printedQuestion(x, true).story === SAME_PRINT && /^Here is a shape\. /.test(x.story)));
+  ok('End marks draws every sentence its lines and its two pictured banks show on one line (' + linedCount + ' in its lines), Small letters\' tap puts each letter\'s two sizes side by side, the start bank alone draws its two writings bold and fitted together (' + writings.join(', ') + '), the screen code pins each, the fold check reads the product\'s page with the test page\'s margin off, and the same-shape banks print their setup without "Here is a shape." (a sentence with no line, the tap shuffled as four and a pin taken out, planted, caught; round two\'s screen read, pass NK)',
+    linedNow.length === 0 && linedCount === 14 && linePlant && tapOk && tapPlant && writings.length === 1 && writings[0] === 'p4-mark-start' && pinsOk && pinPlant && fold.split("await page.addStyleTag({ content: 'body { margin: 0 !important; }' });").length === 3 && sameOk, JSON.stringify({ linedNow: linedNow.slice(0, 3), tapOk, writings, pinsOk, sameOk })); }
+// Small letters' and End marks' banks scored blind (pass NK's second wave), alone at seeds 1 to 400 and in rounds as built (1,500 first rounds,
+// later rounds, triple doses and Quick Reviews each): always the same button, letter, size or mark, the yes or no by what it shows alone and
+// by what it names alone, and its Yes share. Bounds since round two's lesson and code read, which found the first ones loose beside what
+// they measured: Small letters' four-letter tap under 32 percent by any rule (chance 25), the three-choice banks under 42 (chance 33), the
+// yes or no by either alone under 60 and Yes between 40 and 60, and the two writings of a sentence by the first button under 56 (chance 50);
+// a yes or no's read by one key runs a few points over 50 on a few hundred questions by chance alone, since each key's larger side is taken.
+// Three reads are recorded, each the price of a rule the banks keep, with a bound: in rounds, the big or small letter that goes with one, read
+// as a letter no earlier question was about, about 50 percent (chance 33), since aboutWords keeps a round from asking about a letter twice,
+// as round one found for the shapes; End marks' means bank by the sentence's first letter, and its heard bank by its first word, two in
+// three by construction, since every sentence that asks starts with Can and no other does (a heard Can is a real cue in English, which
+// asks a question by putting can first; the means bank shows the mark itself at the end).
+{ const gen400 = (g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const worst = (R, g, f) => Math.max(f(gen400(g)), ...groupsOf(R, g).filter((qs) => qs.length).map(f));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const firstBtn = (qs) => qs.filter((q) => q.choices[0] === q.answer).length / qs.length;
+  const oneChoice = (qs) => { const all = [...new Set(qs.flatMap((q) => q.choices.map(String)))]; return Math.max(...all.map((w) => qs.reduce((n, q) => n + (q.choices.includes(w) ? (q.answer === w ? 1 : 0) : 1 / q.choices.length), 0) / qs.length)); };
+  const oneSize = (big) => (qs) => qs.reduce((n, q) => { const at = q.choices.filter((c) => /^[A-Za-z]$/.test(c) && (big ? c === c.toUpperCase() : c === c.toLowerCase())); return n + (at.includes(q.answer) ? 1 / at.length : 0); }, 0) / qs.length;
+  const byKey = (key) => (qs) => { const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || { Yes: 0, No: 0 }; t[k][q.answer] += 1; } return Object.values(t).reduce((n, v) => n + Math.max(v.Yes, v.No), 0) / qs.length; };
+  const byShown = byKey((q) => q.visual.text); const byAsked = byKey((q) => q.prompt); const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  // Small letters' pair is read by either letter alone, the big one or the small one (since its first run, which keyed on the two together:
+  // the two letters shown are the whole question, so that read was 100 percent by construction and measured nothing a child could do blind).
+  const byEither = (qs) => Math.max(byKey((q) => q.visual.text[0])(qs), byKey((q) => q.visual.text.slice(-1))(qs));
+  const RS = ofModule('small-letters', 1500); const RE = ofModule('end-marks', 1500);
+  const r = { tap: Math.max(worst(RS, 'p4-sml-tap', firstBtn), worst(RS, 'p4-sml-tap', oneChoice), worst(RS, 'p4-sml-tap', oneSize(true)), worst(RS, 'p4-sml-tap', oneSize(false))),
+    three: Math.max(...[[RS, 'p4-sml-big'], [RS, 'p4-sml-find'], [RE, 'p4-mark-name'], [RE, 'p4-mark-means'], [RE, 'p4-mark-heard']].flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice)])),
+    shown: Math.max(worst(RS, 'p4-sml-yesno', byShown), worst(RS, 'p4-sml-same', byEither), worst(RE, 'p4-mark-yesno', byShown)), asked: Math.max(worst(RS, 'p4-sml-yesno', byAsked), worst(RE, 'p4-mark-yesno', byAsked)),
+    yesLo: Math.min(...[[RS, 'p4-sml-yesno'], [RS, 'p4-sml-same'], [RE, 'p4-mark-yesno']].flatMap(([R, g]) => groupsOf(R, g).filter((qs) => qs.length).map(yesShare))),
+    yesHi: Math.max(...[[RS, 'p4-sml-yesno'], [RS, 'p4-sml-same'], [RE, 'p4-mark-yesno']].flatMap(([R, g]) => groupsOf(R, g).filter((qs) => qs.length).map(yesShare))),
+    start: worst(RE, 'p4-mark-start', firstBtn) };
+  const notEarlier = (R, g) => Math.max(...['first', 'later', 'doses', 'reviews'].map((k) => { let n = 0, t = 0; for (const round of R[k]) { const seen = new Set(); for (const q of round) { if (q.genId === g) { const cand = q.choices.filter((c) => !seen.has(String(c).toLowerCase())); t += 1; n += cand.length ? (cand.includes(q.answer) ? 1 / cand.length : 0) : 1 / q.choices.length; } for (const w of q.aboutWords || []) seen.add(String(w).toLowerCase()); } } return t ? n / t : 0; }));
+  const byFirst = (qs) => qs.reduce((n, q) => n + (q.visual.text[0] === 'C' ? (q.answer === 'Asking' ? 1 : 0) : (q.answer !== 'Asking' ? 0.5 : 0)), 0) / qs.length;
+  const byCan = (qs) => qs.reduce((n, q) => n + (/^Listen\. Can\b/.test(q.story) ? (q.answer === '?' ? 1 : 0) : (q.answer !== '?' ? 0.5 : 0)), 0) / qs.length;
+  const rec = { earlier: Math.max(notEarlier(RS, 'p4-sml-big'), notEarlier(RS, 'p4-sml-find')), first: worst(RE, 'p4-mark-means', byFirst), can: worst(RE, 'p4-mark-heard', byCan) };
+  const plant = oneSize(false)(gen400('p4-sml-tap').filter((q) => q.answer === q.answer.toLowerCase()));
+  const loosePlant = Math.max(firstBtn(gen400('p4-sml-big').map((q) => ({ ...q, choices: [q.answer, ...q.choices.filter((c) => c !== q.answer)] }))), 0) >= 0.42;
+  ok(`Small letters' and End marks' banks scored blind, alone and in rounds as built, stay under their bounds (pass NK; the tap by the first button, one letter or one size at most ${pct(r.tap)}%; the three-choice banks by the first button or one choice ${pct(r.three)}%; a yes or no by what it shows ${pct(r.shown)}% and by what it names ${pct(r.asked)}%, Yes ${pct(r.yesLo)} to ${pct(r.yesHi)}%; the two writings by the first button ${pct(r.start)}%; recorded: a letter no earlier question was about ${pct(rec.earlier)}%, the means bank by the first letter ${pct(rec.first)}% and the heard bank by Can ${pct(rec.can)}%; a tap that only ever asked the small letter caught at ${pct(plant)}% by always small, and a pair bank with its answer always first, planted, caught)`,
+    r.tap < 0.32 && r.three < 0.42 && r.shown < 0.6 && r.asked < 0.6 && r.yesLo >= 0.4 && r.yesHi <= 0.6 && r.start < 0.56 && rec.earlier < 0.55 && rec.first < 0.7 && rec.can < 0.7 && plant >= 0.4 && loosePlant, JSON.stringify({ r, rec })); }
+// Almost the same and More small letters (pass NL): Small letters' five kinds, made by one maker for every small letters lesson
+// (smallLetterBanks), with each lesson's own letters and words. Read here as pass NK's second wave read Small letters: the maker keeps Small
+// letters' banks as pass NK made them, word for word; each new bank worked out from what each question says and shows by the test's own
+// tables, with each near miss caught by the guard it names and no other; every explanation and reason true by the test's tables; every
+// kind modeled by a line of its lesson; every letter and look said in the lines first; the code's tables the test's; every letter asked in
+// both sizes; nothing named printed while the voice can speak; ee and tee never named side by side; a question keyed on the letter it asks
+// about; the lessons in order; and the banks scored blind alone and in rounds as built. Each check has a plant.
+{ const D = PREK_DERIVE; const { createHash } = await import('node:crypto');
+  const AS = L.getModule('almost-the-same'); const MS = L.getModule('more-small-letters'); const BANKS = [...AS.generators, ...MS.generators];
+  const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const LESSON = { 'p4-kpuy': { m: AS, letters: NL_KPUY, look: NL_KPUY_LOOK, big: NL_KPUY_BIG, twin: NL_KPUY_TWIN, rhyme: [] }, 'p4-eirt': { m: MS, letters: NL_EIRT, look: NL_EIRT_LOOK, big: NL_EIRT_BIG, twin: NL_EIRT_TWIN, rhyme: NL_EIRT_RHYME } };
+  const tagOf = (g) => g.slice(0, g.lastIndexOf('-')); const kindOf = (g) => g.slice(g.lastIndexOf('-') + 1); const up = (l) => l.toUpperCase();
+  const lookOf = (T, c) => (c === c.toLowerCase() ? T.look[c] : T.big[c]);
+  // 0. The maker asks Small letters' tap, yes or no and same questions as pass NK's own functions did, word for word: the three banks at
+  //    seeds 1 to 400 hash to the digest of pass NK's, taken from its delivered code (its five banks hashed to f97be776 before round one's
+  //    fixes). Its big and find banks, with the new lessons', show screens of three letters that never hold two whose names rhyme, each
+  //    letter shown the answer a third of the time (round one's lesson read: with ee and tee the two wrong choices, More small letters'
+  //    third letter was the answer every time). Plants: a word changed in one question, a screen with ee and tee, and an answer always i.
+  const SML_DIGEST = '3883af4688974fab3b5db5a36aa42f6ccbb9a6f11724147b4f46c4bee1953ce5';
+  const smlText = ['p4-sml-tap', 'p4-sml-yesno', 'p4-sml-same'].map((g) => JSON.stringify(gen(g, 400))).join('\n');
+  // Since round two's read: Small letters' big and find banks as they stand since round one's fixes, held by a second digest, so the next
+  // change to them is a deliberate one.
+  const SML_BIGFIND = 'f64a610e844694a50f50da01a4fbc545b896b475af28f7b8aa400f6ae9b9e9d0';
+  const bigFindText = ['p4-sml-big', 'p4-sml-find'].map((g) => JSON.stringify(gen(g, 400))).join('\n');
+  const dig = (t) => createHash('sha256').update(t, 'utf8').digest('hex');
+  const RHYMES = { 'p4-sml': ['c', 'v', 'z'], 'p4-kpuy': [], 'p4-eirt': NL_EIRT_RHYME };
+  const threeBanks = ['p4-sml', 'p4-kpuy', 'p4-eirt'].flatMap((t) => [t + '-big', t + '-find']);
+  const twoRhymes = (g, qs) => qs.filter((x) => x.choices.filter((c) => RHYMES[tagOf(g)].includes(String(c).toLowerCase())).length > 1).length;
+  const shares = (qs) => { const shown = {}, right = {}; for (const x of qs) for (const c of x.choices) { const l = String(c).toLowerCase(); shown[l] = (shown[l] || 0) + 1; if (c === x.answer) right[l] = (right[l] || 0) + 1; }
+    return Object.keys(shown).map((l) => (right[l] || 0) / shown[l]); };
+  const screensNow = threeBanks.map((g) => { const qs = gen(g, 2000); return { g, two: twoRhymes(g, qs), lo: Math.min(...shares(qs)), hi: Math.max(...shares(qs)) }; });
+  const fq = gen('p4-eirt-find', 2000);
+  const screenPlants = [twoRhymes('p4-eirt-find', fq.filter((x) => x.answer === 'i').map((x) => ({ ...x, choices: ['e', 'i', 't'] }))) > 0,
+    Math.max(...shares(fq.map((x) => (x.choices.includes('i') ? { ...x, answer: 'i' } : x)))) > 0.39];
+  ok('the maker of the small letters banks (smallLetterBanks, pass NL) asks Small letters\' tap, yes or no and same questions as pass NK made them, word for word, at seeds 1 to 400, its big and find questions as round one\'s fixes made them (a second digest, since round two), and every three-choice screen of the three small letters lessons holds at most one letter of its rhyming set, each letter shown the answer a third of the time (28 to 39 percent at seeds 1 to 2,000; a word changed, a screen with ee and tee, and an answer always i, planted, caught)',
+    dig(smlText) === SML_DIGEST && dig(smlText.replace('only smaller', 'only bigger')) !== SML_DIGEST && smlText.includes('only smaller') && dig(bigFindText) === SML_BIGFIND && screensNow.every((x) => x.two === 0 && x.lo >= 0.28 && x.hi <= 0.39) && screenPlants.every(Boolean),
+    dig(smlText).slice(0, 12) + ' ' + JSON.stringify(screensNow.filter((x) => !(x.two === 0 && x.lo >= 0.28 && x.hi <= 0.39))));
+  // 1. Every new bank worked out by the test's own tables, each near miss caught by its guard and no other: with that guard taken out of
+  //    its derivation's own text the bank gets an answer at every seed from 1 to 400, and with it in, none.
+  const NEAR = (tag) => [
+    [tag + '-tap', 'four', (x) => ({ ...x, choices: [...x.choices, x.choices.find((c) => c !== x.answer)] })],
+    [tag + '-big', 'shown', (x) => ({ ...x, visual: { kind: 'letters', text: LESSON[tag].letters.find((l) => l !== x.visual.text) } })],
+    [tag + '-find', 'printed', (x) => ({ ...x, printed: x.prompt })],
+    [tag + '-yesno', 'printed', (x) => ({ ...x, printed: x.prompt })],
+    [tag + '-same', 'pair', (x) => ({ ...x, visual: { kind: 'letters', text: x.visual.text.slice(0, 1) + '   ' + x.visual.text.slice(-1).toUpperCase() } })]];
+  const GUARDS = { tap: ['nkSmlTapOf', ' || (q.choices || []).length !== 4', ''], big: ['nkSmlBigOf', ' || v !== m[1]', ''], find: ['nkSmlFindOf', " || q.printed !== 'Which small letter goes with the big letter you hear?'", ''],
+    yesno: ['nkSmlIsOf', " || q.printed !== 'Is this the small letter you hear?'", ''], same: ['nkSmlSameOf', "const m = /^([A-Z])   ([a-z])$/.exec(v || '');", "const m = /^([A-Z])   ([A-Za-z])$/.exec(v || '');"] };
+  const HELPERS = { nkSmlTapOf, nkSmlBigOf, nkSmlFindOf, nkSmlIsOf, nkSmlSameOf };
+  const without = (g, [where, from, to]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join(to);
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[kindOf(g)]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const nears = [...NEAR('p4-kpuy'), ...NEAR('p4-eirt')]; const unproven = nears.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  // A letter of the other lesson is not this lesson's: More small letters' e in Almost the same's yes or no, planted, has no answer.
+  const qy = gen('p4-kpuy-yesno', 1)[0]; const crossPlant = D['p4-kpuy-yesno']({ ...qy, visual: { kind: 'letters', text: 'e' } }) === null && D['p4-kpuy-yesno'](qy) === qy.answer;
+  ok('Almost the same\'s and More small letters\' ten banks are worked out from what each question says and shows by the test\'s own tables, and each of their ten near misses is caught by the guard it names and no other, at every seed from 1 to 400 (a letter of the other lesson, planted, has no answer)',
+    BANKS.length === 10 && BANKS.every((g) => typeof D[g] === 'function') && nears.length === 10 && unproven.length === 0 && crossPlant, unproven.join(' | '));
+  // 2. Every explanation and every reason is true by the test's tables: a letter named by its size, the same letter's other size by what
+  //    tells the two apart, a different letter by its own look at its own size, and a yes or no by what it shows. Plant: a reason giving
+  //    big K small k's look, and an explanation saying small k is shorter than big K, each caught.
+  const explainOf = (g, x) => { const T = LESSON[tagOf(g)]; const kpuy = tagOf(g) === 'p4-kpuy'; const goes = (l) => (kpuy ? NL_KPUY_GOES[l] : 'goes with the big ' + up(l) + ', and it ' + T.look[l]);
+    const k = kindOf(g); const a = String(x.answer);
+    if (k === 'tap') { const l = a.toLowerCase(); return a === up(l) ? 'This is the big ' + a + '. It ' + T.big[a] + '.' : 'This is the small ' + l + '. It ' + goes(l) + '.'; }
+    if (k === 'big') { const l = x.visual.text; return kpuy ? 'The big ' + up(l) + ' goes with it. The small ' + l + ' ' + NL_KPUY_GOES[l] + '.' : 'The big ' + up(l) + '. It goes with the small ' + l + ', which ' + T.look[l] + '.'; }
+    if (k === 'find') return 'The small ' + a + '. It ' + goes(a) + '.';
+    if (k === 'yesno') { const asked = /^Is this the small ([a-z])\?$/.exec(x.prompt)[1]; const v = x.visual.text; return a === 'Yes' ? 'Yes. It is the small ' + asked + '. It ' + (kpuy ? NL_KPUY_GOES[asked] : T.look[asked]) + '.' : 'No. It is a different letter. It ' + T.look[v] + '.'; }
+    if (k === 'same') { const b = x.visual.text[0]; const l = b.toLowerCase(); return a === 'Yes' ? (kpuy ? 'Yes. Big ' + b + ' and small ' + l + ' are the same letter. The small one ' + NL_KPUY_GOES[l] + '.' : 'Yes. Big ' + b + ' and small ' + l + ' are the same letter, with different shapes.') : 'No. They are different letters. The big ' + b + ' goes with the small ' + l + ', which ' + (kpuy ? NL_KPUY_GOES[l] : T.look[l]) + '.'; }
+    return null; };
+  const reasonTrue = (g, x, c, e) => { const T = LESSON[tagOf(g)]; const k = kindOf(g);
+    if (/^[A-Za-z]$/.test(c)) { if (e.name !== (c === c.toLowerCase() ? 'The small ' : 'The big ') + c) return false; const asked = String(x.answer);
+      if (c.toLowerCase() === asked.toLowerCase()) return c !== asked && e.why === T.twin[c] + '.';
+      return e.why === 'is a different letter. It ' + lookOf(T, c) + '.'; }
+    if (k === 'yesno') { const asked = /^Is this the small ([a-z])\?$/.exec(x.prompt)[1]; const v = x.visual.text; return c === 'No' ? v === asked && e.why === 'would mean it is not the small ' + asked + ', but it is.' : v !== asked && e.why === 'would mean it is the small ' + asked + ', but it is a different letter.'; }
+    if (k === 'same') { const [b, s] = [x.visual.text[0], x.visual.text.slice(-1)]; const pair = 'big ' + b + ' and small ' + s; return c === 'No' ? b.toLowerCase() === s && e.why === 'would mean they are different letters, but ' + pair + ' are the same letter.' : b.toLowerCase() !== s && e.why === 'would mean they are the same letter, but the small one is not the small ' + b.toLowerCase() + '.'; }
+    return false; };
+  const falseExplain = BANKS.flatMap((g) => gen(g, 400).filter((x) => x.explain !== explainOf(g, x)).map((x) => g + ' ' + x.seed + ': ' + x.explain));
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.name + ' ' + e.why)));
+  const qk = gen('p4-kpuy-tap', 400).find((x) => x.answer === 'k');
+  const reasonPlant = !!qk && !reasonTrue('p4-kpuy-tap', qk, 'K', { name: 'The big K', why: 'has two short arms, and the big K has two long arms.' });
+  const explainPlant = !!qk && explainOf('p4-kpuy-tap', qk) !== 'This is the small k. It is shorter than the big K.' && qk.explain !== 'This is the small k. It is shorter than the big K.';
+  // Small k is about as tall as big K in the screens' letters, so nothing tells them apart by size; Small letters' twin reason, which does
+  // ("is short, and the big letters here are tall."), given to a k question, planted, caught.
+  const SIZE_SAID = /small k is (?:short|shorter)|big K is (?:tall|taller)|is short, and the big letters here are tall|is tall, and the small letters here are short/;
+  const sizeOf = (x) => SIZE_SAID.test(x.explain + ' ' + Object.values(x.whyNot || {}).map((e) => e.name + ' ' + e.why).join(' '));
+  const noSize = AS.generators.flatMap((g) => gen(g, 400)).filter((x) => /\bk\b/i.test(JSON.stringify(x.choices) + x.prompt + (x.story || '') + JSON.stringify(x.visual)) && sizeOf(x)).length;
+  const sizePlant = (() => { const x = gen('p4-kpuy-tap', 400).find((q) => q.answer === 'k'); return !!x && sizeOf({ ...x, whyNot: { ...x.whyNot, K: { name: 'The big K', why: 'is tall, and the small letters here are short.' } } }); })();
+  ok('every explanation and reason Almost the same\'s and More small letters\' banks give is true by the test\'s own tables, and none tells small k from big K by size (seeds 1 to 400; a reason giving big K small k\'s look, planted, caught)',
+    falseExplain.length === 0 && falseReasons.length === 0 && reasonPlant && explainPlant && noSize === 0 && sizePlant, [...falseExplain, ...falseReasons].slice(0, 3).join(' | '));
+  // 3. Every kind of question is modeled by a line of its lesson that asks it or works it. Plant: each kind's model line taken out, caught.
+  const KIND_LINES = { tap: /Which one is the small [a-z]\? The (?:one|short one) with/, big: /Here is the small [a-z]\. Which big letter goes with it\? The big [A-Z]/, find: /Which small letter goes with the big [A-Z]\? The small [a-z]/,
+    yesno: /Is this the small [a-z]\? (?:Yes|No)\./, same: /Are these two the same letter, one big and one small\? (?:Yes|No)\./ };
+  const linesOf = (m, drop) => m.lesson.script.map((l) => l.say).filter((s) => !(drop && drop.test(s)));
+  const unmodeled = BANKS.filter((g) => !linesOf(LESSON[tagOf(g)].m).some((s) => KIND_LINES[kindOf(g)].test(s)));
+  const caught = BANKS.filter((g) => !linesOf(LESSON[tagOf(g)].m, KIND_LINES[kindOf(g)]).some((s) => KIND_LINES[kindOf(g)].test(s)));
+  const yn = (m) => linesOf(m).filter((s) => /^Is this the small [a-z]\?/.test(s)).map((s) => /\? (Yes|No)\./.exec(s)[1]).sort().join();
+  ok('every kind of question Almost the same and More small letters ask is modeled by a line of its lesson, its yes or no both ways (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + ')',
+    unmodeled.length === 0 && caught.length === 10 && yn(AS) === 'No,Yes' && yn(MS) === 'No,Yes', unmodeled.join(', '));
+  // 4. Every letter a bank names is said in its lines in each size ("big K", "small k"), every look a reason or an explanation gives is said
+  //    there, and the code's tables are the test's. Plants: Almost the same's lines without "two long arms", and a table with y left out.
+  const lineText = (m) => m.lesson.script.map((l) => l.say).join(' ');
+  const missing = (tag, text) => { const T = LESSON[tag]; const t = text.toLowerCase(); const out = [];
+    for (const l of T.letters) { if (!t.includes('small ' + l)) out.push('small ' + l); if (!t.includes('big ' + l)) out.push('big ' + l); }
+    const strip = (p) => p.replace(/^(?:is|has|goes with the big [A-Z], and it) /, '').replace(/^(?:is|has) /, '').toLowerCase();
+    for (const p of [...Object.values(T.look), ...Object.values(T.big)]) if (!t.includes(strip(p))) out.push(p);
+    for (const p of Object.values(T.twin)) { const part = p.replace(/^is an? (?:big|small) letter, /, '').replace(/^(?:with|and it is|and it) /, ''); if (!/^is an? (?:big|small) letter, /.test(p) || !t.includes(part)) out.push(p); }
+    if (!t.includes('big letter') || !t.includes('small letter')) out.push('big letter and small letter');
+    // Since round one's lesson read: Almost the same's explanations say how a small letter goes with its big one (NL_KPUY_GOES), each
+    // part of it in a line too, "like the big U" said as "like big U" or "like the big U".
+    if (tag === 'p4-kpuy') { const norm = (x) => x.toLowerCase().replace(/\bthe big\b/g, 'big'); for (const g of Object.values(NL_KPUY_GOES)) for (const part of g.split(', ')) { const bare = part.replace(/^(?:and|with) /, ''); if (!norm(t).includes(norm(bare))) out.push(part); } }
+    return out; };
+  const missNow = [...missing('p4-kpuy', lineText(AS)), ...missing('p4-eirt', lineText(MS))];
+  const missPlant = missing('p4-kpuy', lineText(AS).replace(/two long arms/g, 'two arms')).length > 0 && missing('p4-kpuy', lineText(AS).replace(/, like big P,/g, ',')).length > 0;
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const tablesOk = (C) => same(C.KPUY4_LETTERS, NL_KPUY) && same(C.KPUY4_LOOK, NL_KPUY_LOOK) && same(C.KPUY4_BIG_LOOK, NL_KPUY_BIG) && same(C.KPUY4_GOES, NL_KPUY_GOES) && same(C.KPUY4_TWIN, NL_KPUY_TWIN)
+    && same(C.EIRT4_LETTERS, NL_EIRT) && same(C.EIRT4_LOOK, NL_EIRT_LOOK) && same(C.EIRT4_BIG_LOOK, NL_EIRT_BIG) && same(C.EIRT4_TWIN, NL_EIRT_TWIN) && same(C.EIRT4_RHYME, NL_EIRT_RHYME);
+  const tablePlant = !tablesOk({ ...L, KPUY4_LETTERS: NL_KPUY.filter((l) => l !== 'y') });
+  ok('every letter Almost the same and More small letters ask about is said in its lesson\'s lines in each size, every look its banks give is said there, and the code\'s tables are the test\'s own (the lines without "two long arms", and a table without y, planted, caught)', missNow.length === 0 && missPlant && tablesOk(L) && tablePlant, missNow.slice(0, 6).join(' | '));
+  // 5. Every letter is asked in both sizes at seeds 1 to 400, nothing a question names prints while the voice can speak, ee and tee are never
+  //    named by ear side by side, and a question is keyed on the letter it asks about. Plants: a tap that offers e beside t, a printed
+  //    prompt that names its letter and a yes or no keyed on the letter shown, each caught.
+  const asked = new Set(); for (const g of BANKS) for (const x of gen(g, 400)) { if (/^[A-Za-z]$/.test(String(x.answer))) asked.add(x.answer); if (x.visual && x.visual.text) for (const ch of x.visual.text.replace(/ /g, '')) asked.add(ch); }
+  const wantAsked = [...NL_KPUY, ...NL_KPUY.map(up), ...NL_EIRT, ...NL_EIRT.map(up)];
+  const leaks = (qs) => qs.filter((x) => { const v = L.printedQuestion(x, true); return /\b(?:small|big) [A-Za-z]\b/.test(v.prompt + ' ' + (v.story || '')); }).length;
+  const leaksNow = BANKS.reduce((n, g) => n + leaks(gen(g, 200)), 0); const leakPlant = leaks(gen('p4-eirt-find', 20).map((x) => ({ ...x, printed: x.prompt }))) > 0;
+  // A letter named by ear beside another on the screen whose name rhymes with it, as Small letters' rhyme check reads it: the letter a
+  // question names (aboutWords) and the letters it offers or shows; the pair bank names no letter, so it keeps every pair.
+  const onScreen = (x) => [...(x.choices || []), ...(x.visual && x.visual.kind === 'letters' ? x.visual.text.split(/ +/) : [])].map((c) => String(c).toLowerCase()).filter((c) => /^[a-z]$/.test(c));
+  const rhymeSide = (qs) => qs.filter((x) => { if (kindOf(x.genId) === 'same' || !x.genId.startsWith('p4-eirt')) return false; const a = (x.aboutWords || [])[0]; return NL_EIRT_RHYME.includes(a) && onScreen(x).some((c) => c !== a && NL_EIRT_RHYME.includes(c)); }).length;
+  const rhymeNow = rhymeSide(MS.generators.flatMap((g) => gen(g, 400))); const rhymePlant = rhymeSide([{ genId: 'p4-eirt-tap', prompt: 'Tap the small e.', aboutWords: ['e'], choices: ['e', 'E', 't', 'T'], visual: null }]) === 1;
+  const keyFault = (g, x) => { const k = kindOf(g); const want = k === 'yesno' ? /small ([a-z])\?$/.exec(x.prompt)[1] : k === 'same' ? x.visual.text[0].toLowerCase() : k === 'big' ? x.visual.text : String(x.answer).toLowerCase(); return JSON.stringify(x.aboutWords) !== JSON.stringify([want]); };
+  const keyFaults = BANKS.flatMap((g) => gen(g, 400).filter((x) => keyFault(g, x)));
+  const keyPlant = (() => { const x = gen('p4-kpuy-yesno', 400).find((q) => q.answer === 'No'); return !!x && keyFault('p4-kpuy-yesno', { ...x, aboutWords: [x.visual.text] }) && !keyFault('p4-kpuy-yesno', x); })();
+  ok('every letter of Almost the same and More small letters is asked in both sizes at seeds 1 to 400, nothing a question names prints while the voice can speak, ee and tee are never named by ear side by side, and each question is keyed on the letter it asks about (a printed prompt with its letter, a tap of e beside t, and a yes or no keyed on what it shows, planted, caught)',
+    wantAsked.every((w) => asked.has(w)) && leaksNow === 0 && leakPlant && rhymeNow === 0 && rhymePlant && keyFaults.length === 0 && keyPlant, JSON.stringify({ missing: wantAsked.filter((w) => !asked.has(w)), leaksNow, rhymeNow, keyFaults: keyFaults.length }));
+  // 6. The lessons in order: Almost the same after Small letters, More small letters after Almost the same, each with its reason naming
+  //    the lesson it requires by its title; both on the grown-up's card where they name a letter, each yes or no hiding its letter.
+  const orderOk = same(AS.requires, ['small-letters']) && same(MS.requires, ['almost-the-same']) && AS.requiresWhy.includes('Small letters') && MS.requiresWhy.includes('Almost the same') && AS.order === 42 && MS.order === 43;
+  const cardOk = ['tap', 'big', 'find', 'yesno'].every((k) => L.GROWN_UP_CARD_BANKS.has('p4-kpuy-' + k) && L.GROWN_UP_CARD_BANKS.has('p4-eirt-' + k)) && !L.GROWN_UP_CARD_BANKS.has('p4-kpuy-same') && !L.GROWN_UP_CARD_BANKS.has('p4-eirt-same') && L.GROWN_UP_CARD_HIDES.has('p4-kpuy-yesno') && L.GROWN_UP_CARD_HIDES.has('p4-eirt-yesno');
+  ok('Almost the same opens after Small letters and More small letters after it, each with its reason, and their banks that name a letter are on the grown-up\'s card, each yes or no hiding its letter (pass NL)', orderOk && cardOk, JSON.stringify({ orderOk, cardOk }));
+  // 7. Every first wrong tap of the three tap banks hears its reason, and neither the reason heard nor the one printed names the letter
+  //    asked (round one's lesson read, pass NL: the two lessons' other-size reasons named it, so a small letter asked was told, and printed
+  //    where the print hides it, and a big one asked was held back every time). Plants: the old reasons for the big K and the small k.
+  { const BARE = 'Not that one. Have another try.'; const nameOf = (a) => (a === a.toLowerCase() ? 'small ' : 'big ') + a;
+    const tapFaults = (qs) => qs.flatMap((x) => x.choices.filter((c) => c !== x.answer).flatMap((c) => { const heard = L.preReaderWrongWords(x, c, [c]); const printed = L.preReaderWrongWords(x, c, [c], true);
+      const named = new RegExp('\\b' + nameOf(String(x.answer)) + '\\b'); return heard === BARE || named.test(heard) || named.test(printed) ? [x.genId + ' ' + x.answer + ', ' + c + ' tapped: ' + heard] : []; }));
+    const tapNow = tapFaults(['p4-sml-tap', 'p4-kpuy-tap', 'p4-eirt-tap'].flatMap((g) => gen(g, 1000)));
+    const qSmall = gen('p4-kpuy-tap', 400).find((x) => x.answer === 'k'); const qBig = gen('p4-kpuy-tap', 400).find((x) => x.answer === 'K');
+    const tapPlants = [!!qSmall && tapFaults([{ ...qSmall, whyNot: { ...qSmall.whyNot, K: { name: 'The big K', why: 'has two long arms, and the small k has two short arms.' } } }]).length > 0,
+      !!qBig && tapFaults([{ ...qBig, whyNot: { ...qBig.whyNot, k: { name: 'The small k', why: 'has two short arms, and the big K has two long arms.' } } }]).length > 0];
+    ok('every first wrong tap of Small letters\', Almost the same\'s and More small letters\' tap banks hears its reason, and neither the reason heard nor the one printed names the letter asked (seeds 1 to 1,000 of each; round one\'s lesson read, pass NL; the old reasons for the big K and the small k, planted, caught)',
+      tapNow.length === 0 && tapPlants.every(Boolean), tapNow.slice(0, 3).join(' | ')); }
+  // 8. What each model line of the two lessons shows is what it says, as Small letters' and End marks' lines are read (round one's lesson
+  //    read, pass NL): a line that names a big letter and a small one shows the two, a yes or no the letter its answer names, which one
+  //    both sizes, a pair its two letters in order, and a same-letter line a pair that is one letter or two as it answers. Plants: Almost
+  //    the same's line 8 showing u, More small letters' line 11 showing E and i, and Almost the same's line 4 showing U and y.
+  { const tight = (v) => (v && v.kind === 'letters' ? String(v.text).split(/ +/).join('') : '');
+    const faultsOf = (m) => m.lesson.script.flatMap((l, i) => { const t = l.say; const sh = tight(l.show); const at = m.id + ' line ' + (i + 1) + ' '; const out = []; let k;
+      if ((k = /^This is big ([A-Z]), and this is small ([a-z])\./.exec(t)) && !(k[2] === k[1].toLowerCase() && sh.startsWith(k[1] + k[2]))) out.push(at + 'shows not big ' + k[1] + ' and small ' + k[2]);
+      if ((k = /Is this the small ([a-z])\? Yes\b/.exec(t)) && sh !== k[1]) out.push(at + 'shows not the small ' + k[1]);
+      if ((k = /Is this the small ([a-z])\? No\b.*so it is the small ([a-z])\.$/.exec(t)) && !(k[1] !== k[2] && sh === k[2])) out.push(at + 'shows not the small ' + k[2]);
+      if ((k = /Which one is the small ([a-z])\?/.exec(t)) && [...sh].sort().join('') !== [up(k[1]), k[1]].sort().join('')) out.push(at + 'shows not both sizes of ' + k[1]);
+      if ((k = /Here is the small ([a-z])\. Which big letter goes with it\? The big ([A-Z])\b/.exec(t)) && !(k[2] === up(k[1]) && sh === k[1] + k[2])) out.push(at + 'shows not the small ' + k[1] + ' and then its big letter');
+      if ((k = /Which small letter goes with the big ([A-Z])\? The small ([a-z])\b/.exec(t)) && !(k[2] === k[1].toLowerCase() && sh === k[1] + k[2])) out.push(at + 'shows not the big ' + k[1] + ' and then its small letter');
+      if ((k = /Are these two the same letter, one big and one small\? (Yes|No)\./.exec(t)) && !(/^[A-Z][a-z]$/.test(sh) && (sh[0].toLowerCase() === sh[1]) === (k[1] === 'Yes') && (k[1] === 'No' || t.includes('Big ' + sh[0] + ' and small ' + sh[1] + ' are the same letter')))) out.push(at + 'shows not a pair that answers ' + k[1]);
+      return out; });
+    const withShow = (m, re, show) => ({ ...m, lesson: { ...m.lesson, script: m.lesson.script.map((l) => (re.test(l.say) ? { ...l, show } : l)) } });
+    const linesNow = [...faultsOf(AS), ...faultsOf(MS)];
+    const linePlants = [faultsOf(withShow(AS, /^Is this the small u\? No\b/, { kind: 'letters', text: 'u' })), faultsOf(withShow(MS, /^Are these two the same letter/, { kind: 'letters', text: 'E   i' })), faultsOf(withShow(AS, /^This is big U\b/, { kind: 'letters', text: 'U   y' }))];
+    ok('every model line of Almost the same and More small letters shows what it says: a big letter and its small one, the letter a yes or no names, both sizes, a pair in order, and a same-letter pair as it answers (round one\'s lesson read, pass NL; three lines showing the wrong letters, planted, caught: ' + linePlants.filter((f) => f.length > 0).length + ' of ' + linePlants.length + ')',
+      linesNow.length === 0 && linePlants.every((f) => f.length > 0), linesNow.slice(0, 3).join(' | ')); }
+}
+// Almost the same's and More small letters' banks scored blind (pass NL), alone at seeds 1 to 400 and in rounds as built (1,500 first rounds,
+// later rounds, triple doses and Quick Reviews each), by the rules and bounds Small letters' are held to: the four-letter tap by the first
+// button, one letter or one size under 32 percent (chance 25), the three-choice banks by the first button or one choice under 42 (chance
+// 33), a yes or no by what it shows or what it names under 60, Yes between 40 and 60. One read is recorded with a bound, the price of a rule
+// the banks keep: in rounds, the big or small letter that goes with one, read as a letter no earlier question was about, about 56 percent
+// with four letters a lesson where Small letters' seven gave about 50 (chance 33), since aboutWords keeps a round from asking about a letter
+// twice while another can be found (pass NL, measured as built: 56.3 and 56.7; 56.3 and 57.4 since round one's fixes). Plant: the three-choice
+// bank with its answer always first. Since round one's lesson read the three-choice screens never hold two letters whose names rhyme, so the
+// screen alone tells no answer (each letter shown is the answer a third of the time; read as the letter most often right on each screen,
+// 35 to 37 percent at seeds 1 to 2,000, under the three-choice bound, where 400 seeds' few questions a screen read up to 42); in rounds the echo rule above, with ee and tee on half of More small letters'
+// screens each, lets a child who taps a letter no earlier question was about, and e or t where one is left, score about 61 percent (56
+// in Almost the same, 54 in Small letters; 73 to 75 before the fix), recorded with a bound of 65 (EARMARKS); and with four letters and five
+// questions every round asks about one letter twice, a big or small letter that goes with one coming after a question on that letter in
+// 377 and 410 of 2,000 first rounds, recorded with a bound of 500 (EARMARKS). Plants: a screen with ee and tee and the third letter its
+// answer, and a round with the big letter's question after the tap's on the same letter.
+{ const gen400 = (g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const worst = (R, g, f) => Math.max(f(gen400(g)), ...groupsOf(R, g).filter((qs) => qs.length).map(f));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const firstBtn = (qs) => qs.filter((q) => q.choices[0] === q.answer).length / qs.length;
+  const oneChoice = (qs) => { const all = [...new Set(qs.flatMap((q) => q.choices.map(String)))]; return Math.max(...all.map((w) => qs.reduce((n, q) => n + (q.choices.includes(w) ? (q.answer === w ? 1 : 0) : 1 / q.choices.length), 0) / qs.length)); };
+  const oneSize = (big) => (qs) => qs.reduce((n, q) => { const at = q.choices.filter((c) => /^[A-Za-z]$/.test(c) && (big ? c === c.toUpperCase() : c === c.toLowerCase())); return n + (at.includes(q.answer) ? 1 / at.length : 0); }, 0) / qs.length;
+  const byKey = (key) => (qs) => { const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || { Yes: 0, No: 0 }; t[k][q.answer] += 1; } return Object.values(t).reduce((n, v) => n + Math.max(v.Yes, v.No), 0) / qs.length; };
+  const byShown = byKey((q) => q.visual.text); const byAsked = byKey((q) => q.prompt); const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const byEither = (qs) => Math.max(byKey((q) => q.visual.text[0])(qs), byKey((q) => q.visual.text.slice(-1))(qs));
+  const notEarlier = (R, g) => Math.max(...['first', 'later', 'doses', 'reviews'].map((k) => { let n = 0, t = 0; for (const round of R[k]) { const seen = new Set(); for (const q of round) { if (q.genId === g) { const cand = q.choices.filter((c) => !seen.has(String(c).toLowerCase())); t += 1; n += cand.length ? (cand.includes(q.answer) ? 1 / cand.length : 0) : 1 / q.choices.length; } for (const w of q.aboutWords || []) seen.add(String(w).toLowerCase()); } } return t ? n / t : 0; }));
+  const byScreen = (qs) => { const t = {}; for (const q of qs) { const k = q.choices.map((c) => String(c).toLowerCase()).sort().join(''); t[k] = t[k] || {}; const a = String(q.answer).toLowerCase(); t[k][a] = (t[k][a] || 0) + 1; }
+    return Object.values(t).reduce((n, v) => n + Math.max(...Object.values(v)), 0) / qs.length; };
+  const joinedRead = (R, g, rhyme) => Math.max(...['first', 'later', 'doses', 'reviews'].map((k) => { let n = 0, t = 0; for (const round of R[k]) { const seen = new Set(); for (const q of round) { if (q.genId === g) {
+    const lo = (c) => String(c).toLowerCase(); let cand = q.choices.filter((c) => !seen.has(lo(c))); if (!cand.length) cand = q.choices; const r = cand.filter((c) => rhyme.includes(lo(c)));
+    const pickFrom = r.length === 1 ? r : r.length > 1 && cand.some((c) => !rhyme.includes(lo(c))) ? cand.filter((c) => !rhyme.includes(lo(c))) : cand; t += 1; n += pickFrom.includes(q.answer) ? 1 / pickFrom.length : 0; }
+    for (const w of q.aboutWords || []) seen.add(String(w).toLowerCase()); } } return t ? n / t : 0; }));
+  // Since round two's read: a yes or no or same question read by memory alone, No where a letter it shows was the letter an earlier
+  // question of the round was about, else Yes; a round asks about each letter once while it can, so a Yes shows a fresh letter (about 70
+  // percent in first rounds of the two lessons, 67 in Small letters, the echo rule's price, recorded with a bound of 75 and EARMARKS).
+  const metEarlier = (R, g) => Math.max(...['first', 'later', 'doses', 'reviews'].map((k) => { let n = 0, t = 0; for (const round of R[k]) { const seen = new Set(); for (const q of round) { if (q.genId === g) {
+    const shown = (q.visual && q.visual.kind === 'letters' ? q.visual.text.split(/ +/) : []).map((c) => c.toLowerCase()); t += 1; n += (shown.some((c) => seen.has(c)) ? 'No' : 'Yes') === q.answer ? 1 : 0; }
+    for (const w of q.aboutWords || []) seen.add(String(w).toLowerCase()); } } return t ? n / t : 0; }));
+  const echoRounds = (rounds) => rounds.filter((round) => round.some((q, j) => /-(big|find)$/.test(q.genId) && round.slice(0, j).some((p) => /-(tap|big|find)$/.test(p.genId) && (p.aboutWords || [])[0] === (q.aboutWords || [])[0]))).length;
+  const r = {}; const rec = {}; const seen3 = {}; const joined = {}; const echoes = {}; const met = {};
+  for (const [mid, tag, rhyme] of [['small-letters', 'p4-sml', ['c', 'v', 'z']], ['almost-the-same', 'p4-kpuy', []], ['more-small-letters', 'p4-eirt', NL_EIRT_RHYME]]) { const R = ofModule(mid, 1500);
+    const gen2000 = (g) => Array.from({ length: 2000 }, (_, i) => L.generateQuestion(g, i + 1)); seen3[tag] = Math.max(byScreen(gen2000(tag + '-big')), byScreen(gen2000(tag + '-find'))); joined[tag] = Math.max(joinedRead(R, tag + '-big', rhyme), joinedRead(R, tag + '-find', rhyme));
+    echoes[tag] = echoRounds(Array.from({ length: 2000 }, (_, i) => L.buildAttempt(mid, i + 1, []).core)); met[tag] = Math.max(metEarlier(R, tag + '-yesno'), metEarlier(R, tag + '-same')); if (tag === 'p4-sml') continue;
+    r[tag] = { tap: Math.max(worst(R, tag + '-tap', firstBtn), worst(R, tag + '-tap', oneChoice), worst(R, tag + '-tap', oneSize(true)), worst(R, tag + '-tap', oneSize(false))),
+      three: Math.max(...[tag + '-big', tag + '-find'].flatMap((g) => [worst(R, g, firstBtn), worst(R, g, oneChoice)])),
+      shown: Math.max(worst(R, tag + '-yesno', byShown), worst(R, tag + '-same', byEither)), asked: worst(R, tag + '-yesno', byAsked),
+      yesLo: Math.min(...[tag + '-yesno', tag + '-same'].flatMap((g) => groupsOf(R, g).filter((qs) => qs.length).map(yesShare))), yesHi: Math.max(...[tag + '-yesno', tag + '-same'].flatMap((g) => groupsOf(R, g).filter((qs) => qs.length).map(yesShare))) };
+    rec[tag] = Math.max(notEarlier(R, tag + '-big'), notEarlier(R, tag + '-find')); }
+  const within = (x) => x.tap < 0.32 && x.three < 0.42 && x.shown < 0.6 && x.asked < 0.6 && x.yesLo >= 0.4 && x.yesHi <= 0.6;
+  const loosePlant = firstBtn(gen400('p4-eirt-big').map((q) => ({ ...q, choices: [q.answer, ...q.choices.filter((c) => c !== q.answer)] }))) >= 0.42;
+  const screenPlant = byScreen(gen400('p4-eirt-find').filter((q) => /^[ir]$/.test(q.answer)).map((q) => ({ ...q, choices: [q.answer, 'e', 't'] }))) >= 0.42;
+  const qt = { genId: 'p4-kpuy-tap', aboutWords: ['k'] }; const qb = { genId: 'p4-kpuy-big', aboutWords: ['k'] }; const echoPlant = echoRounds([[qt, qb]]) === 1 && echoRounds([[qb, qt]]) === 0;
+  const metPlant = metEarlier({ first: [[qt, { genId: 'p4-kpuy-yesno', answer: 'No', visual: { kind: 'letters', text: 'k' }, aboutWords: ['p'] }]], later: [], doses: [], reviews: [] }, 'p4-kpuy-yesno') >= 0.75;
+  ok(`Almost the same's and More small letters' banks scored blind, alone and in rounds as built, stay under Small letters' bounds (pass NL; ${Object.entries(r).map(([t, x]) => t + ': tap ' + pct(x.tap) + '%, three ' + pct(x.three) + '%, shown ' + pct(x.shown) + '%, named ' + pct(x.asked) + '%, Yes ' + pct(x.yesLo) + ' to ' + pct(x.yesHi) + '%').join('; ')}; recorded: a letter no earlier question was about ${Object.values(rec).map(pct).join(' and ')}%; the answer always first, planted, caught)`,
+    Object.values(r).every(within) && Object.values(rec).every((v) => v < 0.6) && loosePlant, JSON.stringify({ r, rec }));
+  ok(`the three small letters lessons' three-choice screens tell no answer alone, and in rounds the echo rule's price stays under its bound (pass NL, round one's lesson read; the letter most often right on each screen ${Object.entries(seen3).map(([t, v]) => t + ' ' + pct(v) + '%').join(', ')} alone at seeds 1 to 2,000; a letter no earlier question was about, and a rhyming letter where one is left, ${Object.entries(joined).map(([t, v]) => t + ' ' + pct(v) + '%').join(', ')} in rounds; a big or small letter that goes with one after a question on the same letter in ${Object.entries(echoes).map(([t, v]) => t + ' ' + v).join(', ')} of 2,000 first rounds; a yes or no or same question read as No where a letter it shows was met earlier in the round ${Object.entries(met).map(([t, v]) => t + ' ' + pct(v) + '%').join(', ')}, since round two; a screen with ee and tee, a round with the echo and a No on the letter just met, planted, caught)`,
+    Object.values(seen3).every((v) => v < 0.42) && Object.values(joined).every((v) => v < 0.65) && Object.values(echoes).every((v) => v < 500) && Object.values(met).every((v) => v < 0.75) && screenPlant && echoPlant && metPlant, JSON.stringify({ seen3, joined, echoes, met }));
+}
 // The five consonant blends the onset lessons say (pass NB, BLEND_PARTS): one piece each, made by the app from its own two sounds: the
 // first part's sound where the blend starts and the second's where it ends, measured by the bands the rules above measure each sound by
 // (a hiss high, fff flat and spread, t's and p's bursts high and low, lll and rrr voiced and low, rrr's third resonance low), quick
@@ -3124,7 +4191,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box', 'net', 'jellyfish', 'zipper', 'goat', 'guitar', 'watermelon', 'hat', 'house', 'window', 'cup', 'queen', 'quilt', 'van', 'volcano', 'yo-yo', 'yarn'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box', 'net', 'jellyfish', 'zipper', 'goat', 'guitar', 'watermelon', 'hat', 'house', 'window', 'cup', 'queen', 'quilt', 'van', 'volcano', 'yo-yo', 'yarn', 'apple', 'ant', 'elephant', 'elf', 'igloo', 'insect', 'octopus', 'otter'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD; worried and embarrassed since pass MN
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
@@ -3485,7 +4552,12 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           // A color the reason says the choice is not is no color given to it (Two ideas' fourth corner, round three: "is not yellow,
           // and it is not a triangle.").
           const firstColor = (e.why.replace(/\bnot (?:red|blue|yellow|green)\b/g, '').match(/\b(red|blue|yellow|green)\b/) || [])[1];
-          if (item && /^p3-odd-/.test(genId)) { if (e.name !== 'This one') off('name names a shape or color its lesson does not teach'); }
+          // Since pass NK the shape banks of Any size, any turn and Rectangles name a shape choice by its size and color alone ("The big red
+          // one"), since no two in a question share a color, and their why says its own shape first ("is a square, like two of the
+          // others."), so the shape is said once (the rules test's first read: "The big red square is a square" said it twice).
+          const nkShapeTok = /^p[34]-(?:turn|rect)-/.test(genId) ? L.shapeParts(c) : null;
+          if (nkShapeTok) { if (e.name !== 'The ' + L.shapeSizeColour(c) + ' one' || !e.why.startsWith('is ' + (/^[aeiou]/.test(nkShapeTok.shape) ? 'an ' : 'a ') + nkShapeTok.shape + ',')) off('name is not its own size and color, or why not its own shape'); }
+          else if (item && /^p3-odd-/.test(genId)) { if (e.name !== 'This one') off('name names a shape or color its lesson does not teach'); }
           else if (item && genId === 'p3-sort-out') { if (e.name !== `The ${item[2]} one`) off('name is not its own color'); }
           else if (item) { if (!wnHas(e.name, item[1]) || !wnHas(e.name, item[2]) || (item[3] && !wnHas(e.name, item[3]))) off('name is not its own color and shape'); }
           if (item) { if (firstColor && firstColor !== item[2]) off('why gives it another color'); }
@@ -3515,7 +4587,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           // A letter in a letter-sound bank (pass ND) is named the letter it is and said by the sound it does not say, never by its look,
           // since the question asks for a sound: "The letter S does not say mmm." or "does not say the sound moon starts with." Since pass NE
           // Start or end of the name's and Write it by its sounds' too, X's two sounds (cuh-sss) and a word's last sound among them.
-          if (/^[A-Z]$/.test(c) && /^(?:p3-ls|p4-name|p4-end|p4-soe|p4-wbs|p4-hiw|p4-qvy|p3-look-name)-?/.test(genId)) { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (!/^does not say (?:[a-z]+(?:-[a-z]+)?|the sound (?:[a-z]+(?:-[a-z]+)?|Sam|Mia|Ben) (?:starts|ends) with)\.$/.test(e.why)) off('why does not say the sound the letter does not say'); }
+          if (/^[A-Z]$/.test(c) && /^(?:p3-ls|p4-name|p4-end|p4-soe|p4-wbs|p4-hiw|p4-qvy|p3-look-name|p4-aei|p4-ou-(?:first|or))-?/.test(genId)) { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (!/^does not say (?:[a-z]+(?:-[a-z]+)?|the sound (?:[a-z]+(?:-[a-z]+)?|Sam|Mia|Ben) (?:starts|ends) with)\.$/.test(e.why)) off('why does not say the sound the letter does not say'); }
           // Write your name's written-name questions (pass NI): a wrong letter, big or small, is named as the letter it is and said by where in
           // the name it is not, or by the letter it does not come right after.
           else if (/^[A-Za-z]$/.test(c) && /^p4-wyn-/.test(genId)) { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (!/^(?:is not at the start of this name|is not the last letter of this name|is the big first letter, and the letter right after it is on its right|comes last, not right after [A-Z])\.$/.test(e.why)) off('why does not say where the letter is not'); }   // since round one's lesson read (pass NI) in the lesson's words, and the next letter's bank asking after the big first letter alone
@@ -3524,7 +4596,21 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           // Look and write's same-shape question (pass NF, round one's lesson read): a wrong letter is not the same shape, the lesson's own words,
           // since the looks pre-K 4's letter banks give (two pointy hills, curvy like a snake) are said in no pre-K 3 line.
           else if (/^[A-Z]$/.test(c) && genId === 'p3-look-same') { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (e.why !== 'is not the same shape as this letter.') off('why is not the lesson\'s same shape'); }
+          // O and U's name bank (pass NK): a wrong letter is named the letter it is and said by what tells it from the letter asked in line
+          // 4's own words, U's round bottom, open at its top, V's point and O round all the way around (since round one's lesson read, whose
+          // finding was that "goes all the way around" and "like a circle" were no line's words; V is asked too).
+          else if (/^[A-Z]$/.test(c) && genId === 'p4-ou-name') { if (e.name !== `The letter ${c}`) off('name is not its own letter'); const asked = (q.prompt.match(/^Tap the letter ([OUV])\.$/) || [])[1];
+            const want = (({ U: { V: 'has a point at its bottom, and the bottom of U is round.', O: 'is round all the way around, and U is open at its top.' }, V: { U: 'has a round bottom, and the bottom of V is a point.', O: 'is round all the way around, and the bottom of V is a point.' }, O: { U: 'is open at its top, and O is round all the way around.', V: 'has a point at its bottom, and O is round all the way around.' } })[asked] || {})[c]; if (e.why !== want) off('why gives the letter another look'); }
+          // Small letters (pass NK's second wave): a letter among both sizes is named by its size, "The big W" or "The small w", and said the
+          // same letter in the other size, or a different letter by its own look in the lines' words (the test's NK_SML_LOOK).
+          else if (/^[A-Za-z]$/.test(c) && /^p4-sml-/.test(genId)) { if (e.name !== (c === c.toUpperCase() ? 'The big ' : 'The small ') + c) off('name is not its own letter'); const asked = String(q.answer);
+            if (e.why !== (c.toLowerCase() === asked.toLowerCase() ? (asked === asked.toUpperCase() ? 'is short, and the big letters here are tall.' : 'is tall, and the small letters here are short.') : 'is a different letter. It ' + NK_SML_LOOK[c.toLowerCase()] + '.')) off('why gives the letter another look'); }
           else if (/^[A-Z]$/.test(c) && /^pl-/.test(genId)) { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (e.why !== `${WN_LETTER_P4[c]}.`) off('why gives the letter another look'); }
+          // Almost the same and More small letters (pass NL), read as Small letters' are: a letter by its size and its own look at that size, the
+          // asked letter's other size by what tells the two apart, by the test's own tables.
+          else if (/^[A-Za-z]$/.test(c) && /^p4-(?:kpuy|eirt)-/.test(genId)) { const T = /^p4-kpuy-/.test(genId) ? { look: NL_KPUY_LOOK, big: NL_KPUY_BIG, twin: NL_KPUY_TWIN } : { look: NL_EIRT_LOOK, big: NL_EIRT_BIG, twin: NL_EIRT_TWIN };
+            if (e.name !== (c === c.toUpperCase() ? 'The big ' : 'The small ') + c) off('name is not its own letter'); const asked = String(q.answer);
+            if (e.why !== (c.toLowerCase() === asked.toLowerCase() ? T.twin[c] + '.' : 'is a different letter. It ' + (c === c.toLowerCase() ? T.look[c] : T.big[c]) + '.')) off('why gives the letter another look'); }
           else if (/^[A-Z]$/.test(c)) { if (e.name !== (['A', 'B', 'H', 'P'].includes(c) ? `The letter ${c}` : 'This letter')) off('name is not its own letter'); if (!e.why.startsWith(WN_LETTER[c] || 'is not ')) off('why gives the letter another look'); }
           // Is this the letter named? Yes means the named letter, and the reason gives the shown letter's own sign; No means
           // another letter, and the reason gives the named letter's sign (pass MM, in plain words since round two).
@@ -4848,17 +5934,24 @@ ok('attempt is reproducible from its seed', JSON.stringify(L.buildAttempt('compa
 // make one, 512 of Clap the beats and 1,677 of Words in a sentence asked about one twice, the first explanation answering the second).
 // The lessons are read from the data (round two's code check, pass MZ: they were named by hand): every lesson with a bank whose
 // questions name what they are about (aboutWords), six since pass MZ.
-{ const twice = (core) => { const seen = new Set(); let dup = false; for (const q of core) { for (const w of q.aboutWords || []) if (seen.has(w)) dup = true; for (const w of q.aboutWords || []) seen.add(w); } return dup; };
+// Since pass NK "while it can" is read as the rule says: a round asks about a word again only once it has asked about every word its
+// lesson's banks ask about (k, read from seeds 1 to 300 of each bank), so Rectangles' four shapes in a round of five ask about one again
+// in the fifth question, as they must, and never sooner (the rows read 600 of 600 with every repeat counted). A lesson with more words
+// than a round has questions reads as before.
+{ const twice = (core, k = Infinity) => { const seen = new Set(); let dup = false; for (const q of core) { if ((q.aboutWords || []).some((w) => seen.has(w)) && seen.size < k) dup = true; for (const w of q.aboutWords || []) seen.add(w); } return dup; };
   const NAMING = L.COURSES.flatMap((c) => c.modules).filter((m) => (m.generators || []).some((g) => Array.isArray(L.generateQuestion(g, 1).aboutWords))).map((m) => m.id);
+  const K = Object.fromEntries(NAMING.map((mid) => { const out = new Set(); for (const g of L.getModule(mid).generators || []) for (let s = 1; s <= 300; s++) { let q; try { q = L.generateQuestion(g, s); } catch (e) { break; } for (const w of (q && q.aboutWords) || []) out.add(w); } return [mid, out.size]; }));
   const rows = []; let named = true;
-  for (const mid of NAMING) { let n = 0; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, []); if (twice(a.core)) n++; if (!a.core.every((q) => Array.isArray(q.aboutWords))) named = false; } rows.push([mid, n]); }
-  const planted = twice([{ aboutWords: ['birdhouse'] }, { aboutWords: ['doghouse', 'birdhouse'] }]) && !twice([{ aboutWords: ['birdhouse'] }, { aboutWords: ['doghouse'] }]);
-  ok(`a round of the ${NAMING.length} lessons that name their words asks about each word or sentence once while it can (${rows.map(([m, n]) => m + ' ' + n).join(', ')} of 600 rounds; a planted round caught)`, NAMING.length >= 6 && rows.every(([, n]) => n <= 12) && named && planted, JSON.stringify(rows));
+  for (const mid of NAMING) { let n = 0; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, []); if (twice(a.core, K[mid])) n++; if (!a.core.every((q) => Array.isArray(q.aboutWords))) named = false; } rows.push([mid, n]); }
+  const four = (ws) => ws.map((w) => ({ aboutWords: [w] }));
+  const planted = twice([{ aboutWords: ['birdhouse'] }, { aboutWords: ['doghouse', 'birdhouse'] }]) && !twice([{ aboutWords: ['birdhouse'] }, { aboutWords: ['doghouse'] }])
+    && twice(four(['rectangle', 'rectangle', 'circle', 'triangle', 'square']), 4) && !twice(four(['rectangle', 'circle', 'triangle', 'square', 'rectangle']), 4);
+  ok(`a round of the ${NAMING.length} lessons that name their words asks about each word or sentence once while it can (${rows.map(([m, n]) => m + ' ' + n).join(', ')} of 600 rounds; a planted round caught, and a round of Rectangles' four shapes asking about one again second, planted, caught, and fifth, passed)`, NAMING.length >= 6 && rows.every(([, n]) => n <= 12) && named && planted, JSON.stringify(rows));
   // The same as the screen builds a round, the last two rounds' prompts avoided (round two's code read: the echo had only the tries
   // avoid left it), and in a Quick Review, which deals its own questions (buildLightReview).
   const screen = []; const reviews = [];
-  for (const mid of NAMING) { let n = 0; let prev = []; let prev2 = []; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, [], { avoid: [...prev, ...prev2] }); if (twice(a.core)) n++; prev2 = prev; prev = a.core.map((q) => q.prompt); } screen.push([mid, n]);
-    let r = 0; for (let s = 1; s <= 600; s++) { const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr && twice(lr.core)) r++; } reviews.push([mid, r]); }
+  for (const mid of NAMING) { let n = 0; let prev = []; let prev2 = []; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, [], { avoid: [...prev, ...prev2] }); if (twice(a.core, K[mid])) n++; prev2 = prev; prev = a.core.map((q) => q.prompt); } screen.push([mid, n]);
+    let r = 0; for (let s = 1; s <= 600; s++) { const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr && twice(lr.core, K[mid])) r++; } reviews.push([mid, r]); }
   ok(`a round as the screen builds it, the last two rounds' prompts avoided, and a Quick Review each ask about a word once while they can (rounds ${screen.map(([m, n]) => m + ' ' + n).join(', ')}; Quick Reviews ${reviews.map(([m, n]) => m + ' ' + n).join(', ')}, of 600 each)`, screen.every(([, n]) => n <= 12) && reviews.every(([, n]) => n <= 12), JSON.stringify({ screen, reviews }));
   // Since pass NF an echo its own bank cannot avoid hands its turn to another bank (buildAttempt, buildLightReview): Hear it in a word's
   // yes or no asks about H and W alone (round one's lesson read), and before the handoff it echoed the letter and sound questions in 58
@@ -5048,12 +6141,66 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('turning them all off and on keeps a question turned off by name off, and turning them all on clears only the ones turned on one by one (round one\'s code read; the fresh start of before it, planted, caught)',
       keepsOff(L.setAllWonder, L.setWonderOn) && !keepsOff(freshAll, L.setWonderOn) && !keepsOff(L.setAllWonder, freshOne)); }
   ok('a new question in a later update starts on for a school that has not turned them all off', L.isWonderOn(offOne, 'w-a-question-from-a-later-update'));
+  // The classroom's Wonder card (pass NL): Mikey's two sentences ("let's change the Wonder question card on my classroom page to:  Wonder
+  // Questions, active by default, are deep, thought-provoking questions to help kids think.  Keep what you like, remove what you don't."),
+  // the same in every state, since both hold whether a school has turned some questions off or all of them. Pass NK's sentence and the
+  // state lines Claude wrote in its shape (wonderClassroomLine) are gone with it.
+  ok('the classroom\'s Wonder card says Mikey\'s two sentences of pass NL, the same in every state, and pass NK\'s state lines are gone',
+    L.WONDER_CARD_LINE === "Wonder Questions, active by default, are deep, thought-provoking questions to help kids think. Keep what you like, remove what you don't." && L.wonderClassroomLine === undefined, L.WONDER_CARD_LINE);
+  // The screens draw them (pass NL): the classroom card's words are that line alone, kept whole by partsWhole, above its Wonder Questions
+  // button (pass NK's "Click here" link gone with his pass NK sentence); the Wonder Questions page's card says his line, "Students only
+  // see what you approve.", "you approve." held together, with no count line in the usual state ("We can remove the 402 line"), and not
+  // Q105 (b)'s "View, turn off or turn on below.", in the words he set aside (round one's screen read), a line above them saying so only
+  // when all are removed (Claude's reading, told to him); its privacy line the last paragraph of the title's tip (pass NK); the tour card
+  // ends with his Q100 line, since his answer to Q107 ("B") with remove for turn off; the add-a-student setup has no Wonder segment (his answer to Q106: "let's remove the wonder question
+  // segment altogether when adding a new student."); and, at his later word ("Q105, yeah the on and turn off can change to Approved and
+  // Remove"), every on and off word of the page is approve and remove, the tip and the note in their words of before pass NJ, and the
+  // classroom popup counts the questions approved (Claude's reading of his words, told to him). Each read of src/ui.jsx, with its earlier
+  // form planted back, is caught.
+  { const UI = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    // The page's words since Mikey's later word in pass NL, and the on and off words they took the place of.
+    const APPROVE_WORDS = ['>Remove</Btn>', '>Approve</Btn>', "'Approved for your students.' : 'Removed for your students.'", "const state = on ? 'Approved' : 'Removed';", "? 'Approved' : 'Removed'}\n                </Tag>",
+      "'all approved' : onHere === 0 ? 'all removed' : allOff ? `${onHere} approved` : `${inStage.length - onHere} removed`", '>Approve them all</Btn>', '>Remove them all</button>',
+      "'The question you removed by name stays removed when you approve them\\u00A0all.'", 'only questions you approve will ever appear.</p>', "If a question doesn't suit your community, remove it.</p>",
+      'Wonder Questions approved for students</p>', 'Your school has removed every question, so this student meets none.</p>'];
+    const ON_OFF_WORDS = ['>Turn it off</Btn>', '>Turn it on</Btn>', "'On for your students.'", "const state = on ? 'On' : 'Off';", ">Turn them all on</Btn>", ">Turn them all off</button>", 'you turned off by name', 'only questions you leave on', "community, turn it off.</p>", 'Wonder Questions on for students</p>', 'Your school has every question off', "you can turn off any you'd rather skip.</>]"];
+    const reads = (src) => [
+      src.includes("<p data-wonder-card=\"\" style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>{partsWhole(WONDER_CARD_LINE, 'wc')}</p>\n            <div style={{ marginTop: 'auto' }}><Btn full kind=\"secondary\" onClick={() => setScreen('wonder-review')}") && !src.includes('data-wonder-card-link'),
+      src.includes('<p data-wonder-card-approve="" style={{ margin: \'0 0 10px\', fontSize: 15, textAlign: \'center\' }}>Students only see what you{\'\\u00A0\'}approve.</p>') && !src.includes('<p data-wonder-card-line') && !src.includes('>View, turn off or turn on below.</p>'),
+      src.includes('<p data-wonder-tip-privacy="" style={{ margin: 0 }}>Responses are never recorded for privacy reasons.</p>\n          </TipText>'),
+      src.includes("<br /><br />All questions are active by default. However, you can remove any you'd rather skip.</>]") && !src.includes('label="About wonder questions"') && !src.includes('see bottom of <strong>My') && !src.includes('wizardWonder'),
+      src.includes('body.edu-has-sheet .edu-logout-chip:not([data-last-ten]) { opacity: 0 !important; } body.edu-has-chip .edu-sheet:not([data-sheet-placed]) { padding-bottom: 68px !important; }') && src.includes("data-last-ten={logoutIn <= 10 ? '' : undefined}") && !src.includes('padding-top: 56px'),
+      src.includes("{allOff && <p data-wonder-off-line=\"\" style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 600, textAlign: 'center' }}>{onCount > 0 ? `Removed, with ${onCount} approved` : 'Removed for every student'}</p>}") && !src.includes('`All ${WONDER.length} on`'),
+      APPROVE_WORDS.every((w) => src.includes(w)) && ON_OFF_WORDS.every((w) => !src.includes(w)),
+    ];
+    const now = reads(UI);
+    const plants = [UI.replace("{partsWhole(WONDER_CARD_LINE, 'wc')}</p>", "{partsWhole(WONDER_CARD_LINE, 'wc')} <button type=\"button\" data-wonder-card-link=\"\">Click here</button></p>"),
+      UI.replace("approve.</p>\n", "approve.</p>\n          <p data-wonder-card-line=\"\" style={{ margin: '6px 0 10px', fontSize: 15, textAlign: 'center' }}>View, turn off or turn on below.</p>\n"),
+      UI.replace('<p data-wonder-tip-privacy="" style={{ margin: 0 }}>Responses are never recorded for privacy reasons.</p>\n', ''),
+      UI.replace('          <div style={{ marginTop: 26, marginBottom: 20 }}>\n            <HeadWithInfo onClick={() => setShowPinWhy(', '          <div style={{ marginTop: 26, marginBottom: 20 }}>\n            <HeadWithInfo onClick={() => {}} label="About wonder questions" open={false}>Wonder Questions</HeadWithInfo>\n          </div>\n          <div style={{ marginTop: 26, marginBottom: 20 }}>\n            <HeadWithInfo onClick={() => setShowPinWhy('),
+      UI.replace('body.edu-has-sheet .edu-logout-chip:not([data-last-ten]) { opacity: 0 !important; } body.edu-has-chip .edu-sheet:not([data-sheet-placed]) { padding-bottom: 68px !important; }', 'body.edu-has-sheet .edu-logout-chip { top: 12px !important; bottom: auto !important; } .edu-sheet:not([data-sheet-placed]) { padding-top: 56px !important; }'),
+      UI.replace("{allOff && <p data-wonder-off-line=\"\" style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 600, textAlign: 'center' }}>{onCount > 0 ? `Removed, with ${onCount} approved` : 'Removed for every student'}</p>}", "<p data-wonder-off-line=\"\" style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 600, textAlign: 'center' }}>{allOff ? (onCount > 0 ? `Removed, with ${onCount} approved` : 'Removed for every student') : `All ${WONDER.length} on`}</p>"),
+      UI.replace('>Remove</Btn>', '>Turn it off</Btn>')];
+    ok('the screens draw pass NL\'s Wonder words and Q104\'s chip: the classroom card Mikey\'s two sentences above its own button, the page card his line with no count line unless all are removed, the privacy line ending the tip, Q100\'s line in the tour card, no Wonder segment in the add-a-student setup, every on and off word of the page approve and remove and the popup\'s count approved, and the chip hidden over a sheet until its last ten seconds (each read, its earlier form planted, caught)',
+      now.every(Boolean) && plants.every((p, i) => p !== UI && reads(p)[i] === false), now); }
+  // Round three's whole read of RULES-AUDIT (pass NK): the sheet's 68 pixels at its foot were keyed on :has(), which browsers before Chrome
+  // 105 and Firefox 121 drop (the app runs from Chrome 80 and Firefox 78), so there the chip in its last ten seconds lay over a scrolled
+  // sheet's last words. Since then a body class the countdown chip sets while it is drawn (edu-has-chip, counted as the sheets' is) keys
+  // it, as edu-has-sheet keys the chip's hiding; the :has form put back, and the chip drawn without setting the class, planted, caught.
+  { const UI = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    const keyed = (src) => src.includes('body.edu-has-chip .edu-sheet:not([data-sheet-placed]) { padding-bottom: 68px !important; }') && !/:has\(\.edu-logout-chip\)/.test(src)
+      && src.includes("chipsDrawn += 1; document.body.classList.add('edu-has-chip');") && src.includes("if (!chipsDrawn) document.body.classList.remove('edu-has-chip');")
+      && /function PageChrome\(\{[^}]*logoutIn = null[^}]*\}\) \{\n  useChipOnBody\(logoutIn !== null\);/.test(src);
+    const hasForm = UI.replace('body.edu-has-chip .edu-sheet:not([data-sheet-placed])', 'body:has(.edu-logout-chip) .edu-sheet:not([data-sheet-placed])');
+    const noClass = UI.replace('  useChipOnBody(logoutIn !== null);\n', '');
+    ok('a sheet keeps its 68 pixels at the foot while the countdown chip is drawn by a body class the chip sets, never by :has(), which browsers before Chrome 105 and Firefox 121 drop (pass NK, round three\'s whole read of RULES-AUDIT; the :has form, and the chip drawn without its class, planted, caught)',
+      keyed(UI) && hasForm !== UI && !keyed(hasForm) && noClass !== UI && !keyed(noClass)); }
   const v1 = { version: 1, approved: ['w-ants-elephant'], hidden: ['w-one-thing'] };
   ok('a state saved before pass NJ keeps its removals and turns every other question on, its approvals deciding nothing now', !L.isWonderOn(v1, 'w-one-thing') && L.isWonderOn(v1, 'w-ants-elephant') && L.isWonderOn(v1, 'w-fell-off-bike') && L.wonderOnCount(v1) === L.WONDER.length - 1
     && JSON.stringify(L.wonderReviewState(v1)) === JSON.stringify({ version: 2, allOff: false, hidden: ['w-one-thing'], shown: [] }));
   ok('questions run from the first met in pre-K to the last', L.wonderInOrder()[0].stage === 'early' && L.wonderInOrder().slice(-1)[0].stage === 'grown');
   ok('every question names a stage the platform knows', L.WONDER.every((w) => L.LIFE_STAGES.some((st) => st.id === w.stage)));
-  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around', 'feelings-show', 'how-friends-feel', 'good-friend', 'play-together', 'play-with-a-plan', 'say-it-to-fit'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
+  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around', 'feelings-show', 'how-friends-feel', 'good-friend', 'play-together', 'play-with-a-plan', 'say-it-to-fit', 'any-size-any-turn'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
   // The cadence: one reflection after every two different lessons worked, rotating through the pool
@@ -6798,7 +7945,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // the tracing lessons' paragraphs, word for word, for the other six), and every line says "the letter" before a name, so the
   // voice never reads A as the word "a".
   {
-    const lessons = L.getCourse('first-sounds-pk').modules.map((m) => L.MODULES.find((x) => x.id === m.id)).filter((m) => /letter|trac/.test(m.id));
+    // The course's capital lessons by name (pass NK's second wave): the pattern /letter|trac/ read them, and took in Small letters too, which
+    // draws a big letter only beside its small one and adds V, W, X and Z; the game deals the capitals these four teach by shape.
+    const lessons = ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'].map((id) => L.MODULES.find((x) => x.id === id));
     const drawn = new Set(); lessons.forEach((m) => (m.lesson.script || []).forEach(({ show: s }) => { if (s && (s.kind === 'letters' || s.kind === 'trace')) String(s.text).split(/\s+/).filter((t) => /^[A-Z]$/.test(t)).forEach((t) => drawn.add(t)); }));
     const traced = ['pl-trace-first', 'pl-trace-more', 'pl-trace-ltf'].flatMap((g) => Array.from({ length: 30 }, (_, s) => L.generateQuestion(g, s + 1).explain));
     const text = lessons.flatMap((m) => [...m.lesson.paragraphs, ...(m.lesson.script || []).map((l) => l.say)]).concat(traced).join(' ');
@@ -7078,8 +8227,13 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // manner with no cue, a manner the table does not have, a sentence inside a longer one, and a sentence said twice, cued once.
   { const banks = Object.keys(L.GENERATORS).filter((g) => { for (let s = 1; s <= 20; s++) { try { if (L.generateQuestion(g, s).voices) return true; } catch (e) { return false; } } return false; });
     const bad = []; let cued = 0; const cuedBanks = new Set(); const cueText = (cue) => `(For the grown-up: ${cue.charAt(0).toLowerCase()}${cue.slice(1)})`;
+    // Since pass NK's second wave a bank whose heard sentence's mark is its answer (End marks' which mark goes at its end) prints with no voice
+    // a grown-up's line in its setup's place (unvoicedStory) that says how to say the sentence and gives it without its mark, since the cue
+    // after the sentence would print the mark the child is asked for; it is read here for its heading and its prompt, and by its own block.
+    const unvoiced = new Set();
     for (const g of banks) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); if (!q.voices) continue;
       const off = L.printedQuestion(q, false); const on = L.printedQuestion(q, true); let bare = off.story;
+      if (q.unvoicedStory) { unvoiced.add(g); if (!/^For the grown-up: say this sentence [a-z]/.test(off.story) || off.prompt !== q.prompt || off.story.includes(String(q.voices[0][0]))) bad.push(`${g} ${s}: its grown-up's line`); continue; }
       for (const [sent, m] of q.voices) { const cue = L.VOICE_MANNERS[m].cue; const inSetup = !!q.story && String(q.story).split(L.SENTENCE_BREAK).some((x) => x.trim() === String(sent).trim());
         if (cue && inSetup) { cued += 1; cuedBanks.add(g); if (String(off.story).split(`${sent} ${cueText(cue)}`).length !== 2) bad.push(`${g} ${s}: no cue, or more than one, after "${sent}"`); bare = bare.replace(` ${cueText(cue)}`, ''); }
         if (cue && [on.story, on.prompt, off.prompt].some((x) => x && x.includes(cueText(cue)))) bad.push(`${g} ${s}: a cue prints while the device can speak, or in the prompt`); }
@@ -7087,7 +8241,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const near = L.mannerCues('Listen. I see a dog.', [['I see a cat.', 'high']]) === 'Listen. I see a dog.' && L.mannerCues('Is it a cup?', [['Is it a cup?', 'ask']]) === 'Is it a cup?'
       && L.mannerCues('Listen. I see a dog.', [['I see a dog.', 'loud']]) === 'Listen. I see a dog.' && L.mannerCues('He said Hello! Hello!', [['Hello!', 'high']]) === 'He said Hello! Hello! (For the grown-up: say it up high.)'
       && L.mannerCues('Hi. Hi.', [['Hi.', 'low']]) === 'Hi. (For the grown-up: say it down low.) Hi.';
-    ok('with no device voice a question asked by ear prints how its sentence is said, a cue in parentheses headed for the grown-up who reads it, once and nowhere else, and nothing while the device can speak (pass MV, round one\'s screen check; five near misses)', bad.length === 0 && cued > 0 && ['p3-tone-highlow', 'p3-tone-who', 'p4-tone-feel'].every((g) => cuedBanks.has(g)) && near, `${bad.slice(0, 4).join('; ')} cued ${cued} in ${[...cuedBanks].join(',')} near ${near}`); }
+    ok('with no device voice a question asked by ear prints how its sentence is said, a cue in parentheses headed for the grown-up who reads it, once and nowhere else, and nothing while the device can speak (pass MV, round one\'s screen check; five near misses)', bad.length === 0 && cued > 0 && ['p3-tone-highlow', 'p3-tone-who', 'p4-tone-feel'].every((g) => cuedBanks.has(g)) && [...unvoiced].join() === 'p4-mark-heard' && near, `${bad.slice(0, 4).join('; ')} cued ${cued} in ${[...cuedBanks].join(',')} near ${near}`); }
   { const VC = await import('../tools/voice-check.mjs'); const problems = await VC.voiceCheckSelfTest(L);
     // A page without vvv's row (pass NI, round one's code read: the page had no row for vvv, x or the five blends, and nothing read it).
     const noVvv = VC.soundsWithoutRows(L, VC.VOICE_CHECK_ROWS.filter((r) => r.sound !== 'v'));
@@ -8010,7 +9164,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 213)   // 213 since pass NI's Q, V and Y and Write your name; 211 since pass NF's Hear it in a word and Look and write; 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 221)   // 221 since pass NL's Almost the same and More small letters; 219 since pass NK's second wave, Small letters and End marks; 217 since pass NK's A, E and I, O and U, Any size, any turn and Rectangles; 213 since pass NI's Q, V and Y and Write your name; 211 since pass NF's Hear it in a word and Look and write; 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
@@ -8590,7 +9744,8 @@ const moreRightProblems = (L) => { const r = {};
       rich: /<React\.Fragment key=\{`\$\{keyPrefix\}-\$\{i\}`\}>\{partsWhole\(part, `\$\{keyPrefix\}-\$\{i\}`\)\}<\/React\.Fragment>/.test(ui),
       // Since pass NG a question with a grown-up's card prints its reason as a device with a voice does (canSpeak() || !!grownCard, Q91 (a)),
       // and since round one's screen read its lone capitals keep the word before them and its runs of l's draw in the serif type.
-      reason: /textWrap: 'balance' \}\}>\{wasCorrect \? 'Correct' : readAloud \? ellsIn\(partsWhole\(keepLoneCapitals\(preReaderWrongWords\(q, String\(given\), wrongPicks, canSpeak\(\) \|\| !!grownCard\)\), 'why'\), 'why'\)/.test(ui),
+      // Since pass NK's round two screen read the reason holds a lone small letter too (keepLoneLetters): "is not the small / w." at 375.
+      reason: /textWrap: 'balance' \}\}>\{wasCorrect \? 'Correct' : readAloud \? ellsIn\(partsWhole\(keepLoneLetters\(preReaderWrongWords\(q, String\(given\), wrongPicks, canSpeak\(\) \|\| !!grownCard\)\), 'why'\), 'why'\)/.test(ui),
       explain: /<div style=\{\{ margin: '8px 0 0', textWrap: 'balance' \}\}><RichText text=\{formatTeachingText\(q\.explain\)\}/.test(ui),
       tiles: /<FitTilesRow className="edu-wonder-answers" style=\{\{ display: 'grid', gap: 12, gridTemplateColumns: `repeat\(\$\{evenColumns\(options\.length\)\}, minmax\(0, 1fr\)\)` \}\}>/.test(ui) && /<WordFit>\{o\}<\/WordFit>/.test(ui) && /function FitTilesRow\(\{ children, size = 20, min = 13, \.\.\.rest \}\)/.test(ui) && /spans\.some\(\(x\) => x\.scrollWidth > x\.clientWidth \+ 0\.5\)/.test(ui),
       taglines: (ui.match(/color: C\.muted, fontSize: 1[45], textWrap: 'balance' \}\}>\{m\.tagline/g) || []).length + (ui.match(/fontSize: 14, color: C\.muted, textWrap: 'balance' \}\}>\{m\.tagline/g) || []).length === 2 };
@@ -9250,11 +10405,19 @@ const moreRightProblems = (L) => { const r = {};
     'p4-wbs-last', 'p4-wbs-yesno', 'p4-hiw-letter', 'p4-hiw-sound', 'p4-hiw-first', 'p4-hiw-yesno',
     'p3-tap-ab', 'p3-ab-in-word', 'p3-ab-look-alike', 'pl-tap-letter', 'pl-is-letter', 'pl-hear-first', 'pl-hear-more', 'pl-hear-ltf',
     'p3-ls-pic', 'p4-name-pic', 'p4-end-pic', 'p4-soe-pic', 'p4-hiw-pic', 'p4-wbs-end', 'p4-wbs-word',
-    'p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-pic', 'p4-qvy-first', 'p4-qvy-yesno'];
-  // (Since pass NI, Q, V and Y's three kinds that show their letter join their twins: its yes or no, its which-sound and its picture kind.)
+    'p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-pic', 'p4-qvy-first', 'p4-qvy-yesno',
+    'p4-aei-first', 'p4-aei-pic', 'p4-aei-both', 'p4-aei-or', 'p4-aei-yesno', 'p4-ou-first', 'p4-ou-pic', 'p4-ou-name', 'p4-ou-or', 'p4-ou-yesno',
+    'p4-sml-tap', 'p4-sml-big', 'p4-sml-find', 'p4-sml-yesno',
+    // Since pass NL, Almost the same's and More small letters' four that name a letter each, made as Small letters' are.
+    'p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno'];
+  // (Since pass NI, Q, V and Y's three kinds that show their letter join their twins: its yes or no, its which-sound and its picture kind.
+  // Since pass NK, A, E and I's and O and U's ten banks join the list, and their two kinds that show their letter hide it: the picture kind
+  // as its twins do, and the yes or no, whose card says a word where its twins' say a sound, "Listen to this word. Ant.", a group of its own.
+  // Since pass NK's second wave, Small letters' four banks that name a letter join it, and its yes or no hides the small letter it shows,
+  // its card the question alone, "Is this the small x?", which names the letter asked, as Big letters' yes or no's does.)
   const HIDES = { yesno: ['p3-ls-yesno', 'p4-name-yesno', 'p4-end-yesno', 'p4-soe-yesno', 'p4-hiw-yesno', 'p4-qvy-yesno'], wbs: ['p4-wbs-yesno'],
     sound: ['p3-ls-sound', 'p4-name-sound', 'p4-end-sound', 'p4-soe-sound', 'p4-hiw-sound', 'p4-qvy-sound'], name: ['pl-is-letter'], sign: ['p3-ab-in-word'],
-    pic: ['p3-ls-pic', 'p4-name-pic', 'p4-end-pic', 'p4-soe-pic', 'p4-hiw-pic', 'p4-wbs-end', 'p4-qvy-pic'], word: ['p4-wbs-word'] };
+    pic: ['p3-ls-pic', 'p4-name-pic', 'p4-end-pic', 'p4-soe-pic', 'p4-hiw-pic', 'p4-wbs-end', 'p4-qvy-pic', 'p4-aei-pic', 'p4-ou-pic'], word: ['p4-wbs-word'], yesword: ['p4-aei-yesno', 'p4-ou-yesno'], small: ['p4-sml-yesno', 'p4-kpuy-yesno', 'p4-eirt-yesno'] };
   // The prints a device with a voice makes over the seeds (one for every bank but these): Write it by its sounds' yes or no, first or at the
   // end, and Start or end of the name's picture kind, starts with or, beside X, ends with.
   const TWO_PRINTS = ['p4-wbs-yesno', 'p4-soe-pic'];
@@ -9262,7 +10425,7 @@ const moreRightProblems = (L) => { const r = {};
   const wordSetup = (q) => (/^(These two letters are for the first sound and the last sound of a word\.) Now listen to these /.exec(q.story) || [])[1] || null;
   const hiding = Object.values(HIDES).flat();
   const lessons = ['letters-and-sounds', 'look-and-write', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds', 'hear-it-in-a-word',
-    'a-and-b', 'big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'q-v-and-y'];
+    'a-and-b', 'big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'q-v-and-y', 'a-e-and-i', 'o-and-u', 'small-letters', 'almost-the-same', 'more-small-letters'];
   const banks = [...new Set(lessons.flatMap((id) => L.getModule(id).generators))];
   const words = (t) => String(t || '').toLowerCase().match(/[a-z']+/g) || [];
   // Words that only point or join (since pass NI "that", from the picture kinds' "the sound that J says", which after Ready reads "the sound
@@ -9274,16 +10437,18 @@ const moreRightProblems = (L) => { const r = {};
   const expected = (q) => {
     const g = q.genId;
     if (HIDES.yesno.includes(g)) { const m = /^This is the letter ([A-Z])\. (Listen to this sound\. .+)$/.exec(q.story); return m ? m[2] : null; }
+    if (HIDES.yesword.includes(g)) { const m = /^This is the letter ([A-Z])\. (Listen to this word\. .+)$/.exec(q.story); return m ? m[2] : null; }
     if (HIDES.wbs.includes(g)) return q.story;
     if (HIDES.sound.includes(g)) return 'Listen to these sounds.';
     if (HIDES.name.includes(g)) { const m = /^Is this the letter ([A-Z])\?$/.exec(q.prompt); return m ? `Listen to a letter's name.\u00A0${m[1]}.` : null; }
     if (HIDES.sign.includes(g)) { const m = /^Here is the word [a-z]+, the way a sign shows it\.$/.exec(q.story); return m && /^Tap the letter [A-Z]\.$/.test(q.prompt) ? q.prompt : null; }
     if (HIDES.pic.includes(g)) { const m = /^This is the letter ([A-Z])\. (Now listen to these (two|three)\. .+)$/.exec(q.story); return m ? m[2] : null; }
     if (HIDES.word.includes(g)) { const m = /^These two letters are for the first sound and the last sound of a word\. (Now listen to these three\. .+)$/.exec(q.story); return m ? m[1] : null; }
+    if (HIDES.small.includes(g)) return /^Is this the small [a-z]\?$/.test(q.prompt) ? q.prompt : null;
     return null; };
   const faults = (list, cardOf, besideOf, upOf = (q) => L.cardQuestion(q, true)) => {
     const out = [];
-    if (JSON.stringify([...list].sort()) !== JSON.stringify([...WANT].sort())) out.push('the list is not the 44');
+    if (JSON.stringify([...list].sort()) !== JSON.stringify([...WANT].sort())) out.push('the list is not the 66');
     for (const g of banks) {
       const prints = new Set(); const answers = new Set(); const byPrint = new Map();
       for (let s = 1; s <= 400; s++) {
@@ -9318,7 +10483,7 @@ const moreRightProblems = (L) => { const r = {};
           const tiles = q.choices.map(String).join('').toLowerCase();
           if (q.choices.every((c) => /^[A-Za-z]$/.test(String(c))) && words(card.say).some((w) => w === tiles)) out.push(`${g} s${s}: the card spells the tiles in their order`);
           const letter = shownOf(q.visual); const named = [...letter].some((x) => new RegExp(`\\b${x}\\b`).test(card.say));
-          if (named && !HIDES.name.includes(g) && !HIDES.sign.includes(g)) out.push(`${g} s${s}: the card names the letter it shows`);
+          if (named && !HIDES.name.includes(g) && !HIDES.sign.includes(g) && !HIDES.small.includes(g)) out.push(`${g} s${s}: the card names the letter it shows`);
           const kept = new Set([...words(card.say), ...(card.sounds || []).flatMap(words), ...words(beside.prompt), ...words(letter), ...POINTS]);
           for (const w of words(beside.story)) kept.add(w);
           const lost = words(`${whole.story || ''} ${whole.prompt}`).filter((w) => !kept.has(w));
@@ -9354,8 +10519,8 @@ const moreRightProblems = (L) => { const r = {};
     faults(L.GROWN_UP_CARD_BANKS, L.grownUpCard, (q) => L.printedQuestion(q, false)).length > 0,
     faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && { ...c, sounds: null }; }, L.cardQuestion).some((f) => /the sounds/.test(f)),
     // (Since pass NI the bank added is Look and write's real letter, since the picture banks are on the list.)
-    faults(new Set([...L.GROWN_UP_CARD_BANKS, 'p3-look-real']), L.grownUpCard, L.cardQuestion).some((f) => /not the 44/.test(f)),
-    faults(new Set([...L.GROWN_UP_CARD_BANKS].filter((g) => g !== 'p4-wbs-first')), L.grownUpCard, L.cardQuestion).some((f) => /not the 44|off the list/.test(f)),
+    faults(new Set([...L.GROWN_UP_CARD_BANKS, 'p3-look-real']), L.grownUpCard, L.cardQuestion).some((f) => /not the 66/.test(f)),
+    faults(new Set([...L.GROWN_UP_CARD_BANKS].filter((g) => g !== 'p4-wbs-first')), L.grownUpCard, L.cardQuestion).some((f) => /not the 66|off the list/.test(f)),
     // Since pass NH: a yes or no card that keeps "This is the letter S.", a hiding kind that prints its setup above the card, a which-sound
     // question after Ready that asks with "it" (the print Q91 had), and a card that drops its sound.
     faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && HIDES.yesno.includes(q.genId) ? { ...c, say: q.story } : c; }, L.cardQuestion).some((f) => /the hiding card's words|names the letter it shows/.test(f)),
@@ -9382,10 +10547,10 @@ const moreRightProblems = (L) => { const r = {};
     faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && HIDES.pic.includes(q.genId) ? { ...c, after: null } : c; }, L.cardQuestion).some((f) => /p4-qvy-pic s\d+: the card's how or after/.test(f)),
     faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && HIDES.word.includes(q.genId) ? { ...c, after: c.after && c.after.replace(', then point to each picture and say its name again', '') } : c; }, L.cardQuestion).some((f) => /p4-wbs-word s\d+: the card's how or after/.test(f)),
   ];
-  // The hiding kinds whose card stops before the question (twelve in pass NH, twenty-two since pass NI) ask the grown-up to read it after
+  // The hiding kinds whose card stops before the question (twelve in pass NH, twenty-two since pass NI, twenty-six since pass NK) ask the grown-up to read it after
   // Ready (every seed is read above).
   const askers = [...L.GROWN_UP_CARD_BANKS].filter((g) => L.grownUpCard(L.generateQuestion(g, 1)).asks).sort();
-  ok(`with no voice, the 44 letters banks show the grown-up's card, its words the whole question and a which-sound card's sounds in the buttons' order, and print beside the answers what a device with a voice prints, naming and leaning no answer; twenty-three kinds hide their picture or letter while the card is up, each card's words worked out here from its question, nothing printed above it, only the question after Ready (and two kinds' setups) and none of the voice's words lost, and the twenty-two whose card stops before the question telling the grown-up to read it after Ready, the sign word card the words above the sign, and the eight picture cards, since pass NI's round one screen read, after their names to read the question (the two letters' word card, the words above the letters) and point to each picture and say its name again; no other bank of the thirteen lessons has a card (Q91 (a), pass NG; Q96 (a) and Q97 (a), pass NH; Q98 (a) and Q, V and Y, pass NI; twenty near misses caught)`, real.length === 0 && plants.every(Boolean) && L.GROWN_UP_CARD_BANKS.size === 44 && L.GROWN_UP_CARD_HIDES.size === hiding.length && hiding.length === 23 && JSON.stringify(askers) === JSON.stringify(hiding.filter((g) => !HIDES.sign.includes(g)).sort()), `${real.slice(0, 6).join(' | ')}; plants ${plants}; askers ${askers.length}`);
+  ok(`with no voice, the 66 letters banks show the grown-up's card, its words the whole question and a which-sound card's sounds in the buttons' order, and print beside the answers what a device with a voice prints, naming and leaning no answer; thirty kinds hide their picture or letter while the card is up, each card's words worked out here from its question, nothing printed above it, only the question after Ready (and two kinds' setups) and none of the voice's words lost, and the twenty-six whose card stops before the question telling the grown-up to read it after Ready, the sign word card the words above the sign, and the ten picture cards, since pass NI's round one screen read, after their names to read the question (the two letters' word card, the words above the letters) and point to each picture and say its name again; no other bank of the eighteen lessons has a card (Q91 (a), pass NG; Q96 (a) and Q97 (a), pass NH; Q98 (a) and Q, V and Y, pass NI; A, E and I, O and U and Small letters, pass NK, whose yes or no's card says its whole question, as Big letters' does; twenty near misses caught)`, real.length === 0 && plants.every(Boolean) && L.GROWN_UP_CARD_BANKS.size === 66 && L.GROWN_UP_CARD_HIDES.size === hiding.length && hiding.length === 30 && JSON.stringify(askers) === JSON.stringify(hiding.filter((g) => !HIDES.sign.includes(g) && !HIDES.small.includes(g)).sort()), `${real.slice(0, 6).join(' | ')}; plants ${plants}; askers ${askers.length}`);
 }
 // Every letters bank read (pass NG, round one's code read: a new letters bank joining the card was kept by memory alone). Every bank of
 // every read-aloud course is read at seeds 1 to 60: one that asks a letters question (isLettersQuestion: single letters, sounds the voice
@@ -9413,7 +10578,7 @@ const moreRightProblems = (L) => { const r = {};
     faults(L.GROWN_UP_CARD_BANKS, new Set([...L.GROWN_UP_CARD_WAITING, 'p4-name-letter'])).some((f) => /on both lists/.test(f)),
     faults(L.GROWN_UP_CARD_BANKS, new Set([...L.GROWN_UP_CARD_WAITING, 'p3-feel-moment'])).some((f) => /p3-feel-moment: waiting, not a letters bank/.test(f))];
   ok(`every letters bank of a read-aloud course that prints differently with no voice (${lettersBanks.length}, the picture banks beside a letter among them) is on the grown-up's card's list (${L.GROWN_UP_CARD_BANKS.size}) or waits on a question of Mikey's (${L.GROWN_UP_CARD_WAITING.size}; the seven picture banks waited on Q98 until pass NI), never both (pass NG, round one's code read; since pass NH, Q96 (a), and its round one code read; since pass NI, Q98 (a); five near misses caught)`,
-    real.length === 0 && plants.every(Boolean) && lettersBanks.length === 44 && L.GROWN_UP_CARD_WAITING.size === 0, `${real.slice(0, 6).join(' | ')}; plants ${plants}; ${lettersBanks.length}`); }
+    real.length === 0 && plants.every(Boolean) && lettersBanks.length === 66 /* 66 since pass NL, Almost the same's and More small letters' four each that name a letter; 58 since pass NK's second wave, Small letters' four */ && L.GROWN_UP_CARD_WAITING.size === 0, `${real.slice(0, 6).join(' | ')}; plants ${plants}; ${lettersBanks.length}`); }
 // The join's and the serif runs' reach (pass NG, round two's code read): the reason after a wrong tap goes through keepLoneCapitals and ellsIn
 // with a voice as well as without, so the banks whose reasons they change are counted, every read-aloud bank at seeds 1 to 60 and every
 // wrong answer, the reason a voiced device prints: 41 banks gain a no-break space before a lone letter (27 in the seven letters lessons,
@@ -9422,33 +10587,46 @@ const moreRightProblems = (L) => { const r = {};
 // Since pass NI: 48 banks, 31 in the eight letters lessons, Q, V and Y's four that name a letter in their reasons (its letter, which sound,
 // which first letter and its yes or no; its picture bank names none) and Write your name's three that name a name's letters (which comes
 // next, which comes last and, since round one's lesson read, which try keeps the order: "starts with the letter u, but Jun starts with J.", the letter named since the third read, since a lone u is heard as the word you), so the
-// seven new banks a child meets with a lone capital in a reason are read as the older ones are.
+// seven new banks a child meets with a lone capital in a reason are read as the older ones are. Since pass NK: 58 banks, A, E and I's and O
+// and U's ten, every one of which names a letter in its reasons ("The letter A does not say the sound igloo starts with.").
+// Since pass NK's round two screen read: 65 banks, the reason holding a lone small letter too, which adds Write your name's first-letter bank,
+// Spaces between words' kind bank, Small letters' find and yes or no, and End marks' start bank. Since pass NK's second wave: 60 banks, Small letters' three whose reasons name a big letter ("The big W is tall, and the small letters
+// here are short."); O and U's name bank leaves the join, since round one's lesson read its reasons name the letter asked as well ("The letter V
+// has a point at its bottom, and the bottom of U is round."), so a pre-reader's wrong tap hears "Not that one. Have another try." and the
+// reason waits in More Info.
 { const banks = [...new Set(L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules.flatMap((m) => m.generators || [])))];
   const lettersLessons = new Set(['letters-and-sounds', 'look-and-write', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds', 'hear-it-in-a-word', 'q-v-and-y'].flatMap((id) => L.getModule(id).generators));
   const reach = (changes) => { const hit = new Set(); for (const g of banks) for (let s = 1; s <= 60; s++) { const q = L.generateQuestion(g, s); if (!q || q.type !== 'choice') continue;
     for (const c of q.choices) { if (c === q.answer) continue; const t = L.preReaderWrongWords(q, String(c), [], true); if (t && changes(t)) hit.add(g); } } return hit; };
-  const joined = reach((t) => L.keepLoneCapitals(t) !== t); const ells = reach((t) => L.ellRuns(t).length > 1);
+  // Since pass NK's round two screen read the reason holds a lone small letter too, as a lesson line does (ui.jsx's keepLoneLetters, the
+  // capitals' rule and then a small letter b to z after a word; its text is pinned in the partsWhole block): "is not the small / w." at 375.
+  const keepLetters = (t) => L.keepLoneCapitals(t).replace(/(\w+) ([b-z])(?=[\s.,?!]|$)/g, (m, w, l) => w + '\u00A0' + l);
+  const joined = reach((t) => keepLetters(t) !== t); const ells = reach((t) => L.ellRuns(t).length > 1);
   const roundOne = reach((t) => String(t).replace(/(\w) ([A-Z])(?=[\s.,?!]|$)/g, '$1\u00A0$2') !== t);
   const inLessons = [...joined].filter((g) => lettersLessons.has(g)).length;
   ok(`the reason's join reaches ${joined.size} banks (${inLessons} in the eight letters lessons) and its serif runs ${ells.size}, with a voice as without (pass NG, round two's code read; round one's join, which reached ${roundOne.size}, caught)`,
-    joined.size === 48 && inLessons === 31 && ['p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-first', 'p4-qvy-yesno', 'p4-wyn-next', 'p4-wyn-last', 'p4-wyn-right'].every((g) => joined.has(g)) && ells.size === 17 && roundOne.size > joined.size, JSON.stringify({ joined: joined.size, inLessons, ells: ells.size, roundOne: roundOne.size })); }
+    // 75 since pass NL, Almost the same's and More small letters' ten banks, whose reasons name a lone small letter as Small letters' do (65 before).
+    joined.size === 75 && inLessons === 31 && ['p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-first', 'p4-qvy-yesno', 'p4-wyn-first', 'p4-wyn-next', 'p4-wyn-last', 'p4-wyn-right', 'p4-aei-first', 'p4-aei-pic', 'p4-aei-both', 'p4-aei-or', 'p4-aei-yesno', 'p4-ou-first', 'p4-ou-pic', 'p4-ou-or', 'p4-ou-yesno', 'p4-sml-tap', 'p4-sml-big', 'p4-sml-same', 'p4-sml-find', 'p4-sml-yesno', 'p4-mark-start', 'p4-space-kind', 'p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-kpuy-same', 'p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno', 'p4-eirt-same'].every((g) => joined.has(g)) && !joined.has('p4-ou-name') && ells.size === 17 && roundOne.size > joined.size, JSON.stringify({ joined: joined.size, inLessons, ells: ells.size, roundOne: roundOne.size })); }
 // The card's and the reason's words (pass NG, round one's screen read): keepLoneCapitals joins a lone capital to the word before it by a
 // no-break space and changes nothing else ("the sound N says", "Does J say", never after a sentence's end, never inside a word), and
 // ellRuns finds every run of small l's that stands as a word (lll, Lll, the lll of fff-lll), never the l's inside a word (all, Bell, hill).
 // Near misses, each caught: a join after a sentence's end, and a run found inside a word.
 { const nb = '\u00A0';
   const cases = [['Cuh-sss is not the sound N says.', `Cuh-sss is not the sound${nb}N says.`], ['This is the letter J. Does J say that sound?', `This is the letter${nb}J. Does${nb}J say that sound?`],
-    ['Listen. Box.', 'Listen. Box.'], ['It ends here. N is next.', 'It ends here. N is next.'], ['A big apple.', 'A big apple.'], ['May I go? Yesterday I ran.', 'May I go? Yesterday I ran.'], ['It is the letter I.', `It is the letter${nb}I.`], ['Does I say that sound?', `Does${nb}I say that sound?`]];
+    ['Listen. Box.', 'Listen. Box.'], ['It ends here. N is next.', 'It ends here. N is next.'], ['A big apple.', 'A big apple.'], ['May I go? Yesterday I ran.', 'May I go? Yesterday I ran.'], ['It is the letter I.', `It is the letter${nb}I.`], ['Does I say that sound?', `Does${nb}I say that sound?`],
+    ['Tap the big I. Look at big I, one tall line.', `Tap the big${nb}I. Look at big${nb}I, one tall line.`], ['Big I and small i.', `Big${nb}I and small i.`]];
   const joins = (join) => cases.every(([a, b]) => join(a) === b);
   const finds = (split) => { const runs = (t) => split(t).filter((x, i) => i % 2); return JSON.stringify(runs('Listen to this sound. Lll. Button 2, lll. fff-lll, and all of it, Bell and hill.')) === JSON.stringify(['Lll', 'lll', 'lll']); };
   const whole = L.ellRuns('Listen to this sound. Lll. Button 2, lll.').join('') === 'Listen to this sound. Lll. Button 2, lll.';
-  const plants = [!joins((t) => t.replace(/([\w.]) ([A-Z])(?=[\s.,?!]|$)/g, `$1${nb}$2`)), !finds((t) => String(t).split(/([Ll]l+)/)), !joins((t) => t.replace(/(\w) ([A-Z])(?=[\s.,?!]|$)/g, `$1${nb}$2`))];
-  ok("a lone capital keeps the word before it, the word I only after letter or Does, and every run of small l's standing as a word is found and only those (pass NG; three near misses caught: a join after a sentence's end, a run inside a word, and the pronoun I joined as round one joined it)", joins(L.keepLoneCapitals) && finds(L.ellRuns) && whole && plants.every(Boolean), { joined: joins(L.keepLoneCapitals), found: finds(L.ellRuns), whole, plants }); }
+  const plants = [!joins((t) => t.replace(/([\w.]) ([A-Z])(?=[\s.,?!]|$)/g, `$1${nb}$2`)), !finds((t) => String(t).split(/([Ll]l+)/)), !joins((t) => t.replace(/(\w) ([A-Z])(?=[\s.,?!]|$)/g, `$1${nb}$2`)),
+    !joins((t) => String(t).replace(/(\w+) ([A-Z])(?=[\s.,?!]|$)/g, (m, word, cap) => (cap === 'I' && word !== 'letter' && word !== 'Does' ? m : `${word}${nb}${cap}`)))];
+  ok("a lone capital keeps the word before it, the word I only after letter, Does or big (or Big), and every run of small l's standing as a word is found and only those (pass NG; since pass NL's round one screen read, big I; four near misses caught: a join after a sentence's end, a run inside a word, the pronoun I joined as round one joined it, and big I left apart as pass NK left it)", joins(L.keepLoneCapitals) && finds(L.ellRuns) && whole && plants.every(Boolean), { joined: joins(L.keepLoneCapitals), found: finds(L.ellRuns), whole, plants }); }
 // The letter I on the grown-up's card (pass NH, round one's screen read): cardRuns finds what ellRuns finds and the letter I where a
 // no-break space holds it to the word before it (the letter I, Does I, the name card's "name. I"), never the word I, and gives the text
 // back whole. Near misses, each caught: a lone I found anywhere (the word I in "May I go?"), and the letter I left out, as ellRuns does.
 { const nb = '\u00A0'; const runs = (split, t) => split(t).filter((x, i) => i % 2);
   const cases = [[L.keepLoneCapitals('Tap the letter I.'), ['I']], [`Listen to a letter's name.${nb}I.`, ['I']], [L.keepLoneCapitals('Does I say that sound?'), ['I']],
+    [L.keepLoneCapitals('Tap the big I.'), ['I']], [L.keepLoneCapitals('Which small letter goes with the big I?'), ['I']],
     [L.keepLoneCapitals('May I go? Yesterday I ran. It is me, I think.'), []], [L.keepLoneCapitals('Listen to this sound. Lll. Button 2, lll.'), ['Lll', 'lll']], [L.keepLoneCapitals('Tap the letter H. Idle Ivy.'), []],
     [`Listen to a letter's name.${nb}Ivy.`, []]];   // since round two's code read: a word that starts with I after a no-break space is no letter I (the lookahead)
   const right = (split) => cases.every(([t, want]) => JSON.stringify(runs(split, t)) === JSON.stringify(want) && split(t).join('') === t);

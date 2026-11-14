@@ -194,8 +194,9 @@ await page.getByLabel('Close').click();
 await page.getByRole('button', { name: /^Wonder Questions/ }).first().click();
 ok('the Wonder Questions popup says what is current', (await text()).includes('Currently:'));
 // The popup counts what this school lets students see, out of the whole pool (2026-09-29, Mikey; since pass NJ the questions on, every
-// question starting on, where it counted the ones approved).
-ok('the Wonder Questions popup counts the questions on out of the pool, every one at the start', new RegExp(`${WONDER_COUNT} of ${WONDER_COUNT} Wonder Questions on for students`).test(await text()));
+// question starting on, where it counted the ones approved, and since pass NL it says approved, Mikey: "the on and turn off can change
+// to Approved and Remove").
+ok('the Wonder Questions popup counts the questions approved out of the pool, every one at the start (pass NL)', new RegExp(`${WONDER_COUNT} of ${WONDER_COUNT} Wonder Questions approved for students`).test(await text()) && !(await text()).includes('Wonder Questions on for students'));
 await page.getByRole('group', { name: 'Wonder Questions' }).getByRole('button', { name: 'Off' }).click();
 await page.waitForTimeout(200);
 ok('switching Wonder Questions off shows on the card', (await page.getByRole('button', { name: /^Wonder Questions/ }).first().textContent()).includes('OFF'));
@@ -315,24 +316,40 @@ await tap('Back to overview');
 await tap('Exit');
 await educatorLogin();
 t = await text();
-ok('the classroom page says every Wonder question is on for the students', t.includes('On for your students'));
-await page.getByRole('button', { name: 'Wonder Questions' }).last().click();
+// Since pass NL the classroom's Wonder card's line is Mikey's two sentences ("Wonder Questions, active by default, are deep,
+// thought-provoking questions to help kids think.  Keep what you like, remove what you don't."), its title and its Wonder Questions
+// button as they were, and pass NK's "Click here" link gone with his pass NK sentence.
+{ const cardText = await page.evaluate(() => { const c = document.querySelector('[data-wonder-card]'); return c ? c.innerText.replace(/\s+/g, ' ').trim() : null; });
+  ok('the classroom\'s Wonder card says Mikey\'s two sentences of pass NL above its Wonder Questions button, with no other link', cardText === "Wonder Questions, active by default, are deep, thought-provoking questions to help kids think. Keep what you like, remove what you don't." && (await page.locator('[data-tour="wonder"]').getByRole('button', { name: 'Wonder Questions', exact: true }).count()) === 1 && (await page.locator('[data-wonder-card-link]').count()) === 0, cardText); }
+await page.locator('[data-tour="wonder"]').getByRole('button', { name: 'Wonder Questions', exact: true }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-review');
 t = await text();
-ok('every question starts on, with nothing to approve', t.includes(`All ${WONDER_COUNT} on`) && !t.includes('to review') && !t.includes('Approve'));
+// Since pass NL the card under the title says Mikey's line, "Students only see what you approve.", "you approve." held together, with no
+// count line while any question is on ("We can remove the 402 line"), and not Q105 (b)'s "View, turn off or turn on below.", in the words
+// he set aside (round one's screen read), the page's every on and off word approve and remove since his later word; since pass NK its
+// privacy line sits in the tip under the title's i (his words: "Can move underneath the i tip tool on the top right of the page.").
+{ const lines = await page.evaluate(() => [...document.querySelectorAll('[data-wonder-all] p')].map((p) => p.textContent.trim()));
+  ok('every question starts on, with nothing waiting to be reviewed, and the card under the title says Mikey\'s line, "you approve." held together, and no count (pass NL)', !t.includes(`All ${WONDER_COUNT} on`) && !t.includes('to review') && !t.includes('starts on') && lines[0] === 'Students only see what you\u00A0approve.' && lines[1] === 'Remove them all' && lines.length === 2 && (await page.locator('[data-wonder-off-line]').count()) === 0, lines); }
 ok('the page opens as four stages, not a list of questions', t.includes('Early') && t.includes('Nearly grown') && !t.includes('If you cut a cookie'));
-ok('the page says plainly that nothing a student writes is kept', t.includes('never recorded'));
-ok('a link turns them all off', (await page.getByRole('button', { name: 'Turn them all off', exact: true }).count()) === 1);
+ok('the card no longer carries the privacy line, which the tip under the title\'s i now ends with (pass NK)', !t.includes('never recorded'));
+await page.getByRole('button', { name: 'How reflection questions work' }).click();
+await page.waitForTimeout(200);
+ok('the page says plainly that nothing a student writes is kept: the tip under the title\'s i ends with the privacy line, a paragraph of its own (pass NK)', (await page.evaluate(() => { const p = document.querySelector('[data-wonder-tip-privacy]'); return p && !p.nextElementSibling && p.previousElementSibling && p.previousElementSibling.tagName === 'P' ? p.textContent : null; })) === 'Responses are never recorded for privacy reasons.');
+await page.getByRole('button', { name: 'How reflection questions work' }).click();
+await page.waitForTimeout(200);
+ok('a link removes them all, in Mikey\'s words (pass NL)', (await page.getByRole('button', { name: 'Remove them all', exact: true }).count()) === 1 && (await page.getByRole('button', { name: 'Turn them all off', exact: true }).count()) === 0);
 // Since round one's screen read the link keeps its look and is a 44-pixel target (it was 16 pixels tall, a line of small print).
-{ const box = await page.getByRole('button', { name: 'Turn them all off', exact: true }).boundingBox();
-  ok('the link that turns them all off is a target a finger can find, at least 44 pixels tall (round one\'s screen read)', !!box && box.height >= 44, box); }
-await tap('Turn them all off');
+{ const box = await page.getByRole('button', { name: 'Remove them all', exact: true }).boundingBox();
+  ok('the link that removes them all is a target a finger can find, at least 44 pixels tall (round one\'s screen read)', !!box && box.height >= 44, box); }
+await tap('Remove them all');
 await page.waitForTimeout(300);
 t = await text();
-ok('with all of them off the page says so and offers to turn them all on', t.includes('Off for every student') && (await page.getByRole('button', { name: 'Turn them all on', exact: true }).count()) === 1);
+// Since pass NL the card's line that says so shows only with all off (Claude's reading of "We can remove the 402 line", told to Mikey),
+// above his line.
+ok('with all of them removed the page says so and offers to approve them all', t.includes('Removed for every student') && (await page.evaluate(() => [...document.querySelectorAll('[data-wonder-all] p')].map((p) => p.textContent.replace(/\u00A0/g, ' ').trim()).join('|'))) === 'Removed for every student|Students only see what you approve.' && (await page.getByRole('button', { name: 'Approve them all', exact: true }).count()) === 1);
 await page.getByRole('button', { name: /^Growing up/ }).click();
 t = await text();
-ok('opening a stage reveals its questions, each marked On or Off', t.includes('If you cut a cookie') && /\bOff\b/.test(t));
+ok('opening a stage reveals its questions, each marked Approved or Removed', t.includes('If you cut a cookie') && /\bRemoved\b/.test(t) && !/\bOff\b/.test(t));
 // Since round one's screen read an Off row reads as plainly as an On row: no fading, its words at 4.5 to 1 or more on the row, and its
 // Off pill's word at 4.5 to 1 on a ground of its own, at least 1.1 to 1 from the row's (the row had been drawn at 0.7, the word at
 // 2.9 to 1, and the pill's gray, 1.01 to 1 from the row's, had vanished into it); the two darker stages' words at full white (Teen's read 3.81 to 1 at 0.85); and with
@@ -341,41 +358,67 @@ ok('opening a stage reveals its questions, each marked On or Off', t.includes('I
     const rgb = (c) => { const m = /rgba?\(([^)]+)\)/.exec(c || ''); return m ? m[1].split(',').map((x) => parseFloat(x)) : null; };
     const lum = (p) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(p[0]) + 0.7152 * f(p[1]) + 0.0722 * f(p[2]); };
     const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
-    const row = [...document.querySelectorAll('[data-wonder-row]')].find((r) => /\bOff\b/.test(r.innerText)); if (!row) return null;
+    const row = [...document.querySelectorAll('[data-wonder-row]')].find((r) => /\bRemoved\b/.test(r.innerText)); if (!row) return null;
     const prompt = row.children[0]; const pill = row.children[1] && row.children[1].children[0];
     const rowBg = rgb(getComputedStyle(row).backgroundColor); const pillBg = rgb(getComputedStyle(pill).backgroundColor);
     const stages = [...document.querySelectorAll('[data-wonder-stage-state]')].map((x) => ({ text: x.textContent, opacity: getComputedStyle(x).opacity, white: getComputedStyle(x).color }));
     return { opacity: getComputedStyle(row).opacity, words: ratio(rgb(getComputedStyle(prompt).color), rowBg), pill: ratio(rgb(getComputedStyle(pill).color), pillBg), ground: ratio(pillBg, rowBg), stages };
   });
-  ok('an Off row reads plainly: no fading, its words and its Off pill at 4.5 to 1 or more, the pill on a ground of its own; the darker stages\' words at full white; and with all off each stage says all off (round one\'s screen read)',
-    !!look && look.opacity === '1' && look.words >= 4.5 && look.pill >= 4.5 && look.ground >= 1.1 && look.stages.length === 4 && look.stages.every((x) => /^all off/.test(x.text))
+  ok('a Removed row reads plainly: no fading, its words and its Removed pill at 4.5 to 1 or more, the pill on a ground of its own; the darker stages\' words at full white; and with all removed each stage says all removed (round one\'s screen read)',
+    !!look && look.opacity === '1' && look.words >= 4.5 && look.pill >= 4.5 && look.ground >= 1.1 && look.stages.length === 4 && look.stages.every((x) => /^all removed/.test(x.text))
     && look.stages.filter((x) => x.white === 'rgb(255, 255, 255)').length === 2 && look.stages.filter((x) => x.white === 'rgb(255, 255, 255)').every((x) => x.opacity === '1'), look); }
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
 t = await text();
 ok('a question opens over the page rather than pushing it down', t.includes('For the readers:') && t.includes('Closing question'));
-// Since round one's screen read the sheet says, just above its button, what the button did; and since round two's code read, on a phone
-// the educator's countdown chip, which had crossed Turn it off at the foot, moves to the top while a sheet is open, over 56 pixels the
-// sheet keeps clear, above its card (72 pixels kept at the foot had cleared the chip only once the sheet was scrolled to its end).
-{ const sheet = await page.evaluate(() => { const st = document.querySelector('[data-wonder-sheet-state]'); const ov = document.querySelector('.edu-sheet'); const chip = document.querySelector('.edu-logout-chip'); const card = ov && ov.firstElementChild; const cb = chip && chip.getBoundingClientRect(); const kb = card && card.getBoundingClientRect(); return { state: st ? st.textContent : null, role: st ? st.getAttribute('role') : null, top: ov ? getComputedStyle(ov).paddingTop : null, chipBottom: cb ? Math.round(cb.bottom) : null, cardTop: kb ? Math.round(kb.top) : null, width: window.innerWidth }; });
-  ok('the question sheet says above its button that the question is off for the students, and on a phone keeps 56 pixels clear at its top, where the educator\'s countdown chip sits while a sheet is open, above the card (round one\'s screen read; the chip at the top since round two\'s code read)', sheet.state === 'Off for your students.' && sheet.role === 'status' && sheet.width <= 999 && sheet.top === '56px' && sheet.chipBottom !== null && sheet.cardTop !== null && sheet.chipBottom <= sheet.cardTop, sheet); }
+// Since round one's screen read of pass NJ the sheet says, just above its button, what the button did. Since pass NK (Mikey's answer to
+// Q104, "B and keep at the bottom") the educator's countdown chip hides on a phone or a tablet while a sheet is open, until its last ten
+// seconds, and then shows where it always sits, centered at the foot; the sheet keeps its own 24 pixels at its top. (In pass NJ the chip
+// moved to the top over 56 pixels the sheet kept clear, and lay over a scrolled sheet's words.)
+{ const look = () => page.evaluate(() => { const st = document.querySelector('[data-wonder-sheet-state]'); const ov = document.querySelector('.edu-sheet'); const chip = document.querySelector('.edu-logout-chip'); const cb = chip && chip.getBoundingClientRect(); return { state: st ? st.textContent : null, role: st ? st.getAttribute('role') : null, top: ov ? getComputedStyle(ov).paddingTop : null, chip: chip ? getComputedStyle(chip).opacity : null, shown: chip ? getComputedStyle(chip).display : null, lastTen: chip ? chip.hasAttribute('data-last-ten') : null, chipBottom: cb ? Math.round(cb.bottom) : null, chipMid: cb ? Math.round(cb.left + cb.width / 2) : null, chipText: chip ? chip.textContent : null, width: window.innerWidth, height: window.innerHeight }; });
+  const sheet = await look();
+  ok('the question sheet says above its button that the question is removed for the students, keeps its own 24 pixels at its top, and on a phone hides the educator\'s countdown chip while it is open (pass NK, Mikey\'s answer to Q104)', sheet.state === 'Removed for your students.' && sheet.role === 'status' && sheet.width <= 999 && sheet.top === '24px' && sheet.chip === '0' && sheet.shown !== 'none' && sheet.lastTen === false, sheet);   // hidden by its opacity since round one's screen read, on the page for a screen reader
+  await page.evaluate(() => window.__eduTest.educatorQuietFor(51000));
+  await page.waitForFunction(() => { const c = document.querySelector('.edu-logout-chip'); return c && c.hasAttribute('data-last-ten'); }, null, { timeout: 4000 }).catch(() => {});
+  const last = await look();
+  ok('in its last ten seconds the chip shows over the open sheet, centered at the foot of the screen, where it always sits (pass NK, Q104: "B and keep at the bottom")', last.lastTen === true && last.chip === '1' && last.chipBottom !== null && Math.abs(last.chipBottom - (last.height - 12)) <= 2 && Math.abs(last.chipMid - last.width / 2) <= 2 && /^Logging out in (10|[1-9])$/.test(last.chipText), last);
+  // Scrolled to its end, no word or button of the sheet lies under the chip in its last ten seconds (round one's screen read, pass NK: the
+  // chip lay over the foot of Turn it off), since a sheet keeps 68 pixels at its foot while the chip can show; the sheet with its own 24
+  // there, planted, is caught.
+  const underChip = () => page.evaluate(() => { const chip = document.querySelector('.edu-logout-chip'); const ov = document.querySelector('.edu-sheet'); if (!chip || !ov) return ['no chip or sheet'];
+    for (const el of [ov, ...ov.querySelectorAll('*')]) if (el.scrollHeight > el.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(el).overflowY)) el.scrollTop = el.scrollHeight;
+    const c = chip.getBoundingClientRect(); const hit = (r) => r.width > 0 && r.height > 0 && r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top; const out = [];
+    const walk = document.createTreeWalker(ov, NodeFilter.SHOW_TEXT); let t; while ((t = walk.nextNode())) { if (!t.textContent.trim()) continue; const rg = document.createRange(); rg.selectNodeContents(t); if ([...rg.getClientRects()].some(hit)) out.push(t.textContent.trim().slice(0, 40)); }
+    for (const b of ov.querySelectorAll('button')) if (hit(b.getBoundingClientRect())) out.push('button ' + b.textContent.trim().slice(0, 30)); return out; });
+  // Read at 375 by 667, where the question's sheet is taller than the screen, as round one's screen read measured it: at this file's own
+  // 390 by 844 the sheet, its voices folded, ends above the chip without scrolling, so neither its 68 pixels nor a planted 24 could be
+  // told apart (round three's run of this file found the plant passing there, the check never having caught it).
+  const wasVp = page.viewportSize(); await page.setViewportSize({ width: 375, height: 667 }); await page.waitForTimeout(300);
+  const tall = await page.evaluate(() => { const ov = document.querySelector('.edu-sheet'); return !!ov && ov.scrollHeight > ov.clientHeight + 1; });
+  const under = await underChip();
+  const plantFoot = await page.evaluate(() => { const ov = document.querySelector('.edu-sheet'); if (!ov) return false; ov.setAttribute('data-was-style', ov.getAttribute('style') || ''); ov.style.setProperty('padding-bottom', '24px', 'important'); return true; }) && (await underChip()).length > 0;
+  await page.evaluate(() => { const ov = document.querySelector('.edu-sheet'); if (ov) { ov.setAttribute('style', ov.getAttribute('data-was-style')); ov.removeAttribute('data-was-style'); } });
+  await page.setViewportSize(wasVp); await page.waitForTimeout(300);
+  ok('scrolled to its end, no word or button of the open sheet lies under the chip in its last ten seconds, read at 375 by 667 where the sheet is taller than the screen (round one\'s screen read, pass NK; the sheet with its own 24 pixels at its foot, planted, caught)', tall && under.length === 0 && plantFoot === true, { tall, under, plantFoot });
+  await page.mouse.move(5, 5); await page.mouse.move(9, 9); await page.waitForTimeout(1300);
+  ok('a touch puts the chip back to the whole minute, hidden again while the sheet is open (pass NK)', (await look()).chip === '0'); }
 const voiceButtons = await Promise.all(['Frederick', 'Chloe', 'Georgette', 'Mike'].map((n) => page.getByRole('button', { name: new RegExp(`^${n}$`) }).count()));
 ok('the four voices are listed by name, each a button, label and words hidden until asked for', voiceButtons.every((c) => c === 1) && !t.includes('A scientist') && !(await page.getByText('The Scientist', { exact: true }).isVisible()) && !(await page.getByText('The amount of cookie is exactly the same').isVisible().catch(() => false)));
 await page.getByRole('button', { name: /^Frederick$/ }).click();
 const [nameBox, roleBox, saysBox] = await Promise.all([page.getByRole('button', { name: /^Frederick$/ }).boundingBox(), page.getByText('The Scientist', { exact: true }).boundingBox(), page.getByText('The amount of cookie is exactly the same').boundingBox()]);
 ok('a voice opens when chosen, its label between the name and what it says', !!(nameBox && roleBox && saysBox) && nameBox.y < roleBox.y && roleBox.y < saysBox.y);
-await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
+await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
-ok('turning one on marks it On where it stands and offers to turn it off again', (await page.getByRole('button', { name: 'Turn it off', exact: true }).count()) === 1);
-ok('after Turn it on the sheet says, where the tap was, that it is on for the students (round one\'s screen read)', (await page.evaluate(() => (document.querySelector('[data-wonder-sheet-state]') || {}).textContent)) === 'On for your students.');
-// A question turned off by name stays off through Turn them all on, and since round two's code read the all-off card says so before its
-// button. Turned off and on again here, the walk's state is as it was.
-await page.getByRole('button', { name: 'Turn it off', exact: true }).click();
+ok('approving one marks it Approved where it stands and offers to remove it again', (await page.getByRole('button', { name: 'Remove', exact: true }).count()) === 1);
+ok('after Approve the sheet says, where the tap was, that it is approved for the students (round one\'s screen read)', (await page.evaluate(() => (document.querySelector('[data-wonder-sheet-state]') || {}).textContent)) === 'Approved for your students.');
+// A question removed by name stays removed through Approve them all, and since round two's code read the all-removed card says so before
+// its button. Removed and approved again here, the walk's state is as it was.
+await page.getByRole('button', { name: 'Remove', exact: true }).click();
 await page.waitForTimeout(300);
 { const kept = await page.evaluate(() => { const k = document.querySelector('[data-wonder-kept-off]'); return k ? k.textContent : null; });
-  await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
+  await page.getByRole('button', { name: 'Approve', exact: true }).click();
   await page.waitForTimeout(300);
   const after = await page.evaluate(() => document.querySelectorAll('[data-wonder-kept-off]').length);
-  ok('with all of them off, a question turned off by name is named on the page as staying off when they are all turned on, and turned on again it is not (round two\'s code read)', kept === 'The question you turned off by name stays off when you turn them all\u00A0on.' && after === 0, { kept, after }); }
+  ok('with all of them removed, a question removed by name is named on the page as staying removed when they are all approved, and approved again it is not (round two\'s code read)', kept === 'The question you removed by name stays removed when you approve them\u00A0all.' && after === 0, { kept, after }); }
 await tap('Close');
 await page.waitForTimeout(200);
 // turn the kindergarten one on as well, for the spoken reflection later
@@ -385,30 +428,33 @@ t = await text();
 // Four short voices since pass MH (Mikey: all four voices for pre-readers), each listed for the educator by name.
 { const ants = (await import('../../src/logic.mjs')).WONDER.find((x) => x.id === 'w-ants-elephant');
   ok('a young children\'s question shows the four spoken voices in the review', t.includes('Early Learners') && t.includes('Children who cannot read yet hear the wonder questions instead. They select an answer, also spoken, then hear four differing perspectives which will hopefully broaden their own.') && ants.simple.length === 4 && ants.simple.every((v) => t.includes(v.says))); }
-await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
+await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 await tap('Close');
 await page.waitForTimeout(200);
-ok('turning two on says so at the top', (await text()).includes('Off, with 2 turned on'));
+ok('approving two says so at the top', (await text()).includes('Removed, with 2 approved'));
 { const st = await page.evaluate(() => [...document.querySelectorAll('[data-wonder-stage-state]')].map((x) => x.textContent.replace(/[▴▾]/g, '').trim()));
-  ok('with all off and two turned on, each stage counts what is on, never what is off (round one\'s screen read: Early had read "131 off")', st.length === 4 && st[0] === '1 on' && st[1] === '1 on' && st[2] === 'all off' && st[3] === 'all off', st); }
-// Turn them all on puts every question back on but any a school turned off by name (none here: the two were turned on by name, so
-// nothing stays off); turning them all off again and the two back on keeps the walk's pool.
-await tap('Turn them all on');
+  ok('with all removed and two approved, each stage counts what is approved, never what is removed (round one\'s screen read: Early had read "131 off")', st.length === 4 && st[0] === '1 approved' && st[1] === '1 approved' && st[2] === 'all removed' && st[3] === 'all removed', st); }
+// Approve them all puts every question back on but any a school removed by name (none here: the two were approved by name, so
+// nothing stays removed); removing them all again and approving the two keeps the walk's pool.
+await tap('Approve them all');
 await page.waitForTimeout(300);
-ok('turning them all on puts every question back on', (await text()).includes(`All ${WONDER_COUNT} on`));
-await tap('Turn them all off');
+// Since pass NL the card has no count line while any question is on (Mikey: "We can remove the 402 line"), so every question back on
+// reads as the card's on state, with no off line and every stage all on.
+{ const st = await page.evaluate(() => ({ all: document.querySelector('[data-wonder-all]').getAttribute('data-wonder-all'), off: document.querySelectorAll('[data-wonder-off-line]').length, stages: [...document.querySelectorAll('[data-wonder-stage-state]')].map((x) => x.textContent.replace(/[▴▾]/g, '').trim()) }));
+  ok('approving them all puts every question back on (the card on, with no off line, and every stage all approved)', st.all === 'on' && st.off === 0 && st.stages.length === 4 && st.stages.every((x) => x === 'all approved'), st); }
+await tap('Remove them all');
 await page.waitForTimeout(300);
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
-await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
+await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 await tap('Close');
 await page.getByRole('button', { name: /a big group of tiny ants/ }).click();
-await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
+await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 await tap('Close');
 await page.waitForTimeout(200);
-ok('the two are on again and every other question off', (await text()).includes('Off, with 2 turned on'));
+ok('the two are approved again and every other question removed', (await text()).includes('Removed, with 2 approved'));
 await tap('Back to Classroom');
 await tap('Home');
 await page.getByRole('button', { name: /S-2001$/ }).click();

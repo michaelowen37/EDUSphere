@@ -214,6 +214,15 @@ ok('no plan repeats a code', repeats.length === 0, repeats.join(', '));
   const old = []; for (const c of L.COURSES.filter((x) => x.grade === 'PK3' || x.grade === 'PK4')) for (const m of c.modules) { const s = (L.MODULES.find((x) => x.id === m.id).sources || []).join(' ');
     if (/\b(?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.[A-F]\.\d+(?:\.[a-z])? \(/.test(s) && !s.includes(EDITION_2027)) old.push(m.id); }
   ok('every pre-K lesson that cites a Texas outcome quotes the 2027 recommendations, which Mikey adopted (pass MR)', old.length === 0, old.join(', '));
+  // Pass NK's six lessons quote each Texas outcome whole, its final period too, as 66 later quotes do and 137 older ones do not (the bare
+  // reading above lets those stand): round two's lesson read, pass NK, found Small letters' III.C.1 without it, round one's finding again,
+  // and Any size, any turn's and Rectangles' V.B.1 were found the same way. Since pass NL its two lessons, Almost the same and More
+  // small letters, are held the same way.
+  const NK_SIX = ['a-e-and-i', 'o-and-u', 'any-size-any-turn', 'rectangles-too', 'small-letters', 'end-marks', 'almost-the-same', 'more-small-letters']; const cut = []; let nkQuotes = 0;
+  const nkCheck = (id, src, grade) => { for (const k of src.matchAll(/\b((?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.[A-F]\.\d+(?:\.[a-z])?) \(/g)) { const q = balanced(src, k.index + k[0].length - 1); const t = tea[2027][grade].get(k[1]); nkQuotes += 1; if (t === undefined || plain(t) !== plain(q)) cut.push(id + ' ' + k[1]); } };
+  for (const id of NK_SIX) { const m = L.MODULES.find((x) => x.id === id); nkCheck(id, plain((m.sources || []).join(' ')), L.getCourse(m.courseId).grade); }
+  const nkFound = cut.length; nkCheck('plant', plain('Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part'), 'PK4');
+  ok(`pass NK's six lessons and pass NL's two quote each Texas outcome whole, its final period too (${nkQuotes - 1} quotes; Small letters' III.C.1 without its period, planted, caught)`, nkFound === 0 && cut.length === 1 && nkQuotes >= 12, cut.join(', '));
   if (off.length) console.log(off.slice(0, 8).join('\n'));
   if (waiting.length) console.log(`NOTE - Head Start indicator quotes not yet held to a transcribed text: ${waiting.length} (${waiting.join('; ')})`);
   // Near misses: the check fails a quote one word off, a code the 2022 text lacks, a progression sentence reworded and a goal

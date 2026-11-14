@@ -308,14 +308,59 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps the row and the line pass NI corrected in place at Mikey's word as pass NH left them (the grown-up's card and section 2's pass NH line), and since round two the two rows its own work outgrew (one breath, and III.C.2 and III.C.3), each corrected one says so, and section 9's row for Q85 names them (pass NI)", /^\| \*\*The grown-up's card on a device with no voice/.test(kept) && kept.includes('\n- **Since pass NH (Mikey') && kept.includes('\n**One breath for a hiss in the three letters lessons') && kept.includes("\n| **Domain III's III.C.2 and III.C.3, read (pass ND") && createHash('sha256').update(kept, 'utf8').digest('hex') === '6d0dffa9ce17537f6852d5c5d5097645e496a394a0f67e008fd6011fb37783b6'
       && audit.includes('Corrected in place again in pass NI, at his word (Q98 (a)), its pass NH words there too.') && audit.includes('Corrected in place in pass NI (Mikey\'s answer to Q98), its pass NH words in docs/RULES-AUDIT-HISTORY.md.') && audit.includes('Corrected in pass NI, at Mikey\'s word (his answer to Q98), each saying so')
-      && audit.split('and again in pass NI, its pass NF words there too.').length === 3 && audit.includes('section 4\'s row on one breath for a hiss (ten lessons since Q, V and Y')); }
+      && audit.split('and again in pass NI, its pass NF words there too').length === 3 /* since pass NK one of the two goes on, ", and again in pass NK" */ && audit.includes('section 4\'s row on one breath for a hiss (ten lessons since Q, V and Y')); }
   // The question answered when pass NJ opened (Q99: skin in the painted looks), in a block of its own with what was built, and the four rows
   // and one line his words of pass NJ changed (section 1's Stay neutral and section 7's reflections row, his Wonder default; section 5's one
   // look per person, Q99; section 5's picture-like drawings, his new order), as pass NI left them, each changed row saying so.
   { const o = "<!-- RULES-AUDIT section 11's answered questions in pass NJ, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass NJ, word for word: end -->");
     const nj = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
-    ok('docs/RULES-AUDIT-HISTORY.md keeps the question answered when pass NJ opened, Q99, every line unchanged, and section 11 answers it in one line and asks Q100 in full (pass NJ)', /^- Q99\. Answered in pass NJ/.test(nj) && nj.includes("The question as it stood: Skin in the painted people's looks") && createHash('sha256').update(nj, 'utf8').digest('hex') === '60db346b92aa7288be60a0f89fa0a5ac2df9afe1e5d890551a54563f2900f094'
-      && audit.includes('- Q99. Answered in pass NJ (Mikey: "Q99 - A"). Its rule lives in section 5') && /\n- Q100\. The Wonder Questions tour card's last line/.test(audit)); }
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the question answered when pass NJ opened, Q99, every line unchanged, and section 11 answers it in one line and asked Q100 in full until pass NK answered it (pass NJ)', /^- Q99\. Answered in pass NJ/.test(nj) && nj.includes("The question as it stood: Skin in the painted people's looks") && createHash('sha256').update(nj, 'utf8').digest('hex') === '60db346b92aa7288be60a0f89fa0a5ac2df9afe1e5d890551a54563f2900f094'
+      && audit.includes('- Q99. Answered in pass NJ (Mikey: "Q99 - A"). Its rule lives in section 5') && (/\n- Q100\. The Wonder Questions tour card's last line/.test(audit) || (/\n- Q100\. Answered in pass NK /.test(audit) && hist.includes("The question as it stood: The Wonder Questions tour card's last line")))); }
+  // The questions answered when pass NK opened (Q100 to Q104), in a block of their own with what was built, each answered in one line in
+  // section 11, Q105 and Q106 asked there in full until pass NL answered them (each then in pass NL's block, as it stood); and the row
+  // his words of pass NK changed (section 8's Wonder Questions on by default), as pass NJ left it.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass NK, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass NK, word for word: end -->");
+    const nk = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    const r0 = "<!-- RULES-AUDIT rows as pass NJ left them, before pass NK changed them at Mikey's word, word for word: begin -->\n"; const ra = hist.indexOf(r0); const rb = hist.indexOf("<!-- RULES-AUDIT rows as pass NJ left them, before pass NK changed them at Mikey's word, word for word: end -->");
+    const kept = ra >= 0 && rb > ra ? hist.slice(ra + r0.length, rb) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered when pass NK opened, Q100 to Q104, every line unchanged, and the Wonder row as pass NJ left it; section 11 answers each in one line and asks Q105 and Q106 in full, or since pass NL answers them with their words in its block (pass NK)', [100, 101, 102, 103, 104].every((n) => new RegExp('^- Q' + n + '\\. Answered in pass NK', 'm').test(nk) && new RegExp('\\n- Q' + n + '\\. Answered in pass NK \\(Mikey: ').test(audit))
+      && createHash('sha256').update(nk, 'utf8').digest('hex') === '8fc7d7a48696e173fee47c2e507edca4655fef56fa8dd97f5994600bfef94c31' && /^\| \*\*Wonder Questions on by default/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'c1070cec7bc94dbac54ecca86bfc6f3e642c8b341d82e127026724ea01c1e1c9'
+      && (/\n- Q105\. The Wonder Questions page's card line/.test(audit) || (/\n- Q105\. Answered in pass NL /.test(audit) && hist.includes("The question as it stood: The Wonder Questions page's card line beside the words on its buttons")))
+      && (/\n- Q106\. The add-a-student tip's pointer/.test(audit) || (/\n- Q106\. Answered in pass NL /.test(audit) && hist.includes("The question as it stood: The add-a-student tip's pointer to the Wonder card")))); }
+  // The rows pass NK corrected in place under Mikey's answer to Q85, as pass NJ left them, in a block of their own held by a digest (round three's
+  // whole read of RULES-AUDIT found the block held by none): the two the pass corrected as it wrote its records and the nine round three's
+  // whole read found the code had outgrown, each corrected row saying so and section 9's row for Q85 naming them.
+  { const o = "<!-- RULES-AUDIT rows as pass NJ left them, before pass NK corrected them under Mikey's answer to Q85, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT rows as pass NJ left them, before pass NK corrected them under Mikey's answer to Q85, word for word: end -->");
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    const OPENINGS = ["| **Domain III's III.C.2 and III.C.3, read (pass ND", '| **What pass NJ learned', 'What is written and checked today: the audio ledger', '**The voices a lesson shows (pass MV', '| **Q, V and Y, and a name\'s letters in order, read', '| **A tapped choice that would hand over the answer stays quiet', '| **A picture answer tells a screen reader its name', '| **A question about what a child heard asks only what every device voice can show', '| **A pre-reader hears all four Wonder voices', '| **A lone letter keeps the word before it on a lesson line', "| **The grown-up's card on a device with no voice", '| **No word under the scroll cue on a short phone', '| **Every drawing on an answer tile reads at its edge', "| **Every drawing on the dark theme's lesson paper reads at its edge"];
+    const rows = kept.split('\n').filter(Boolean);
+    const said = audit.split('Corrected in place in pass NK (Mikey\'s answer to Q85; round three\'s whole read of this file), its old words in docs/RULES-AUDIT-HISTORY.md.').length - 1;
+    const saidAgain = audit.split('Corrected in place again in pass NK (Mikey\'s answer to Q85; check.sh\'s second run of the pass), its pass NJ words there too.').length - 1;
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the rows pass NK corrected under Q85 as pass NJ left them, eleven since round three's whole read of RULES-AUDIT and fourteen since check.sh's second run, in RULES-AUDIT's order after the first two, each held by its digest; each corrected row says so and section 9's row for Q85 names them (pass NK)",
+      rows.length === 14 && OPENINGS.every((w, k) => rows[k] && rows[k].startsWith(w)) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'db4b09132a7b68d343e465c9b4faf0bd5f3aabd39f5bb5af35c890b613ab0812'
+      && said === 8 && saidAgain === 3 && audit.includes('Corrected in place again in pass NK (Mikey\'s answer to Q85; round three\'s whole read of this file, which found it and the card\'s browser test at pass NI\'s counts), its pass NJ words there too.')
+      && audit.includes("and, since round three's whole read of this file, read against the code: section 4's paragraph on the audio ledger"), JSON.stringify({ rows: rows.length, said, saidAgain })); }
+  // The questions answered in pass NL (Q105 and Q106 at its opening, Q107 raised and answered in the pass), in a block of their own with
+  // what was built, each answered in one line in section 11; the rows his words of pass NL changed (section 2's My Classroom line and
+  // section 8's rows on the tour cards and on Wonder Questions on by default), as pass NK left them; and the nine rows pass NL corrected
+  // under Q85, as pass NK left them, in RULES-AUDIT's order. Each block is held by its digest, each changed or corrected row says so, and
+  // section 9's row for Q85 names them.
+  { const block = (name) => { const o = `<!-- ${name}: begin -->\n`; const ia = hist.indexOf(o); const ib = hist.indexOf(`<!-- ${name}: end -->`); return ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : ''; };
+    const digest = (t) => createHash('sha256').update(t, 'utf8').digest('hex');
+    const nl = block("RULES-AUDIT section 11's answered questions in pass NL, word for word");
+    const word = block("RULES-AUDIT rows as pass NK left them, before pass NL changed them at Mikey's word, word for word");
+    const q85 = block("RULES-AUDIT rows as pass NK left them, before pass NL corrected them under Mikey's answer to Q85, word for word");
+    const OPEN85 = ["- **Since pass NK (Mikey's answers to Q100 to Q104", '| **The vowels, small letters, end marks and shapes of any size and any turn, read (pass NK', "| **Pass NK's banks are worked out from what they say and show", '| **A pre-reader hears all four Wonder voices', '| **A demonstration does what its words say', '| **No word under the scroll cue on a short phone', '| **A lone letter keeps the word before it on a lesson line', "| **The grown-up's card on a device with no voice", '| **A student signed out after fifteen quiet minutes', '| **CLAUDE.md in two parts, never summarized', "| **The owner's listening waits for the recordings", '| **An id is defined once', "| **A picture of a screen read by eye is the screen's own size", '| **The records written once, each count filled in from the code'];
+    const rows85 = q85.split('\n').filter(Boolean); const rowsWord = word.split('\n').filter(Boolean);
+    const said = audit.split("Corrected in place in pass NL (Mikey's answer to Q85), its pass NK words in docs/RULES-AUDIT-HISTORY.md.").length - 1;
+    const saidAgain = audit.split("Corrected in place again in pass NL (Mikey's answer to Q85), its pass NK words there too.").length - 1;
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass NL, Q105 to Q107, every line unchanged, each answered in one line in section 11 and none open after it; the four rows his words of pass NL changed and the fourteen it corrected under Q85 (nine before round three's whole read of RULES-AUDIT), as pass NK left them, each block held by its digest, each row saying so and section 9's row for Q85 naming them (pass NL)",
+      [105, 106, 107].every((n) => new RegExp('^- Q' + n + '\\. Answered in pass NL \\(Mikey: ', 'm').test(nl) && new RegExp('\\n- Q' + n + '\\. Answered in pass NL \\(Mikey: ').test(audit) && new RegExp('^- Q' + n + '\\. .*The question as it stood: ', 'm').test(nl))
+      && digest(nl) === '96fa0f36f50ab936515a57c5265c470289a437572718bf64827e5193b9d3635b' && rowsWord.length === 4 && rowsWord[0].startsWith('- **My Classroom:**') && rowsWord[1].startsWith('| Tour cards look like the page they explain') && rowsWord[2].startsWith('| **Wonder Questions on by default') && rowsWord[3].startsWith('- Q100. Answered in pass NK') && digest(word) === '515b85c71f4ab2236779593faacb427ad492a50a6a665c985fcec1dbfda8e0d0'
+      && rows85.length === 14 && OPEN85.every((w, k) => rows85[k] && rows85[k].startsWith(w)) && digest(q85) === 'a363aa63845fc88247e804c21e078acda4fe7faa9415636b0815ddb95ce137af' && said === 10 && saidAgain === 4
+      && audit.includes("Changed in place again in pass NL, at Mikey's word (his answer to Q106), its pass NK words in docs/RULES-AUDIT-HISTORY.md.") && audit.includes('(changed at his word in pass NL, its pass NK words there too)') && audit.includes('and again in pass NL, at his word (his answers to Q105, Q106 and Q107 and his words for the two cards), its pass NK words there too.')
+      && audit.includes("Corrected in pass NL, under Mikey's answer to Q85, each saying so,") && audit.includes("Changed in pass NL, at Mikey's word (his answers to Q105, Q106 and Q107 and his words for the two Wonder cards), each saying so,")
+      && !/\n- Q10[5-7]\. (?!Answered)/.test(audit), JSON.stringify({ nl: digest(nl).slice(0, 12), word: digest(word).slice(0, 12), q85: digest(q85).slice(0, 12), rowsWord: rowsWord.length, rows85: rows85.length, said, saidAgain })); }
   { const o = "<!-- RULES-AUDIT rows as pass NI left them, before pass NJ changed them at Mikey's word, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT rows as pass NI left them, before pass NJ changed them at Mikey's word, word for word: end -->");
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps the rows and lines pass NJ changed at Mikey's word as pass NI left them (Stay neutral, one look per person, the picture-like drawings and the reflections row; and since round two's whole read My Classroom's line, the two sound paragraphs, Wonder text, the plan's audio paragraph and Q5's line), each changed one says so, and none of the old approval sentences stands (pass NJ)", /^- \*\*Stay neutral\.\*\* Four voices and none is right\. Nothing argues for or against religion\. Nothing reaches a child until the school approves it\./.test(kept) && kept.includes('\n| **One look per person, and what a picture tells apart') && kept.includes("\n| **The app's picture-like drawings, painted as their own set after the review") && kept.includes('every course has at least one; nothing offered until approved;') && createHash('sha256').update(kept, 'utf8').digest('hex') === '0f17b3c3973d6553f6d5b64047ea1e48eb2ddc2f19bf840e66f0e355579bbf63'
@@ -392,7 +437,8 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   // imported the same way and read with the other two.
   const part3 = readFileSync(new URL('../CLAUDE-PART-3.md', import.meta.url), 'utf8');
   // Since pass NB, CLAUDE.md being full (a new line would take it past 40,000 bytes), new lines go in part two's last section, Lines added
-  // since pass NB, which is no copy of the history and is read here no more than CLAUDE.md's own Lines added since pass MS.
+  // since pass NB, which is no copy of the history and is read here no more than CLAUDE.md's own Lines added since pass MS. Since pass NL
+  // that section is in docs/CLAUDE-HISTORY.md (the pass NL block below), and the slice runs to part two's end.
   const at = part2.indexOf('## Lines a coder needs most'); const newAt = part2.indexOf('\n## Lines added since pass NB'); const keptLines = at < 0 ? [] : part2.slice(at, newAt > at ? newAt : undefined).split('\n').filter((l) => l.startsWith('- '));
   const blockLines = new Set(block.split('\n'));
   // Since pass MN (Mikey's answer to Q53, "Q53 - B") a kept line gone stale is corrected in place once RULES-AUDIT section 9's
@@ -426,6 +472,9 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     // Since pass NJ the lines it corrected (Reflection questions, at Mikey's word; check.sh's time and how to wait for it) count as kept too.
     const njOpen = '<!-- CLAUDE.md lines as pass NI left them, before pass NJ corrected them, word for word: begin -->\n'; const njA = hist.indexOf(njOpen); const njB = hist.indexOf('<!-- CLAUDE.md lines as pass NI left them, before pass NJ corrected them, word for word: end -->');
     for (const l of (njA >= 0 && njB > njA ? hist.slice(njA + njOpen.length, njB).split('\n') : [])) ngKept.add(l);
+    // Since pass NL the four lines it corrected (three on check.sh's time and when to run it, and the line on CLAUDE.md's parts) count as kept too.
+    const nlOpen = '<!-- CLAUDE.md lines as pass NK left them, before pass NL corrected them, word for word: begin -->\n'; const nlA = hist.indexOf(nlOpen); const nlB = hist.indexOf('<!-- CLAUDE.md lines as pass NK left them, before pass NL corrected them, word for word: end -->');
+    for (const l of (nlA >= 0 && nlB > nlA ? hist.slice(nlA + nlOpen.length, nlB).split('\n') : [])) ngKept.add(l);
     const lost = (a, b) => { const have = new Set([...a.split('\n'), ...b.split('\n')]); return mr.split('\n').filter((l) => l.trim() && !have.has(l) && !ngKept.has(l)).filter((l) => { if (!l.startsWith('- ')) return true; const m = /^- ([^:]+):/.exec(l); const label = m ? m[1] : null; return !label || !new RegExp(`${esc(label)}(?=,|;| and )`).test(row); }); };
     const real = lost(manual, part2 + '\n' + part3); const someLine = keptLines[3] || ''; const rule5 = manual.split('\n').find((l) => l.startsWith('5. Every answer and explanation is computed by arithmetic')) || '';
     const plants = [!imports(manual.replace('@CLAUDE-PART-2.md', '`@CLAUDE-PART-2.md`')), lost(manual, part2.replace(`${someLine}\n`, '') + '\n' + part3).length > 0, rule5 !== '' && lost(manual.replace(`${rule5}\n`, ''), part2 + '\n' + part3).length > 0, !imports(manual.replace('@CLAUDE-PART-3.md', ''))];
@@ -463,11 +512,13 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- CLAUDE.md lines as pass NF left them, before pass NG corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass NF left them, before pass NG corrected them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     const digest = (t) => createHash('sha256').update(t, 'utf8').digest('hex');
-    const part3 = readFileSync(new URL('../CLAUDE-PART-3.md', import.meta.url), 'utf8');
+    // Since pass NL the section is read where it moved word for word, the history's pass NL block, as part three's index says.
+    const movedOpen = "<!-- CLAUDE-PART-2.md's and CLAUDE-PART-3.md's lines moved in pass NL, word for word: begin -->\n"; const mvA = hist.indexOf(movedOpen); const mvB = hist.indexOf("<!-- CLAUDE-PART-2.md's and CLAUDE-PART-3.md's lines moved in pass NL, word for word: end -->");
+    const part3 = mvA >= 0 && mvB > mvA ? hist.slice(mvA + movedOpen.length, mvB) : '';
     const ms = (t) => { const a = t.indexOf('## Lines added since pass MS\n'); const b = t.indexOf('\n## Lines added since pass NG\n'); return a >= 0 && b > a ? t.slice(a, b) : ''; };   // the section's own last newline, not the blank line after it
     const MS_DIGEST = '71e79518df7893a6126b1ebc1ccf93088b49a0585c20840452c6fe9975c41d56'; const NG_DIGEST = 'ceee5127665b864b2508a9cd4f72746529de0d4a393f57cae364d7169357d4f1';
     const msOut = ms(part3).split('\n'); const plants = [digest(kept.replace('every letter starts at the top', 'every letter starts at its top')) !== NG_DIGEST, digest([...msOut.slice(0, 3), ...msOut.slice(4)].join('\n')) !== MS_DIGEST];
-    ok('docs/CLAUDE-HISTORY.md keeps the five CLAUDE.md lines pass NG corrected, its heading over the parts and four lines of part two, as pass NF left them, RULES-AUDIT section 9 names them, and CLAUDE-PART-3.md holds CLAUDE.md\'s Lines added since pass MS word for word (pass NG; two near misses caught)',
+    ok('docs/CLAUDE-HISTORY.md keeps the five CLAUDE.md lines pass NG corrected, its heading over the parts and four lines of part two, as pass NF left them, RULES-AUDIT section 9 names them, and CLAUDE.md\'s Lines added since pass MS are kept word for word, in CLAUDE-PART-3.md from pass NG and in docs/CLAUDE-HISTORY.md\'s pass NL block since pass NL (pass NG; two near misses caught)',
       /^- Tracing words follow TRACE_LETTERS stroke by stroke, and every letter starts at the top/.test(kept) && kept.includes("\n- IMPORTANT: existing lines in this file are not changed without Mikey's approval.") && kept.includes('\n- Strong model: ') && kept.includes('\n- Cheaper model: ') && kept.includes('\n- CLAUDE.md is two files since pass MS') && kept.includes('\n## CLAUDE.md, part two (pass MS)\n') && kept.includes('\nCLAUDE.md is full since pass NB') && kept.includes('so CLAUDE.md\'s tracing line holds for the capitals)')
       && digest(kept) === NG_DIGEST && digest(ms(part3)) === MS_DIGEST && !manual.includes('\n## Lines added since pass MS\n') && row.includes('Corrected in pass NG, at Mikey\'s word') && plants.every(Boolean), JSON.stringify({ kept: digest(kept).slice(0, 12), ms: digest(ms(part3)).slice(0, 12), plants })); }
   // Pass NH, at Mikey's word (his answer to Q95, "Q95 - A"): CLAUDE.md's first line names the pass packet, its words as pass NG left them
@@ -490,6 +541,50 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
       /^- Reflection questions are opt in: nothing reaches a student until somebody at the school approves it\./.test(kept) && kept.includes('\n- check.sh takes about ten minutes, so start it detached and poll it') && kept.includes('\n- Running check.sh (2026-09-28): it takes about ten minutes') && digest(kept) === NJ_DIGEST && digest(kept.replace('deliberate', 'deliberated')) !== NJ_DIGEST && kept.includes('deliberate')
       && manual.includes('- Reflection questions are on by default since pass NJ (Mikey:') && manual.includes('- check.sh takes about two and a half hours (149 minutes in pass NI)') && part2.includes('- Running check.sh (2026-09-28): it takes about two and a half hours') && !/check\.sh takes about ten minutes/.test(manual)
       && kept.includes("\n- Wonder text (Mikey, pass MB): ") && kept.includes("An educator's approval in the app is unchanged.") && part2.includes("In the app, an educator's approval gave way in pass NJ, at Mikey's word, to every question starting on") && !part2.includes("An educator's approval in the app is unchanged.")); }
+  // Pass NL, at Mikey's word ("Feel free to edit all Claude files at your discretion only when you think it's feasible to do so and that it
+  // won't impact our product as a whole.  These edits would probably be good to double check with the advisor (if any are made)"): the 23
+  // lines added from pass MS to NK, each one pass's design record (part two's Lines added since pass NB and part three's two sections),
+  // moved word for word to docs/CLAUDE-HISTORY.md between two markers held by their digest; part three's index names each by its heading
+  // (its words before its first colon outside parentheses) and the code names and files it mentions, both ways, so a line moved without an
+  // entry, or an entry with no line, fails; and four CLAUDE.md lines corrected in place (three on check.sh's time and when to run it, one on
+  // CLAUDE.md's parts), their words as pass NK left them in a block of their own, RULES-AUDIT section 9's row naming the change. The three
+  // files together stay under 64,000 bytes, so the manual every session loads does not grow back into a history unnoticed: when a new line
+  // would pass it, move a feature's design record word for word to the history, as pass NL did, or raise the bound with its reason in
+  // RULES-AUDIT section 9. Near misses: a word changed in the moved block, an entry left out of the index, a line put back in part three,
+  // and a word changed in the corrections block.
+  { const digest = (t) => createHash('sha256').update(t, 'utf8').digest('hex');
+    const between = (o, c) => { const a = hist.indexOf(o); const b = hist.indexOf(c); return a >= 0 && b > a ? hist.slice(a + o.length, b) : ''; };
+    const moved = between("<!-- CLAUDE-PART-2.md's and CLAUDE-PART-3.md's lines moved in pass NL, word for word: begin -->\n", "<!-- CLAUDE-PART-2.md's and CLAUDE-PART-3.md's lines moved in pass NL, word for word: end -->");
+    const fixed = between('<!-- CLAUDE.md lines as pass NK left them, before pass NL corrected them, word for word: begin -->\n', '<!-- CLAUDE.md lines as pass NK left them, before pass NL corrected them, word for word: end -->');
+    const MOVED_DIGEST = 'c95b522cd9a332e02083f5abe3ce9a125c70d9bd40333781f61ec32e85f55e34'; const FIXED_DIGEST = 'dd63fb2424a1803b202bd8334b98668f8deff495348b720cd88be9e12d374433';
+    const p2 = readFileSync(new URL('../CLAUDE-PART-2.md', import.meta.url), 'utf8'); const p3 = readFileSync(new URL('../CLAUDE-PART-3.md', import.meta.url), 'utf8');
+    const headingOf = (line) => { const t = line.slice(2); let depth = 0;
+      for (let i = 0; i < t.length; i++) { const ch = t[i]; if (ch === '(') depth++; else if (ch === ')') depth = Math.max(0, depth - 1); else if (ch === ':' && depth === 0) return t.slice(0, i); }
+      depth = 0; let words = 0;   // no colon outside parentheses: the words before the first parenthesis, outside any, after the tenth word
+      for (let i = 0; i < t.length; i++) { const ch = t[i]; if (ch === ' ' && depth === 0) words++; if (ch === '(') { if (depth === 0 && words >= 10) return t.slice(0, i).trimEnd(); depth++; } else if (ch === ')') depth = Math.max(0, depth - 1); }
+      return null; };
+    // The names an entry lists (widened by the Fable check, pass NL, which found FitText, SCENES, data-cue-room and check.sh in moved lines and
+    // in no entry): file paths, .claude files, check.sh and build.sh, window.__ names, data- attributes, CONSTANT_CASE, single words in
+    // capitals of five letters or more, PascalCase and camelCase.
+    const NAME = /(?:tests\/e2e\/|tests\/|tools\/|src\/|docs\/)[\w.\/-]+\.(?:mjs|md|csv|jsx)|\.claude\/[\w.\/-]+\.(?:json|md)|\b(?:check|build)\.sh\b|window\.__\w+|\bdata-[a-z]+(?:-[a-z]+)*|\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b|(?<![\w-])[A-Z]{5,}(?![\w-])|\b[A-Z][a-z0-9]+(?:[A-Z][a-z0-9]+)+\b|\b[a-z]+[A-Z][A-Za-z0-9]+\b/g;
+    const entryOf = (l) => { const names = [...new Set(l.match(NAME) || [])]; return `- ${headingOf(l)}.` + (names.length ? ` Names: ${names.join(', ')}.` : ''); };
+    const indexOf = (t) => { const a = t.indexOf('## Lines moved in pass NL'); const b = t.indexOf('\n## Lines added since pass NL'); return a < 0 || b < a ? [] : t.slice(a, b).split('\n').filter((l) => l.startsWith('- ')); };
+    const movedLines = moved.split('\n').filter((l) => l.startsWith('- '));
+    const indexed = (t, m) => JSON.stringify(indexOf(t)) === JSON.stringify(m.split('\n').filter((l) => l.startsWith('- ')).map(entryOf));
+    // A moved line back in a part, whole or edited (the Fable check put one back with a word changed, and it passed): no line of part two, or
+    // of part three outside its index, opens with a moved line's heading.
+    const outsideIndex = (t) => { const a = t.indexOf('## Lines moved in pass NL'); const b = t.indexOf('\n## Lines added since pass NL'); return a < 0 || b < a ? t : t.slice(0, a) + t.slice(b); };
+    const opens = movedLines.map((l) => '- ' + headingOf(l));
+    const parts = (a, b) => !a.includes('## Lines added since pass NB') && !b.includes('## Lines added since pass MS') && !b.includes('## Lines added since pass NG') && !movedLines.some((l) => a.includes(l) || b.includes(l))
+      && ![...a.split('\n'), ...outsideIndex(b).split('\n')].some((l) => opens.some((o) => l.startsWith(o)));
+    const size = Buffer.byteLength(manual, 'utf8') + Buffer.byteLength(p2, 'utf8') + Buffer.byteLength(p3, 'utf8');
+    const plants = [digest(moved.replace('one breath', 'one-breath')) !== MOVED_DIGEST && moved.includes('one breath'), !indexed(p3.replace(indexOf(p3)[4] + '\n', ''), moved), !parts(p2, p3 + '\n' + movedLines[7] + '\n'), digest(fixed.replace('about ten', 'about twelve')) !== FIXED_DIGEST && fixed.includes('about ten'),
+      (() => { const l = movedLines[2]; const h = ('- ' + headingOf(l)).length; const edited = l.slice(0, h) + l.slice(h).replace(' the ', ' a '); return edited !== l && !parts(p2 + '\n' + edited + '\n', p3); })()];   // a word changed after its heading
+    ok(`CLAUDE-PART-2.md's and CLAUDE-PART-3.md's 23 lines added from pass MS to NK are kept word for word in docs/CLAUDE-HISTORY.md, part three's index names each both ways, four CLAUDE.md lines corrected keep their old words, RULES-AUDIT section 9 names the change, and the three files stay under 64,000 bytes (pass NL; ${size} bytes; five near misses caught)`,
+      digest(moved) === MOVED_DIGEST && movedLines.length === 23 && moved.includes('## Lines added since pass NB\n') && moved.includes('## Lines added since pass MS\n') && moved.includes('## Lines added since pass NG\n')
+      && indexed(p3, moved) && parts(p2, p3) && digest(fixed) === FIXED_DIGEST && fixed.split('\n').filter((l) => l.trim()).length === 4
+      && !/check\.sh takes about ten/.test(manual) && !/the whole of check\.sh takes about ten/.test(manual) && manual.includes('which holds an index of the lines added from pass MS to NK and the lines added since pass NL')
+      && row.includes("Corrected in pass NL, at Mikey's word") && size < 64000 && plants.every(Boolean), JSON.stringify({ moved: digest(moved).slice(0, 12), fixed: digest(fixed).slice(0, 12), index: indexOf(p3).length, size, plants })); }
   // The line pass ND added to CLAUDE-PART-2.md, corrected in place in pass NE at Mikey's word (Q89): its words as pass ND wrote them kept the same way.
   { const o = '<!-- CLAUDE.md lines as pass ND wrote them, before pass NE corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass ND wrote them, before pass NE corrected them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
@@ -570,6 +665,29 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   ok(`NEW-CHAT's chain of preview links starts with the newest DECISIONS entry's preview, and the one it replaced comes next (pass NB; ${previews.length} previews in DECISIONS; a chain one pass behind caught)`,
     !!newest && !!chain && chain[0] === newest && chain[1] === previews.at(-2) && !!staleChain && staleChain[0] !== newest, chain ? 'chain starts ' + chain[0] + ', then ' + chain[1] + '; newest ' + newest : 'no chain found in NEW-CHAT');
 }
+// The records' counts come from the code, and a pointer names words that are there (pass NK, Mikey's answer to Q102: "B is okay, only if
+// you think this doesn't introduce risk that would lead to reduced accuracy or quality."). Every count marker (<!-- n:modules -->729<!-- /n -->)
+// in the records that describe the app as it stands holds the number tools/record-counts.mjs works out from the code today and names a count
+// the tool knows, and every pointer (<!-- points-to: docs/FILE.md | words -->) in any doc names a file that holds those words. Near misses: a
+// marker one behind, a marker naming a count the tool does not know, and a pointer to words that are not there, each caught.
+{ const RC = await import('../tools/record-counts.mjs'); const counts = await RC.recordCounts(); const { readdirSync } = await import('node:fs');
+  const texts = RC.RECORD_DOCS.map((f) => [f, readFileSync(new URL('../' + f, import.meta.url), 'utf8')]);
+  const marks = texts.flatMap(([f, x]) => [...x.matchAll(RC.COUNT_MARK)].map((m) => f + ' ' + m[1]));
+  const stale = texts.flatMap(([f, x]) => RC.staleMarks(x, counts).map((s) => `${f}: ${s.key} written ${s.was}, the code gives ${s.want}`));
+  const behind = RC.staleMarks('<!-- n:modules -->' + (counts.modules - 1) + '<!-- /n -->', counts).length === 1 && RC.staleMarks('<!-- n:lessons -->5<!-- /n -->', counts).some((s) => s.want === undefined);
+  const docs = ['docs', '.'].flatMap((d) => readdirSync(new URL('../' + d + '/', import.meta.url)).filter((n) => /\.md$/.test(n)).map((n) => (d === '.' ? n : d + '/' + n)));
+  const pointerOff = (x) => [...x.matchAll(RC.POINTER)].filter((m) => { let target = ''; try { target = readFileSync(new URL('../' + m[1].trim(), import.meta.url), 'utf8'); } catch (e) { return true; } return !target.includes(m[2].trim()); }).map((m) => m[1] + ' | ' + m[2]);
+  // Since pass NL the history's block of moved CLAUDE lines is read as a record: its two pointers (pass NK's line) are kept word for word
+  // under the block's digest, which a pointer corrected in place would break, so the check reads the history without that block (the Fable
+  // check of the move).
+  const asRead = (d) => { const t = readFileSync(new URL('../' + d, import.meta.url), 'utf8'); if (d !== 'docs/CLAUDE-HISTORY.md') return t;
+    const a = t.indexOf("<!-- CLAUDE-PART-2.md's and CLAUDE-PART-3.md's lines moved in pass NL, word for word: begin -->"); const b = t.indexOf("<!-- CLAUDE-PART-2.md's and CLAUDE-PART-3.md's lines moved in pass NL, word for word: end -->");
+    return a >= 0 && b > a ? t.slice(0, a) + t.slice(b) : t; };
+  const pointers = docs.flatMap((d) => [...asRead(d).matchAll(RC.POINTER)]).length;
+  const badPointers = docs.flatMap((d) => pointerOff(asRead(d)).map((p) => d + ': ' + p));
+  const pointerPlant = pointerOff('<!-- points-to: docs/RULES-AUDIT.md | words no row has ever said -->').length === 1;
+  ok(`every count the records state is the code's, as tools/record-counts.mjs works it out, and every pointer names words that are there (pass NK, Q102 (b); ${marks.length} count markers, ${pointers} pointers; a marker one behind, a count the tool does not know and a pointer to missing words, planted, caught; fix: node tools/record-counts.mjs --write)`,
+    marks.length >= 10 && stale.length === 0 && behind && badPointers.length === 0 && pointerPlant, [...stale, ...badPointers].slice(0, 6).join(' | ')); }
 // HANDOFF's numbers name the ledger's last serials (round three's final read, pass MO: they were a pass behind, S3914, D245 and
 // P154, as pass LX found them once).
 { const h = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8'); const art = readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8');
@@ -587,8 +705,9 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 // his name held it: a DECISIONS with such a line is a near miss now, which that rule passed.
 { const pc = readFileSync(new URL('../docs/PROJECT-CONTEXT.md', import.meta.url), 'utf8'); const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
   const s7 = (pc.split(/^## 7\. /m)[1] || '').split(/^## /m)[0]; const bullets = s7.split('\n').filter((l) => l.startsWith('- '));
-  // Pass MZ: the rules audit bullet quotes Mikey's answer to Q85 now, so it no longer waits.
-  const WAITING = ["The tour cards' words are his", 'Questions for him carry numbers', 'Wonder questions and edits ship', 'Writing: varied sentence lengths', 'Never take a shortcut', 'No Spanish course'];
+  // Pass MZ: the rules audit bullet quotes Mikey's answer to Q85 now, so it no longer waits; pass NK: the tour cards' bullet quotes his
+  // answer to Q100, so it no longer waits either.
+  const WAITING = ['Questions for him carry numbers', 'Wonder questions and edits ship', 'Writing: varied sentence lengths', 'Never take a shortcut', 'No Spanish course'];
   const hisIn = (text, near = false) => (q) => { if (!/^Q\d+ - /.test(q) && q.trim().split(/\s+/).length < 5) return false; let at = text.indexOf(q);
     while (at >= 0) { const line = text.lastIndexOf('\n', at) + 1; if (text.startsWith('> ', line) || (near && text.slice(Math.max(0, at - 300), at).includes('Mikey'))) return true; at = text.indexOf(q, at + 1); } return false; };
   const his = hisIn(dec);

@@ -58,8 +58,9 @@ for (const mod of L.MODULES) {
       if (!(big.size >= 2 * little.size && len(big) <= len(little))) mismatches.push(`${mod.id}: "${line.say}" draws a size trap whose big things are not twice as big, or whose big row is the longer`);
     }
     // A row (pass MA) holds two or three things drawn at one scale: ui.jsx draws only the first three, so a fourth would vanish
-    // without a word, and only a sign-in animal, a shape or an icon has the size the row scales by.
-    if (show.kind === 'row' && !(Array.isArray(show.items) && show.items.length >= 2 && show.items.length <= 3 && show.items.every((h) => h && ['pic', 'shape', 'icon'].includes(h.kind)))) mismatches.push(`${mod.id}: "${line.say}" shows a row the screen cannot draw whole`);
+    // without a word, and only a sign-in animal, a shape or an icon has the size the row scales by; since pass NK a shape item too (Any
+    // size, any turn's and Rectangles' shapes), which the row draws at its own size, big or little (itemScale).
+    if (show.kind === 'row' && !(Array.isArray(show.items) && show.items.length >= 2 && show.items.length <= 3 && show.items.every((h) => h && ['pic', 'shape', 'icon', 'item'].includes(h.kind)))) mismatches.push(`${mod.id}: "${line.say}" shows a row the screen cannot draw whole`);
     // A counted row (pass MA): one to five shapes with no missing piece, and beside dots in a pair, the dots' own cell of 34. This
     // and the row check run before the instruction skip too, since the size trap's second line ("Count each group...") shows
     // counted rows (the code check's second read, pass MG: six little circles there passed every test).
@@ -83,7 +84,9 @@ for (const mod of L.MODULES) {
       const words = show.text.split(' ').filter(Boolean);
       const spelled = words.every((w) => w.length > 1 && /^[a-z]+$/.test(w)) && words.join('').length >= 3 && new Set(words.map((w) => w.length)).size === 1 && words.length >= 2 && !words.some((w) => said.includes(w));
       // a word shown must be said; a single letter shown must be said as a letter; split syllables must appear joined
-      const fine = words.every((w) => said.includes(w.toLowerCase()) || (w.length === 1 && new RegExp(`\\b${w.toLowerCase()}\\b`).test(said))) || said.replace(/[^a-z]/g, '').includes(words.join('').toLowerCase()) || spelled;
+      // Since pass NK an end mark shown is said by its name (End marks' "a question mark" over ?), and no mark is read as a pattern.
+      const MARK_SAID = { '.': 'period', '?': 'question mark', '!': 'exclamation point' };
+      const fine = words.every((w) => said.includes(w.toLowerCase()) || (MARK_SAID[w] ? said.includes(MARK_SAID[w]) : w.length === 1 && new RegExp(`\\b${w.toLowerCase()}\\b`).test(said))) || said.replace(/[^a-z]/g, '').includes(words.join('').toLowerCase()) || spelled;
       if (!fine) mismatches.push(`${mod.id}: "${line.say}" shows "${show.text}"`);
       // A highlight lights the same part of every word (the at in cat and hat), or, since pass MC, one letter among single letters
       // when the line names it (This is the letter H, over A and H), so the voice and the gold letter point at the same shape.
@@ -110,7 +113,8 @@ for (const mod of L.MODULES) {
     for (const h of halves) {
       if (show.kind === 'pair' && !h.kind && !said.includes(h.shape)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.shape}`);
       if (h.kind === 'swatch' && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows ${h.colour}`);
-      if (h.kind === 'item' && !said.includes(h.shape) && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.colour} ${h.shape}`);
+      // A shape's look after a ~ (pass NK: rectangle~thin, a rectangle long and thin) is the same shape drawn another way, as an icon's is.
+      if (h.kind === 'item' && !said.includes(String(h.shape).split('~')[0]) && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.colour} ${h.shape}`);
       if (h.kind === 'dots' && !(said.includes(NUMBER_WORDS[h.count]) || said.includes(String(h.count)) || /count|one, two|more|less|fewer|away|left|dots|tap|group/.test(said))) mismatches.push(`${mod.id}: "${line.say}" shows ${h.count} dots`);
       if ((show.kind === 'pair' || show.kind === 'row') && h.kind === 'shape' && !said.includes(h.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.name}`);
       // A drawn icon or picture inside a pair or a row is read above the instruction skip (pass MQ).
@@ -221,7 +225,7 @@ const nestedRowProblems = (line) => { const show = line.show; const said = Strin
   for (const h of [show.a, show.b]) { if (!h || h.kind !== 'row') continue;
     if (!show.stack) out.push('a row in a side-by-side pair');
     const items = Array.isArray(h.items) ? h.items : [];
-    if (!(items.length >= 2 && items.length <= 3 && items.every((x) => x && ['pic', 'shape', 'icon'].includes(x.kind)))) out.push('a row the screen cannot draw whole');
+    if (!(items.length >= 2 && items.length <= 3 && items.every((x) => x && ['pic', 'shape', 'icon', 'item'].includes(x.kind)))) out.push('a row the screen cannot draw whole');   // a shape item since pass NK
     for (const x of items) if (x && (x.kind === 'icon' || x.kind === 'pic') && !said.includes(String(x.name).split('~')[0])) out.push(`a ${x.name} it never names`); }
   return out; };
 { const real = []; let rows = 0;
@@ -1409,18 +1413,24 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const twice = (keys) => { const seen = new Map(); for (const k of keys) seen.set(k, (seen.get(k) || 0) + 1); return [...seen].filter(([, n]) => n > 1).map(([k]) => k); };
   // Since round two's code read a key written rng => (no parentheses) and a key after another on one line are read too.
   const genKeys = (t) => [...t.matchAll(/(?:^[ \t]+|[{,][ \t]*)'([a-z0-9][a-z0-9-]*)': (?:\(rng\b|rng\s*=>|[A-Za-z_]\w*\()/gm)].map((m) => m[1]);
-  const BUILT = /^(?:pl-(?:hear|lines)-|k(?:5|10)-|wr-)/;
+  // Since pass NK the shape banks too, built by one factory for each age (shapeBanks: p4-turn- for Any size, any turn, p3-rect- for Rectangles),
+  // and since pass NL the small letters banks, built by one factory for each lesson (smallLetterBanks: p4-sml- for Small letters, p4-kpuy- for
+  // Almost the same, p4-eirt- for More small letters), each factory's tag written once, since a second call with one tag would replace the
+  // first's banks with no error, as a key written twice would.
+  const BUILT = /^(?:pl-(?:hear|lines)-|k(?:5|10)-|wr-|p4-turn-|p3-rect-|p4-sml-|p4-kpuy-|p4-eirt-)/;
+  const factoryTags = (t) => [...t.matchAll(/\b(?:shapeBanks|smallLetterBanks)\([A-Z][A-Z0-9_]*, '([a-z0-9-]+)'\)/g)].map((m) => m[1]);
   const deriveBlock = rules.slice(rules.indexOf('const PREK_DERIVE = {'), rules.indexOf('\n};', rules.indexOf('const PREK_DERIVE = {')));
   // Since pass NF (round one's code read) a derivation key is read wherever it stands on a line, as a generator key is: PREK_DERIVE writes
   // five keys to a line, and the reader that read only a key at a line's start read 251 of 280, eight of pass NF's ten never.
   const deriveKeysOf = (b) => [...b.matchAll(/(?:^[ \t]+|[{,][ \t]*)'([a-z0-9][a-z0-9-]*)': \(q\)/gm)].map((m) => m[1]); const deriveKeys = deriveKeysOf(deriveBlock);
-  const gens = genKeys(src); const genTwice = twice(gens); const deriveTwice = twice(deriveKeys);
+  const gens = genKeys(src); const genTwice = twice([...gens, ...factoryTags(src)]); const deriveTwice = twice(deriveKeys);
   const built = Object.keys(L.GENERATORS).filter((k) => !gens.includes(k)); const builtOk = built.every((k) => BUILT.test(k)) && !gens.some((k) => BUILT.test(k));
   const plant = twice(genKeys(src + "\n  'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'pm-same-animals': themedSame(MATCH_THEMES.animals),\n")).includes('pm-same-animals')
     && genKeys("\n  'k5-more': (rng) => null,\n").some((k) => BUILT.test(k)) && twice([...deriveKeys, 'p4-they-yesno']).includes('p4-they-yesno')
     && twice(genKeys(src + "\n  'p4-fit-yesno': rng => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'zz-one': (rng) => null, 'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno')
-    && twice(deriveKeysOf(deriveBlock.replace("'p4-hiw-yesno': (q) => nfSaysIt(q),", "'p4-hiw-yesno': (q) => nfSaysIt(q), 'p4-hiw-pic': (q) => null,"))).includes('p4-hiw-pic');
-  ok(`every generator id in src/logic.mjs and every derivation in the rules test is defined once (${gens.length} written generators, factory calls among them, and ${built.length} built from a name's pattern; ${deriveKeys.length} derivations, every key read wherever it stands on a line since pass NF; seven near misses caught)`, gens.length > 1700 && deriveKeys.length >= 280 && genTwice.length === 0 && deriveTwice.length === 0 && builtOk && built.length > 0 && plant, `generators twice ${genTwice.join(', ')}; derivations twice ${deriveTwice.join(', ')}; built off pattern ${built.filter((k) => !BUILT.test(k)).slice(0, 5).join(', ')}; plant ${plant}`); }
+    && twice(deriveKeysOf(deriveBlock.replace("'p4-hiw-yesno': (q) => nfSaysIt(q),", "'p4-hiw-yesno': (q) => nfSaysIt(q), 'p4-hiw-pic': (q) => null,"))).includes('p4-hiw-pic')
+    && factoryTags(src).length === 5 && twice(factoryTags(src + "\n  ...smallLetterBanks(KPUY4, 'p4-sml'),\n")).includes('p4-sml');
+  ok(`every generator id in src/logic.mjs and every derivation in the rules test is defined once (${gens.length} written generators, factory calls among them, and ${built.length} built from a name's pattern; ${deriveKeys.length} derivations, every key read wherever it stands on a line since pass NF; eight near misses caught, the eighth a factory's tag written twice, since pass NL)`, gens.length > 1700 && deriveKeys.length >= 280 && genTwice.length === 0 && deriveTwice.length === 0 && builtOk && built.length > 0 && plant, `generators twice ${genTwice.join(', ')}; derivations twice ${deriveTwice.join(', ')}; built off pattern ${built.filter((k) => !BUILT.test(k)).slice(0, 5).join(', ')}; plant ${plant}`); }
 // A run of beats said (rab, bit) is a sentence of its own after its word said alone (story flow item 12, pass MY: inside a sentence
 // its first beat is heard as a word or a pause, "but" or "um", and a word beside it as one more beat), in every lesson line, every
 // early-years story paragraph, every early Wonder question and every question of the beats banks; and every ledger row that is a run

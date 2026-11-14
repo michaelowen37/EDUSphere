@@ -33,7 +33,8 @@ function proseStrings(source) {
 // Since pass NE a run of single letters may set its letters two spaces apart (Start or end of the name's close, P  D  N  X, since three
 // spaces wrapped it onto two rows in the dark theme's paper at 375 pixels): a run's gaps are layout, not prose, so the run is set aside
 // as an id is, and a double space in a sentence beside it is still caught (the plant after the loop).
-const LETTER_RUN = /\bkind: 'letters', text: '[A-Za-z](?: +[A-Za-z])+'/g;
+// A run of single letters drawn large, or since pass NK of end marks (End marks' ". ? !", each mark a picture of its own, not prose).
+const LETTER_RUN = /\bkind: 'letters', text: '[A-Za-z.?!](?: +[A-Za-z.?!])+'/g;
 for (const file of ['src/logic.mjs', 'src/ui.jsx']) {
   const src = readFileSync(file, 'utf8');
   // Comments are for developers and may quote anything; strip them so only prose is checked.

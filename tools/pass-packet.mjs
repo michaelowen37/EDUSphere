@@ -95,6 +95,19 @@ export const learnedPass = (line) => { const m = String(line).match(/^\| \*\*(?:
 // An EARMARKS row still to do: an earmark row whose last cell does not start with Done.
 export const openEarmark = (line) => { const m = String(line).match(/^\| [AELP]\d+ \|.*\| ([^|]*) \|\s*$/); return !!m && !/^Done/.test(m[1].trim()); };
 
+// The earmark rows every screen brief names until a read has taken them (INDEPENDENT-CHECKS, the screen brief). Pass NK's round three
+// whole read of INDEPENDENT-CHECKS found the rule resting on the lead's memory, six screen briefs having left the rows out, round one's
+// of pass NK among them, so the list is kept here, in one place, and a packet whose --briefs takes the screen brief prints it with each
+// row's title; the pass packet test holds the list to EARMARKS both ways (every row here open, and every open row whose status waits for
+// the next screen read here).
+export const SCREEN_BRIEF_ROWS = ['A106', 'A107', 'A109', 'A110', 'A116', 'A117', 'A118', 'A121', 'A134', 'A135', 'A136', 'A137', 'A140', 'A142', 'L18'];
+export const waitsForScreenRead = (line) => { const m = String(line).match(/^\| [AELP]\d+ \|.*\| ([^|]*) \|\s*$/); return !!m && openEarmark(line) && /\bthe next screen read\b/i.test(m[1]); };
+export function screenRowsSection(eaText) {
+  const rows = String(eaText).split('\n');
+  const named = SCREEN_BRIEF_ROWS.map((id) => { const l = rows.find((x) => x.startsWith('| ' + id + ' |')); return l ? `- ${titleOf(l, 160)}` : `- ${id} (not found in EARMARKS)`; });
+  return ['## The earmark rows every screen brief names', '', 'Name each of these rows in the screen brief, with what the read is to look at in it; a read that cannot reach one says so (INDEPENDENT-CHECKS, the screen brief).', '', ...named, ''];
+}
+
 // Which lines a packet copies, for the areas, the briefs and the extra words chosen. Returns, for each file, its lines with copied set.
 export function choose({ areas = [], briefs = [], match = null, all = false, texts = null } = {}) {
   const unknown = areas.filter((a) => !AREAS[a]); if (unknown.length) throw new Error(`no such area: ${unknown.join(', ')} (node tools/pass-packet.mjs --list)`);
@@ -176,6 +189,7 @@ export function packet(opts = {}) {
     'A copy, never a source: the full files are the only source of the rules. Each copied line starts with its file and line number, so the full file opens at the same place (Read with offset). The index lists every line not copied, by its title; open the full file where a line bears on the work. A finding traced to a line the packet left out is counted in the pass\'s DECISIONS entry (Q95 (a)).',
     '', '| File | Bytes | Copied | Lines in the index |', '|---|---|---|---|',
     ...sizes.map((s) => `| ${SOURCES[s.key]} | ${s.total} | ${s.copied} | ${s.indexed} |`), '');
+  if ((opts.briefs || []).includes('screen')) parts.push(...screenRowsSection(opts.texts ? opts.texts.EA : sourceText('EA')));
   for (const [key, lines] of Object.entries(chosen)) {
     parts.push(`## ${SOURCES[key]}: copied`, '');
     for (const l of lines) if (l.copied) parts.push(`[${key} ${l.n}] ${l.line}`);

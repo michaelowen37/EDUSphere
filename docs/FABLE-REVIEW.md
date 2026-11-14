@@ -200,6 +200,33 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NL (Mikey's answers Q105 to Q107 and his Wonder words, the CLAUDE files trimmed, and pre-K 4's eight small letters)
+
+- A bank made for several lessons by one maker is read in every lesson it makes: the three-choice screens built for More small letters changed Small letters' big and find questions for every child, which a digest of the older banks now shows.
+- A reason after a wrong tap on the asked letter's other size names only the letter tapped: the two lessons' first reasons named the letter asked, so a small letter asked was told and a big one asked held back every time.
+- Two rhyming names on one screen are a shortcut too: with ee and tee the two wrong choices, More small letters' third letter was the answer every time, and a child who knew that and no letter scored 63 percent.
+- A letter's shape is said as the screens draw it, measured in the faces the page names and against the other size: big U was said to have no line down its side, and small k is about as tall as big K, so nothing tells those two apart by size.
+- A rule that keeps a word whole is read for every word a new lesson puts before a letter: "the big I" broke before its I at 320 pixels, and the grown-up's card drew it as a word.
+- A lesson's look reaches every letter it asks: seeds 1 to 6 asked only four of the eight.
+- What a round asks earlier is a cue later: in rounds a No on a letter met earlier scored about 70 percent on the yes or no and same questions, the echo rule's price, recorded with a bound and earmarked (A141) rather than traded for another lean.
+- Mikey's later words outrank an answer letter given in the same message: his Q105 (b) was built under his own sentence in the words that sentence set aside, until round one's screen read took it out and his next word made the whole page his terms.
+- Every browser test that pins a count follows the pass that changes it: the fold check's floors were raised for the two lessons and the cue words test's were not, so the two lessons could have dropped out of its read unseen until round three's whole read of RULES-AUDIT found it.
+- The whole reads of the long files after the records found twenty-six things to fix, most of them older rows, briefs and earmarks the pass's own work had made untrue, as in pass NK: a pass that moves a file's lines (the CLAUDE design records) sweeps every pointer to them.
+
+## Learned in pass NK (Mikey's answers Q100 to Q104, six pre-K lessons in two waves, and the records written once)
+
+- A check that reads a bank's reasons is matched by one that reads its explanations, and a check that a line says a thing by one that it shows it: round two's lesson and code read planted twelve false explanations and four lines showing the wrong thing, and every check passed.
+- A rule written for one bank's screen or screen-reader words is read against every older bank before it ships: a letter rule meant for Small letters' tap named the words I and a "big I" and "small a" in Reading words, and a two-by-two grid meant for it grew nine older banks by a row.
+- A question asks about the thing that has one answer: asked what a sentence does, "We see the sun!" scored "It tells" wrong, though the sentence does tell; asked what its mark shows, there is one answer.
+- A rule is said of the set it is true of: "a big letter is tall, and a small letter is short" is true of the seven small letters the lesson teaches and false of b, d, f, h, k, l and t.
+- Keeping two items apart changes how often each is asked: with c, v and z kept apart by ear, the yes or no read by the letter shown rose from 50 to 57 percent until each letter was asked as often as it has partners; and where one lean is traded for another through a round's rule, both are recorded with their bounds.
+- A fold or a wrap is read on the product's own page: the test page's 8-pixel margin made a prompt wrap in a narrower column, and the fold check failed where the product passed on one bank (p4-turn-odd, 675 with the margin and 637 without), while the same-shape banks were under the fold on both pages until they were fixed.
+- A setup that grows by a line is read for what it pushes below the fold: round one's clearer shape setup took a third line and put Check answer under a phone's fold on the same-shape questions.
+- Records written once, at the end, are held by markers and pointers the docs sync test reads, so a count left behind fails a test instead of waiting for a reader to find it.
+- The long files are read whole once a pass's records are written: the pass's own rounds read what it changed, and round three's whole reads of RULES-AUDIT, EARMARKS and INDEPENDENT-CHECKS found twenty-eight things to fix across them, most of them older rows the pass's work had made untrue, and the grown-up's card browser test still pinned to the last pass's 44 banks, which would have failed check.sh.
+- A rule kept in the lead's memory fails: six screen briefs in a row left out the earmark rows a screen read must name, so the list now lives in the pass packet tool, printed with the screen brief and held to EARMARKS both ways by a test.
+- A style the app needs is keyed on a class the code sets, never on :has() alone: the sheet's room under the countdown chip was keyed on :has(), which browsers before Chrome 105 and Firefox 121 drop, while the app runs from Chrome 80 and Firefox 78.
+
 ## Learned in pass NJ (Mikey's answer Q99 and his new order, a student signed out after fifteen quiet minutes, and every Wonder question on by default)
 
 - A rule that reads the clock is read with the clock set back a few seconds: the idle sign-out sent a child working on a question to the sign-in screen when a time sync stepped the clock back, and erased the practice round.

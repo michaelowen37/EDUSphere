@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-11-12 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 13299 clips, 2,004,243 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 260 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-14 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 13672 clips, 2,045,375 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 268 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -21,7 +21,7 @@ Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to st
 
 | Build | What it holds | Clips | Characters |
 |---|---|---|---|
-| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 8740 | 988,502 |
+| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9113 | 1,029,634 |
 | 2 | Grade 2 and up | 4559 | 1,015,741 |
 
 ## Emphasis, sounds and descriptions (pass MW)
@@ -76,7 +76,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 8993 | 1,020,155 |
+| Pre-K to grade 2 | 9366 | 1,061,287 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,910 |
@@ -102,9 +102,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 723 |
-| story | 4735 |
-| lesson line | 6457 |
+| story title | 731 |
+| story | 4808 |
+| lesson line | 6749 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -1265,6 +1265,77 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S4139-7: [cheerful] At the park, Hector found his name and opened his own bag. [in a small, bright boy voice, delighted] No peppers! [softly] he said.
 - S4139-8: [slowly, warmly] A name's letters always go in the same order. Write the big first letter first, then each letter after it, from left to right.
 
+### Knock, knock (S4143, a-e-and-i)
+
+- S4143-1: [playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.
+- S4143-2: [in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.
+- S4143-3: [playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.
+- S4143-4: [pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.
+- S4143-5: [thoughtful] Daphne said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.
+- S4143-6: [cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.
+- S4143-7: [in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.
+- S4143-8: [in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.
+- S4143-9: [slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.
+
+### The next tank (S4148, o-and-u)
+
+- S4148-1: [cheerful] It rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.
+- S4148-2: [in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?
+- S4148-3: [playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.
+- S4148-4: [pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.
+- S4148-5: [thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.
+- S4148-6: [in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.
+- S4148-7: [curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!
+- S4148-8: [in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.
+- S4148-9: [in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.
+- S4148-10: [slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.
+
+### Pancake letters (S4161, small-letters)
+
+- S4161-1: [cheerful] Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.
+- S4161-2: [playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!
+- S4161-3: [pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.
+- S4161-4: [curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.
+- S4161-5: [in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.
+- S4161-6: [playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.
+- S4161-7: [cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.
+- S4161-8: [slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.
+
+### The note that came back (S4165, end-marks)
+
+- S4165-1: [hopeful] Quentin wanted his big sister to come out and play. [in a soft, sunny mom voice, playful] Let's slide a note under her door, [softly] said Mom.
+- S4165-2: [cheerful] Mom wrote what Quentin said. We have a ball. [in a soft, sunny mom voice, slowly] That sentence tells, so it ends with a period, one little dot, [softly] said Mom.
+- S4165-3: [in a small, eager boy voice, asking] Can you play? [softly] said Quentin next. [in a small, eager boy voice, sure of himself] Put a dot on that one too!
+- S4165-4: [pause] [curious] Mom read it back with a dot, and her voice went down. [in a soft, sunny mom voice, flat, telling] Can you play. [puzzled] That sounded like telling, and Quentin shook his head.
+- S4165-5: [in a small, eager boy voice, surprised] But I am asking! [softly] said Quentin. [in a soft, sunny mom voice, slowly] A sentence that asks ends with a question mark, [softly] said Mom. She drew a curl with a dot under it.
+- S4165-6: [playful] They slid the note under the door. [curious] Soon it slid back with new words and a new mark, a line with a dot under it.
+- S4165-7: [in a soft, sunny mom voice, warmly] That is an exclamation point, [softly] said Mom. [in a soft, sunny mom voice, slowly] It ends a sentence said with a strong feeling, like the one your sister wrote. [in a soft, sunny mom voice, reading aloud, joyful] I can play!
+- S4165-8: [delighted] The door flew open, and out came Nayeli with a ball of her own.
+- S4165-9: [slowly, warmly] A period ends a sentence that tells. A question mark ends a sentence that asks. An exclamation point ends one said with a strong feeling.
+
+### Click goes the egg (S4169, almost-the-same)
+
+- S4169-1: [cheerful] Vivian had pulled her yellow toy eggs apart. Each had a big letter on one half and a small letter on the other.
+- S4169-2: [curious] She picked up a half with a small letter. The letter was round at its bottom, with a line all the way down its right side.
+- S4169-3: [puzzled] Vivian looked for a big letter just like it and found none. [in a small, bright girl voice, worried] This egg has lost its other half! [softly] she said.
+- S4169-4: [pause] [in a warm, low aunt voice, gently] Look again, [softly] said her aunt. [in a warm, low aunt voice, slowly] Some small letters look a lot like their big letters, with one small change.
+- S4169-5: [curious] Vivian looked again. One big letter was round at its bottom too, and open at its top. [in a small, bright girl voice, surprised] Big U! [softly] she said. [in a small, bright girl voice, delighted] Mine is a little different on one side.
+- S4169-6: [in a warm, low aunt voice, slowly] Small u goes straight down on its right side, and big U curves, [softly] said her aunt. [playful] Click went the egg.
+- S4169-7: [curious] The next one had a long tail that hung down low. [in a small, bright girl voice, proud] Small y has two arms at its top, like big Y! [softly] said Vivian. [playful] Click.
+- S4169-8: [cheerful] Another had a tall line and two short arms. [in a small, bright girl voice, proud] Small k goes with big K! [warmly] said Vivian, and that egg clicked too.
+- S4169-9: [slowly, warmly] Some small letters look a lot like their big letters, each with one small change.
+
+### Tap a key (S4173, more-small-letters)
+
+- S4173-1: [cheerful] Grandma let Shawn type on her laptop, where the keys had big letters on them. [in a gentle, crackly grandma voice, playful] Type a T for me, [softly] she said.
+- S4173-2: [curious] Shawn tapped the key with the big T. Up came a line with a short line across it, and a little curve at its bottom.
+- S4173-3: [in a small, husky boy voice, surprised] That is not T! [softly] said Shawn. [in a small, husky boy voice, sure of himself] Big T has a line across its very top.
+- S4173-4: [puzzled] He tapped the key again, and the same letter came up. [in a small, husky boy voice, worried] Your keys are mixed up, Grandma! [softly] he said.
+- S4173-5: [pause] [in a gentle, crackly grandma voice, gently] That is small t, [softly] said Grandma. [in a gentle, crackly grandma voice, slowly] Some small letters look different from their big letters, so we learn each small shape.
+- S4173-6: [curious] Shawn tapped the key with the big E. Up came a round letter with a line across its middle. [in a small, husky boy voice, delighted] So that is small e! [softly] said Shawn. [in a small, husky boy voice, proud] It goes with big E.
+- S4173-7: [playful] Next he tapped the big I. Up came a short line with a dot on top. [in a small, husky boy voice, proud] Small i goes with big I! [warmly] said Shawn.
+- S4173-8: [slowly, warmly] Some small letters look different from their big letters, so we learn each small shape and the big letter it goes with.
+
 ### Cat, mat, hat (S116, listen-for-rhymes)
 
 - S116-1: [softly, a bedtime voice] At bedtime, Mom read a rhyme about a cat that sat on a mat, [giggles] and Rosa giggled. [playful] Cat, mat!
@@ -1347,6 +1418,19 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S137-6: [warmly] A triangle is still a triangle when it is big or little, said Dad. [delighted] Diego grinned and tapped the little triangle too.
 - S137-7: [happy] By then the pizza was cool. [playful] Your slice is almost a triangle, said Dad, but its crust is curved.
 - S137-8: [slowly, warmly] A triangle has three straight sides and three corners. Big or little, it is still a triangle.
+
+### The felt house (S4157, rectangles-too)
+
+- S4157-1: [cheerful] Uncle Cedric had a felt board and a box of felt shapes. [in a soft, jolly uncle voice, playful] Let's make a house, [softly] he said.
+- S4157-2: [playful] Winston stuck on a big red rectangle for the wall. [curious] Next he wanted a door.
+- S4157-3: [puzzled] He found a green rectangle, but it lay on its long side. [in a small, gruff boy voice, grumbling] That is not a door, [softly] said Winston. [in a small, gruff boy voice, sure of himself] Rectangles lie down, and doors stand up tall!
+- S4157-4: [pause] [in a soft, jolly uncle voice, gently] Turn it, [softly] said Uncle Cedric. [delighted] So Winston turned the green shape, and up it stood, like a door.
+- S4157-5: [in a soft, jolly uncle voice, curious] Is it still a rectangle? [softly] asked Uncle Cedric. [in a soft, jolly uncle voice, playful] Count the corners with me.
+- S4157-6: [in a small, gruff boy voice, slowly] One, two, three, four, [softly] counted Winston. [in a small, gruff boy voice, delighted] It still has two long sides and two short ones!
+- S4157-7: [in a soft, jolly uncle voice, slowly] A rectangle standing up tall is still a rectangle, [softly] said Uncle Cedric. [cheerful] Winston added a long, thin blue one for a path.
+- S4157-8: [curious] Last he pulled out a yellow shape. [in a small, gruff boy voice, thoughtful] This one is round, with no corners, [softly] he said, [in a small, gruff boy voice, proud] so it does not belong with the rectangles!
+- S4157-9: [in a soft, jolly uncle voice, warmly] It is a circle, [softly] said Uncle Cedric. [playful] So Winston stuck it high above the house for a sun.
+- S4157-10: [slowly, warmly] A long rectangle has four corners, two long sides and two short ones. Standing up tall, or long and thin, it is still a rectangle.
 
 ### Two shoes (S140, big-and-little)
 
@@ -1480,6 +1564,19 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S173-6: [confident] Then Diego picked up a round block, and he knew which hole it wanted. [proudly] The round one, of course. [a wooden block dropping into a box] Plop!
 - S173-7: He drew a triangle in the air with his finger, [slowly, counting] one, two, three corners, and laughed.
 - S173-8: [slowly, warmly] Count the corners and look at the sides. Same shape, same hole.
+
+### Four paper shapes (S4152, any-size-any-turn)
+
+- S4152-1: [playful] Aunt Soraya set four paper shapes in a row. [curious] A big green one and a little red one lay on their sides. A yellow one was tipped over, and the last was blue.
+- S4152-2: [in a bright, friendly aunt voice, playful] Which shape does not belong? [softly] asked Aunt Soraya. [in a small, sunny girl voice, sure of herself] The green one is so big! [softly] said Yasmin.
+- S4152-3: [pause] [in a bright, friendly aunt voice, gently] Look again, [softly] said Aunt Soraya. [in a bright, friendly aunt voice, slowly] Look at the shape only, not its size, how it is turned, or its color.
+- S4152-4: [curious] Yasmin set the little red shape on the big green one. [in a small, sunny girl voice, surprised] Both are round, with no corners, [softly] she said, [in a small, sunny girl voice, delighted] and both are longer one way!
+- S4152-5: [playful] She turned the yellow one to match. [in a small, sunny girl voice, delighted] Same shape! [softly] she said.
+- S4152-6: [in a bright, friendly aunt voice, warmly] Those three are ovals, [softly] said Aunt Soraya. [in a bright, friendly aunt voice, slowly] A shape keeps its name when it is big or little, turned, or a new color.
+- S4152-7: [thoughtful] Yasmin pointed at the blue shape. [in a small, sunny girl voice, thoughtful] This one has corners, [softly] she said, [in a small, sunny girl voice, proud] so it does not belong!
+- S4152-8: [in a bright, friendly aunt voice, warmly] It is a rhombus, [softly] said Aunt Soraya, [in a bright, friendly aunt voice, slowly] with four straight sides, all the same length. Some people call it a diamond.
+- S4152-9: [playful] Yasmin turned the blue shape on its side. [in a small, sunny girl voice, delighted] Still a rhombus! [softly] she said.
+- S4152-10: [slowly, warmly] A shape keeps its name when it is big or little, turned, or a new color. Look at the shape only.
 
 ### The can that stood up (S176, match-the-solids)
 

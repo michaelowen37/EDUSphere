@@ -1,12 +1,12 @@
-NN: four builds, Fable line, centered answers card, Q109 and Q110
+NO: read-along sentence by sentence, plan band by band, Q111
 
-- Pass NN (committed through NM): Mikey's four builds (grades 2 to 5, 6 to 8, and 9 and up, each painted and recorded after its grades' review) and his Fable line (just under 100 percent of its own bar) written into NEW-CHAT, RULES-AUDIT (section 10's paragraph added; section 9's model row changed at his word, its pass NM words kept under a digest), EARMARKS L24 and PROJECT-CONTEXT.
-- Every line of the card after an answer centered, the reason after a wrong tap first, as the question and answers above it are; a labeled fraction bar's label, the overview's modules mastered line and the line a screen shows with nothing to show, centered too.
-- tests/e2e/layout-check.mjs reads short lines kept to the left beside centered words (uncentered, asked for with align), on every screen the back sweep reaches and on four screens after a wrong tap, with a planted line.
-- Q109 (where the depth program and the cross-check go among the four builds) and Q110 (the Vooks read-along, word by word; EARMARKS L25) raised.
-- Pass NM's end readings, 91 and 92 percent, recorded: pass NM used 13 and 12 points. check.sh's one run passed every step but three (the rules test, the docs sync test and the back sweep), each traced and fixed, and each run alone after on the final tree.
+- Pass NO (committed through NN): Mikey's answer to Q110 built: while the voice reads a lesson line, a story or More Info, the words ahead of it are faint and each sentence turns full ink as the voice begins it, with no box (readAhead, worked out to about 4.8 to 1 in both themes); the say-along's syllables and a Wonder choice being named keep the light green.
+- The read-along held by the rules test (its strengths against the themes, five near misses), the scripts test, the click-through and the question screens (its look measured in both themes, in a story, More Info and a lesson line, at rest, three near misses).
+- Mikey's answer to Q109 written into the plan, RULES-AUDIT section 10, NEW-CHAT and the Project Context: each band's depth program and cross-check just before its build, pre-K 3 to grade 1's right after build 1.
+- The weekly research sweep on Fable (docs/AI-RESEARCH.md): a phone's own voice cannot be trusted to time words, so word by word waits for the recordings (EARMARKS L25). Q111 raised (the Wonder choice buttons' light).
+- Pass NN's end readings, 92 and 92 percent, recorded: pass NN used about 1 and 0 points. check.sh: ALL CHECKS PASSED in one run (about 178 minutes), the first whole run since pass NN's.
 
-Passes: NN
+Passes: NO
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01NP3XVSDAd5aJ7jMDgvQdvk
+Claude-Session: https://claude.ai/code/session_01NP3XVNhpC9BTWd2TUGckpn

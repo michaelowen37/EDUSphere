@@ -864,10 +864,13 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // Since the second read of round one, every line that lights with readLit() is read too, so a Wonder choice being read (its fill
   // faded over 200 ms while its ink turned at once) or a lit sentence's unlit side fades nowhere; near miss: the Wonder button's fade.
   const litLineFades = (src) => src.split('\n').some((l) => /readLit\(\)[^\n]*transition: '[^']*background/.test(l) || /transition: '[^']*background[^\n]*readLit\(\)/.test(l));
-  const fades = (src) => /const LIT_WORDS = \{[^}]*transition/.test(src) || /data-say-along-syllable=\{k\} style=\{[^\n]*transition: 'background/.test(src) || /litSentence === i \? \{ \.\.\.readLit\(\), \.\.\.LIT_WORDS \} : \{[^}]*transition/.test(src) || litLineFades(src);
+  const fades = (src) => /const LIT_WORDS = \{[^}]*transition/.test(src) || /data-say-along-syllable=\{k\} style=\{[^\n]*transition: 'background/.test(src) || /litSentence >= 0 && i > litSentence \? readAhead\(\) : \{[^}]*transition/.test(src) || /const readAhead = \(\) => \(\{[^}]*transition/.test(src) || litLineFades(src);
   const wonderAt = ui.indexOf('data-wonder-lit=');
   const wonderFade = wonderAt > 0 ? ui.slice(0, wonderAt) + ui.slice(wonderAt).replace("transition: 'transform 200ms'", "transition: 'transform 200ms, background 200ms'") : ui;
-  ok('no read-along light fades: the strip\'s syllables, LIT_WORDS, the lesson\'s and every lit sentence and a Wonder choice being read change ink and fill in one frame (round one and its second read, pass MT; two near misses caught)', !fades(ui) && fades(ui.replace("...LIT_WORDS, transition: 'none', margin: 0", "...LIT_WORDS, transition: 'background 40ms', margin: 0")) && wonderFade !== ui && fades(wonderFade), `fades ${fades(ui)}`);
+  // Since pass NO (Mikey's answer to Q110) a sentence ahead of the voice is faint (readAhead) in place of the green, and it turns full in
+  // one frame too; near miss: the faint given a 200 ms fade.
+  const faintFade = ui.replace("({ opacity: C.mode === 'dark' ? 0.55 : 0.66 })", "({ opacity: C.mode === 'dark' ? 0.55 : 0.66, transition: 'opacity 200ms' })");
+  ok('no read-along light fades: the strip\'s syllables, LIT_WORDS, the lesson\'s and every lit sentence, the faint ahead of the voice and a Wonder choice being read change ink and fill in one frame (round one and its second read, pass MT; pass NO; three near misses caught)', !fades(ui) && fades(ui.replace("...LIT_WORDS, transition: 'none', margin: 0", "...LIT_WORDS, transition: 'background 40ms', margin: 0")) && wonderFade !== ui && fades(wonderFade) && faintFade !== ui && fades(faintFade), `fades ${fades(ui)}`);
   // The light's timing (logic): a piece lights each syllable once, in order, inside the time the voice is guessed to take, a word of one
   // syllable whole; a way said in one breath lights every saying in turn, a little ahead (SAY_ALONG_JOINED_LEAD); the child's turn
   // sits between 0.7 and 1.8 seconds.

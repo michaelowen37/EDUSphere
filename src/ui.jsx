@@ -88,6 +88,8 @@ const LIT_LETTER_DARK = '#9C7020';   // since pass MH, 3.43 to 1 on the light gr
 // green background to see the highlighted words more clearly."). The sentence or Wonder choice the voice is on (a story lit its
 // whole paragraph until Mikey's note at 2:03, "I meant just the words (how they were before)") sits on the light green of the
 // Key idea card, with the dark ink, in the dark theme (10.6 to 1); since Q32 (pass MI) the light theme takes the same light green.
+// Since pass NO (Mikey's answer to Q110) a sentence being read wears no light at all (readAhead, below): the light green stays on the
+// say-along's syllables and on a Wonder choice being named.
 // The round speaker's drawing (pass MH, Mikey's answer to Q29: "your discretion"): the gold loudspeaker a child taps to hear the
 // words again reads 5.36 to 1 on its button in the dark theme, and in the light theme took the deeper gold (#A67A26, 3.25 to 1
 // on the cream, where the logo gold read 2.72), so a child who cannot read can find it by its drawing alone.
@@ -114,6 +116,15 @@ const readLit = () => ({ background: '#AAD8C5', color: '#16201B' });
 // sentence's light is one box cut at each line's end, rounded at its first and last ends. No fade (round one's lesson check, pass MT): a word's ink
 // turns at once, so a fill that faded in or out left it dark on the dark card, or pale on green, for a moment at every change.
 const LIT_WORDS = { borderRadius: 5, boxShadow: '-1px 0 0 1px #AAD8C5, 1px 0 0 1px #AAD8C5' };
+// The read-along since pass NO (Mikey's answer to Q110, "Q110 - B", after the Vooks clip he sent in pass NN): while the voice reads
+// a page, the words it has not reached yet are faint, and each sentence turns full ink as the voice begins it and stays so, with no
+// box and no color on the sentence being read; with no voice reading, every word is at full ink. Faint is the words' own ink at 0.66
+// of its strength in the light theme and 0.55 in the dark, about 4.8 to 1 on the story paper, the cards and the page in both themes
+// (full ink reads 11.9 to 14.9 to 1 there), so a grown-up reading ahead still reads every word. It changes in one frame, never a
+// fade, as the light before it did (round one's lesson check, pass MT). A lesson line, a story's paragraphs and More Info wear it;
+// the say-along's syllables keep readLit, as Mikey asked of them ("it would be nice to see just the letters that are being
+// pronounced be highlighted"), and so does a Wonder choice being named, a button a child who cannot read finds by its light (Q111).
+const readAhead = () => ({ opacity: C.mode === 'dark' ? 0.55 : 0.66 });
 // Style objects shared across screens copy colors from C when they are made, so each is made from a recipe that
 // applyTheme runs again after a switch.
 const THEMED = [];
@@ -3358,19 +3369,19 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
           <div key={w.choice} data-more-info-wrong={w.choice} data-chosen={w.chosenNow ? 'now' : w.chosenBefore ? 'before' : undefined} style={row(w.choice)}>
             {drawn(w.choice) && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, borderRadius: 10, background: C.paperBoard, border: `1px solid ${C.line}`, color: B.ink, fontWeight: 600, fontSize: 14, textAlign: 'center', padding: 4 }}>{face(w.choice)}</div>}
             {/* More Info's words balanced (pass NB, round two's code read: "The first part of star is / sss-tuh." left the blend alone). */}
-            <div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={w.text} size={16} lineGap={0} lit={litAt(k)} /></div>
+            <div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={w.text} size={16} lineGap={0} lit={litAt(k)} ahead={!!lit && k > lit.i} /></div>
           </div>
         ))}
         {insight.right && (
           <div data-more-info-right="" style={{ ...row(insight.answer), borderTop: `1px solid ${C.line}` }}>
             {drawn(insight.answer) && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, borderRadius: 10, background: C.paperBoard, border: `2px solid ${C.green}`, color: B.ink, fontWeight: 600, fontSize: 14, textAlign: 'center', padding: 4 }}>{face(insight.answer)}</div>}
-            <div>{!drawn(insight.answer) && <p data-more-info-answer="" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700, textWrap: 'balance' }}>{capFirst(String(insight.answer))}</p>}<p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: C.green }}>Why this one fits</p><div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={rightText} size={16} lineGap={6} lit={rightLines === 1 ? litAt(rightAt) : null} litLine={rightLines > 1 && litAt(rightAt) !== null ? lineOfSentence(rightText, litAt(rightAt)) : null} /></div></div>
+            <div>{!drawn(insight.answer) && <p data-more-info-answer="" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700, textWrap: 'balance' }}>{capFirst(String(insight.answer))}</p>}<p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: C.green }}>Why this one fits</p><div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={rightText} size={16} lineGap={6} lit={rightLines === 1 ? litAt(rightAt) : null} litLine={rightLines > 1 && litAt(rightAt) !== null ? lineOfSentence(rightText, litAt(rightAt)) : null} ahead={!!lit && rightAt > lit.i} /></div></div>
           </div>
         )}
         {insight.more.length > 0 && (
           <div data-more-info-more="" style={{ padding: '10px 0 0', borderTop: `1px solid ${C.line}` }}>
             <p style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 700, color: C.muted, textAlign: 'center' }}>More right answers</p>
-            {insight.more.map((m, k) => <div key={k} data-more-info-words="" style={{ margin: '4px 0', textWrap: 'balance' }}><RichText text={m} size={16} lineGap={0} lit={litAt(moreAt + k)} /></div>)}
+            {insight.more.map((m, k) => <div key={k} data-more-info-words="" style={{ margin: '4px 0', textWrap: 'balance' }}><RichText text={m} size={16} lineGap={0} lit={litAt(moreAt + k)} ahead={!!lit && moreAt + k > lit.i} /></div>)}
           </div>
         )}
         <div data-more-info-close="" style={{ textAlign: 'center', marginTop: 14 }}><Btn onClick={onClose}>Got it</Btn></div>
@@ -3631,6 +3642,8 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
   .edu-reveal.edu-in { transform: none; }
 }
 @media print { .edu-reveal { opacity: 1 !important; transform: none !important; transition: none !important; } }
+/* Pass NO (Mikey's answer to Q110): a page printed while its voice reads prints every word at full ink, the read-along's faint set aside. */
+@media print { [data-read-ahead] { opacity: 1 !important; } }
 .edu-sway { animation: edu-sway 3.2s ease-in-out infinite; }
 .edu-grow { animation: edu-grow 2.2s ease-in-out both; }
 .edu-draw { stroke-dasharray: 400; animation: edu-draw 1.4s ease-out both; }
@@ -4482,24 +4495,29 @@ function LessonWords({ lineKey, style, children }) {
   }, [lineKey, style && style.fontSize, style && style.lineHeight]);
   return <p ref={ref} data-lesson-words="" data-cue-room="" style={{ ...style, paddingRight: 'var(--cue-room, 0px)' }}>{children}</p>;
 }
-// lit (pass MH): the sentence of a one-line paragraph being read aloud, lit word by word as a highlight the size of its words,
-// in readLit's colors; the rest of the paragraph stays as it is.
-// litLine (pass MI): in a text of several lines, the line being read, lit the same way (More Info's explanation).
-function RichText({ text, size = 17, color = null, center = false, lineGap = 10, lit = null, litLine = null }) {
+// lit (pass MH): the sentence of a one-line paragraph being read aloud. Since pass NO (Mikey's answer to Q110) it wears no light:
+// the sentences after it are faint (readAhead), and it and the ones before it stay at full ink. It keeps its mark, data-read-lit,
+// and a faint one carries data-read-ahead, for the browser checks.
+// litLine (pass MI): in a text of several lines, the line being read (More Info's explanation), the lines after it faint.
+// ahead (pass NO): the whole text is still ahead of the voice (a story's later paragraphs, More Info's later descriptions), so
+// every line of it is faint; a caller passes it only while the voice reads.
+function RichText({ text, size = 17, color = null, center = false, lineGap = 10, lit = null, litLine = null, ahead = false }) {
   const lines = String(text || '').split('\n');
+  const faint = (i) => ahead || (litLine !== null && i > litLine);
   return (
     <>
       {lines.map((line, i) => {
         const trimmed = line.trim();
         if (!trimmed) return <div key={i} style={{ height: 6 }} />;
+        const dim = faint(i) ? readAhead() : null; const dimMark = faint(i) ? '' : undefined;
         // A bullet line: hanging indent, always left-aligned, sitting as a narrow block in the middle when the text is centered.
         const labelled = /^\*\*[^*]{1,40}:\*\*\s/.test(trimmed);
-        if (trimmed.startsWith('• ') || labelled) return <p key={i} style={{ margin: center ? '0 auto 6px' : '0 0 6px', maxWidth: center ? '32ch' : undefined, fontSize: size, lineHeight: 1.6, textAlign: 'left', paddingLeft: 18, textIndent: -18, color: color || undefined }}>{'• '}{inlineRich(labelled ? trimmed : trimmed.slice(2), i)}</p>;
+        if (trimmed.startsWith('• ') || labelled) return <p key={i} data-read-ahead={dimMark} style={{ margin: center ? '0 auto 6px' : '0 0 6px', maxWidth: center ? '32ch' : undefined, fontSize: size, lineHeight: 1.6, textAlign: 'left', paddingLeft: 18, textIndent: -18, color: color || undefined, ...dim }}>{'• '}{inlineRich(labelled ? trimmed : trimmed.slice(2), i)}</p>;
         const centered = /^\[\[.*\]\]$/.test(trimmed);
-        if (centered) return <p key={i} style={{ margin: '14px 0', fontSize: size + 3, fontWeight: 700, textAlign: 'center', letterSpacing: 0.3, color: color || C.ink }}>{litLine === i ? <span data-read-lit="" style={{ ...readLit(), ...LIT_WORDS }}>{inlineRich(trimmed.slice(2, -2).trim(), i)}</span> : inlineRich(trimmed.slice(2, -2).trim(), i)}</p>;
+        if (centered) return <p key={i} data-read-ahead={dimMark} style={{ margin: '14px 0', fontSize: size + 3, fontWeight: 700, textAlign: 'center', letterSpacing: 0.3, color: color || C.ink, ...dim }}>{litLine === i ? <span data-read-lit="">{inlineRich(trimmed.slice(2, -2).trim(), i)}</span> : inlineRich(trimmed.slice(2, -2).trim(), i)}</p>;
         if (lit !== null && lines.length === 1) { const ss = sentencesOf(trimmed);
-          return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{ss.map((sen, j) => <React.Fragment key={j}><span data-read-lit={j === lit ? '' : undefined} style={j === lit ? { ...readLit(), ...LIT_WORDS } : {}}>{inlineRich(sen, `${i}-${j}`)}</span>{j < ss.length - 1 ? ' ' : ''}</React.Fragment>)}</p>; }
-        return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{litLine === i ? <span data-read-lit="" style={{ ...readLit(), ...LIT_WORDS }}>{inlineRich(trimmed, i)}</span> : inlineRich(trimmed, i)}</p>;
+          return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{ss.map((sen, j) => <React.Fragment key={j}><span data-read-lit={j === lit ? '' : undefined} data-read-ahead={j > lit ? '' : undefined} style={j > lit ? readAhead() : {}}>{inlineRich(sen, `${i}-${j}`)}</span>{j < ss.length - 1 ? ' ' : ''}</React.Fragment>)}</p>; }
+        return <p key={i} data-read-ahead={dimMark} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined, ...dim }}>{litLine === i ? <span data-read-lit="">{inlineRich(trimmed, i)}</span> : inlineRich(trimmed, i)}</p>;
       })}
     </>
   );
@@ -6162,6 +6180,8 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
   // Read-along: the title, then each paragraph in turn, the one being read lit until the voice moves on.
   const [readingAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
   const [readingSentence, setReadingSentence] = useState(0);   // pass MH: the sentence of the paragraph being read, lit as words
+  // Pass NO (Mikey's answer to Q110): the voice is reading this story, from its title on, so the words ahead of it are faint (readAhead).
+  const [aloud, setAloud] = useState(false);
   const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
   // Following the voice down the page, and letting go once the reader scrolls (useReaderPause, above StoryBody): the page follows
   // again only when the voice reaches a paragraph the reader can see.
@@ -6174,13 +6194,14 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
   // paragraph is kept on screen. Both moves are instant for anyone whose device asks for less motion.
   const scrollWay = () => (prefersReducedMotion() ? 'auto' : 'smooth');
   const toggle = () => {
-    if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); if (onReadingChange) onReadingChange(false); return; }
+    if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); setAloud(false); if (onReadingChange) onReadingChange(false); return; }
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
     const card = cardRef.current; followPaused.current = false; autoScrollUntil.current = Date.now() + 1200;
     if (card && typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - 12), behavior: scrollWay() });
     if (onReadingChange) onReadingChange(true);
     const keys = storyClipKeys(story);
-    stopRef.current = speakSequence([storyTitleSpoken(story.title), ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause, young: false, once: storyOnce(story) });
+    setAloud(true);   // before the voice starts, so a voice that ends at once (none on the device) leaves nothing faint
+    stopRef.current = speakSequence([storyTitleSpoken(story.title), ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setAloud(false); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause, young: false, once: storyOnce(story) });
     if (!keys.every((k) => clipFor(k))) setVoiceWatch((n) => n + 1);   // the device voice reads, so the page watches it
   };
   // A story that reads itself (pass MD): a read-aloud course's lesson story starts its voice a moment after the page opens,
@@ -6210,7 +6231,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
       const ss = window.speechSynthesis;
       if (ss.speaking !== false || ss.pending !== false || soundPlaying) { quietSince = null; return; }
       if (quietSince === null) quietSince = Date.now();
-      if (Date.now() - quietSince >= 2000 && stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); }
+      if (Date.now() - quietSince >= 2000 && stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); setAloud(false); }
     }, 250);
     return () => clearInterval(t);
   }, [voiceWatch]);
@@ -6274,7 +6295,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
               page, as a story opens with no voice or before its voice starts, it sat on a paragraph's words on 178 of the 257 early-years
               stories at 320 by 568 and 131 at 375 by 667, in both themes. While the cue shows beside it at rest, the paragraph's lines end
               short of it; a paragraph the cue does not reach, and every paragraph on a page with no cue, looks as it did. */}
-          <div data-story-par={i} data-cue-room="" data-reading={readingAt === i ? '' : undefined} style={{ order: 1, textWrap: 'pretty', paddingRight: 'var(--cue-room, 0px)' }}><RichText text={keepLoneLetters(t)} size={17} lineGap={12} lit={readingAt === i ? readingSentence : null} /></div>
+          <div data-story-par={i} data-cue-room="" data-reading={readingAt === i ? '' : undefined} style={{ order: 1, textWrap: 'pretty', paddingRight: 'var(--cue-room, 0px)' }}><RichText text={keepLoneLetters(t)} size={17} lineGap={12} lit={readingAt === i ? readingSentence : null} ahead={aloud && i > readingAt} /></div>
         </div>
       )))}
       {/* A pre-reader's story (round, pass MD) has the round drawn speaker of the young learners' screens, where a worded button
@@ -13552,7 +13573,7 @@ function EduSphereScreens() {
     setRoster((r) => ({ ...r }));   // the classroom reloads its Action Items
     return seeded;
   }
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), litStyle: { ...readLit(), ...LIT_WORDS }, screen, moduleId: moduleId || null, question: q || null, isReviewQ, openModule: (id) => openModule(id), startQuickCheck: (id) => startQuickCheck(id),
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), litStyle: readAhead(), screen, moduleId: moduleId || null, question: q || null, isReviewQ, openModule: (id) => openModule(id), startQuickCheck: (id) => startQuickCheck(id),
     // Test-only (pass ME): draws the current trace question along its own strokes, the way a steady hand would, so a browser
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
     traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic, opts = null) => { gameIntroNext.current = !!(opts && opts.intro); setColoring(pic); setScreen('coloring'); }, setColoringLeft: (n) => setColorLeft(n), openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setStoryVoiceOn(canSpeak()); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setStoryVoiceOn(canSpeak()); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
@@ -14364,7 +14385,7 @@ function EduSphereScreens() {
               instead (pass MS), the word big and lit a syllable at a time, so the paragraph never fills with "Different, different". */}
           {/* Balanced, so no lesson line ends on one lone word (pass MY, round one's screen check); a browser balances up to about six
               lines, so a longer line can still end on one at 320 pixels (round two's code read). */}
-          <LessonWords lineKey={`${moduleId}-${lessonStep}`} style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{n === own.length - 1 ? lastTwoTogether(partsWhole(keepLoneLetters(sentence), `s${i}`), keepLoneLetters(sentence)) : partsWhole(keepLoneLetters(sentence), `s${i}`)}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</LessonWords>
+          <LessonWords lineKey={`${moduleId}-${lessonStep}`} style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} data-read-ahead={litSentence >= 0 && i > litSentence ? '' : undefined} style={litSentence >= 0 && i > litSentence ? readAhead() : {}}>{n === own.length - 1 ? lastTwoTogether(partsWhole(keepLoneLetters(sentence), `s${i}`), keepLoneLetters(sentence)) : partsWhole(keepLoneLetters(sentence), `s${i}`)}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</LessonWords>
           {/* The strip's room for the scroll cue sits on this wrapper, outside the strip's key, so Say it again, which draws the strip anew,
               keeps it (round one's screen read, pass NE); the big word's size reads it through the wrapper. */}
           {lineParts.some((x) => x.role === 'open') && <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}><SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} /></div>}

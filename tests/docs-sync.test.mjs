@@ -874,5 +874,23 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const dig = (t) => createHash('sha256').update(inside(t), 'utf8').digest('hex').slice(0, 8);
   ok(`docs/RULES-AUDIT-HISTORY.md keeps section 9's model row as pass NM left it, before pass NN changed it at Mikey's word, unchanged (digest ${dig(hist)}), and the row says so (a block edited by one letter, planted, caught)`,
     dig(hist) === '99ab0173' && audit.includes("Changed in place in pass NN, at Mikey's word, its pass NM words there too.") && dig(((i) => hist.slice(0, i) + 'about 41' + hist.slice(i + 8))(hist.lastIndexOf('about 40 percent of a week is the aim'))) !== '99ab0173', dig(hist)); }
+// Pass NO (Mikey, opening pass NO: "Q109 - B" and "Q110 - B"): the two questions answered, each in one line in section 11 and in full in
+// docs/RULES-AUDIT-HISTORY.md's pass NO block, none open after them and Q111 open; the four section 8 rows and section 10's heading and
+// paragraph his answers changed kept as pass NN left them, each block held by its digest and each changed row saying so, and section 9's
+// Q85 row naming them; a block edited by one letter, planted, caught.
+{ const { createHash } = await import('node:crypto');   // imported here, as the blocks above import it inside their own
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const qName = "RULES-AUDIT section 11's answered questions in pass NO, word for word"; const rName = "RULES-AUDIT rows as pass NN left them, before pass NO changed them at Mikey's word, word for word";
+  const inside = (t, name) => { const a = t.indexOf(`<!-- ${name}: begin -->\n`); const b = t.indexOf(`<!-- ${name}: end -->`); return a < 0 || b < a ? '' : t.slice(a + `<!-- ${name}: begin -->\n`.length, b); };
+  const dig = (t) => createHash('sha256').update(t, 'utf8').digest('hex').slice(0, 8);
+  const qs = inside(hist, qName); const rows = inside(hist, rName); const rowsList = rows.split('\n').filter(Boolean);
+  const OPEN = ['| **The read-along (Mikey, pass MH', '| **More Info read aloud (Mikey, pass MI', "| **The light theme's lit sentence (Mikey, pass MI", '| **The reading light never moves the words (pass NC', '## 10. The plan, in Mikey', '**Four builds since pass NN'];
+  const planted = ((i) => hist.slice(0, i) + 'Q109 - C' + hist.slice(i + 8))(hist.lastIndexOf('Q109 - B'));
+  ok(`docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass NO, Q109 and Q110 (digest ${dig(qs)}), and the rows their answers changed as pass NN left them (digest ${dig(rows)}), unchanged; each answered in one line in section 11 with none open after it and Q111 open; each changed row saying so and section 9's Q85 row naming them (pass NO; a block edited by one letter, planted, caught)`,
+    dig(qs) === 'a80080e5' && dig(rows) === '387e617c' && /^- Q109\. Answered in pass NO \(Mikey: "Q109 - B"\): .*The question as it stood: /m.test(qs) && /^- Q110\. Answered in pass NO \(Mikey: "Q110 - B"\): .*The question as it stood: /m.test(qs)
+    && /\n- Q109\. Answered in pass NO \(Mikey: "Q109 - B"\)\. Its rule lives in section 10 /.test(audit) && /\n- Q110\. Answered in pass NO \(Mikey: "Q110 - B"\)\. Its rule lives in section 8 /.test(audit) && !/\n- Q1(09|10)\. (?!Answered)/.test(audit) && /\n- Q111\. (?!Answered)/.test(audit)
+    && rowsList.length === OPEN.length && OPEN.every((w, k) => rowsList[k].startsWith(w)) && audit.split("Changed in place in pass NO, at Mikey's word (his answer to Q110), its pass NN words").length - 1 === 4
+    && audit.includes("Changed in place in pass NO, at Mikey's word (his answer to Q109), its pass NN words in docs/RULES-AUDIT-HISTORY.md.") && audit.includes("Changed in pass NO, at Mikey's word (his answers to Q109 and Q110), each saying so,")
+    && dig(inside(planted, qName)) !== dig(qs), JSON.stringify({ qs: dig(qs), rows: dig(rows), n: rowsList.length })); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

@@ -48,6 +48,25 @@ const audit = () => page.evaluate(() => {
   }
   return fails;
 });
+// The read-along's look since pass NO (Mikey's answer to Q110, "Q110 - B"): inside root, the sentence being read (data-read-lit) wears no
+// box and stays at full ink, no word marked faint (data-read-ahead) comes before it, and every faint word is measured with its opacity
+// against what it sits on (the word audit above skips faded words, so it never read these).
+const readLook = (root = 'body') => page.evaluate((sel) => {
+  const scope = document.querySelector(sel) || document.body;
+  const parse = (s) => { const m = String(s).match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(/[\s,\/]+/).filter(Boolean).map(Number); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }; };
+  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  const lum = (c) => 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b);
+  const blend = (top, under) => ({ r: top.r * top.a + under.r * (1 - top.a), g: top.g * top.a + under.g * (1 - top.a), b: top.b * top.a + under.b * (1 - top.a), a: 1 });
+  const ground = (el) => { const layers = []; let n = el; while (n && n.nodeType === 1) { const cs = getComputedStyle(n); if (cs.backgroundImage && cs.backgroundImage !== 'none') return null; const c = parse(cs.backgroundColor); if (c && c.a > 0) { layers.push(c); if (c.a >= 1) break; } n = n.parentElement; } return layers.reduceRight((acc, l) => blend(l, acc), { r: 255, g: 255, b: 255, a: 1 }); };
+  const fade = (el) => { let a = 1; let n = el; while (n && n.nodeType === 1) { a *= parseFloat(getComputedStyle(n).opacity); n = n.parentElement; } return a; };
+  const lit = scope.querySelector('[data-read-lit]');
+  const ahead = [...scope.querySelectorAll('[data-read-ahead]')].filter((x) => x.getClientRects().length > 0 && x.textContent.trim());
+  let worst = Infinity; for (const el of ahead) { const fg = parse(getComputedStyle(el).color); const g = ground(el); if (!fg || !g) continue; const f = blend({ ...fg, a: fg.a * fade(el) }, g); worst = Math.min(worst, (Math.max(lum(f), lum(g)) + 0.05) / (Math.min(lum(f), lum(g)) + 0.05)); }
+  const before = !!lit && ahead.some((x) => !!(x.compareDocumentPosition(lit) & Node.DOCUMENT_POSITION_FOLLOWING) && !x.contains(lit));
+  return { theme: document.documentElement.dataset.theme || 'light', lit: lit ? { text: lit.textContent.trim().slice(0, 50), bg: getComputedStyle(lit).backgroundColor, shadow: getComputedStyle(lit).boxShadow, fade: Math.round(fade(lit) * 1000) / 1000 } : null,
+    ahead: ahead.length, opacity: ahead.length ? Number(getComputedStyle(ahead[0]).opacity) : null, worst: Number.isFinite(worst) ? Math.round(worst * 100) / 100 : null, before };
+}, root);
+const lookRight = (k) => !!k && !!k.lit && k.lit.bg === 'rgba(0, 0, 0, 0)' && k.lit.shadow === 'none' && k.lit.fade === 1 && k.ahead > 0 && k.opacity === (k.theme === 'dark' ? 0.55 : 0.66) && k.worst !== null && k.worst >= 4.5 && !k.before;
 // An educator, then a walk-through of a level.
 await page.getByRole('button', { name: 'Create account', exact: true }).first().click(); await screenIs('educator-setup');
 await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468'); await page.fill('input[placeholder="This device\'s name"]', 'Screens'); await page.selectOption('select[aria-label="Your state"]', 'TX');
@@ -370,11 +389,21 @@ const ponder = () => page.evaluate(() => {
   const a = await litNow();
   ok('the read-along lights one sentence, inline, inside its paragraph, never the paragraph whole', a.n === 1 && a.display === 'inline' && /[.!?]$/.test(a.text.trim()) && a.parText.length > a.text.trim().length && a.parText.includes(a.text.trim()), a);
   ok('the lit words end at their own last letter, the space before the next sentence outside the light', a.text === a.text.trim(), JSON.stringify(a.text.slice(-6)));
-  ok('in the dark theme the lit words sit on the light green that reads', a.bg === 'rgb(170, 216, 197)', a.bg);
+  // Since pass NO (Mikey's answer to Q110) the sentence being read wears no box: it and the ones before it at full ink, the words ahead faint.
+  const lookA = await readLook();
+  ok('in the dark theme the sentence being read wears no box, at full ink, and the words ahead of the voice are faint at 0.55, 4.5 to 1 or better (pass NO)', lookA.theme === 'dark' && lookRight(lookA) && a.bg === 'rgba(0, 0, 0, 0)', lookA);
   await page.waitForFunction((t) => { const el = document.querySelector('[data-read-lit]'); return !!el && el.textContent !== t; }, a.text, { timeout: 8000 }).catch(() => {});
   const b = await litNow();
   ok('the light moves on to the next sentence as the voice does', b.n === 1 && b.text !== a.text, { a: a.text, b: b.text });
-  // The light fades from one sentence to the next in 150 ms, so the words are measured once it has settled.
+  // Once the voice has moved on, the sentence it read stays at full ink; near misses: that sentence marked faint, and every faint word at
+  // 0.3 (about 1.8 to 1 in the light theme and 2.4 in the dark), each caught, each put back.
+  { const lookB = await readLook();
+    const marked = await page.evaluate((t) => { const s = [...document.querySelectorAll('[data-story-par] span, [data-story-par] p')].find((x) => x.textContent.trim() === t.trim() && !x.hasAttribute('data-read-lit') && !x.querySelector('[data-read-lit]')); if (!s) return false; s.setAttribute('data-read-ahead', ''); s.setAttribute('data-plant-ahead', ''); return true; }, a.text);
+    const plantBefore = await readLook(); await page.evaluate(() => { const s = document.querySelector('[data-plant-ahead]'); if (s) { s.removeAttribute('data-read-ahead'); s.removeAttribute('data-plant-ahead'); } });
+    await page.evaluate(() => { const st = document.createElement('style'); st.id = '__palePlant'; st.textContent = '[data-read-ahead]{opacity:0.3 !important}'; document.head.appendChild(st); });
+    const plantPale = await readLook(); await page.evaluate(() => document.getElementById('__palePlant').remove());
+    ok('the sentence the voice has read stays at full ink while the words ahead stay faint (pass NO; a read sentence marked faint and a faint at 0.3, planted, caught)', lookRight(lookB) && marked && plantBefore.before === true && !lookRight(plantBefore) && plantPale.worst !== null && plantPale.worst < 4.5 && !lookRight(plantPale), { lookB, plantBefore: plantBefore.before, pale: plantPale.worst }); }
+  // No light fades (pass MT), and since pass NO a sentence being read wears none; the words are measured a moment after the voice moves on.
   await page.waitForTimeout(400);
   const low = await audit(); ok('the lit sentence and every word around it read in the dark theme', low.length === 0, low.slice(0, 3));
   // Two pace taps in quick succession leave one reading, never two (the code and screen checks: every sentence was said twice).
@@ -473,15 +502,23 @@ const ponder = () => page.evaluate(() => {
   ok("in the light theme at 1280 the Let's Wonder! title shows its letters, every color of its shimmer at 3 to 1 or better", !!title && title.theme !== 'dark' && title.screen === 'wonder' && title.stops >= 3 && title.clip === 'text' && title.worst >= 3, title); }
 
 // 9. Pass MI, from Mikey's notes, in the light theme the section above left on, at 1280 wide.
-//    a. Q32 ("I agree with you"): the lit sentence is the same light green in the light theme.
+//    a. Q32 ("I agree with you"): the lit sentence is the same light green in the light theme; since pass NO (Mikey's answer to Q110) it
+//       wears no box, the words ahead faint at the light theme's 0.66, and once the voice stops no word is left faint.
 { await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = []; window.__rates = [];
     const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 1000); };
     Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); window.__rates.push(u.rate); q.push(u); if (!cur) next(); } } }); });
   await page.evaluate(() => window.__eduTest.openStory('colours'));
   await page.waitForFunction(() => { const el = document.querySelector('[data-read-lit]'); return !!el && !!el.closest('[data-story-par]'); }, null, { timeout: 15000 }).catch(() => {});
-  const lit = await page.evaluate(() => { const el = document.querySelector('[data-read-lit]'); return el ? { bg: getComputedStyle(el).backgroundColor, color: getComputedStyle(el).color, theme: document.documentElement.dataset.theme } : null; });
-  ok('in the light theme the lit sentence takes the same light green as the dark theme, with dark words on it (Q32)', !!lit && lit.theme !== 'dark' && lit.bg === 'rgb(170, 216, 197)' && lit.color === 'rgb(22, 32, 27)', lit);
-  await page.evaluate(() => window.speechSynthesis.cancel()); }
+  const lookL = await readLook();
+  ok('in the light theme the sentence being read wears no box, at full ink, and the words ahead of the voice are faint at 0.66, 4.5 to 1 or better (pass NO, in place of Q32\'s green)', lookL.theme !== 'dark' && lookRight(lookL), lookL);
+  // At rest, once the reader stops the voice with the story's own speaker (a voice cancelled under the page only skips a piece, since the
+  // app reads on past a lost end, the lead's look found): nothing faint, nothing marked as being read; near miss: a faint mark left on a
+  // paragraph, caught.
+  const stopped = await page.evaluate(() => { const b = document.querySelector('button[aria-label="Stop reading"]'); if (!b) return false; b.click(); return true; });
+  const rest = stopped && await page.waitForFunction(() => !document.querySelector('[data-read-ahead]') && !document.querySelector('[data-read-lit]'), null, { timeout: 3000 }).then(() => true).catch(() => false);
+  await page.evaluate(() => window.speechSynthesis.cancel());
+  const leftOn = await page.evaluate(() => { const s = document.querySelector('[data-story-par] span, [data-story-par] p'); if (!s) return null; s.setAttribute('data-read-ahead', ''); const n = document.querySelectorAll('[data-read-ahead]').length; s.removeAttribute('data-read-ahead'); return n; });
+  ok('once the reader stops the voice, every word of the story is back at full ink (pass NO; a faint mark left behind, planted, caught)', rest && leftOn === 1, { stopped, rest, leftOn }); }
 //    b. "the answer is repeated twice.  "Blue, blue" and "red, red"": a voice with a real speaking flag says a short word and is
 //       done inside the 700 ms the old retry waited; the word is said once.
 { await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = [];
@@ -530,7 +567,8 @@ const ponder = () => page.evaluate(() => {
   await page.locator('[data-more-info-speaker]').click();
   await page.waitForFunction(() => !!document.querySelector('[data-more-info] [data-read-lit]'), null, { timeout: 5000 }).catch(() => {});
   const first = await page.evaluate(() => { const el = document.querySelector('[data-more-info] [data-read-lit]'); const rows = [...document.querySelectorAll('[data-more-info-words]')]; return el ? { row: rows.findIndex((r) => r.contains(el)), bg: getComputedStyle(el).backgroundColor } : null; });
-  ok('More Info read aloud lights the sentence being read, starting in the first row, in the light green', !!first && first.row === 0 && first.bg === 'rgb(170, 216, 197)', first);
+  const lookM = await readLook('[data-more-info]');
+  ok('More Info read aloud marks the sentence being read, starting in the first row, with no box, the descriptions ahead of the voice faint, 4.5 to 1 or better (pass NO, in place of the light green)', !!first && first.row === 0 && first.bg === 'rgba(0, 0, 0, 0)' && lookRight(lookM), { first, lookM });
   await page.waitForFunction(() => { const el = document.querySelector('[data-more-info] [data-read-lit]'); const rows = [...document.querySelectorAll('[data-more-info-words]')]; return !!el && rows.findIndex((r) => r.contains(el)) >= 1; }, null, { timeout: 8000 }).catch(() => {});
   const moved = await page.evaluate(() => { const el = document.querySelector('[data-more-info] [data-read-lit]'); const rows = [...document.querySelectorAll('[data-more-info-words]')]; return el ? rows.findIndex((r) => r.contains(el)) : -1; });
   ok('the light moves on to the next description as the voice does', moved >= 1, moved);
@@ -1075,7 +1113,7 @@ const ponder = () => page.evaluate(() => {
   ok('with no voice on the device, a say-along strip lists its calls in order, one to a line, for a grown-up to lead (pass MS)', JSON.stringify(quiet.calls) === JSON.stringify(wantCalls) && quiet.lines.every((y, k) => k === 0 || y > quiet.lines[k - 1]) && !quiet.dots, { quiet, wantCalls });
   // No fade on the light (round one's lesson check, pass MT): every syllable of the strip, and the lesson's sentences, carry no transition,
   // so ink and fill change in one frame in the dark theme too; a page given a 40 ms fade by a planted style fails.
-  { const fadeless = () => page.evaluate(() => [...document.querySelectorAll('[data-say-along-syllable], [data-read-lit]')].every((x) => getComputedStyle(x).transitionDuration.split(',').every((d) => parseFloat(d) === 0)));
+  { const fadeless = () => page.evaluate(() => [...document.querySelectorAll('[data-say-along-syllable], [data-read-lit], [data-read-ahead]')].every((x) => getComputedStyle(x).transitionDuration.split(',').every((d) => parseFloat(d) === 0)));
     const now = await fadeless(); await page.evaluate(() => { const st = document.createElement('style'); st.id = '__fadePlant'; st.textContent = '[data-say-along-syllable]{transition: background 40ms !important}'; document.head.appendChild(st); });
     const planted = await fadeless(); await page.evaluate(() => document.getElementById('__fadePlant').remove());
     ok('no syllable of a say-along strip fades in or out, so its ink and its fill change in one frame (pass MT; a planted 40 ms fade caught)', now && !planted, { now, planted }); }
@@ -1110,6 +1148,15 @@ const ponder = () => page.evaluate(() => {
     for (let i = 0; i < step; i++) { const was = await lineNow(); await page.getByRole('button', { name: 'Next', exact: true }).first().evaluate((b) => b.click());
       await page.waitForFunction((w) => { const p = [...document.querySelectorAll('p')].find((x) => x.textContent.trim().length > 20 && !x.closest('[data-say-along]') && !x.hasAttribute('data-voice-note')); return !!p && p.textContent.trim() !== w; }, was, { timeout: 4000 }).catch(() => {}); await page.waitForTimeout(120); } };
   const lineOf = (mod, step) => L.readAloudScript(L.MODULES.find((m) => m.id === mod))[step];
+  // A lesson line read aloud (pass NO, Mikey's answer to Q110): Learning words' first line has two sentences; while the voice reads the
+  // first, the second is faint, and the first wears no box.
+  { await install(); await toStep('learning-words', 0);
+    // It waits for the line's rise to end (the lit sentence's opacity whole up the tree) with a faint showing, rather than a fixed half second
+    // (the read of pass NO); the first sentence takes about 2.8 seconds.
+    await page.waitForFunction(() => { const lit = document.querySelector('[data-lesson-words] [data-read-lit]'); if (!lit) return false; let a = 1; let n = lit; while (n && n.nodeType === 1) { a *= parseFloat(getComputedStyle(n).opacity); n = n.parentElement; } return a === 1 && !!document.querySelector('[data-lesson-words] [data-read-ahead]'); }, null, { timeout: 8000 }).catch(() => {});
+    const lookW = await readLook('[data-lesson-words]');
+    ok('a lesson line read aloud keeps the sentence being read at full ink with no box and the sentences ahead of the voice faint, 4.5 to 1 or better (pass NO)', lookRight(lookW), lookW);
+    await page.evaluate(() => window.speechSynthesis.cancel()); await quiet(); }
   const piecesOfLine = (line) => { const parts = String(line.say).split(L.SENTENCE_BREAK).filter(Boolean); return parts.flatMap((t, k) => L.speechPieces(t, { line: parts, at: k, voices: line.voices })).filter((p) => !p.sound); };
   // A line played to its end: its pieces' words from the first on, the last one ended and the voice quiet.
   const playOut = async (line) => { const want = piecesOfLine(line).map((p) => p.text.trim());

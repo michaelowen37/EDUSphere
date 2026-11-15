@@ -9,6 +9,11 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 15, 2026 (words that light up as they are read)
+
+- When the app reads to your child, the words it hasn't reached yet are a little faint now, and each sentence turns bright the moment the voice starts it. It works in lessons, in stories and in More Info, so a young reader can follow along the way a picture-book video does.
+- The faint words are still easy to read, for the grown-up who likes to read ahead, and when nothing is being read every word is at full brightness. Lighting each word as it's said comes later, with the recorded voices.
+
 ## November 14, 2026 (answers that line up with the question)
 
 - When a child taps a wrong answer, the reason now sits in the middle of its box, right under the question and the answers, so it is easier to find and to read.

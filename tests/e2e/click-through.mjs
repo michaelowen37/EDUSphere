@@ -2081,11 +2081,14 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
     await page.getByRole('button', { name: 'Read at the usual speed' }).click(); await page.evaluate(() => { window.__rates = []; window.__spoken = []; window.__spokenAt = []; });
     await readBtn.click();
     // Since pass MH the light is on the sentence being read (data-read-lit), never a whole paragraph; the old check matched any
-    // tinted div, the page's style sheet included, so it could not fail (the code check).
-    const lit = await page.waitForFunction(() => { const el = document.querySelector('[data-read-lit]'); return !!el && el.textContent.trim().length > 0 && getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)'; }, null, { timeout: 3000 }).then(() => true).catch(() => false);
+    // tinted div, the page's style sheet included, so it could not fail (the code check). Since pass NO (Mikey's answer to Q110) the
+    // sentence being read wears no box, at full ink, and the words ahead of the voice are faint (data-read-ahead).
+    const lit = await page.waitForFunction(() => { const el = document.querySelector('[data-read-lit]'); const ahead = document.querySelector('[data-read-ahead]'); return !!el && el.textContent.trim().length > 0 && getComputedStyle(el).backgroundColor === 'rgba(0, 0, 0, 0)' && Number(getComputedStyle(el).opacity) === 1 && !!ahead && Number(getComputedStyle(ahead).opacity) < 1; }, null, { timeout: 3000 }).then(() => true).catch(() => false);
     // Since pass MP a story pauses after its title and between paragraphs, so the reading is waited out rather than given 400 ms.
     await page.waitForFunction((n) => window.__spoken.length >= n && !!document.querySelector('button[aria-label="Read the story to me"]'), story.words.length + 1);
     const spoken = await page.evaluate(() => window.__spoken.slice());
+    // Since the read of pass NO: once the story is read to its end, no word is left faint and none marked as being read.
+    const restAfter = await page.evaluate(() => document.querySelectorAll('[data-read-ahead], [data-read-lit]').length);
     const normalRates = await page.evaluate(() => (window.__rates || []).slice());
     const normalAt = await page.evaluate(() => (window.__spokenAt || []).slice());
     // A story's breaths (pass MP, Mikey: "There should also be a slight delay between the spoken title and the first line of the
@@ -2100,7 +2103,8 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
     // The voice takes a story one sentence at a time, so the sentences joined back up must equal the title and every paragraph in order.
     const tidy = (t) => t.replace(/\s+/g, ' ').trim();
     ok('a spoken story reads its title and every paragraph in order', tidy(spoken.join(' ')) === tidy([`${story.title}.`, ...story.words].join(' ')));
-    ok('the sentence being read lights up', lit);
+    ok('the sentence being read is at full ink with no box, and the words ahead of the voice are faint (pass NO)', lit);
+    ok('once a story is read to its end, no word is left faint and none marked as being read (pass NO)', restAfter === 0, restAfter);
   } else ok('a spoken story reads its title and every paragraph in order (skipped: no voice on this page)', true);
 }
 ok('no browser errors during the whole run', errors.length === 0);

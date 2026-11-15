@@ -149,7 +149,8 @@ for (const theme of ['light', 'dark']) {
   // Speech parts kept whole (pass NC, EARMARKS A82's browser check): every span partsWhole keeps (data-whole) on the line shown is one
   // line's piece, a blend, a run of a word's parts or sounds, a word said slowly or a run of beats; and the line's breaks are the same with
   // each of its sentences lit in turn as with none lit (A86's browser check: the light's room once moved them), each word's line read by
-  // its top, the light the app's own (litStyle from the test hook) and the plant the old padding.
+  // its top, the light the app's own (litStyle from the test hook; since pass NO the faint a sentence ahead of the voice wears, readAhead,
+  // Mikey's answer to Q110) and the plant the old padding.
   // Since round one's code check a kept span also sits inside its paragraph's box, within a pixel, since a span kept whole can never break
   // but can run off the card (the first run rule kept counts and patterns whole, which ran past the card at 320 to 412).
   const wholeRead = async () => page.evaluate(() => { const spans = [...document.querySelectorAll('[data-whole]')].filter((s) => s.offsetParent !== null);

@@ -10108,7 +10108,8 @@ const moreRightProblems = (L) => { const r = {};
       forms: /const PART_FORMS = \[\.\.\.new Set\(\[\.\.\.Object\.values\(SPEECH_SOUNDS\)/.test(ui) && /function partsWhole\(text, keyPrefix = 'p'\)/.test(ui),
       // Since pass NE (round one's screen read) the last sentence goes through lastTwoTogether as well, its words still through partsWhole.
       // Since pass NI (round one's screen read) each sentence's lone letters keep the word before them first (keepLoneLetters).
-      line: /\{ \.\.\.readLit\(\), \.\.\.LIT_WORDS \} : \{ background: 'transparent' \}\}>\{n === own\.length - 1 \? lastTwoTogether\(partsWhole\(keepLoneLetters\(sentence\), `s\$\{i\}`\), keepLoneLetters\(sentence\)\) : partsWhole\(keepLoneLetters\(sentence\), `s\$\{i\}`\)\}<\/span>/.test(ui),
+      // Since pass NO (Mikey's answer to Q110) a sentence ahead of the voice wears the read-along's faint (readAhead), in place of the green.
+      line: /style=\{litSentence >= 0 && i > litSentence \? readAhead\(\) : \{\}\}>\{n === own\.length - 1 \? lastTwoTogether\(partsWhole\(keepLoneLetters\(sentence\), `s\$\{i\}`\), keepLoneLetters\(sentence\)\) : partsWhole\(keepLoneLetters\(sentence\), `s\$\{i\}`\)\}<\/span>/.test(ui),
       rich: /<React\.Fragment key=\{`\$\{keyPrefix\}-\$\{i\}`\}>\{partsWhole\(part, `\$\{keyPrefix\}-\$\{i\}`\)\}<\/React\.Fragment>/.test(ui),
       // Since pass NG a question with a grown-up's card prints its reason as a device with a voice does (canSpeak() || !!grownCard, Q91 (a)),
       // and since round one's screen read its lone capitals keep the word before them and its runs of l's draw in the serif type.
@@ -11064,6 +11065,41 @@ const moreRightProblems = (L) => { const r = {};
     reply('r2', 'claude-opus-5-5', { input_tokens: 0, cache_read_input_tokens: 1e6, cache_creation_input_tokens: 1e6, cache_creation: { ephemeral_1h_input_tokens: 1e6, ephemeral_5m_input_tokens: 0 }, output_tokens: 0 }), 'not json'];
   const u = U.usageByModel(lines); const byLine = U.usageByModel(lines.map((l, i) => l.replace('"id":"r1"', `"id":"r1-${i}"`)));
   ok('the usage meter counts each reply once and prices each model at its API rates (pass NG; a meter that counted lines, planted, caught)', Math.abs(u['claude-fable-5-2'].dollars - 40) < 1e-9 && u['claude-fable-5-2'].replies === 1 && Math.abs(u['claude-opus-5-5'].dollars - 8.2) < 1e-9 && Math.abs(byLine['claude-fable-5-2'].dollars - 80) < 1e-9, JSON.stringify(u)); }
+
+// The read-along's look (pass NO, Mikey's answer to Q110, "Q110 - B", after his Vooks clip): while the voice reads, the words it has
+// not reached are faint and each sentence turns full ink as the voice begins it, with no box on it. Read from the screen code: the faint
+// is one style, readAhead, an opacity and nothing else (no box, no fill, no fade), its two strengths worked out against the themes' own
+// ink and grounds (the story paper, a card and the page) at 4.5 to 1 or better; the lesson line, a story's paragraphs and every More Info
+// description wear it, and only ahead of the voice (a lit sentence's later sentences, a lit line's later lines, a text still ahead); the
+// story's reading turns it off wherever it ends (its stop, its end and the quiet watch); and no sentence being read wears readLit, which
+// stays on the say-along's syllables and a Wonder choice being named. Near misses: a light theme at 0.5 (3.0 to 1 on the paper), the old
+// green on a lesson sentence, a story whose stop leaves the words faint, a More Info row that is never faint, a faint that fades, and
+// (since the read of pass NO) a page printed mid-read with its faint words still faint.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  const token = (src, theme, name) => { const at = src.indexOf(`  ${theme}: {`); const m = at >= 0 ? src.slice(at, at + 6000).match(new RegExp(`\\b${name}: '(#[0-9A-F]{6})'`)) : null; return m ? hex(m[1]) : null; };
+  const worstFaint = (src) => { const m = src.match(/const readAhead = \(\) => \(\{ opacity: C\.mode === 'dark' \? ([0-9.]+) : ([0-9.]+) \}\);/); if (!m) return 0;
+    const alpha = { dark: Number(m[1]), light: Number(m[2]) }; let worst = Infinity;
+    for (const t of ['light', 'dark']) { const ink = token(src, t, 'ink'); for (const g of ['paper', 'surface', 'bg']) { const bg = token(src, t, g); if (!ink || !bg) return 0; worst = Math.min(worst, ratio(ink.map((v, i) => alpha[t] * v + (1 - alpha[t]) * bg[i]), bg)); } }
+    return worst; };
+  const wears = (src) => /<span data-read-lit=\{litSentence === i \? '' : undefined\} data-read-ahead=\{litSentence >= 0 && i > litSentence \? '' : undefined\} style=\{litSentence >= 0 && i > litSentence \? readAhead\(\) : \{\}\}>/.test(src)
+    && /<span data-read-lit=\{j === lit \? '' : undefined\} data-read-ahead=\{j > lit \? '' : undefined\} style=\{j > lit \? readAhead\(\) : \{\}\}>/.test(src) && src.includes("const faint = (i) => ahead || (litLine !== null && i > litLine);")
+    && src.includes('lit={readingAt === i ? readingSentence : null} ahead={aloud && i > readingAt} />') && src.includes('lit={litAt(k)} ahead={!!lit && k > lit.i} />') && src.includes('ahead={!!lit && rightAt > lit.i} />') && src.includes('lit={litAt(moreAt + k)} ahead={!!lit && moreAt + k > lit.i} />')
+    && (src.match(/setReadingAt\(-1\); setAloud\(false\);/g) || []).length === 3 && src.includes('setAloud(true);   // before the voice starts')
+    && !src.split('\n').some((l) => l.includes('data-read-lit') && l.includes('readLit()')) && /const readAhead = \(\) => \(\{ opacity: [^}]*\}\);/.test(src) && !/const readAhead = \(\) => \(\{[^}]*(?:transition|background|boxShadow|color:)/.test(src)
+    && src.includes('@media print { [data-read-ahead] { opacity: 1 !important; } }');
+  const pale = ui.replace(/(const readAhead = \(\) => \(\{ opacity: C\.mode === 'dark' \? [0-9.]+ : )[0-9.]+/, '$10.5');
+  const green = ui.replace("style={litSentence >= 0 && i > litSentence ? readAhead() : {}}>", "style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>");
+  const stuck = ui.replace("stopRef.current = null; setReadingAt(-1); setAloud(false); if (onReadingChange) onReadingChange(false); return; }", "stopRef.current = null; setReadingAt(-1); if (onReadingChange) onReadingChange(false); return; }");
+  const unfaded = ui.replace(' ahead={!!lit && k > lit.i} />', ' />');
+  const printed = ui.replace('@media print { [data-read-ahead] { opacity: 1 !important; } }', '');   // since the read of pass NO: printed mid-read at full ink
+  const fading = ui.replace("({ opacity: C.mode === 'dark' ? 0.55 : 0.66 })", "({ opacity: C.mode === 'dark' ? 0.55 : 0.66, transition: 'opacity 200ms' })");
+  const w = worstFaint(ui);
+  ok(`the read-along's faint, ahead of the voice, reads ${w.toFixed(2)} to 1 at worst on the paper, a card and the page in both themes, worn by the lesson line, the story and every More Info description only ahead of the voice, turned off wherever a story's reading ends, printed at full ink, never a box, a fill or a fade, and no sentence being read wears the old green (pass NO, Mikey's answer to Q110; six near misses caught)`,
+    w >= 4.5 && wears(ui) && pale !== ui && worstFaint(pale) < 4.5 && green !== ui && !wears(green) && stuck !== ui && !wears(stuck) && unfaded !== ui && !wears(unfaded) && fading !== ui && !wears(fading) && printed !== ui && !wears(printed), JSON.stringify({ worst: w, pale: worstFaint(pale), wears: wears(ui) })); }
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

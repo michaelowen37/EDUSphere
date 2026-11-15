@@ -3379,11 +3379,13 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
   );
 }
 
+// A fraction bar with its label under it, centered with the explanation it sits in (pass NN, the uncentered read: "1/3 eaten" kept
+// to the left under a centered reason).
 function LabeledBar({ parts, shaded, label, color }) {
   return (
     <div style={{ marginTop: 8 }}>
       <FractionBar parts={parts} shaded={shaded} color={color} height={30} />
-      <p style={{ margin: '4px 0 0', fontSize: 14, color: C.muted }}>{label}</p>
+      <p style={{ margin: '4px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>{label}</p>
     </div>
   );
 }
@@ -13920,7 +13922,7 @@ function EduSphereScreens() {
         )}
         {!youngLearner && placementPending.length === 0 && (
           <div style={{ ...card }}>
-            <p style={{ margin: '0 0 8px', fontWeight: 600 }}>{mastered} of {visibleModules.length} modules mastered</p>
+            <p style={{ margin: '0 0 8px', fontWeight: 600, textAlign: 'center' }}>{mastered} of {visibleModules.length} modules mastered</p>
             <FractionBar parts={Math.max(1, visibleModules.length)} shaded={mastered} color={C.gold} height={36} />
           </div>
         )}
@@ -14690,8 +14692,10 @@ function EduSphereScreens() {
     const shownQ = grownCard ? cardQuestion(q, cardUp) : printedQuestion(q, canSpeak());
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
-        {/* Module name on the left, the question count in the middle, and a bold green X on the
-            right that leaves the round. Leaving mid-round records nothing, so nobody is locked in. */}
+        {/* The round's question count on the left (the Quick Review's in the middle, under its name) and a bold green X on the
+            right that leaves the round; the module's name is the centered line below. Leaving mid-round records nothing, so
+            nobody is locked in. (Until pass NN this said the count sat in the middle; it is a row of a label and its button, which
+            the uncentered read leaves to the row.) */}
         <div style={{ display: 'grid', gridTemplateColumns: attempt && attempt.lightReview ? '36px 1fr 36px' : '1fr auto', alignItems: 'center', gap: 10, margin: '4px 0 0' }}>
           {attempt && attempt.lightReview ? <><span aria-hidden="true" /><div data-quick-review-head style={{ textAlign: 'center' }}><p style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Quick Review</p><p style={{ color: C.muted, fontSize: 13, margin: '2px 0 0' }}>Question {qIndex + 1} of {attempt.core.length}</p></div></>
             : <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>{isReviewQ ? 'A question from an earlier module' : `${roundLabel}Question ${qIndex + 1} of ${attempt.core.length}`}</p>}
@@ -14918,16 +14922,17 @@ function EduSphereScreens() {
             <div key={cheer} data-feedback="" onAnimationEnd={(e) => { if (e.target === e.currentTarget && typeof window !== 'undefined') window.dispatchEvent(new Event('edu-cue-check')); }} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
               {/* The reason after a wrong tap and the explanation, balanced, their speech parts kept whole (pass NB, round one's screen check: "Have another / try."). */}
+              {/* Since pass NN every line in the box is centered, as the question and the choices above it are (Mikey: "I noticed that this text, when an incorrect answer is chosen, is not centered.  This and most all other text looks better centered, especially when all other text on the screen is also centered."); a bullet line keeps its hanging indent, left-aligned in a narrow centered block (RichText's center). */}
               {/* Since pass NE (EARMARKS A63) the reason and the explanation keep room for the scroll cue (data-cue-room, keepCueRoom beside
                   ScrollCue): on a short phone the cue sat on the reason's last words after a first wrong tap (at 320 by 568 on 25 of pass ND's
                   150 screens in the light theme) and on the explanation's last word after the right one, so while the cue shows beside them
                   their lines end short of it. The explanation keeps it as one block, its words and its picture together (a spacing bank's
                   explanation shows its sentence as print fitted to its box, PrintWords, and "splash." and "dog." sat under the cue after the
                   right tap). The box keeps its full width and color; only what is in it steps aside. */}
-              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneLetters(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
+              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textAlign: 'center', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneLetters(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
               {(wasCorrect || !readAloud) && (
                 <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}>
-                  <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>
+                  <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} center />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} center /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>{q.choiceNotes[given]}</p>}</div>
                   {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
                   {Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
                   {q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
@@ -15299,7 +15304,13 @@ function EduSphereScreens() {
             {/* Mikey's layout: the name at the top, the label under it, the portrait under both, then the words in quotes. */}
             <VoiceName label={v.voice} size={21} color={C.green} />
             <WonderPortrait name={wonderVoice(v.voice) ? wonderVoice(v.voice).name : ''} size={96} note={!!(record && record.preview)} />
-            <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{'\u201C'}{wholeHyphens(v.says)}{'\u201D'}</p>
+            {/* Its last two words held together and its lines balanced, as a lesson line's are (lastTwoTogether; EARMARKS A142, pass NM's round one
+                screen read: 14 of the pass's 40 new card screens, eight cards at five widths, ended on one word alone). Measured in this paragraph
+                on all 552 short voices at 320 to 430 pixels wide (round three's read): 103 to 186 ended on one word alone with the page's own wrap,
+                2 to 49 with textWrap pretty, none with this, and no card's line count or height changed; balance alone left 3 of 3,864 card
+                screens on one word, and the held pair alone 1, a closing quote mark on a line of its own after the box that holds a pair of 20.
+                Its mark, data-wonder-voice-says, is for the browser check that reads it. */}
+            <p data-wonder-voice-says="" style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0', textWrap: 'balance' }}>{'\u201C'}{lastTwoTogether(wholeHyphens(v.says), v.says)}{'\u201D'}</p>
           </div>}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
@@ -17733,5 +17744,5 @@ function EduSphereScreens() {
     );
   }
 
-  return <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}><p>Something went wrong. <Btn kind="secondary" onClick={() => setScreen('overview')}>Back to overview</Btn></p></div></div>;
+  return <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}><p style={{ textAlign: 'center' }}>Something went wrong. <Btn kind="secondary" onClick={() => setScreen('overview')}>Back to overview</Btn></p></div></div>;
 }

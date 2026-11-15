@@ -574,7 +574,13 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.III.C.3', text: 'Child produces some distinct letter-sound correspondences with adult assistance.', moduleIds: ['letters-and-sounds'] },
       { framework: 'TEKS', code: 'PK3.IV.C.5', text: 'Child demonstrates emerging use of spacing in their writing attempts with adult support.', moduleIds: ['space-between-words'] },
       { framework: 'TEKS', code: 'PK3.III.E.4', text: 'Child begins to notice the basic features of print.', moduleIds: ['space-between-words'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['space-between-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['space-between-words', 'pictures-and-words'] },
+      // Pass NM: Listen to the story, PK3 III.D.4 whole and Head Start's P-LIT 5 in part, its 36 to 48 month progression (EARMARKS E12, the
+      // standards review of Domain III's questions about a story), and Pictures and words, PK3 III.E.2 whole, joining the P-LIT 2 row with its
+      // 36 to 48 month progression whole (print told from pictures, and print something meaningful).
+      { framework: 'TEKS', code: 'PK3.III.D.4', text: 'Child responds to questions relevant to the text read aloud with adult assistance.', moduleIds: ['listen-to-the-story'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.5', text: 'Asks and answers questions about a book that was read aloud.', moduleIds: ['listen-to-the-story'] },
+      { framework: 'TEKS', code: 'PK3.III.E.2', text: 'Child can distinguish between pictures and print.', moduleIds: ['pictures-and-words'] },
       // Pass NF: Look and write, PK3 IV.C.3 and IV.C.1 in part and Head Start's P-LIT 6 in part, its 36 to 48 month progression (EARMARKS E12,
       // Domain IV beside the letters: letter-like forms and real letters made with a model, and a name's first letter).
       { framework: 'TEKS', code: 'PK3.IV.C.3', text: 'Child uses letter like forms when writing and begins to include recognizable letters with a model and adult guidance.', moduleIds: ['look-and-write'] },
@@ -716,6 +722,10 @@ const PREK_TAUGHT = [
       // III.C.1 in part (eighteen big letters by name and seven small ones), joining the III.C.1 and P-LIT 3 rows.
       { framework: 'TEKS', code: 'PK4.III.E.4', text: 'Child can identify some conventional features of print that communicate meaning including end punctuation and case.', moduleIds: ['end-marks'] },
       { framework: 'TEKS', code: 'PK4.IV.C.6', text: 'Child experiments with and uses punctuation when writing.', moduleIds: ['end-marks'] },
+      // Pass NM: Questions about a story, PK4 III.D.4 whole and Head Start's P-LIT 5 in part, its 48 to 60 month progression (EARMARKS E13,
+      // the standards review of Domain III's questions about a story: who, what, where and when answered, and questions asked).
+      { framework: 'TEKS', code: 'PK4.III.D.4', text: 'Child asks and responds to questions relevant to the text read aloud with adult assistance.', moduleIds: ['story-questions'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.5', text: 'Asks and answers questions about a book that was read aloud.', moduleIds: ['story-questions'] },
       // Pass NL: Almost the same and More small letters, III.C.1 in part (with Small letters, fifteen small letters by name, as many as it asks,
       // and with the lessons before them twenty-two big letters, while naming them aloud is the child's own talk), each joining the III.C.1
       // and P-LIT 3 rows.

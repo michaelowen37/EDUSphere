@@ -361,6 +361,29 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
       && audit.includes("Changed in place again in pass NL, at Mikey's word (his answer to Q106), its pass NK words in docs/RULES-AUDIT-HISTORY.md.") && audit.includes('(changed at his word in pass NL, its pass NK words there too)') && audit.includes('and again in pass NL, at his word (his answers to Q105, Q106 and Q107 and his words for the two cards), its pass NK words there too.')
       && audit.includes("Corrected in pass NL, under Mikey's answer to Q85, each saying so,") && audit.includes("Changed in pass NL, at Mikey's word (his answers to Q105, Q106 and Q107 and his words for the two Wonder cards), each saying so,")
       && !/\n- Q10[5-7]\. (?!Answered)/.test(audit), JSON.stringify({ nl: digest(nl).slice(0, 12), word: digest(word).slice(0, 12), q85: digest(q85).slice(0, 12), rowsWord: rowsWord.length, rows85: rows85.length, said, saidAgain })); }
+  // The question answered in pass NM (Q108, asked by the dialog at its start and answered at once, "Three lessons, about 15"), in a block
+  // of its own with what was built and the question in gist, its words not kept past the chat's summary; answered in one line in section
+  // 11; the row his answer changed (section 9's row on a pass of six lessons in two waves), as pass NL left it; and, since round three's
+  // whole read of RULES-AUDIT's second half (the block had been held by nothing), the nine rows pass NM corrected under Q85 as pass NL left
+  // them: section 8's rows on no word under the scroll cue and on the reading light, section 5's on a painting and its line, section 6's on
+  // a picture answer's name, section 7's on the four Wonder voices, section 9's on an id defined once and on which model a task runs on,
+  // and, from the lead's runs after round three, section 8's on the tile and paper edges, their floors at the pass's counts. Each block is held by its digest,
+  // each changed or corrected row says so, and section 9's row for Q85 names them.
+  { const block = (name) => { const o = `<!-- ${name}: begin -->\n`; const ia = hist.indexOf(o); const ib = hist.indexOf(`<!-- ${name}: end -->`); return ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : ''; };
+    const digest = (t) => createHash('sha256').update(t, 'utf8').digest('hex');
+    const nm = block("RULES-AUDIT section 11's answered questions in pass NM, word for word");
+    const word = block("RULES-AUDIT rows as pass NL left them, before pass NM changed them at Mikey's word, word for word"); const rowsWord = word.split('\n').filter(Boolean);
+    const q85 = block("RULES-AUDIT rows as pass NL left them, before pass NM corrected them under Mikey's answer to Q85, word for word"); const rows85 = q85.split('\n').filter(Boolean);
+    const OPEN85 = ['| **No word under the scroll cue on a short phone', '| **A painting and its line (pass ML', '| **A picture answer tells a screen reader its name (pass MO', '| **A pre-reader hears all four Wonder voices', '| **The reading light never moves the words', '| **An id is defined once (pass MX)', '| **Which model a task runs on (Mikey, pass NC', '| **Every drawing on an answer tile reads at its edge (pass ND', "| **Every drawing on the dark theme's lesson paper reads at its edge (pass NE"];
+    const said = audit.split("Corrected in place in pass NM (Mikey's answer to Q85), its pass NL words in docs/RULES-AUDIT-HISTORY.md.").length - 1;
+    const saidAgain = audit.split("Corrected in place again in pass NM (Mikey's answer to Q85), its pass NL words there too.").length - 1;
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the question answered in pass NM, Q108, unchanged, answered in one line in section 11 and none open after it, the row his answer changed and the nine rows pass NM corrected under Q85 as pass NL left them, each block held by its digest, each row saying so and section 9's row for Q85 naming them (pass NM)",
+      /^- Q108\. Answered in pass NM \(Mikey: "Three lessons, about 15"\)/m.test(nm) && /^- Q108\. .*The question as it stood: /m.test(nm) && /\n- Q108\. Answered in pass NM \(Mikey: "Three lessons, about 15", picked in the dialog at the pass's start\)\. Its rule lives in section 9 /.test(audit)
+      && digest(nm) === 'b611a2c7616ed4c7872a7b48cb157afbea9694337d46a2f71c0747edafc004d9' && rowsWord.length === 1 && rowsWord[0].startsWith('| **A pass of six lessons in two waves, tried (Mikey\'s answer to Q101') && digest(word) === '1424bb1ac9a72bc856c09fa9f1ac366a5da2943f87a4f7455a141c6fed861a2b'
+      && audit.includes("Changed in place in pass NM, at Mikey's word (his answer to Q108), its pass NL words in docs/RULES-AUDIT-HISTORY.md.") && audit.includes("Changed in pass NM, at Mikey's word (his answer to Q108), saying so,")
+      && rows85.length === 9 && OPEN85.every((w, k) => rows85[k] && rows85[k].startsWith(w)) && digest(q85) === '2c46b86e87ab46ff8b13fb739aa383f8b93965d5c3dfd21875cf2a1a79258c2c' && said === 3 && saidAgain === 6
+      && audit.includes("Corrected in pass NM, under Mikey's answer to Q85, saying so,") && audit.includes("And since round three's whole reads of this file: section 5's row on a painting and its line")
+      && !/\n- Q108\. (?!Answered)/.test(audit), JSON.stringify({ nm: digest(nm).slice(0, 12), word: digest(word).slice(0, 12), q85: digest(q85).slice(0, 12), rowsWord: rowsWord.length, rows85: rows85.length, said, saidAgain })); }
   { const o = "<!-- RULES-AUDIT rows as pass NI left them, before pass NJ changed them at Mikey's word, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT rows as pass NI left them, before pass NJ changed them at Mikey's word, word for word: end -->");
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps the rows and lines pass NJ changed at Mikey's word as pass NI left them (Stay neutral, one look per person, the picture-like drawings and the reflections row; and since round two's whole read My Classroom's line, the two sound paragraphs, Wonder text, the plan's audio paragraph and Q5's line), each changed one says so, and none of the old approval sentences stands (pass NJ)", /^- \*\*Stay neutral\.\*\* Four voices and none is right\. Nothing argues for or against religion\. Nothing reaches a child until the school approves it\./.test(kept) && kept.includes('\n| **One look per person, and what a picture tells apart') && kept.includes("\n| **The app's picture-like drawings, painted as their own set after the review") && kept.includes('every course has at least one; nothing offered until approved;') && createHash('sha256').update(kept, 'utf8').digest('hex') === '0f17b3c3973d6553f6d5b64047ea1e48eb2ddc2f19bf840e66f0e355579bbf63'
@@ -650,6 +673,17 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const plants = [!!count && stale('QUESTION-POOLS', pools.replace(count[0], ' of ' + (+count[1] - 3) + ' modules')), ledger.includes(goal) && stale('AUDIO-LEDGER', ledger.replace(goal, '[saying just the m sound of moon, a steady hum with the lips closed]'))];
   ok(`every generated doc is what its tool prints today, the date it was made aside (${made.size} docs; two near misses caught)`, off.length === 0 && plants.every(Boolean),
     `stale ${off.map((d) => 'docs/' + d + '.md').join(', ')} (run each doc's tool with > into it); near misses ${plants}`); }
+// TEA's guidelines page looked at in each pass that cites pre-K (EARMARKS L17; pass NM, round three's whole reads of EARMARKS and of
+// INDEPENDENT-CHECKS: passes NJ, NL and NM each cited pre-K codes and recorded no look until a later read found it missing): when the
+// newest DECISIONS entry cites a 2027 pre-K code (PK3 or PK4 and a code), L17 says "Checked in pass" and that entry's pass. The row with
+// that pass's clause renamed, planted, is caught.
+{ const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8'); const ear = readFileSync(new URL('../docs/EARMARKS.md', import.meta.url), 'utf8');
+  const heads = [...dec.matchAll(/^## (\d{4}-\d{2}-\d{2})[^\n]*$/gm)]; const last = heads[heads.length - 1];
+  const code = last ? ((last[0].match(/\(pass ([A-Z]{2})\)/) || [])[1] || '') : ''; const end = last ? dec.indexOf('\n## ', last.index + 5) : -1;
+  const body = last ? dec.slice(last.index, end < 0 ? dec.length : end) : ''; const cites = /\bPK[34] [IVX]+\.[A-Z]\.\d/.test(body);
+  const l17 = ear.split('\n').find((l) => l.startsWith('| L17 |')) || ''; const names = (row) => !!code && row.includes(`Checked in pass ${code} (`);
+  ok(`EARMARKS L17 records a look at TEA's guidelines page in the newest pass when it cites pre-K (pass ${code || '?'}${cites ? ', which cites pre-K' : ', which cites no pre-K code'}; the look renamed to another pass, planted, caught)`,
+    !!l17 && (!cites || (names(l17) && !names(l17.split(`Checked in pass ${code} (`).join('Checked in pass XX (')))), cites ? 'add "Checked in pass ' + code + ' (...)" to L17 once the page is read' : ''); }
 // NEW-CHAT names the newest preview (pass NB, the lead's read of How a pass is delivered: pass NA published a new preview, recorded in
 // its DECISIONS entry, and NEW-CHAT's chain still began with pass MZ's link, so a new chat would have been told to update a page two
 // passes old). The first link of the chain, after "since pass", is the newest DECISIONS entry's preview; a chain one pass behind is
@@ -830,5 +864,15 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     if (/^tests\/e2e\/(out|art)$|node_modules/.test(rel)) continue; if (statSync(new URL('../' + rel, import.meta.url)).isDirectory()) walk(rel, out); else out.push(rel); } return out; };
   const files = ['src', 'tools', 'tests', 'docs'].flatMap((d) => walk(d)); const hidden = (list) => list.filter((f) => { const n = f.split('/').pop(); return n.startsWith('.') && n !== '.DS_Store'; });   // a Mac's Finder makes .DS_Store in Mikey's folder (.gitignore's first line), never a scratch file (the third read's code read)
   ok(`no hidden scratch file sits in src, tools, tests or docs (pass NI, round two; ${files.length} files read; tests/.lines-run.mjs, planted, caught; a Mac's .DS_Store passed, since pass NI's third read)`, files.length >= 150 && hidden(files).length === 0 && hidden([...files, 'tests/.lines-run.mjs']).length === 1 && hidden([...files, 'docs/.DS_Store']).length === 0, hidden(files).join(', ')); }
+// Pass NN (Mikey, opening pass NN: "You don't really need to keep Fable under 90, just under 100%."): section 9's row on which
+// model a task runs on changed at his word, its pass NM words kept word for word in docs/RULES-AUDIT-HISTORY.md under a digest,
+// and the row says so; a block edited by one letter, planted, is caught.
+{ const { createHash } = await import('node:crypto');   // imported here, as the blocks above import it inside their own
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const mark = "RULES-AUDIT rows as pass NM left them, before pass NN changed them at Mikey's word, word for word";
+  const inside = (t) => { const a = t.indexOf(`<!-- ${mark}: begin -->\n`); const b = t.indexOf(`\n<!-- ${mark}: end -->`); return a < 0 || b < a ? '' : t.slice(a + `<!-- ${mark}: begin -->\n`.length, b); };
+  const dig = (t) => createHash('sha256').update(inside(t), 'utf8').digest('hex').slice(0, 8);
+  ok(`docs/RULES-AUDIT-HISTORY.md keeps section 9's model row as pass NM left it, before pass NN changed it at Mikey's word, unchanged (digest ${dig(hist)}), and the row says so (a block edited by one letter, planted, caught)`,
+    dig(hist) === '99ab0173' && audit.includes("Changed in place in pass NN, at Mikey's word, its pass NM words there too.") && dig(((i) => hist.slice(0, i) + 'about 41' + hist.slice(i + 8))(hist.lastIndexOf('about 40 percent of a week is the aim'))) !== '99ab0173', dig(hist)); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

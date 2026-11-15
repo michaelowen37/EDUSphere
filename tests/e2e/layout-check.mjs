@@ -13,12 +13,20 @@
 //           whose middle sits more than 3 pixels from the row's own middle, as Grow the Plant's question did beside its speaker
 //           before pass MQ; and, since round three of pass MR, the words on the line of a centered block (a paragraph, a line with a
 //           link) that an icon shares in the line's own flow, as "Back to recommended courses" and three paragraphs ending in an i
-//           did on the educator's pages.
+//           did on the educator's pages;
+//   uncentered (since pass NN, when asked: opts.align) a short block of words, three lines or fewer, set to its left edge with
+//           room to spare at its right, inside a box (the feedback card, a card, the screen) where it is not part of a run of
+//           reading (a left-set block of more than three lines in the same box), while other words on the screen sit in the
+//           middle, as the reason after a wrong tap did under the centered question and choices until pass NN (Mikey: "I
+//           noticed that this text, when an incorrect answer is chosen, is not centered.  This and most all other text looks
+//           better centered, especially when all other text on the screen is also centered."). Words in a button or a link, a
+//           form, a list or a table, a bullet's hanging line, one item of a row (a label beside its button, a back link at the
+//           left of the top row) and a block marked data-align-start (left on purpose, with its reason beside it) are not read.
 // Text a screen hides on purpose (display none, visibility hidden, opacity 0, a measuring copy held at no height, a screen reader's
 // only text) is skipped, and so is text inside an element marked data-layout-free (a ticker that scrolls on purpose, a long word in a
 // table a person scrolls sideways). Each problem names its words, the box, and how many pixels it is out by.
 export const layoutProblems = function (rootSelector, opts) {
-  const o = Object.assign({ spillPx: 0.75, offsetPx: 3, overlap: false }, opts || {});
+  const o = Object.assign({ spillPx: 0.75, offsetPx: 3, overlap: false, align: false, gapPx: 16 }, opts || {});
   const root = typeof rootSelector === 'string' ? document.querySelector(rootSelector) : (rootSelector || document.body);
   if (!root) return [{ kind: 'missing', text: String(rootSelector) }];
   const out = [];
@@ -131,6 +139,36 @@ export const layoutProblems = function (rootSelector, opts) {
       const off = (Math.min(...line.map((r) => r.left)) + Math.max(...line.map((r) => r.right))) / 2 - mid;
       const key = `block|${label(block)}|${Math.round(off)}`;
       if (Math.abs(off) > o.offsetPx && !seen.has(key)) { seen.add(key); out.push({ kind: 'offset', text: words(block.textContent || '').slice(0, 60), row: label(block), by: +off.toFixed(1) }); }
+    }
+  }
+  // Uncentered (pass NN): each visible text node's words belong to their nearest block (the element that lays out their lines). A
+  // block is read when its words start at its left edge and its longest line leaves more than gapPx at its right, so the side it
+  // keeps to shows; a block of more than three lines is reading, and a box that holds one keeps its short lines beside it.
+  if (o.align) {
+    const blockOf = (el) => { for (let n = el; n; n = n.parentElement) { const d = getComputedStyle(n).display; if (d !== 'inline' && d !== 'contents') return n; } return null; };   // an inline-block (a button) lays out its own lines
+    const free = (b) => !!b.closest('button, a, [role="button"], label, input, textarea, select, table, ul, ol, svg, [data-layout-free], [data-align-start]');
+    const inRow = (b) => { const p = b.parentElement; if (!p) return false; const pc = getComputedStyle(p); return /flex|grid/.test(pc.display) && !(pc.flexDirection || '').startsWith('column') && [...p.children].filter((k) => !hidden(k)).length > 1 && !(pc.display.includes('grid') && pc.gridTemplateColumns.split(' ').length < 2); };
+    const blocks = new Map(); const tw2 = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = tw2.nextNode(); n; n = tw2.nextNode()) { if (!words(n.nodeValue || '')) continue; const el = n.parentElement; if (!el || hidden(el) || el.closest('svg')) continue; const b = blockOf(el); if (!b) continue; if (!blocks.has(b)) blocks.set(b, []); blocks.get(b).push(n); }
+    const facts = [];
+    for (const [b, nodes] of blocks) {
+      const cs = getComputedStyle(b); const rects = [];
+      for (const n of nodes) { const rg = document.createRange(); rg.selectNodeContents(n); rects.push(...[...rg.getClientRects()].filter((r) => r.width > 0 && r.height > 0)); }
+      if (!rects.length) continue;
+      const r = b.getBoundingClientRect(); const cl = r.left + (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.borderLeftWidth) || 0); const cr = r.right - (parseFloat(cs.paddingRight) || 0) - (parseFloat(cs.borderRightWidth) || 0);
+      const lines = new Set(rects.map((x) => Math.round((x.top + x.bottom) / 8))).size;
+      const left = Math.min(...rects.map((x) => x.left)); const right = Math.max(...rects.map((x) => x.right));
+      const mid = cs.textAlign === 'center' || (/flex|grid/.test(cs.display) && (cs.justifyContent === 'center' || cs.justifyItems === 'center'));
+      const start = /^(left|start|justify)$/.test(cs.textAlign) && cs.direction !== 'rtl' && !mid;
+      facts.push({ b, box: boxOf(b), lines, start, mid, free: free(b), row: inRow(b), hang: (parseFloat(cs.textIndent) || 0) < 0, atLeft: left - cl <= 2, room: cr - right, text: words(nodes.map((n) => n.nodeValue).join(' ')) });
+    }
+    const middle = facts.filter((f) => f.mid).length;
+    for (const f of facts) {
+      if (!f.start || f.free || f.row || f.hang || f.lines > 3 || !f.atLeft || f.room <= o.gapPx) continue;
+      if (facts.some((g) => g !== f && g.box === f.box && g.start && !g.free && g.lines > 3)) continue;
+      if (!facts.some((g) => g !== f && g.mid) || middle === 0) continue;
+      const key = `uncentered|${f.text}`; if (seen.has(key)) continue; seen.add(key);
+      out.push({ kind: 'uncentered', text: f.text.slice(0, 60), box: label(f.box), by: Math.round(f.room) });
     }
   }
   return out;

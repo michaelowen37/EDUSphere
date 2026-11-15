@@ -200,6 +200,26 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NM (Mikey's answer Q108, pre-K's questions about a story and print and pictures in three lessons)
+
+- A question that asks for a word is read for every word that does what it asks: "Which word can start your question?" had two true answers, since what can start a question about a time or a place, so the bank asks for the word by what it asks about.
+- A bank's prompts are read across rounds as built: a later round leaves out the last two rounds' questions, so four prompts, one to an answer, made a word not asked lately right 50 percent of the time where chance is 25, until each question named its own example.
+- The echo rule keys a question on the thing it asks about alone: keyed on the other picture too, two print kinds were dropped from about 45 percent of rounds; a check now holds each kind once a round.
+- A reason is said in its own lesson's words: the feel reasons leaned on the feelings lesson's signs, a big smile and a tear, which no line of Listen to the story says; they tell a feeling by the story's moment now, and the app-wide face rule lets that one shape through.
+- A story bank is read blind two ways, by a child who heard only the story and one who heard only the question, and its by-design 100s are named rather than hidden.
+- A row is read for what stands together: two lines that teach who found a thing drew it beside the friend who did not.
+- The stories a pass writes are read against their subject's stories at both ages before round one: the two listening stories told one plot a year apart, a grown-up's tale on a couch with the part the child missed.
+- A Wonder voice that tells a study is read in the paper, not its press release: the release had the cats never in the slips, and the writer's own guess, which the release does not make, had only the misnamed asked, where the paper asked both and found cats rarely.
+- A claim about words is said of the writing it is true of: in English words are made of letters, and these pictures have none.
+- Screen-reader words written for one bank are read in every older bank: "the words, g" named a letter in Space between words.
+- A new check is run before it is trusted: the voice card's lone-word check read the card's name, not its quote, counted the closing quote mark as a word, and took names a later check in its file held, so the file would not have parsed.
+- A measure is read for the element it names, as its check is: the lead's measure of the voice card read a copy of the voice's name, the paragraph round two found the browser check reading, so the card's own counts were found only in round three.
+- A record's claim about a check is read against the check: section 6's row called the whole rounds' blind reads bounded, and nothing bounds them; they are measured, and the record says so.
+- A question's choices are named to a screen reader in one form: "the words" named Space between words' answer alone, every other choice "the writing", in every question of which one has spaces.
+- A 2022 code's successor is read in the 2027 file's own note: E12 and E13 marked the predictions outcome as taught, where the lessons teach what the 2022 III.D.3 asked.
+- A pick keeps its scope: "Three lessons, about 15" sized this pass; a standing rule and the Fable line beside it were Claude's, and are credited so.
+- A report is saved the moment it arrives: two of round three's five were lost when the chat compacted before they were saved.
+
 ## Learned in pass NL (Mikey's answers Q105 to Q107 and his Wonder words, the CLAUDE files trimmed, and pre-K 4's eight small letters)
 
 - A bank made for several lessons by one maker is read in every lesson it makes: the three-choice screens built for More small letters changed Small letters' big and find questions for every child, which a digest of the older banks now shows.

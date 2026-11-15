@@ -69,7 +69,10 @@ const seedsOf = (g) => (/^p[34]-(?:turn|rect)-/.test(g) ? [...new Set([...Array.
 // November 13 read (its six lessons, 79 lines and 30 banks; the cue on 40 lines in each theme; no lesson line of the six shows a painting).
 // Since pass NL every floor is the count its run of 12:51 AM on November 14 read (its two lessons, 26 lines and 10 banks; 234 kept
 // spans and 6,022 sentences lit, where pass NK's floors were 226 and 5,888; the cue still on 40 lines in each theme and 112 paintings).
-const FLOORS = { lines: 1262, banks: 497, cue: { light: 40, dark: 40 }, paintings: 112, whole: 234, lit: 6022 };
+// Since pass NM every floor is the count its run of 10:50 AM on November 14 read (its three lessons, 39 lines and 15 banks: 1,301 lines
+// and 512 banks; 6,206 sentences lit; the kept spans still 234, the cue still on 40 lines in each theme and 112 paintings), and since its
+// run of 3:39 PM after round three's fixes 6,212 sentences lit, round two's lines having added six (every other count the same).
+const FLOORS = { lines: 1301, banks: 512, cue: { light: 40, dark: 40 }, paintings: 112, whole: 234, lit: 6212 };
 // EARMARKS A82 decided (pass NC, round one's screen check): at 320 by 568 no pre-K lesson line ends on one lone word (25 of the 69 lines
 // past six lines did, where a browser balances nothing), a line past six lines wrapping pretty (LessonWords in ui.jsx). A line that
 // must end alone is named here by lesson and line with the reason; a wait for a line that no longer ends alone fails.

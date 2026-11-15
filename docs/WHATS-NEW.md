@@ -9,6 +9,18 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 14, 2026 (answers that line up with the question)
+
+- When a child taps a wrong answer, the reason now sits in the middle of its box, right under the question and the answers, so it is easier to find and to read.
+- The explanation after a right answer is centered now too. So are a few other short lines that sat off to the left, like the count of modules mastered on the courses page.
+
+## November 14, 2026 (listening to a story, pictures and words, and two new Wonder questions)
+
+- In Listen to the story, three-year-olds hear a short story read aloud, like a duck who loses a hat and a bear who finds it in a box, and then answer questions about it: who lost the hat, who found it, where the duck looked, and how the duck felt. Every question tells a new little story, so your child answers by listening, and at the end your child tells you which story they liked best.
+- In Pictures and words, three-year-olds learn that a page can have a picture and words. The picture shows us something, and the words tell us something, so we read the words. In English, words are made of letters, and the pictures in this lesson have none. Your child taps the words or the picture, finds the one a grown-up can read, and learns to ask you, "What does this say?"
+- In Questions about a story, four-year-olds answer who, what, where and when about a story, like the fox and the owl who went to the lake one morning, when the sun was up. They also learn which word asks about what: who asks about someone, what can ask about a thing, where asks about a place and when asks about a time. Then it's your child's turn to ask you a question about a story.
+- Two new Wonder questions for young children: someone you love is smiling and crying at the same time (can a person cry when they are happy?), and calling a friend by the wrong name (what now?).
+
 ## November 14, 2026 (eight more small letters, and Wonder Questions in plain words)
 
 - Four-year-olds now meet the eight small letters that were still waiting. In Almost the same, small k, p, u and y each look a lot like their big letters with one small change: small k has two short arms where big K has two long ones, small p hangs down low, small u has a line all the way down its right side, and small y has a long tail. In More small letters, small e, i, r and t look different from their big letters, so your child learns each one with its name and the big letter it goes with. With Small letters before them, that's fifteen small letters, as many as Texas asks four-year-olds to name (the others, like a, b and d, come later), and Small letters' questions that show three letters now never show two whose names rhyme, like see and zee, side by side.

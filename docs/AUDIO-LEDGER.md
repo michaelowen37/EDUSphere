@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-11-14 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 13672 clips, 2,045,375 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 268 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-14 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 13795 clips, 2,058,599 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 271 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -21,7 +21,7 @@ Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to st
 
 | Build | What it holds | Clips | Characters |
 |---|---|---|---|
-| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9113 | 1,029,634 |
+| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9236 | 1,042,858 |
 | 2 | Grade 2 and up | 4559 | 1,015,741 |
 
 ## Emphasis, sounds and descriptions (pass MW)
@@ -76,7 +76,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 9366 | 1,061,287 |
+| Pre-K to grade 2 | 9489 | 1,074,511 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,910 |
@@ -102,9 +102,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 731 |
-| story | 4808 |
-| lesson line | 6749 |
+| story title | 734 |
+| story | 4833 |
+| lesson line | 6844 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -1335,6 +1335,40 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S4173-6: [curious] Shawn tapped the key with the big E. Up came a round letter with a line across its middle. [in a small, husky boy voice, delighted] So that is small e! [softly] said Shawn. [in a small, husky boy voice, proud] It goes with big E.
 - S4173-7: [playful] Next he tapped the big I. Up came a short line with a dot on top. [in a small, husky boy voice, proud] Small i goes with big I! [warmly] said Shawn.
 - S4173-8: [slowly, warmly] Some small letters look different from their big letters, so we learn each small shape and the big letter it goes with.
+
+### Who found the hat? (S4177, listen-to-the-story)
+
+- S4177-1: [cheerful] Grandma brushed Tabitha's hair and told her a story. [playful] Tabitha was busy wiggling her toes.
+- S4177-2: [in a soft, sing-song grandma voice, telling a story] A duck lost a hat and felt sad, [softly] said Grandma. [in a soft, sing-song grandma voice, telling a story] The duck looked under the bed, but the hat was not there. Then a bear found the hat in a box, and the duck felt happy.
+- S4177-3: [in a soft, sing-song grandma voice, curious] Who found the hat? [softly] asked Grandma. Tabitha had not heard that part. [in a small, chirpy girl voice, sure of herself] It was the duck's hat, so the duck found it! [softly] she said.
+- S4177-4: [pause] Grandma put down the brush. [in a soft, sing-song grandma voice, gently] A story tells who is in it and what happens, [softly] she said. [in a soft, sing-song grandma voice, slowly] Listen for who is in it, what they do, and where things are.
+- S4177-5: [warmly] She told the story again. [curious] This time Tabitha kept her toes still and listened to every part.
+- S4177-6: [in a soft, sing-song grandma voice, playful] Who found the hat, and where? [softly] asked Grandma. [in a small, chirpy girl voice, delighted] The bear found it in the box! And the duck felt happy! [softly] said Tabitha.
+- S4177-7: [in a soft, sing-song grandma voice, warmly] And which part of the story did you like best? [softly] asked Grandma. [in a small, chirpy girl voice, happily] When the bear found the hat, [playful] said Tabitha, and she wiggled her toes again.
+- S4177-8: [slowly, warmly] When you hear a story, listen for who is in it, what they do, and where things are. Then you can answer questions about it.
+
+### A fish in the mail (S4181, pictures-and-words)
+
+- S4181-1: [cheerful] A card came in the mail for Barnaby. [curious] On its front was a picture of an orange fish.
+- S4181-2: [in a small, breathy boy voice, excited] Someone is sending me a fish! [softly] said Barnaby. [puzzled] He looked and looked at the picture, but it did not show him who.
+- S4181-3: [pause] Mom turned the card over. [curious] The back had no picture at all, only rows of little letters.
+- S4181-4: [in a warm, lively mom voice, gently] These are words, [softly] said Mom, [in a warm, lively mom voice, slowly] and they are made of letters. The picture shows us a fish, and the words tell us something, so we read the words.
+- S4181-5: [thoughtful] Barnaby could not read yet. He put his finger under the words and asked, [in a small, breathy boy voice, curious] What does this say?
+- S4181-6: [warmly] Mom read the words out loud. [in a warm, lively mom voice, reading aloud] I have a new pet fish, so come and see it. Love, Grandpa.
+- S4181-7: [cheerful] So that afternoon they went to Grandpa's house, and there swam the fish, as orange as its picture. A jar on the shelf had words on it, and Barnaby pointed at them. [in a small, breathy boy voice, curious] What does this say? [softly] he asked, and Grandpa read it out loud for him. [in a deep, crinkly grandpa voice, playful] Fish food!
+- S4181-8: [slowly, warmly] A picture shows us something, and words tell us something too. When you see words, you can ask a grown-up, what does this say?
+
+### Where did they go? (S4185, story-questions)
+
+- S4185-1: [cheerful] Dad told Desmond a story on the couch, while their dog napped on the rug. [in a warm, easy dad voice, telling a story] One morning, when the sun was up, the fox and the owl went out, [softly] he said.
+- S4185-2: [in a warm, easy dad voice, telling a story] The fox found a kite, and the owl found a book, [softly] said Dad. That was the end.
+- S4185-3: [curious] Dad had not said where they went, and Desmond wanted to know the place.
+- S4185-4: [thoughtful] So he asked, [in a small, quick boy voice, hopeful] Who went? [in a warm, easy dad voice, kindly] The fox and the owl, [softly] said Dad. That was not it, so he asked what they found, and Dad said a kite and a book.
+- S4185-5: [pause] [in a warm, easy dad voice, gently] To know a place, start with where, [softly] said Dad. [in a warm, easy dad voice, slowly] A who question asks about someone, and a what question can ask about a thing. A where question asks about a place.
+- S4185-6: [in a small, quick boy voice, eager] Where did the fox and the owl go? [softly] asked Desmond. [in a warm, easy dad voice, delighted] To the lake! [softly] said Dad.
+- S4185-7: [in a small, quick boy voice, curious] When did they go? [playful] asked Desmond next. Dad said, [in a warm, easy dad voice, warmly] A when question asks about a time. They went one morning, when the sun was up.
+- S4185-8: [warmly] Now Desmond knew every part of the story, and he asked for another one.
+- S4185-9: [slowly, warmly] Listen for who, what, where and when in a story, and ask questions about it too.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

@@ -1673,6 +1673,21 @@ const ponder = () => page.evaluate(() => {
   const cardFaults = (pg) => pg.evaluate(() => { const out = []; const els = [...document.querySelectorAll('[data-wonder-asked], [data-wonder-voice-card] p, [data-wonder-closing] p')]; if (els.length < 2) return ['no card'];
     for (const el of els) { const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = walker.nextNode())) for (const m of n.textContent.matchAll(/[A-Za-z]+-[A-Za-z]+/g)) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const tops = new Set([...rg.getClientRects()].map((x) => Math.round(x.top))); if (tops.size > 1) out.push(`"${m[0]}" split across two lines`); } } return out; });
   const shownCard = (pg) => pg.evaluate(() => { const c = document.querySelector('[data-wonder-voice-card], [data-wonder-closing]'); return c ? c.textContent.replace(/\s+/g, ' ') : ''; });
+  // Since pass NM (EARMARKS A142, round one's screen read: 14 of the pass's 40 new voice cards ended on one word alone) a voice card holds its
+  // last two words together and balances its lines, as a lesson line does (lastTwoTogether), read here on every voice card this walk
+  // reads at its six widths in both themes. Its plant: the card's own wrap and plain spaces put back, a card that then ends on one word
+  // alone, caught.
+  // Round two's read: it reads the quote's own paragraph (the card's first paragraph is the voice's name), and counts words across the
+  // paragraph's whole text, so the closing quote mark, a text node of its own, belongs to the last word; a no-break space is white space
+  // here, so a held pair counts as two words on one line.
+  const voiceLone = (pg, undo) => pg.evaluate((u) => { const p = document.querySelector('[data-wonder-voice-card] [data-wonder-voice-says]'); if (!p) return null; const keep = [];
+    if (u) { keep.push(['style', p.getAttribute('style') || '']); p.style.textWrap = 'wrap'; const w = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (n.data.includes('\u00a0')) { keep.push([n, n.data]); n.data = n.data.replace(/\u00a0/g, ' '); } }
+    const rg = document.createRange(); const tops = []; const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); const nodes = []; let n; while ((n = walker.nextNode())) nodes.push(n);
+    let open = false; for (const nd of nodes) for (let i = 0; i < nd.data.length; i++) { if (/\s/.test(nd.data[i])) { open = false; continue; } if (!open) { rg.setStart(nd, i); rg.setEnd(nd, i + 1); const rc = rg.getClientRects()[0]; if (rc) { tops.push(Math.round(rc.top)); open = true; } } }
+    for (const [k, v] of keep) { if (k === 'style') p.setAttribute('style', v); else k.data = v; }
+    const last = tops[tops.length - 1]; return new Set(tops).size > 1 && tops.filter((t) => t === last).length === 1; }, !!undo);
+  const VOICE_CARDS = CARDED.reduce((n, w) => n + L.wonderPreReaderCards(w, 0).filter((c, k) => c.says && toRead(w)[k]).length, 0);
+  const voiceLoneFaults = []; let voiceLoneRead = 0; let voiceNewRead = 0; let plantVoiceLone = null;
   const cardFaultList = []; let cardsRead = 0; let cardScreens = 0; let plantCard = null;
   for (const theme of ['light', 'dark']) { const { ctx, pg, isScreen } = await openAs(theme, 375, 800);
     for (const w of CARDED) { const cards = L.wonderPreReaderCards(w, 0); const read = toRead(w); await pg.setViewportSize({ width: 375, height: 800 });
@@ -1681,13 +1696,26 @@ const ponder = () => page.evaluate(() => {
         if (!(await shownCard(pg)).includes(words)) { cardFaultList.push(`${theme} ${w.id} card ${k + 1}: not the card expected`); break; }
         if (read[k]) { cardsRead += 1;
           for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(120); cardScreens += 1; for (const f of await cardFaults(pg)) cardFaultList.push(`${theme} ${width} ${w.id} card ${k + 1}: ${f}`);
+            if (cards[k].says) { voiceLoneRead += 1; if (await voiceLone(pg, false)) voiceLoneFaults.push(`${theme} ${width} ${w.id} card ${k + 1}`); if (plantVoiceLone !== true && (await voiceLone(pg, true))) plantVoiceLone = true; }
             if (plantCard === null && width === 320 && cards[k].says && HYPHEN.test(cards[k].says)) { const set = await pg.evaluate(() => { const s = document.querySelector('[data-wonder-voice-card] p [data-whole-word]'); if (!s) return false; window.__was = s.getAttribute('style') || ''; s.setAttribute('style', 'display: inline-block; width: 4ch; white-space: normal; word-break: break-all'); return true; });
               plantCard = set && (await cardFaults(pg)).some((f) => f.includes('split across')); await pg.evaluate(() => { const s = document.querySelector('[data-wonder-voice-card] p [data-whole-word]'); if (s) s.setAttribute('style', window.__was); delete window.__was; }); } }
+          await pg.setViewportSize({ width: 375, height: 800 }); await pg.waitForTimeout(80); }
+        if (k < cards.length - 1) { await pg.getByLabel('Next', { exact: true }).first().click({ force: true }); await pg.waitForTimeout(250); } } }
+    // The pass NM questions round one's screen read found lone words in, every voice card of each (round two's read: w-early-happy-tears has
+    // no hyphenated word, so the walk above leaves it out).
+    for (const id of ['w-early-happy-tears', 'w-early-wrong-name']) { const w = L.WONDER.find((x) => x.id === id); const cards = L.wonderPreReaderCards(w, 0); await pg.setViewportSize({ width: 375, height: 800 });
+      await pg.evaluate((x) => window.__eduTest.openWonderVoices(x, 'big-and-little'), id); await isScreen('wonder-voices'); await pg.waitForTimeout(250);
+      for (let k = 0; k < cards.length; k++) { const words = String(cards[k].says || cards[k].closing).replace(/\s+/g, ' ');
+        if (!(await shownCard(pg)).includes(words)) { voiceLoneFaults.push(`${theme} ${id} card ${k + 1}: not the card expected`); break; }
+        if (cards[k].says) { for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(120); voiceNewRead += 1;
+          if (await voiceLone(pg, false)) voiceLoneFaults.push(`${theme} ${width} ${id} card ${k + 1}`); if (plantVoiceLone !== true && (await voiceLone(pg, true))) plantVoiceLone = true; }
           await pg.setViewportSize({ width: 375, height: 800 }); await pg.waitForTimeout(80); }
         if (k < cards.length - 1) { await pg.getByLabel('Next', { exact: true }).first().click({ force: true }); await pg.waitForTimeout(250); } } }
     await ctx.close(); }
   ok(`the cards a pre-reader meets after a Wonder question, its voices and its closing card with the question above them, keep a hyphenated word such as grown-up whole at 320, 340, 360, 375, 390 and 412 pixels wide in both themes (pass ND, round two's code read; ${CARDED.length} early questions, ${cardsRead} cards read on ${cardScreens} screens; a voice card's hyphenated word let break, planted, caught)`,
     CARDED.length >= 25 && cardFaultList.length === 0 && cardsRead === 2 * EXPECTED && cardScreens === cardsRead * 6 && plantCard === true, { cardFaultList: cardFaultList.slice(0, 6), expected: EXPECTED, cardsRead, cardScreens, plantCard });
+  ok(`a pre-reader's Wonder voice card never ends on one word alone, its last two words held together and its lines balanced, at 320, 340, 360, 375, 390 and 412 pixels wide in both themes (EARMARKS A142, pass NM's round one screen read; ${voiceLoneRead} voice card screens of the walk and ${voiceNewRead} of the pass's two new questions read, round two's read; the card's own wrap and plain spaces put back, planted, caught)`,
+    VOICE_CARDS >= 30 && voiceLoneRead === VOICE_CARDS * 12 && voiceNewRead === 96 && voiceLoneFaults.length === 0 && plantVoiceLone === true, { voiceLoneFaults: voiceLoneFaults.slice(0, 6), voices: VOICE_CARDS, voiceLoneRead, voiceNewRead, plantVoiceLone });
   // A reader's screens (the third read): grade 2's reading, numbers and writing courses are not read aloud and are dealt early Wonder
   // questions, so a reader meets the question with its options printed as buttons, and every voice with the closing card on one page.
   // Each is opened from a grade 2 lesson (vowel-teams), checked to be the question expected, and read at the six widths in both themes.

@@ -19,9 +19,10 @@ for (const c of L.COURSES.filter((x) => EARLY.includes(x.grade))) {
       // "Almost the same" says two groups are close in number, not that an idea is like a real thing (pass ML), and a say-along's
       // calls ("Now, let's squeak it twice, like a tiny mouse!", "Now let's cheer it like we're at a big game!", since pass MT) ask the
       // child to say a word along (Q67, pass MS), so only a line's own sentences are read (pass MR's cue, "like a happy cheer", was
-      // skipped by its words).
+      // skipped by its words). Since pass NM an example of what a question word asks about, "like the place the rabbit went", names
+      // no real thing to see beside an idea (Questions about a story's line 11, a false hit round three's whole read of RULES-AUDIT found).
       const own = L.sayAlongParts(text).filter((x) => x.role === 'say').map((x) => x.sentence).join(' ');
-      const hits = [...own.matchAll(COMPARE)].map((x) => x[0]).filter((h) => !/^almost the same\b/i.test(h));
+      const hits = [...own.matchAll(COMPARE)].map((x) => x[0]).filter((h) => !/^almost the same\b/i.test(h) && !/^like the (?:place|thing|time|animal) the\b/i.test(h));
       if (!hits.length) return;
       const pictured = c.readAloud ? steps.has(i) : steps.size > 0;
       rows.push({ grade: c.grade, course: c.title, module: m.title, id: m.id, line: i, hits, text, pictured });

@@ -6563,7 +6563,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'When we write, we leave a space between words, so we can see where each word starts.', show: { kind: 'print', text: 'The cat sleeps.' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.5 (demonstrates emerging use of spacing in their writing attempts with adult support.), in part, since the lesson shows writing with a little space between words, says that the space shows where one word stops and the next word starts and that words without spaces bump together, shows a child leaving a space as wide as a finger after each word, says to leave one when writing with a grown-up, and asks which writing has spaces between its words, whether writing has a space between each word, which writing has more words, how many words a written sentence has and why people leave a space between words, while the child\'s own writing attempts, with a grown-up and on paper, are the child\'s own (EARMARKS E12), and III.E.4 (begins to notice the basic features of print.), in part, since the lesson notices one basic feature of print, the spaces between words, and the groups of letters they set apart, while the other features of print wait (EARMARKS E12), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 36 to 48 month progression reads "Distinguishes print from pictures and shows an understanding that print is something meaningful, such as asking an adult "What does this say?" or "Read this."", in part, since the lesson teaches one rule of how print works, a space between words, while telling print from pictures and asking what print says wait.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.5 (demonstrates emerging use of spacing in their writing attempts with adult support.), in part, since the lesson shows writing with a little space between words, says that the space shows where one word stops and the next word starts and that words without spaces bump together, shows a child leaving a space as wide as a finger after each word, says to leave one when writing with a grown-up, and asks which writing has spaces between its words, whether writing has a space between each word, which writing has more words, how many words a written sentence has and why people leave a space between words, while the child\'s own writing attempts, with a grown-up and on paper, are the child\'s own (EARMARKS E12), and III.E.4 (begins to notice the basic features of print.), in part, since the lesson notices one basic feature of print, the spaces between words, and the groups of letters they set apart, while the other features of print wait (EARMARKS E12), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 36 to 48 month progression reads "Distinguishes print from pictures and shows an understanding that print is something meaningful, such as asking an adult "What does this say?" or "Read this."", in part, since the lesson teaches one rule of how print works, a space between words, while telling print from pictures and asking what print says are taught in Pictures and words.'],
     generators: ['p3-space-which', 'p3-space-dots', 'p3-space-yesno', 'p3-space-why', 'p3-space-more'],
   },
   // Look and write (pass NF, Domain IV beside Domain III's letters, EARMARKS E12): PK3 IV.C.3, "uses letter like forms when writing and
@@ -6612,6 +6612,81 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.3 (uses letter like forms when writing and begins to include recognizable letters with a model and adult guidance.), in part, since the lesson shows a scribble and marks that look a little like letters as a great start, says that a real letter is a shape we write words with, each with its own name, tells marks from a real letter, M, says to make a letter by looking at one a grown-up writes and making the same shape, says that M, S and B each start at the top, shows M and S drawn from the top, has the child draw S in the air from the top in a turn of their own, says that marks are a great start and real letters come next, and asks which one is a real letter, which letter looks just like a letter shown and whether a picture is a real letter, while the child\'s own writing, with a model and a grown-up on paper, is the child\'s own (EARMARKS E12), and IV.C.1 (attempts to write letters of own name (usually beginning with the first letter) using a model when needed.), in part, since the lesson says that a grown-up can write a name for the child to look at, shows Sam, Mia and Ben written, says that the first letter of a name is the big one at its start and the one a child writes first, has the child ask a grown-up to write their name and look at its first letter in a turn of their own, says to make that letter looking at it, and asks which letter a written name starts with and which letter a name heard is written with first, while the child\'s own attempts to write the letters of their name, and the letters after the first, are the child\'s own (EARMARKS E12), and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks), whose 36 to 48 month progression reads "Engages in writing activities that consist largely of drawing and scribbling. Begins to convey meaning. With modeling and support, writes some letter-like forms and letters.", in part, since the lesson shows letter-like forms and real letters made with a model and support, while beginning to convey meaning is Draw and tell\'s, and the child\'s own writing activities wait.'],
     generators: ['p3-look-real', 'p3-look-same', 'p3-look-first', 'p3-look-name', 'p3-look-yesno'],
+  },
+  // Listen to the story (pass NM, PK3 III.D.4 whole and Head Start P-LIT 5 in part; Claude's design): a short story read aloud, in
+  // which one friend loses a thing and feels sad, looks for it in one place, and another friend finds it in another, and the friend who
+  // lost it feels happy. The lesson tells one such story, asks every kind of question its banks ask about it, and tells a second story,
+  // so a child hears that a new story asks the same questions. Every animal, thing, place and feeling a bank's story can name is one the
+  // lines say and draw (TALE3_ANIMALS, TALE3_THINGS, TALE3_PLACES), so a question asks only what its own story told; its wrong choice is
+  // the other friend, the other place or the other feeling of that same story, or, for the thing that was lost, one the story never
+  // names. Head Start's 36 to 48 month progression asks a child to answer questions about main characters and events, and about likes and
+  // dislikes, which the last line's turn asks of a grown-up; asking questions and making predictions wait (EARMARKS E12).
+  {
+    id: 'listen-to-the-story',
+    skill: 'Listening',
+    order: 28,
+    requires: ['two-ideas-more'],
+    requiresWhy: 'Listen to the story answers questions about who did what, and where, in a short story read aloud, so it builds on Who has what, which remembers which animal has which thing in a sentence of two ideas.',
+    title: 'Listen to the story',
+    tagline: 'Who, what and where',
+    lesson: {
+      paragraphs: ['A story tells who is in it and what happens. In this story, the duck lost a hat and felt sad. The duck looked under the bed, but the hat was not there. Then the bear found the hat in the box, and the duck felt happy.', 'To answer a question about a story, listen for who is in it, what they do, where things are, and how someone feels. The duck lost the hat, the bear found it, and it was in the box.', 'After a story, a grown-up can ask what you liked best.'],
+      keyIdea: 'When you hear a story, listen for who is in it, what they do, and where things are, and then you can answer questions about it.',
+      example: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'pic', name: 'bear' }, caption: 'The duck lost a hat, and the bear found it.' },
+      script: [
+        { say: 'A story tells who is in it, and what happens. Listen to this story about a duck and a bear.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'The duck lost a hat and felt sad.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'The duck looked under the bed, but the hat was not there.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'icon', name: 'bed' } } },
+        { say: 'Then the bear found the hat in the box, and the duck felt happy.', show: { kind: 'row', items: [{ kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }, { kind: 'icon', name: 'box' }] } },
+        { say: 'Who lost the hat in our story? The duck lost it. Who found the hat, the duck or the bear? The bear found it, in the box.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'What did the duck lose, a hat or a ball? A hat. This story has no ball in it at all.', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Where did the duck look for the hat? Under the bed. Where did the bear find the hat? In the box.', show: { kind: 'pair', a: { kind: 'icon', name: 'bed' }, b: { kind: 'icon', name: 'box' } } },
+        { say: 'How did the duck feel when the hat was lost? Sad. How did the duck feel when the bear found the hat? Happy.', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'happy' } } },
+        { say: 'Did the bear lose the hat? No. The duck lost the hat, and the bear found it.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bear' }, { kind: 'pic', name: 'duck' }, { kind: 'icon', name: 'hat' }] } },
+        { say: 'Here is a new story. The cat lost a sock and felt sad. The cat looked on the chair, but the sock was not there.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sock' }, { kind: 'pic', name: 'cat' }, { kind: 'icon', name: 'chair' }] } },
+        { say: 'Then the duck found the sock under the bed, and the cat felt happy. Who found the sock? The duck.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'icon', name: 'sock' }] } },
+        { say: 'When you hear a story, listen for who is in it, what they do, and where things are.', show: { kind: 'row', items: [{ kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }, { kind: 'pic', name: 'cat' }] } },
+        { say: 'Now you try. Which story did you like best, the lost hat or the lost sock? Tell a grown-up.', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'sock' } }, voices: [['Which story did you like best, the lost hat or the lost sock?', 'ask'], ['Tell a grown-up.', 'tell', 'turn']] },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and teaches listening for who is in a story, what they do, where things are and how someone feels, and asks the child who lost or found a thing, what a friend lost or found, where a friend looked or found it, how a friend felt and whether a friend lost or found it, the child responding by tapping a picture or Yes or No, the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson answers questions about a story\'s main characters and events and asks the child which story they liked best, to tell a grown-up in a turn of their own, while asking questions about a story and making predictions wait (EARMARKS E12).'],
+    generators: ['p3-tale-who', 'p3-tale-what', 'p3-tale-where', 'p3-tale-feel', 'p3-tale-yesno'],
+  },
+  // Pictures and words (pass NM, PK3 III.E.2 whole and Head Start P-LIT 2's 36 to 48 month progression whole; Claude's design): a page
+  // can have a picture and words, the picture shows and the words tell, in English words are made of letters and these pictures have none, we read the
+  // words, and a grown-up can read them to us, so a child who sees words can ask, what does this say? Each question shows the words and
+  // the picture of one of six things the lines say and draw (PRINT3_THINGS), so telling print from pictures is the whole task: the two
+  // name the same thing in the tap and letters kinds, and different things where a picture beside the words could tell by its look.
+  {
+    id: 'pictures-and-words',
+    skill: 'Writing',
+    order: 29,
+    requires: ['draw-and-tell'],
+    requiresWhy: 'Pictures and words tells the words on a page from its picture, and what each one does, so it builds on Draw and tell, which learns that a drawing and marks like letters can each tell an idea.',
+    title: 'Pictures and words',
+    tagline: 'We read the words',
+    lesson: {
+      paragraphs: ['A page in a book can have a picture and words. The picture shows us something, and the words tell us something, so we read the words and look at the picture.', 'In English, words are made of letters.', 'When you see words, you can ask a grown-up, what does this say?'],
+      keyIdea: 'A picture shows us, and words tell us. In English, words are made of letters, and we read them.',
+      example: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'print', text: 'the dog' }, caption: 'A picture of a dog, and the words, the dog.' },
+      script: [
+        { say: 'A page in a book can have a picture and words. Here is a picture of a dog, and here are the words, the dog.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'print', text: 'the dog' } } },
+        { say: 'The picture shows us a dog, and we look at it. The words tell us the same thing, the dog, and we read words to know what they say.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'print', text: 'the dog' } } },
+        { say: 'In English, words are made of letters, so the words, the sun, have letters, while the picture of the sun has none at all.', show: { kind: 'pair', a: { kind: 'print', text: 'the sun' }, b: { kind: 'icon', name: 'sun' } } },
+        { say: 'Which one is the picture of the sun? The round one, with no letters. And which one is the words? The letters that say, the sun, which we can read.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'print', text: 'the sun' } } },
+        { say: 'Is this a picture? No. These are words, the ball, made of letters.', show: { kind: 'print', text: 'the ball' } },
+        { say: 'Are these words? No. This is a picture of a ball, and it has no letters at all.', show: { kind: 'icon', name: 'ball' } },
+        { say: 'Which one do we read, the words or the picture of a fish? We read the words, the cup.', show: { kind: 'pair', a: { kind: 'print', text: 'the cup' }, b: { kind: 'icon', name: 'fish' } } },
+        { say: 'Here is a picture of a hat, and here are the words, the hat. Which one can a grown-up read to you? The words.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'hat' }, b: { kind: 'print', text: 'the hat' } } },
+        { say: 'Which one has letters? The words, the fish, have letters, and the picture of the fish has none.', show: { kind: 'pair', a: { kind: 'icon', name: 'fish' }, b: { kind: 'print', text: 'the fish' } } },
+        { say: 'Words tell us something. These words say, the cup, so which picture goes with them? The cup goes with them, and not the sun.', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'the cup' }, b: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'sun' } } } },
+        { say: 'When you see words, like these, the hat, you can ask a grown-up, what does this say?', show: { kind: 'print', text: 'the hat' } },
+        { say: 'Now you try. Point to the words, the dog, and ask a grown-up what they say.', show: { kind: 'print', text: 'the dog' }, voices: [['Point to the words, the dog, and ask a grown-up what they say.', 'tell', 'turn']] },
+        { say: 'A picture shows us a dog, and the words tell us, the dog. We read the words.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'print', text: 'the dog' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.2 (can distinguish between pictures and print.), since the lesson teaches that a page can have a picture and words, that the picture shows and the words tell, that in English words are made of letters and these pictures have none, and that we read the words and look at the picture, and asks the child to tap the words or the picture, to find the one we read or a grown-up can read, to say whether a thing shown is a picture or words, to find the one with letters or the one with none, and to find the picture that goes with words read aloud, so it is taught whole, and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 36 to 48 month progression reads "Distinguishes print from pictures and shows an understanding that print is something meaningful, such as asking an adult "What does this say?" or "Read this."", since the lesson teaches telling print from pictures, that words tell something a grown-up can read, and asking a grown-up, what does this say?, in a turn of the child\'s own, so it is taught whole, with Space between words beside it, which teaches a rule of how print works, a space between words.'],
+    generators: ['p3-print-tap', 'p3-print-read', 'p3-print-yesno', 'p3-print-letters', 'p3-print-says'],
   },
 ]; }
 
@@ -9414,6 +9489,44 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters.), in part, since the lesson teaches four small letters whose shapes are different from their big letters, e, i, r and t, each by its name and its shape at both sizes, small e round with a line across its middle, small i a short line with a dot on top, small r a short line with a little curve at its top, and small t a line with a short line across it and a little curve at its bottom, and asks the child to find a letter when its name and its size are heard, to find the big letter that goes with a small one and the small letter that goes with a big one, to say whether a small letter is the one named and whether a big letter and a small one are the same letter, and gives the child a turn to point to each small letter and say its name, so with Small letters\' seven and Almost the same\'s four the course asks fifteen small letters by name, as many as the outcome asks, and with the letters lessons before them, Almost the same\'s K, P and Y and this lesson\'s R, twenty-two big letters, past the eighteen it asks, while naming them aloud is the child\'s own talk, for a grown-up to hear, the big letters above all, which no lesson gives a turn (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches four letters\' small shapes, while the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno', 'p4-eirt-same'],
+  },
+  // Questions about a story (pass NM, PK4 III.D.4 whole and Head Start P-LIT 5 in part; Claude's design): a short story read aloud
+  // tells who went where and when, and what each friend found, and a child answers who, what, where and when about it and learns to ask
+  // such questions too, each question word by what it asks about: who someone, a person or an animal; what a thing; where a place; and
+  // when a time. Every animal, thing, place and time a bank's story can name is one the lines say and draw (TALE4_ANIMALS, TALE4_THINGS,
+  // TALE4_PLACES, TALE4_TIMES), and every story says the time by what was up in the sky, so when is answered by what the story said,
+  // never by what is usually true. A wrong choice is the other friend or the other thing of the same story, or one the story never
+  // names. Inferential questions, predictions and how or why something happens, Head Start's other half and III.D.5, wait (EARMARKS E13).
+  {
+    id: 'story-questions',
+    skill: 'Listening',
+    order: 44,
+    requires: ['longer-sentences'],
+    requiresWhy: 'Questions about a story listens to a short story of two sentences and answers who, what, where and when, so it builds on Longer sentences, which hears whole sentences that tell who does what, grown longer with and.',
+    title: 'Questions about a story',
+    tagline: 'Who, what, where and when',
+    lesson: {
+      paragraphs: ['A story tells who is in it, what they do, where they go and when. One morning, when the sun was up, the fox and the owl went to the lake. The fox found a kite, and the owl found a book.', 'A who question asks about someone, a person or an animal, and a what question can ask about a thing. Where asks about a place, and when about a time.', 'You can ask questions about a story too. If you want to know the place the rabbit went, start with the word where, and ask, where did the rabbit go?'],
+      keyIdea: 'Listen for who, what, where and when in a story, and ask questions about it that start with who, what, where or when.',
+      example: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'owl' }, caption: 'The fox found a kite, and the owl found a book.' },
+      script: [
+        { say: 'Let\'s listen to a story and answer questions about it. One morning, when the sun was up, the fox and the owl went to the lake.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'owl' } } },
+        { say: 'The fox found a kite, and the owl found a book.', show: { kind: 'pair', a: { kind: 'icon', name: 'kite' }, b: { kind: 'icon', name: 'book' } } },
+        { say: 'Who found the kite? The fox. A who question asks about someone, a person or an animal.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'icon', name: 'kite' } } },
+        { say: 'What did the owl find? A book. A what question can ask about a thing.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'icon', name: 'book' } } },
+        { say: 'Where did the fox and the owl go? To the lake. A where question asks about a place.', show: { kind: 'icon', name: 'lake' } },
+        { say: 'When did the fox and the owl go to the lake? One morning, when the sun was up. A when question asks about a time.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'Here is a new story. One night, when the moon was up, the rabbit and the fox went up the mountain.', show: { kind: 'row', items: [{ kind: 'icon', name: 'moon' }, { kind: 'pic', name: 'rabbit' }, { kind: 'pic', name: 'fox' }] } },
+        { say: 'The rabbit found a ball, and the fox found a book. Who found the ball? The rabbit.', show: { kind: 'row', items: [{ kind: 'pic', name: 'fox' }, { kind: 'pic', name: 'rabbit' }, { kind: 'icon', name: 'ball' }] } },
+        { say: 'Where did the rabbit and the fox go? Up the mountain, and not to the lake or to the big tree.', show: { kind: 'row', items: [{ kind: 'icon', name: 'mountain' }, { kind: 'icon', name: 'lake' }, { kind: 'icon', name: 'tree' }] } },
+        { say: 'When did the rabbit and the fox go up the mountain? One night, when the moon was up, and not the sun.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'sun' } } },
+        { say: 'You can ask questions about a story too. Which word asks about a place, like the place the rabbit went? The word where. So you can ask, where did the rabbit go? It went up the mountain.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'icon', name: 'mountain' } } },
+        { say: 'Now you try. Ask a grown-up a question about the fox and the rabbit, starting with who, what, where or when.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'rabbit' } }, voices: [['Ask a grown-up a question about the fox and the rabbit, starting with who, what, where or when.', 'tell', 'turn']] },
+        { say: 'Listen for who, what, where and when in a story, and ask questions about it too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'fox' }, { kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'rabbit' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (asks and responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and asks the child who found a thing, what a friend found, where the friends went and when, the child responding by tapping a picture, the voice the adult assistance, teaches asking a question that starts with who, what, where or when, each by what it asks about, someone, a thing, a place or a time, asks the child which word asks about what they want to know, and gives the child a turn to ask a grown-up a question about a story, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 48 to 60 month progression reads "With support, provides basic answers to specific questions about details of a story, such as who, what, when, or where. With support, can answer inferential questions about stories, such as predictions or how/why something is happening in a particular moment.", in part, since the lesson asks who, what, where and when about a story\'s details, while inferential questions, predictions and how or why something is happening, wait (EARMARKS E13).'],
+    generators: ['p4-tale-who', 'p4-tale-what', 'p4-tale-where', 'p4-tale-when', 'p4-tale-ask'],
   },
 ]; }
 
@@ -33949,6 +34062,137 @@ Object.assign(GENERATORS, {
   'p4-mark-start': (rng) => endStartOf(rng),
 });
 
+// Listen to the story (pre-K 3, pass NM, PK3 III.D.4): a story of three sentences, read aloud. One friend loses a thing and feels sad,
+// looks for it in one place, and then another friend finds it in another place, and the friend who lost it feels happy. Each kind asks one
+// thing the story told: who lost or found it, what was lost or found, where the friend looked or the thing was found, how the friend felt
+// at each moment, and yes or no about who lost or found it. Its two choices are the story's own two friends, places or feelings, or for
+// the thing, the story's thing and one it never names. Who, where and yes or no need both the story and the question; the story alone
+// answers what was lost (the one thing it names), and the question alone answers how the friend felt (the moment it names), each by
+// design and recorded (round one's lesson read). Every name is one the lesson's lines say and draw. A reason after a wrong tap says only
+// what the tapped choice did or shows.
+export const TALE3_ANIMALS = ['duck', 'bear', 'cat'];
+export const TALE3_THINGS = ['hat', 'ball', 'sock'];
+export const TALE3_PLACES = { bed: 'under the bed', box: 'in the box', chair: 'on the chair' };
+function tale3(rng) {
+  const [a, b] = shuffle(rng, TALE3_ANIMALS); const t = pick(rng, TALE3_THINGS); const [p1, p2] = shuffle(rng, Object.keys(TALE3_PLACES)); const P = TALE3_PLACES;
+  return { a, b, t, p1, p2, story: `Listen. The ${a} lost a ${t} and felt sad. The ${a} looked ${P[p1]}, but the ${t} was not there. Then the ${b} found the ${t} ${P[p2]}, and the ${a} felt happy.` };
+}
+// Questions about a story (pre-K 4, pass NM, PK4 III.D.4): a story of two sentences, read aloud. On a morning when the sun was up, or a
+// night when the moon was up, two friends went to one place, and each found a thing. Each kind asks one detail the story told: who found
+// a thing, what a friend found, where they went and when; the choices are all three friends, things or places, two of the friends and
+// things the story's own, the third one the story never names. The fifth kind asks which word asks about what a child wants to know:
+// who for someone, what for a thing, where for a place and when for a time (TALE4_ASKS), never naming the word it asks for.
+export const TALE4_ANIMALS = ['fox', 'owl', 'rabbit'];
+export const TALE4_THINGS = ['kite', 'book', 'ball'];
+export const TALE4_PLACES = { lake: 'to the lake', mountain: 'up the mountain', tree: 'to the big tree' };
+export const TALE4_PLACE_NAMES = { lake: 'The lake', mountain: 'The mountain', tree: 'The big tree' };
+export const TALE4_TIMES = { morning: ['One morning', 'sun'], night: ['One night', 'moon'] };
+export const TALE4_ASKS = { Who: 'someone, a person or an animal', What: 'a thing', Where: 'a place', When: 'a time' };
+// What each word asks about, said short in the question, and how each asks: what can ask about a thing, since what asks about more than
+// things (what time, what animal), as round one's lesson read found, and the lesson's lines say it so.
+export const TALE4_ASK_SHORT = { Who: 'someone', What: 'a thing', Where: 'a place', When: 'a time' };
+export const TALE4_ASK_VERB = { Who: 'asks', What: 'can ask', Where: 'asks', When: 'asks' };
+function tale4(rng) {
+  const [a, b, c] = shuffle(rng, TALE4_ANIMALS); const [t1, t2, t3] = shuffle(rng, TALE4_THINGS); const place = pick(rng, Object.keys(TALE4_PLACES)); const time = pick(rng, Object.keys(TALE4_TIMES));
+  const [when, sky] = TALE4_TIMES[time];
+  return { a, b, c, t1, t2, t3, place, time, sky, story: `Listen. ${when}, when the ${sky} was up, the ${a} and the ${b} went ${TALE4_PLACES[place]}. The ${a} found a ${t1}, and the ${b} found a ${t2}.` };
+}
+// Pictures and words (pre-K 3, pass NM, PK3 III.E.2): the words for one of six things (the dog, the sun, ...) and the picture of it. Each
+// kind tells print from pictures in its own way: tap the words or the picture, which one we read (the words beside the picture of
+// another thing), yes or no about one shown, which one has letters or none, and which picture goes with words read aloud. A question
+// names only the thing it asks about (aboutWords), never the other picture beside it, so with six things a round of five asks about each
+// once and each kind comes once a round (round one's lesson read: keyed with the other picture too, two kinds were dropped from about
+// 45 percent of rounds, the two that teach that words say something a grown-up can read).
+export const PRINT3_THINGS = ['dog', 'sun', 'ball', 'cup', 'fish', 'hat'];
+const printOf = (x) => `print:the ${x}`;
+Object.assign(GENERATORS, {
+  // Who lost the thing, or who found it: the story's two friends.
+  'p3-tale-who': (rng) => { const s = tale3(rng); const lost = rng() < 0.5; const who = lost ? s.a : s.b; const other = lost ? s.b : s.a;
+    return { type: 'choice', story: s.story, prompt: lost ? `Who lost the ${s.t}?` : `Who found the ${s.t}?`, choices: shuffle(rng, [`pic:${s.a}`, `pic:${s.b}`]), answer: `pic:${who}`,
+      explain: lost ? `The ${s.a} lost the ${s.t}, and the ${s.b} found it.` : `The ${s.b} found the ${s.t} ${TALE3_PLACES[s.p2]}.`, visual: null, explainVisual: null,
+      whyNot: { [`pic:${other}`]: lost ? { name: `The ${s.b}`, why: `found the ${s.t}, and did not lose it.` } : { name: `The ${s.a}`, why: `lost the ${s.t}, and did not find it.` } }, alsoRight: [] }; },
+  // What one friend lost or the other found: the story's thing, or one it never names.
+  'p3-tale-what': (rng) => { const s = tale3(rng); const lost = rng() < 0.5; const other = pick(rng, TALE3_THINGS.filter((x) => x !== s.t));
+    return { type: 'choice', story: s.story, prompt: lost ? `What did the ${s.a} lose?` : `What did the ${s.b} find?`, choices: shuffle(rng, [`icon:${s.t}`, `icon:${other}`]), answer: `icon:${s.t}`,
+      explain: lost ? `The ${s.a} lost a ${s.t}.` : `The ${s.b} found the ${s.t} ${TALE3_PLACES[s.p2]}.`, visual: null, explainVisual: null,
+      whyNot: { [`icon:${other}`]: { name: `The ${other}`, why: 'is not in this story.' } }, alsoRight: [] }; },
+  // Where the friend looked, or where the other friend found the thing: the story's two places.
+  'p3-tale-where': (rng) => { const s = tale3(rng); const looked = rng() < 0.5; const [ans, oth] = looked ? [s.p1, s.p2] : [s.p2, s.p1];
+    return { type: 'choice', story: s.story, prompt: looked ? `Where did the ${s.a} look for the ${s.t}?` : `Where did the ${s.b} find the ${s.t}?`, choices: shuffle(rng, [`icon:${s.p1}`, `icon:${s.p2}`]), answer: `icon:${ans}`,
+      explain: looked ? `The ${s.a} looked ${TALE3_PLACES[s.p1]}, but the ${s.t} was not there.` : `The ${s.b} found the ${s.t} ${TALE3_PLACES[s.p2]}.`, visual: null, explainVisual: null,
+      whyNot: { [`icon:${oth}`]: looked ? { name: `The ${s.p2}`, why: `is where the ${s.b} found the ${s.t}.` } : { name: `The ${s.p1}`, why: `is where the ${s.a} looked, and the ${s.t} was not there.` } }, alsoRight: [] }; },
+  // How the friend felt when the thing was lost, and when it was found: the story's two feelings, each named in the story's own words. The
+  // moment its question names answers it (lost is sad, found is happy), so a child who hears the question alone answers: its point is
+  // which feeling goes with which moment of a story (round one's lesson read; recorded in the rules test's blind reads).
+  'p3-tale-feel': (rng) => { const s = tale3(rng); const sad = rng() < 0.5;
+    return { type: 'choice', story: s.story, prompt: sad ? `How did the ${s.a} feel when the ${s.t} was lost?` : `How did the ${s.a} feel when the ${s.b} found the ${s.t}?`, choices: shuffle(rng, ['face:sad', 'face:happy']), answer: sad ? 'face:sad' : 'face:happy',
+      explain: sad ? `The ${s.a} felt sad when the ${s.t} was lost.` : `The ${s.a} felt happy when the ${s.b} found the ${s.t}.`, visual: null, explainVisual: null,
+      whyNot: sad ? { 'face:happy': { name: 'Happy', why: `is how the ${s.a} felt when the ${s.b} found the ${s.t}.` } } : { 'face:sad': { name: 'Sad', why: `is how the ${s.a} felt when the ${s.t} was lost.` } }, alsoRight: [] }; },
+  // Yes or no: did one of the two friends lose the thing, or find it? Yes about half the time, since the friend and the doing are drawn apart.
+  'p3-tale-yesno': (rng) => { const s = tale3(rng); const who = rng() < 0.5 ? s.a : s.b; const lose = rng() < 0.5; const yes = (who === s.a) === lose; const verb = lose ? 'lose' : 'find';
+    return { type: 'choice', story: s.story, prompt: `Did the ${who} ${verb} the ${s.t}?`, choices: yesNo(rng), answer: yes ? 'Yes' : 'No',
+      explain: yes ? (lose ? `Yes. The ${s.a} lost the ${s.t}.` : `Yes. The ${s.b} found the ${s.t}.`) : `No. The ${s.a} lost the ${s.t}, and the ${s.b} found it.`, visual: null, explainVisual: null,
+      whyNot: yes ? { No: { name: 'No', why: `would mean the ${who} did not ${verb} the ${s.t}, but it did.` } } : { Yes: { name: 'Yes', why: `would mean the ${who} did ${verb} the ${s.t}, but the ${who} ${lose ? 'found' : 'lost'} it.` } }, alsoRight: [] }; },
+  // Who found a thing: the story's two friends and the one it never names.
+  'p4-tale-who': (rng) => { const s = tale4(rng); const first = rng() < 0.5; const [who, thing, other, otherThing] = first ? [s.a, s.t1, s.b, s.t2] : [s.b, s.t2, s.a, s.t1];
+    return { type: 'choice', story: s.story, prompt: `Who found the ${thing}?`, choices: shuffle(rng, [s.a, s.b, s.c].map((x) => `pic:${x}`)), answer: `pic:${who}`,
+      explain: `The ${s.a} found a ${s.t1}, and the ${s.b} found a ${s.t2}.`, visual: null, explainVisual: null,
+      whyNot: { [`pic:${other}`]: { name: `The ${other}`, why: `found the ${otherThing}.` }, [`pic:${s.c}`]: { name: `The ${s.c}`, why: 'is not in this story.' } }, alsoRight: [] }; },
+  // What a friend found: the story's two things and the one it never names.
+  'p4-tale-what': (rng) => { const s = tale4(rng); const first = rng() < 0.5; const [who, thing, other, otherThing] = first ? [s.a, s.t1, s.b, s.t2] : [s.b, s.t2, s.a, s.t1];
+    return { type: 'choice', story: s.story, prompt: `What did the ${who} find?`, choices: shuffle(rng, [s.t1, s.t2, s.t3].map((x) => `icon:${x}`)), answer: `icon:${thing}`,
+      explain: `The ${s.a} found a ${s.t1}, and the ${s.b} found a ${s.t2}.`, visual: null, explainVisual: null,
+      whyNot: { [`icon:${otherThing}`]: { name: `The ${otherThing}`, why: `is what the ${other} found.` }, [`icon:${s.t3}`]: { name: `The ${s.t3}`, why: 'is not in this story.' } }, alsoRight: [] }; },
+  // Where the two friends went: the story's place and the two it never names.
+  'p4-tale-where': (rng) => { const s = tale4(rng); const places = Object.keys(TALE4_PLACES);
+    return { type: 'choice', story: s.story, prompt: `Where did the ${s.a} and the ${s.b} go?`, choices: shuffle(rng, places.map((x) => `icon:${x}`)), answer: `icon:${s.place}`,
+      explain: `The ${s.a} and the ${s.b} went ${TALE4_PLACES[s.place]}.`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(places.filter((x) => x !== s.place).map((x) => [`icon:${x}`, { name: TALE4_PLACE_NAMES[x], why: 'is not in this story.' }])), alsoRight: [] }; },
+  // When the two friends went: the story says what was up in the sky, the sun one morning or the moon one night.
+  'p4-tale-when': (rng) => { const s = tale4(rng); const other = s.sky === 'sun' ? 'moon' : 'sun';
+    return { type: 'choice', story: s.story, prompt: `When did the ${s.a} and the ${s.b} go ${TALE4_PLACES[s.place]}?`, choices: shuffle(rng, ['icon:sun', 'icon:moon']), answer: `icon:${s.sky}`,
+      explain: `They went ${TALE4_TIMES[s.time][0].toLowerCase()}, when the ${s.sky} was up.`, visual: null, explainVisual: null,
+      whyNot: { [`icon:${other}`]: { name: `The ${other}`, why: 'is not in this story.' } }, alsoRight: [] }; },
+  // Which word asks about what a child wants to know: someone, a thing, a place or a time, said without the word itself. Since round one's
+  // lesson read the question asks for the word by what it asks about, since "Which word can start your question?" had two true answers
+  // where what starts the question too (what time did the fox go?). Since round two's read each question names its own example too, the
+  // place the fox went, so a later round's rule against the last two rounds' questions rules out a question, never an answer: with one
+  // question to an answer, a child who tapped a word not asked in the last two rounds scored 50 percent, where chance is 25.
+  'p4-tale-ask': (rng) => { const word = pick(rng, Object.keys(TALE4_ASKS)); const a = pick(rng, TALE4_ANIMALS); const t = pick(rng, TALE4_THINGS);
+    const like = { Who: `the animal that found the ${t}`, What: `the thing the ${a} found`, Where: `the place the ${a} went`, When: `the time the ${a} went` }[word];
+    const ask = { Who: `who found the ${t}?`, What: `what did the ${a} find?`, Where: `where did the ${a} go?`, When: `when did the ${a} go?` }[word];
+    return { type: 'choice', story: null, prompt: `Which word asks about ${TALE4_ASK_SHORT[word]}, like ${like}?`, choices: shuffle(rng, Object.keys(TALE4_ASKS)), answer: word,
+      explain: `${word} ${TALE4_ASK_VERB[word]} about ${TALE4_ASK_SHORT[word]}, so you can ask, ${ask}`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(Object.keys(TALE4_ASKS).filter((w) => w !== word).map((w) => [w, { name: w, why: `${TALE4_ASK_VERB[w]} about ${TALE4_ASKS[w]}.` }])), alsoRight: [] }; },
+  // Tap the words, or tap the picture, of one thing.
+  'p3-print-tap': (rng) => { const x = pick(rng, PRINT3_THINGS); const words = rng() < 0.5;
+    return { type: 'choice', story: 'Look at these two.', prompt: words ? 'Tap the words.' : 'Tap the picture.', choices: shuffle(rng, [printOf(x), `icon:${x}`]), answer: words ? printOf(x) : `icon:${x}`, aboutWords: [x],
+      explain: words ? `These are the words, the ${x}, made of letters.` : `This is the picture of the ${x}, with no letters.`, visual: null, explainVisual: null,
+      whyNot: words ? { [`icon:${x}`]: { name: `The picture of the ${x}`, why: 'has no letters.' } } : { [printOf(x)]: { name: 'The words', why: 'are made of letters.' } }, alsoRight: [] }; },
+  // Which one we read, or a grown-up can read to us: the words, beside the picture of another thing.
+  'p3-print-read': (rng) => { const [x, y] = shuffle(rng, PRINT3_THINGS); const grownUp = rng() < 0.5;
+    return { type: 'choice', story: 'Look at these two.', prompt: grownUp ? 'Which one can a grown-up read to you?' : 'Which one do we read?', choices: shuffle(rng, [printOf(x), `icon:${y}`]), answer: printOf(x), aboutWords: [x],
+      explain: grownUp ? `A grown-up can read you the words, the ${x}.` : `We read the words, the ${x}.`, visual: null, explainVisual: null,
+      whyNot: { [`icon:${y}`]: { name: `The picture of the ${y}`, why: 'has no letters, so we look at it.' } }, alsoRight: [] }; },
+  // Yes or no: is this a picture, or are these words? Yes about half the time, since what is shown and what is asked are drawn apart.
+  'p3-print-yesno': (rng) => { const x = pick(rng, PRINT3_THINGS); const showWords = rng() < 0.5; const askWords = rng() < 0.5; const yes = showWords === askWords;
+    const explain = askWords ? (yes ? `Yes. These are words, the ${x}.` : `No. This is a picture of the ${x}, with no letters.`) : (yes ? `Yes. This is a picture of the ${x}.` : `No. These are words, the ${x}.`);
+    const why = askWords ? (yes ? 'would mean they are not words, but they are.' : 'would mean it is words, but it is a picture, with no letters.') : (yes ? 'would mean it is not a picture, but it is.' : 'would mean it is a picture, but it is words, made of letters.');
+    return { type: 'choice', story: null, prompt: askWords ? 'Are these words?' : 'Is this a picture?', choices: yesNo(rng), answer: yes ? 'Yes' : 'No', aboutWords: [x],
+      explain, visual: showWords ? { kind: 'print', text: `the ${x}` } : { kind: 'icon', name: x }, explainVisual: null,
+      whyNot: yes ? { No: { name: 'No', why } } : { Yes: { name: 'Yes', why } }, alsoRight: [] }; },
+  // Which one has letters, or which one has none: the words and the picture of one thing.
+  'p3-print-letters': (rng) => { const x = pick(rng, PRINT3_THINGS); const has = rng() < 0.5;
+    return { type: 'choice', story: 'Look at these two.', prompt: has ? 'Which one has letters?' : 'Which one has no letters?', choices: shuffle(rng, [printOf(x), `icon:${x}`]), answer: has ? printOf(x) : `icon:${x}`, aboutWords: [x],
+      explain: has ? `The words, the ${x}, are made of letters.` : `The picture of the ${x} has no letters.`, visual: null, explainVisual: null,
+      whyNot: has ? { [`icon:${x}`]: { name: `The picture of the ${x}`, why: 'has no letters at all.' } } : { [printOf(x)]: { name: 'The words', why: 'are made of letters.' } }, alsoRight: [] }; },
+  // Which picture goes with words read aloud: words tell us something, so their picture is the thing they say.
+  'p3-print-says': (rng) => { const [x, y] = shuffle(rng, PRINT3_THINGS); const shows = rng() < 0.5;
+    return { type: 'choice', story: `These words say, the ${x}.`, prompt: shows ? 'Which picture shows what the words say?' : 'Which picture goes with the words?', choices: shuffle(rng, [`icon:${x}`, `icon:${y}`]), answer: `icon:${x}`, aboutWords: [x],
+      explain: `The words say, the ${x}, so the picture of the ${x} goes with them.`, visual: { kind: 'print', text: `the ${x}` }, explainVisual: null,
+      whyNot: { [`icon:${y}`]: { name: `The picture of the ${y}`, why: `shows the ${y}.` } }, alsoRight: [] }; },
+});
+
 // Write it by its sounds (pass NE, PK4 IV.C.3): each word the lesson's lines say, with the letter for its first sound and the letter for
 // its last sound, each spelled with that letter first and that letter last; and the sound each of those letters says, as the letters
 // lessons teach it. Every question is a tap, and nothing a child writes is asked for or kept; a word heard is never printed while the voice
@@ -38668,8 +38912,16 @@ export function describeChoice(choice, q = null) {
   // screen reader had heard by their shape alone).
   const sized = /^item:([a-z]+)-([a-z]+)-(big|small)$/.exec(raw); if (sized) return `the ${sized[3]} ${sized[2]} ${sized[1]}`;
   const sw = /^swatch:([a-z]+)$/.exec(raw); if (sw) return `the ${sw[1]} one`;
-  // Writing drawn as print (pass ND, the spacing lessons): named by the words it shows, as a screen reader reads them.
-  const pr = /^print:(.+)$/.exec(raw); if (pr) return `the writing ${pr[1]}`;
+  // Writing drawn as print (pass ND, the spacing lessons): named by the words it shows, as a screen reader reads them. Since pass NM in
+  // Pictures and words' own words, the words, the dog (round one's screen and lesson reads: "the writing the dog" ran on as one), and since
+  // round two's read a letter, a word or a name alone "the writing, g", since Space between words' letter and word tiles had both been
+  // called words. Since round three's final read a question's print choices share one noun, the words only where every one of them has
+  // a space between words, since Space between words' question of which one has spaces had named its answer alone the words, in every
+  // question (p3-space-which), and pre-K 4's had named its one choice with no space at all alone the writing (p4-space-which).
+  const pr = /^print:(.+)$/.exec(raw);
+  if (pr) { const spaced = (t) => /\s/.test(t.trim());
+    const prints = q && Array.isArray(q.choices) ? q.choices.map((c) => String(c).replace(/#\d+$/, '')).filter((c) => /^print:/.test(c)) : [];
+    return (prints.length > 1 ? prints.every((c) => spaced(c.slice(6))) : spaced(pr[1])) ? `the words, ${pr[1]}` : `the writing, ${pr[1]}`; }
   return choice;
 }
 // The answer in words for a reader's "Not quite. The answer is ..." (pass MO): an order's steps one after another, "the hat, then
@@ -46459,6 +46711,67 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'The day after the fair, I woke up sad, and I was sure that another fair was the only way to fix it. I asked my dad at breakfast, and he said the fair had packed up and gone. I asked for the zoo, and he said not today. I was mad at him for most of the morning. I believed that a big day was the only thing that could make the sad feeling go. After lunch, my big brother made a road across the kitchen floor with tape, and we raced our toy cars on it until the tape came up. At dinner, my dad asked how my day had been, and I said it was good. The feeling had gone, and no fair had come to take it away. I had been wrong about what it needed. A toy car race on a plain day had done what I was sure only a fair could do.' },
     ],
     closing: 'What is something you brought home from a fun day?',
+  },
+  // Pass NM: one early question for each of two of the three smallest early themes, feelings and failure (34 each before the pass).
+  // Happy tears: the scientist's three kinds of tears are the American Academy of Ophthalmology's, "Facts About Tears" (aao.org,
+  // written by Reena Mukamal, reviewed by Devin A Harrison, MD, April 18, 2023), read on November 14, 2026: "Basal tears are in your eyes
+  // all the time to lubricate, nourish and protect your cornea."; "Reflex tears are formed when your eyes need to wash away harmful
+  // irritants, such as smoke, foreign bodies or onion fumes."; "Emotional tears are produced in response to joy, sadness, fear and other
+  // emotional states." The page says nothing of what tears tell about how big a feeling is, so the scientist ends on tears as one clue,
+  // his own way of looking; every other line is a voice's own memory, and the skeptic's last sentence is the house's safe-messaging line
+  // (w-early-someone-else-hard-day's). The grandparent's baby brother is the one docs/CHARACTERS.md gives her, and the skeptic's big
+  // brother the one it gives Mike. The wrong name: Deffler, Fox, Ogle and Rubin, 2016, "All my children: The roles of semantic category
+  // and phonetic similarity in the misnaming of familiar individuals", Memory & Cognition 44(7), as Duke University's own account of
+  // it tells it ("Slips of the Lip Stay All in the Family", Duke Today, April 28, 2016, and the same release on ScienceDaily, May 16,
+  // 2016), read on November 14, 2026, and as the paper tells it (doi 10.3758/s13421-016-0613-z, read at link.springer.com on November 14, 2026: Study 1 asked its 1,519 people whether someone familiar had called them by the wrong name and a subset whether they had done it, Studies 4 and 5 asked people who had, and cats were "rarely included"): "five separate surveys of more than 1,700 respondents"; the wrong name
+  // comes from the same relationship group, family for family and friends for friends; family members were called by the pet's name
+  // "but only when the pet was a dog"; looking alike "played little to no role", parents swapping their children's names; and David
+  // Rubin's words, "It's a cognitive mistake we make, which reveals something about who we consider to be in our group" (the scientist's
+  // "you belong to the group"). The scientist's baby cousin is the one docs/CHARACTERS.md gives Frederick; the skeptic's big brother
+  // and uncle are Mike's there, and his grandpa is the one of w-early-hiccups and w-early-gift-not-hoped-for.
+  {
+    id: 'w-early-happy-tears',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Someone you love is smiling, and crying too. Can a person cry when they are happy?',
+    options: ['Yes', 'No', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'My teacher cried and smiled on the last day of school. So I watched for tears. Onions made some, and happy feelings did too!' },
+      { voice: 'An artist says', says: 'When a band played in the park, the music got so pretty that my eyes filled up. Mom said my happy had spilled over!' },
+      { voice: 'A grandparent of faith says', says: 'Father cried when my baby brother was born, and I was scared. These are happy tears, he said. I believe they say thank you.' },
+      { voice: 'A skeptic says', says: 'I thought tears always meant sad. So I asked Mom why she cried at my brother\'s play. Happy, she said, and a little sad.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'On the last day of school one year, my teacher hugged each of us goodbye. She was smiling, and her cheeks were wet. I asked her what hurt, and she said nothing hurt at all. That puzzled me, so I began to watch for tears. I saw them when my dad chopped an onion. I saw them when my baby cousin was sad. And I had seen them on my teacher, who kept on smiling. Years later, I read what eye doctors say about tears. They tell of three kinds of tears. One kind is in your eyes all day long, keeping them wet and safe. A second kind washes things out, like smoke or the sting of an onion. The third kind comes with feelings, and the eye doctors list joy right beside sadness and fear. So tears alone cannot tell me what a person feels. When I see them now, I count them as one clue, and I look for more.' },
+      { voice: 'An artist', says: 'One summer evening, my mom took me to hear a band play in the park. I sat on our blanket, and the horns and the drums grew bigger and bigger, until the music seemed to fill the whole sky. My eyes filled up too, and a tear ran down my nose. I was not sad at all! I asked my mom what was wrong with me. She said nothing was wrong. My happy had gotten too big to stay inside, she told me, so a little of it had spilled over. I have thought of it that way ever since. It has happened to me in front of a painting, and once the first time I saw the sea. When I see a person smiling and crying now, I think something lovely just got too big for them to hold.' },
+      { voice: 'A grandparent of faith', says: 'I was a small girl when my baby brother was born. My father came to tell me, and his cheeks were wet. I had never seen him cry, and it scared me. I thought something had gone wrong. He knelt down and told me that the baby was well and my mother was well, and that these were happy tears. Then he said a short prayer of thanks, right there in the hall, with his voice shaking. I have cried happy tears many times since then, at weddings, at births, and whenever my godson comes through my door. I believe they are a way of giving thanks when a thank-you is too big for words. So I do not wipe them away too fast.' },
+      { voice: 'A skeptic', says: 'When I was little, I thought tears meant one thing, and that thing was sad. Then my big brother was in a school play, and my mom cried the whole time he was on the stage. I was sure the play had made her sad, and I was a little mad at the play. On the way home I asked her about it. She laughed and said she had been happy and proud. Then she thought some more, and she said she had been a little sad too, because my brother was growing up so fast. So my idea was wrong, and her first answer was not the whole answer either. After that, when I saw someone cry, I held my first guess loosely. My mom had been happy and sad at once, and I would never have guessed both. And if someone you love stays sad for a long time, tell a grown-up you trust.' },
+    ],
+    closing: 'What is the happiest thing you can think of?',
+  },
+  {
+    id: 'w-early-wrong-name',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You called your friend by the wrong name, and your friend looked surprised. What now?',
+    options: ['Say the right name', 'Say sorry', 'Laugh together'],
+    simple: [
+      { voice: 'A scientist says', says: 'Mom called me by my baby cousin\'s name! Later I read why. Families mix up family names, and friends mix up friends\' names.' },
+      { voice: 'An artist says', says: 'A new teacher called me Zoe all morning. It felt like wearing someone else\'s coat! So I fix my own mix-ups fast.' },
+      { voice: 'A grandparent of faith says', says: 'As a new teacher, I mixed up the children\'s names. They forgave me at once. I believe God knows every name.' },
+      { voice: 'A skeptic says', says: 'My friend looked surprised. Was he mad? But Grandpa mixed up my name all the time, and I was never mad at him!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'When I was small, my mom once called me by my baby cousin\'s name. I laughed, but I also wondered about it. Had she forgotten who I was? When I was grown, I read about some scientists who had wondered the same thing. They asked more than seventeen hundred people, in five sets of questions, about wrong names. Some told of being called by a wrong name, and some told of calling someone else by one. Most of the time, the wrong name came from the same group of people. Moms and dads mixed up the names of their own children. Friends were called by the names of other friends. In families with a dog, people were sometimes called by the dog\'s name! That almost never happened with cats. And it hardly mattered whether two people looked alike. So my mom had not forgotten me. It seems the mind keeps the names of a group together, and now and then it reaches for the wrong one. A wrong name can mean that you belong to the group.' },
+      { voice: 'An artist', says: 'When I was little, a new art teacher called me Zoe for a whole morning. I did not know how to tell her. Every time she said it, I felt as if I had put on somebody else\'s coat. It was a nice coat, but the sleeves were wrong, and it was not mine. At lunch another girl told her my real name. The teacher put her hand over her mouth and said she was sorry. Then she said Chloe three times, so that it would stick. Just like that, the coat was mine again. I remember how quickly the bad feeling left once she fixed it. So now, when I call someone by the wrong name, I do what she did. I say sorry, I say the right name out loud, and I use it again soon. To me, a name fits only one person, and it feels good to be handed your own.' },
+      { voice: 'A grandparent of faith', says: 'In my first week as a teacher, I had so many new names to learn, and I got them wrong again and again. I called one girl by the wrong name so many times that she began to answer to it, just to be kind to me. I went home that night feeling like a bad teacher. In my faith, I was taught that God knows each one of us by name, and I have always believed it. So a name seemed like a thing worth getting right. The next morning, I stood at the classroom door and said each child\'s name as they came in. When I got one wrong, I said sorry and tried once more, and the children helped me. They forgave me much faster than I forgave myself. By the end of that month, I knew every name. I still say a person\'s name when I greet them, and I still get one wrong now and then.' },
+      { voice: 'A skeptic', says: 'One day at school, I called my friend by another boy\'s name. He looked surprised, and my face went hot. I was sure he was mad at me, and I was sure it meant I was a bad friend. I carried that idea around all afternoon. Then I tried to test it. I asked myself whether anyone had ever gotten my name wrong. My grandpa did it all the time. He called me by my big brother\'s name, and by my uncle\'s name, before he got to mine. I had never once been mad at him. I had never thought he was a bad grandpa, either. So why was I so sure about my friend? The next day I asked him. He said he had forgotten all about it. Then he called me the wrong name on purpose, and we both laughed. I had been sure, and I had been wrong. Now I test an idea like that before I carry it around all day.' },
+    ],
+    closing: 'What is a name that makes you smile?',
   },
   {
     id: 'w-early-hurt-by-words',

@@ -125,6 +125,24 @@ const LIT_WORDS = { borderRadius: 5, boxShadow: '-1px 0 0 1px #AAD8C5, 1px 0 0 1
 // the say-along's syllables keep readLit, as Mikey asked of them ("it would be nice to see just the letters that are being
 // pronounced be highlighted"), and so does a Wonder choice being named, a button a child who cannot read finds by its light (Q111).
 const readAhead = () => ({ opacity: C.mode === 'dark' ? 0.55 : 0.66 });
+// The same faint on a tinted ground (pass NP): readAhead's strength wherever it already keeps the words at 4.5 to 1 against what they sit
+// on, and a little stronger only where a tint needs it, worked out here from the theme's own colors (the words' ink and the ground's),
+// one hundredth at a time, so a faint word always reads 4.5 to 1 or better. On the question card, a Wonder card, the story paper and the
+// page readAhead is already enough; in the dark theme the green strip after a right answer needs 0.60 and the closing card's gold
+// 0.57, and the clay words of the line after a wrong tap, which read 4.80 to 1 on their pink strip at full ink in the light theme, can
+// fade only to 0.97 there (0.88 in the dark). ground and ink are plain colors, written #RRGGBB or rgb(r, g, b) as the themes write them;
+// a ground it cannot measure (a gradient) keeps the words at full ink, since a faint nobody measured could fall under 4.5 to 1.
+function readAheadOn(ground, ink = C.ink) {
+  const base = readAhead().opacity;
+  const rgb = (h) => { const t = String(h).trim(); const m = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/.exec(t); return /^#[0-9A-Fa-f]{6}$/.test(t) ? [1, 3, 5].map((i) => parseInt(t.slice(i, i + 2), 16)) : m ? m.slice(1, 4).map(Number) : null; };
+  const g = rgb(ground); const k = rgb(ink); if (!g || !k) return { opacity: 1 };
+  const lin = (v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; };
+  const lum = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
+  // The faint words' color as the screen draws it, the ink at a's strength over the ground, against the ground itself.
+  const reads = (a) => { const f = k.map((v, i) => a * v + (1 - a) * g[i]); const hi = Math.max(lum(f), lum(g)); const lo = Math.min(lum(f), lum(g)); return (hi + 0.05) / (lo + 0.05) >= 4.5; };
+  let a = base; while (a < 1 && !reads(a)) a = Math.min(1, Math.round(a * 100 + 1) / 100);
+  return { opacity: a };
+}
 // Style objects shared across screens copy colors from C when they are made, so each is made from a recipe that
 // applyTheme runs again after a switch.
 const THEMED = [];
@@ -1691,6 +1709,11 @@ function IconPic({ name, size = 90, tile = false }) {
 const PICTURE_LOOK_WORDS = { asleep: 'sleeping', broken: 'broken' };
 // A child's drawing (pass NC) is named by what it shows (DRAWING_NAMES in logic.mjs).
 const pictureLookName = (name) => { const [base, look] = String(name).split('~'); if (base === 'drawing' && look && DRAWING_NAMES[look]) return DRAWING_NAMES[look]; if (LOOK_NAMES[String(name)]) return LOOK_NAMES[String(name)]; return look && PICTURE_LOOK_WORDS[look] ? PICTURE_LOOK_WORDS[look] + ' ' + base : base; };
+// A page of three lines of words (pass NP, Hold a book), with a red dot where we start reading or where we stop. The first line starts
+// in a little and the last ends short, as a paragraph's do, which leaves the dot room to be drawn larger (round one's screen read: at
+// 5.4 pixels across on a tile it was the smallest mark on these screens and the whole answer).
+const PAGE_WORDS = [[30, [[39, 46], [50, 58], [62, 68]]], [48, [[34, 42], [46, 59], [63, 68]]], [66, [[34, 47], [51, 60]]]];
+function PageDot({ dk, cx, cy }) { return <g><rect x="20" y="10" width="60" height="80" rx="4" fill="#FFFDF5" stroke={dk ? '#C9D3CE' : '#6F7A76'} strokeWidth="3" />{PAGE_WORDS.map(([y, ws]) => ws.map(([a, b]) => <line key={`${y}-${a}`} x1={a} y1={y} x2={b} y2={y} stroke="#5C6770" strokeWidth="4" strokeLinecap="round" />))}<circle cx={cx} cy={cy} r="5.5" fill="#D9473B" /></g>; }
 const ICON_LOOKS = {
   // A plain wooden table, seen a little from above (pass NA, the lead's look): Put the beats together says table as a word of its
   // own, beside turtle, and the table drawn for kindergarten's over and under carries a bird on it and a cat under it, which a child
@@ -1773,6 +1796,16 @@ const ICON_LOOKS = {
   // car to stop at the corner; the app's stop on its own is the raised hand the safety lessons teach.
   'sign~stop': ({ dk }) => <g><rect x="47" y="70" width="6" height="26" rx="1.5" fill="#8A9086" stroke={dk ? '#E9EEF0' : '#5C6355'} strokeWidth="2" /><path d="M61.5 12.3 L79.7 30.5 L79.7 56.5 L61.5 74.7 L38.5 74.7 L20.3 56.5 L20.3 30.5 L38.5 12.3 Z" fill="#D9473B" stroke={dk ? '#F4A99F' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /><path d="M59.8 16.5 L75.5 32.2 L75.5 54.8 L59.8 70.5 L40.2 70.5 L24.5 54.8 L24.5 32.2 L40.2 16.5 Z" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinejoin="round" /><text x="50" y="49.5" textAnchor="middle" fontSize="15" fontWeight="800" fill="#FFFFFF" style={{ fontFamily: 'inherit', letterSpacing: 0.5 }}>STOP</text></g>,
   'drawing~bedtime': ({ dk }) => <g><rect x="6" y="6" width="88" height="88" rx="5" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g transform="translate(50 50) scale(1.12) translate(-50 -50)"><path d="M30 18 A12 12 0 1 1 30 42 A20 20 0 0 0 30 18 Z" fill="#F2C14E" stroke="#94741A" strokeWidth="2" strokeLinejoin="round" /><path d="M62 22 L64 27 L69 27 L65 30 L67 35 L62 32 L57 35 L59 30 L55 27 L60 27 Z" fill="#F2C14E" stroke="#94741A" strokeWidth="1.5" strokeLinejoin="round" /><path d="M20 78 L20 56 M80 78 L80 64 M20 64 L80 64 L80 72 L20 72" fill="none" stroke="#8B5A2B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /><rect x="22" y="57" width="12" height="7" rx="3" fill="#FFFFFF" stroke="#6B716A" strokeWidth="2" /><rect x="34" y="64" width="44" height="6" fill="#4A86C5" /></g></g>,
+  // Hold a book and Which way we read (pass NP, PK3 and PK4 III.E.3): the front of a picture book (its name on a gold band and a picture
+  // of a sun over a hill, its spine at the side, drawn a fifth larger than the box's plain book so the sun reads on an answer tile), the
+  // same front upside down (its sun at the bottom and its band below), its back (no name and no picture, its spine at the other side), a page of three lines of words with a red dot where we start reading (by the
+  // first word) or where we stop (after the last word), and the arrow turned to point down, to the next line.
+  'book~cover': ({ dk }) => <g transform="translate(50 50) scale(1.2) translate(-50 -50)"><path d="M24 12 H74 Q80 12 80 18 V82 Q80 88 74 88 H24 Z" fill="#3E7D52" stroke={dk ? '#9FDDB5' : '#245A3C'} strokeWidth="3" strokeLinejoin="round" /><rect x="25.5" y="13.5" width="7" height="73" fill="#2E6340" /><rect x="39" y="18" width="34" height="10" rx="2" fill="#F2C84B" /><line x1="44" y1="23" x2="51" y2="23" stroke="#5C6770" strokeWidth="2.6" strokeLinecap="round" /><line x1="57" y1="23" x2="68" y2="23" stroke="#5C6770" strokeWidth="2.6" strokeLinecap="round" /><rect x="38" y="33" width="36" height="47" rx="3" fill="#EAF4FB" /><circle cx="63" cy="45" r="6.5" fill="#F2B632" stroke="#94741A" strokeWidth="2" /><path d="M38 80 V70 Q47 58 58 66 Q66 60 74 65 V80 Z" fill="#4CAF6E" stroke="#245A3C" strokeWidth="2" strokeLinejoin="round" /></g>,
+  'book~down': ({ dk }) => <g transform="rotate(180 50 50)">{ICON_LOOKS['book~cover']({ dk })}</g>,
+  'book~back': ({ dk }) => <g transform="translate(50 50) scale(1.2) translate(-50 -50)"><path d="M26 12 H76 V88 H26 Q20 88 20 82 V18 Q20 12 26 12 Z" fill="#3E7D52" stroke={dk ? '#9FDDB5' : '#245A3C'} strokeWidth="3" strokeLinejoin="round" /><rect x="67.5" y="13.5" width="7" height="73" fill="#2E6340" /></g>,
+  'page~start': ({ dk }) => <PageDot dk={dk} cx={29} cy={30} />,
+  'page~end': ({ dk }) => <PageDot dk={dk} cx={70} cy={66} />,
+  'arrow~down': ({ dk }) => <g transform="rotate(90 50 50)"><path d="M12 40 L56 40 L56 24 L88 50 L56 76 L56 60 L12 60 Z" fill="#4CAF6E" stroke={dk ? '#9FDDB5' : '#1F5A36'} strokeWidth="3" strokeLinejoin="round" /></g>,
 };
 
 // Grade 1 geometry (pass KY, TEKS 1.6A to 1.6D): the rhombus, the hexagon and the trapezoid join the four kindergarten shapes,
@@ -2881,6 +2914,10 @@ let rotateKept = false;
 // is told when the voice has said the whole line, its last piece ended (or counted said by sayPieces' watch), never for a line
 // cancelled or replaced before then, so a wait can tell a line that is over from a voice that still says it is speaking (afterSaid).
 // voices (pass MV): a question's sentences said in a manner (VOICE_MANNERS), handed on to speechPieces.
+// onPlace (pass NP, the read-along on a question, the words after an answer and the Wonder screens): told the number of the sentence
+// the voice is beginning (speechPieces' count, from 0) each time a piece of the line starts, and null once the whole line has been said,
+// so a screen can draw the words the voice has not reached faint. It is never told anything for a line a newer one replaced (the screen
+// reads the speech ticket for that), and it changes nothing the voice says.
 function speak(text, opts = {}) {
   if (typeof window === 'undefined' || !window.speechSynthesis || !text) return;
   if (demoMute > 0) return;   // a game's welcome is playing its board (pass MP): the board's own words wait, so they never cut the welcome off
@@ -2903,7 +2940,7 @@ function speak(text, opts = {}) {
     const mine = attempt;
     try {
       const voice = pickVoice(); speechAlive = [];
-      sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => shapeVoice(u, piece, voice, 1, young), onBegin: () => { began = true; }, onDone: () => { if (opts.onDone) opts.onDone(); }, pause: rest > 0 ? restBefore(rest) : null });
+      sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => shapeVoice(u, piece, voice, 1, young), onBegin: () => { began = true; }, onDone: () => { if (opts.onPlace) opts.onPlace(null); if (opts.onDone) opts.onDone(); }, pause: rest > 0 ? restBefore(rest) : null, ...(opts.onPlace ? { onPiece: (k) => opts.onPlace(pieces[k].sentence || 0) } : {}) });
     } catch (e) { /* a broken voice must never stop a lesson */ }
   };
   const ss = window.speechSynthesis;
@@ -3081,7 +3118,9 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
 // shown by the page, at its foot, once anything has been spoken.
 let onSpoke = null;
 // voices (pass MV): sentences of the text said in a manner, as speak() takes them.
-function SpeakButton({ text, label, full = false, corner = false, mini = false, cue = 0, pause = undefined, voices = null }) {
+// follow (pass NP): the read-along on the words this button reads, told each sentence the voice begins (speak's onPlace) and null once the
+// reading ends or this button stops it, so no word stays faint after a stop.
+function SpeakButton({ text, label, full = false, corner = false, mini = false, cue = 0, pause = undefined, voices = null, follow = null }) {
   // Tapping while it reads stops it; the button watches the voice so the label follows what is happening. cue (pass MP): its owner
   // started the reading itself (a game's speaker pressed during the welcome reads once the welcome has gone), so it shows reading.
   const [reading, setReading] = useState(false);
@@ -3090,7 +3129,7 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false, 
   if (!canSpeak()) {
     return corner || mini ? null : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>;
   }
-  const press = () => { if (reading) { speechTicket += 1; restUntil = 0; window.speechSynthesis.cancel(); stopSound(); setReading(false); return; } speak(text, { ...(pause === undefined ? {} : { pause }), ...(voices ? { voices } : {}) }); setReading(true); if (onSpoke) onSpoke(); };
+  const press = () => { if (reading) { speechTicket += 1; restUntil = 0; window.speechSynthesis.cancel(); stopSound(); setReading(false); if (follow) follow(null); return; } speak(text, { ...(pause === undefined ? {} : { pause }), ...(voices ? { voices } : {}), ...(follow ? { onPlace: follow } : {}) }); setReading(true); if (onSpoke) onSpoke(); };
   const shownLabel = reading ? 'Stop reading' : label;
   if (mini) {
     return (
@@ -4501,27 +4540,71 @@ function LessonWords({ lineKey, style, children }) {
 // litLine (pass MI): in a text of several lines, the line being read (More Info's explanation), the lines after it faint.
 // ahead (pass NO): the whole text is still ahead of the voice (a story's later paragraphs, More Info's later descriptions), so
 // every line of it is faint; a caller passes it only while the voice reads.
-function RichText({ text, size = 17, color = null, center = false, lineGap = 10, lit = null, litLine = null, ahead = false }) {
+// ground (pass NP): the tint the words sit on, when they sit on one (the green strip after a right answer), so their faint is worked out
+// for it (readAheadOn) and still reads 4.5 to 1; with none the faint is readAhead's, which reads so on the paper, a card and the page.
+function RichText({ text, size = 17, color = null, center = false, lineGap = 10, lit = null, litLine = null, ahead = false, ground = null }) {
   const lines = String(text || '').split('\n');
   const faint = (i) => ahead || (litLine !== null && i > litLine);
+  const faintLook = ground ? readAheadOn(ground, color || C.ink) : readAhead();
   return (
     <>
       {lines.map((line, i) => {
         const trimmed = line.trim();
         if (!trimmed) return <div key={i} style={{ height: 6 }} />;
-        const dim = faint(i) ? readAhead() : null; const dimMark = faint(i) ? '' : undefined;
+        const dim = faint(i) ? faintLook : null; const dimMark = faint(i) ? '' : undefined;
         // A bullet line: hanging indent, always left-aligned, sitting as a narrow block in the middle when the text is centered.
         const labelled = /^\*\*[^*]{1,40}:\*\*\s/.test(trimmed);
         if (trimmed.startsWith('• ') || labelled) return <p key={i} data-read-ahead={dimMark} style={{ margin: center ? '0 auto 6px' : '0 0 6px', maxWidth: center ? '32ch' : undefined, fontSize: size, lineHeight: 1.6, textAlign: 'left', paddingLeft: 18, textIndent: -18, color: color || undefined, ...dim }}>{'• '}{inlineRich(labelled ? trimmed : trimmed.slice(2), i)}</p>;
         const centered = /^\[\[.*\]\]$/.test(trimmed);
         if (centered) return <p key={i} data-read-ahead={dimMark} style={{ margin: '14px 0', fontSize: size + 3, fontWeight: 700, textAlign: 'center', letterSpacing: 0.3, color: color || C.ink, ...dim }}>{litLine === i ? <span data-read-lit="">{inlineRich(trimmed.slice(2, -2).trim(), i)}</span> : inlineRich(trimmed.slice(2, -2).trim(), i)}</p>;
         if (lit !== null && lines.length === 1) { const ss = sentencesOf(trimmed);
-          return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{ss.map((sen, j) => <React.Fragment key={j}><span data-read-lit={j === lit ? '' : undefined} data-read-ahead={j > lit ? '' : undefined} style={j > lit ? readAhead() : {}}>{inlineRich(sen, `${i}-${j}`)}</span>{j < ss.length - 1 ? ' ' : ''}</React.Fragment>)}</p>; }
+          return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{ss.map((sen, j) => <React.Fragment key={j}><span data-read-lit={j === lit ? '' : undefined} data-read-ahead={j > lit ? '' : undefined} style={j > lit ? faintLook : {}}>{inlineRich(sen, `${i}-${j}`)}</span>{j < ss.length - 1 ? ' ' : ''}</React.Fragment>)}</p>; }
         return <p key={i} data-read-ahead={dimMark} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined, ...dim }}>{litLine === i ? <span data-read-lit="">{inlineRich(trimmed, i)}</span> : inlineRich(trimmed, i)}</p>;
       })}
     </>
   );
 }
+// The read-along laid over words a screen has already drawn (pass NP, Mikey's answer to Q110, "Q110 - B": the places the voice read with
+// no look yet). In plain terms: readAlongOver takes a paragraph exactly as the screen draws it at rest (its words, the spans that keep a
+// hyphenated word or a run of sounds whole, the no-break space that holds its last two words together) and, while the voice reads it,
+// wraps each sentence the voice has not reached in the faint (data-read-ahead, readAhead's opacity worked out for the ground) and the
+// sentence being read in a plain mark (data-read-lit). It changes no letter, no space and no kept span, so no word moves and no line
+// breaks anew as the look changes, and with no voice reading (look null) the paragraph is drawn as it always was. The sentences are cut
+// from the drawn words by the voice's own rule (sentenceSpans), a no-break space counting as the space it stands for. look is lookFor's:
+// the part's place from readAlongMap and the faint for its ground. A kept span that holds the end of one sentence and the start of the
+// next (two last words held together across a sentence's end) is opened, and its own words take the look inside it.
+function readAlongWords(nodes, look) {
+  if (!look) return nodes;
+  const textOf = (n) => (typeof n === 'string' || typeof n === 'number' ? String(n) : Array.isArray(n) ? n.map(textOf).join('') : React.isValidElement(n) ? textOf(n.props.children) : '');
+  const spans = look.whole ? [{ from: 0, to: textOf(nodes).length }] : sentenceSpans(textOf(nodes));
+  const sentenceAt = (p) => spans.findIndex((x) => p >= x.from && p < x.to);
+  let pos = 0; let key = 0;
+  // Each piece of the drawn words with the sentence it belongs to (-1 for the space between two sentences, -2 for an opened span).
+  const pieces = (n) => {
+    if (typeof n === 'string' || typeof n === 'number') {
+      const t = String(n); const out = []; let from = 0;
+      for (let k = 1; k <= t.length; k++) if (k === t.length || sentenceAt(pos + k) !== sentenceAt(pos + from)) { out.push({ node: t.slice(from, k), j: sentenceAt(pos + from) }); from = k; }
+      pos += t.length; return out;
+    }
+    if (Array.isArray(n)) return n.flatMap(pieces);
+    if (!React.isValidElement(n)) return [];
+    const len = textOf(n).length; const first = sentenceAt(pos); const last = len ? sentenceAt(pos + len - 1) : first;
+    if (first === last) { pos += len; return [{ node: n, j: first }]; }
+    return [{ node: React.cloneElement(n, {}, group(pieces(n.props.children))), j: -2 }];
+  };
+  // Neighboring pieces of one sentence share one mark: faint ahead of the voice, marked where the voice is, plain behind it.
+  const group = (list) => {
+    const runs = []; for (const p of list) { const r = runs[runs.length - 1]; if (r && r.j === p.j && p.j >= 0) r.nodes.push(p.node); else runs.push({ j: p.j, nodes: [p.node] }); }
+    return runs.map((r) => (r.j >= 0 && r.j >= look.reached ? <span key={`ra-${key++}`} data-read-ahead="" style={look.faint}>{r.nodes}</span>
+      : r.j >= 0 && r.j === look.lit ? <span key={`ra-${key++}`} data-read-lit="">{r.nodes}</span> : <React.Fragment key={`ra-${key++}`}>{r.nodes}</React.Fragment>));
+  };
+  return group(pieces(nodes));
+}
+// The paragraph element itself, its words given the look (or the element as it is, at rest).
+function readAlongOver(el, look) { return look && React.isValidElement(el) ? React.cloneElement(el, {}, readAlongWords(el.props.children, look)) : el; }
+// A part's look (pass NP): null while the voice is not reading it (readAlongMap's rest), else its place and the faint worked out for the
+// ground its words sit on and their ink.
+function lookFor(m, ground, ink = C.ink) { return m && m.reached !== Infinity ? { ...m, faint: readAheadOn(ground, ink) } : null; }
 
 // The text behind an i button. A soft green gradient sets it apart from the page's own
 // text, and every tip uses this so they all look the same.
@@ -6160,7 +6243,10 @@ function useReaderPause(stopRef) {
   }, []);
   return { followPaused, autoScrollUntil };
 }
-function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = false, onReadingChange = null, round = false }) {
+// follow (pass NP): in the whole book, where the book's own reading is (BookReader): { at, s }, at the text it reads in this story (0 its
+// title, then each paragraph in turn) or -1 while it has not reached this story, and s the sentence; null once the book has read past
+// the story, and with no book reading.
+function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = false, onReadingChange = null, round = false, follow = null }) {
   // A printed book may split a painted story across sheets (2026-09-24, Mikey): part = { head, from, to } names the paragraphs
   // this card holds; the title, the main picture and the reading controls ride with the first part.
   const head = !part || part.head; const from = part ? part.from : 0; const to = part ? part.to : story.words.length - 1;
@@ -6178,10 +6264,19 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
     return () => watcher.disconnect();
   }, [story, from, to]);
   // Read-along: the title, then each paragraph in turn, the one being read lit until the voice moves on.
-  const [readingAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
-  const [readingSentence, setReadingSentence] = useState(0);   // pass MH: the sentence of the paragraph being read, lit as words
+  const [voiceAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
+  const [voiceSentence, setReadingSentence] = useState(0);   // pass MH: the sentence of the paragraph being read, lit as words
   // Pass NO (Mikey's answer to Q110): the voice is reading this story, from its title on, so the words ahead of it are faint (readAhead).
-  const [aloud, setAloud] = useState(false);
+  // A story that reads itself starts so (round one's screen read, pass NP: its words opened at full ink and dimmed as its voice began
+  // 400 ms later, a flicker at the start of every such story); a voice that never begins is ended by the quiet watch below.
+  const [voiceOn, setAloud] = useState(() => !!(autoRead && head && canSpeak()));
+  // What the paragraphs draw (pass NP): the place of whichever voice reads this story, its own (voiceAt, voiceSentence and voiceOn, which
+  // also follow the page down and name the button) or, in the whole book, the book's (follow), the paragraph being read readingAt (the
+  // title -1, and -2 while the book has not reached the story, so every paragraph is faint) and its sentence readingSentence.
+  const readingAt = follow ? follow.at - 1 : voiceAt; const readingSentence = follow ? follow.s : voiceSentence; const aloud = follow ? true : voiceOn;
+  // The title's look in the book: faint until the book's voice reaches the story, marked while it reads the title (said with an end mark
+  // and printed in title case, so one block), on the story's paper.
+  const titleLook = follow ? lookFor({ reached: follow.at < 0 ? 0 : 1, lit: follow.at === 0 ? 0 : -1, whole: true }, C.paper) : null;
   const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
   // Following the voice down the page, and letting go once the reader scrolls (useReaderPause, above StoryBody): the page follows
   // again only when the voice reaches a paragraph the reader can see.
@@ -6235,20 +6330,21 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
     }, 250);
     return () => clearInterval(t);
   }, [voiceWatch]);
+  // The page follows the story's own voice (voiceAt); in the whole book BookReader follows the book's voice to each story and paragraph.
   useEffect(() => {
-    if (readingAt < 0 || !cardRef.current) return;
-    const el = cardRef.current.querySelector(`[data-story-par="${readingAt}"]`); if (!el || !el.scrollIntoView) return;
+    if (voiceAt < 0 || !cardRef.current) return;
+    const el = cardRef.current.querySelector(`[data-story-par="${voiceAt}"]`); if (!el || !el.scrollIntoView) return;
     const r = el.getBoundingClientRect(); const band = visibleBand();
     const seen = r.bottom > band.top && r.top < band.bottom;
     // The reader scrolled away: the page stays where they put it until the voice reaches a paragraph they can see.
     if (followPaused.current) { if (seen) followPaused.current = false; return; }
     if (r.top < band.top || r.bottom > band.bottom) { autoScrollUntil.current = Date.now() + 1200; el.scrollIntoView({ behavior: scrollWay(), block: 'center' }); }
-  }, [readingAt]);
+  }, [voiceAt]);
   // A new pace while the voice reads (pass MH, Mikey: "When switching between the snail and rabbit ... the story should continue to
   // read but the speed should adjust in real time.  Not stop the audio.  We can do that with the speaker icon."): the reading
   // carries on at the new pace from the sentence it is on, and the speaker is what stops it.
   const choosePace = (v) => { if (v === pace) return; setPace(v); savePace(v); if (stopRef.current && stopRef.current.setNudge) stopRef.current.setNudge(v === 'slow' ? -1 : 0); };
-  const reading = stopRef.current !== null && readingAt >= -1 && stopRef.current;
+  const reading = stopRef.current !== null && voiceAt >= -1 && stopRef.current;
   const tools = head && paceDefault && canSpeak();
   return (
     <div ref={cardRef} style={{ ...card, background: C.paper, borderColor: C.paperLine }}>
@@ -6259,7 +6355,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
       {head && (tools ? (
         <div className="edu-story-head" data-story-head="">
           <span className="edu-story-head-spacer" aria-hidden="true" />
-          <p style={{ margin: 0, fontSize: 22, fontWeight: 700, textAlign: 'center', textWrap: 'balance' }}>{titleCase(story.title)}</p>
+          {readAlongOver(<p style={{ margin: 0, fontSize: 22, fontWeight: 700, textAlign: 'center', textWrap: 'balance' }}>{titleCase(story.title)}</p>, titleLook)}
           <div className="edu-story-tools" data-story-tools="" role="group" aria-label="Reading">
             <button type="button" onClick={toggle} aria-label={reading ? 'Stop reading' : 'Read the story to me'} className="edu-press"
               style={{ width: 44, height: 44, borderRadius: 999, border: `2px solid ${C.gold}`, background: reading ? C.gold : C.goldSoft, cursor: 'pointer', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 44px' }}>
@@ -6275,7 +6371,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
             ))}
           </div>
         </div>
-      ) : <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center', textWrap: 'balance' }}>{titleCase(story.title)}</p>)}
+      ) : readAlongOver(<p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center', textWrap: 'balance' }}>{titleCase(story.title)}</p>, titleLook))}
       {head && <div className={`edu-reveal${hasArt(story.art) ? ' edu-story-main' : ''}`}><StoryArt serial={story.art} alt={story.alt} fallback={story.diagram || null} /></div>}
       {story.words.map((t, i) => (i < from || i > to ? null : (
         // A paragraph and its picture are one piece (2026-09-24, Mikey). On screen the picture follows the words; on paper a
@@ -11547,30 +11643,40 @@ function CoverArt() {
 }
 // Read the whole book (2026-09-24): every story in order, the one being read scrolled into view and lit, with the snail and
 // the hare when the course is an early-years one, for a classroom listening together.
-function BookReader({ items, pace: paceDefault }) {
+// onPlace (pass NP): told where the reading is, { story, at, s } (the story's number among items; the text it reads in that story, 0 its
+// title and then each paragraph; and the sentence), and null once it ends, is stopped or the page closes, so the book's pages draw every
+// title and paragraph the voice has not reached faint (StoryBody's follow).
+function BookReader({ items, pace: paceDefault, onPlace = null }) {
   const [at, setAt] = useState(-1); const stopRef = useRef(null);
+  const [par, setPar] = useState(-1);   // the paragraph of story at that the voice reads, -1 while it reads the title
   const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
   const { followPaused, autoScrollUntil } = useReaderPause(stopRef);
   // Leaving the story or the book puts the voice's pace back (pass MI, the alignment read: the snail's slower pace stayed on and
   // slowed every question and More Info after it).
   useEffect(() => () => { if (stopRef.current) stopRef.current(); setSpeechNudge(0); }, []);
-  // Each story the voice starts is scrolled to, unless the reader has scrolled the page: then it stays where they put it until
-  // the voice reaches a story they can see (pass MH, the code check's second read of the late fixes; as StoryBody does).
+  // The page follows the book's voice as a lone story's page follows its own (StoryBody): to each story's top as its title is read,
+  // then to each paragraph the voice reaches that is not wholly in view, centered (round one's screen read, pass NP: with only the
+  // stories' tops followed, on a phone the sentence being read left the screen after each story's first paragraph). A reader who
+  // has scrolled the page keeps it where they put it until the voice reaches a title or a paragraph they can see (pass MH, the code
+  // check's second read of the late fixes). A story printed across sheets has paragraphs in more than one part, and every part says
+  // whose it is (data-book-of).
   useEffect(() => {
     if (at < 0 || typeof document === 'undefined') return;
-    const el = document.querySelector(`[data-book-story="${at}"]`); if (!el || !el.scrollIntoView) return;
+    const el = document.querySelector(par < 0 ? `[data-book-story="${at}"]` : `[data-book-of="${at}"] [data-story-par="${par}"]`); if (!el || !el.scrollIntoView) return;
     const r = el.getBoundingClientRect(); const band = visibleBand();
     if (followPaused.current) { if (r.bottom > band.top && r.top < band.bottom) followPaused.current = false; return; }
-    autoScrollUntil.current = Date.now() + 1200; el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
-  }, [at]);
-  const stop = () => { if (stopRef.current) { stopRef.current(); stopRef.current = null; } setAt(-1); };
+    if (par >= 0 && r.top >= band.top && r.bottom <= band.bottom) return;
+    autoScrollUntil.current = Date.now() + 1200; el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: par < 0 ? 'start' : 'center' });
+  }, [at, par]);
+  const stop = () => { if (stopRef.current) { stopRef.current(); stopRef.current = null; } setAt(-1); setPar(-1); };
   const start = () => {
     followPaused.current = false;
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
-    const texts = []; const owner = []; const titles = new Set();
-    items.forEach((st, i) => { titles.add(texts.length); [storyTitleSpoken(st.title), ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
+    const texts = []; const owner = []; const titles = new Set(); const firsts = [];   // firsts: where each story's title sits among the texts
+    items.forEach((st, i) => { titles.add(texts.length); firsts.push(texts.length); [storyTitleSpoken(st.title), ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
     // Each story's clips in the order its title and paragraphs are read (pass MQ), so the book plays the recordings once all exist.
-    stopRef.current = speakSequence(texts, (i) => setAt(owner[i]), () => { stopRef.current = null; setAt(-1); }, items.flatMap(storyClipKeys), { gap: (i) => storyGap(titles.has(i)), pause: storyPause, young: false, once: (i) => storyOnce(items[owner[i]]) });
+    // The reading tells the page each text and sentence it begins, and that it is over once it ends or is stopped (pass NP).
+    stopRef.current = speakSequence(texts, (i, s) => { setAt(owner[i]); setPar(i - firsts[owner[i]] - 1); if (onPlace) onPlace({ story: owner[i], at: i - firsts[owner[i]], s: s || 0 }); }, () => { stopRef.current = null; setAt(-1); setPar(-1); if (onPlace) onPlace(null); }, items.flatMap(storyClipKeys), { gap: (i) => storyGap(titles.has(i)), pause: storyPause, young: false, once: (i) => storyOnce(items[owner[i]]) });
   };
   if (!canSpeak()) return null;
   return (
@@ -12003,15 +12109,18 @@ function PonderFrame({ seed = 1, children, style = null, attrs = null, className
 function seedOf(text) { let h = 7; for (const ch of String(text || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h || 7; }
 // The closing card (pass MH): the rotating title from logic (ponderTitle) above the closing line, the pondering pictures around
 // it. A pre-reader meets it as the last card; a reader at the foot of the voices.
-function PonderCard({ wonder, title, text, big = false, attrs = null }) {
+// reading (pass NP): while the voice reads the card, its title's and its line's places from readAlongMap ({ title, line }, either null
+// when the voice does not read it), so the words it has not reached are faint, worked out for the card's gold (readAheadOn); null at rest.
+function PonderCard({ wonder, title, text, big = false, attrs = null, reading = null }) {
+  const titleInk = C.mode === 'dark' ? '#E9C46A' : C.green;
   return (
     <PonderFrame seed={seedOf(`${wonder.id}-closing`)} attrs={attrs} className="edu-rise" style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge, textAlign: 'center', padding: big ? '20px 18px 22px' : '14px 16px 16px', margin: '0 0 14px' }}>
         {/* Balanced, its last two words held together (pass NI's round one screen read: "Something to Wonder About" ended on "About" alone at
-            320, 375 and 390). */}
-        <p data-ponder-title="" className="edu-ponder-title" style={{ margin: '0 0 8px', fontSize: big ? 24 : 19, fontWeight: 800, letterSpacing: '0.01em', textWrap: 'balance', color: C.mode === 'dark' ? '#E9C46A' : C.green }}>{String(title).replace(/ (\S+)$/, '\u00A0$1')}</p>
+            320, 375 and 390). Its words keep their spans, and the read-along is laid over them (readAlongOver, pass NP). */}
+        {readAlongOver(<p data-ponder-title="" className="edu-ponder-title" style={{ margin: '0 0 8px', fontSize: big ? 24 : 19, fontWeight: 800, letterSpacing: '0.01em', textWrap: 'balance', color: C.mode === 'dark' ? '#E9C46A' : C.green }}>{String(title).replace(/ (\S+)$/, '\u00A0$1')}</p>, lookFor(reading && reading.title, C.goldSoft, titleInk))}
         {/* Since pass NI's round two screen read the line under the title is balanced and its last two words held, as the title is: 22 of the
             93 early closing lines ended on one word alone at 320 ("Who do you love to laugh / with?"). */}
-        <p data-ponder-line="" style={{ fontSize: big ? 20 : 16, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(String(text).replace(/ (\S+)$/, '\u00A0$1'))}</p>
+        {readAlongOver(<p data-ponder-line="" style={{ fontSize: big ? 20 : 16, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(String(text).replace(/ (\S+)$/, '\u00A0$1'))}</p>, lookFor(reading && reading.line, C.goldSoft))}
     </PonderFrame>
   );
 }
@@ -13133,10 +13242,40 @@ function EduSphereScreens() {
     if (wonderHere && !wonderDone) { setWonder(wonderHere); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); return; }
     if (mastered && nextMod) openModule(nextMod.id); else if (mastered && next) openModule(next.module.id); else if (mastered) setScreen('overview'); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
   };
-  const questionText = q ? [q.story, q.prompt].filter(Boolean).join(' ') : '';
+  // The read-along on this page's own words (pass NP, Mikey's answer to Q110, "Q110 - B"; a story and More Info keep their own). In plain
+  // terms: a reading the page starts (a question as it appears or from Hear it again, the words after an answer, the Wonder question, a
+  // Wonder card, Read it to me on the voices) tells the page each sentence the voice begins (followReading), and the page draws the words
+  // the voice has not reached faint (readingIn, readAlongMap, readAlongOver). readAlongAt says which words the voice is reading (at, a name
+  // for the place, and words, the very line it was handed), which sentence of them (s) and under which speech ticket. A reading is over
+  // when it ends, when this page stops it, or when anything newer takes the voice (a tapped word, a new question, More Info, a hush on
+  // leaving the screen, the student's idle sign-out: each moves the ticket on), and then every word is at full ink, on the very next
+  // draw and, by a look every fifth of a second, with nothing else to redraw the page; with no voice on the device nothing is faint.
+  // bookAlongAt is the same for Read the whole book to me (BookReader), which reads a book's titles and paragraphs. (Not readPlace: that
+  // name is the page's scroll place, a function this screen calls as it leaves the overview, and a state of that name hid it.)
+  const [readAlongAt, setReadAlongAt] = useState(null);   // { at, words, ticket, s }, or null when no reading of this page's words is on
+  const [bookAlongAt, setBookAlongAt] = useState(null);   // { story, at, s, ticket }, or null when the whole book is not being read
+  useEffect(() => {
+    if (!readAlongAt && !bookAlongAt) return undefined;
+    const watch = setInterval(() => { if (readAlongAt && readAlongAt.ticket !== speechTicket) setReadAlongAt(null); if (bookAlongAt && bookAlongAt.ticket !== speechTicket) setBookAlongAt(null); }, 200);
+    return () => clearInterval(watch);
+  }, [readAlongAt, bookAlongAt]);
+  // Told each sentence a reading of words begins, and null once it is over; the ticket read then is the reading's own, since a reading
+  // reports nothing once a newer one has the voice.
+  const followReading = (at, words) => (s) => {
+    if (s === null) { setReadAlongAt((p) => (p && p.at === at && p.words === words ? null : p)); return; }
+    const ticket = speechTicket;
+    setReadAlongAt((p) => (p && p.at === at && p.words === words && p.ticket === ticket && p.s === s ? p : { at, words, ticket, s }));
+  };
+  // The sentence the voice is on in these words, or null while no live reading of them is on.
+  const readingIn = (at, words) => (readAlongAt && canSpeak() && readAlongAt.at === at && readAlongAt.words === words && readAlongAt.ticket === speechTicket ? readAlongAt.s : null);
+  // The book's place while its reading is live (BookReader's onPlace), else null.
+  const bookAt = bookAlongAt && canSpeak() && bookAlongAt.ticket === speechTicket ? bookAlongAt : null;
+  const followBook = (p) => setBookAlongAt(p ? { ...p, ticket: speechTicket } : null);
+  // What a question says, its setup and then its question joined (questionReadParts in logic, which the read-along maps).
+  const questionText = readAlongLine(questionReadParts(q));
   // The question's position is a dependency too: two questions in a row can carry the very same words
   // (the same picture picked twice), and the second must still be spoken.
-  useEffect(() => { if (screen === 'practice' && readAloud && questionText) speak(questionText, q && q.voices ? { voices: q.voices } : {}); }, [screen, readAloud, questionText, qIndex]);   // a sentence said in a manner (pass MV) is said that way
+  useEffect(() => { if (screen === 'practice' && readAloud && questionText) speak(questionText, { ...(q && q.voices ? { voices: q.voices } : {}), onPlace: followReading('question', questionText) }); }, [screen, readAloud, questionText, qIndex]);   // a sentence said in a manner (pass MV) is said that way
   // An educator stays signed in while they are using the screen. After a quiet minute (EDUCATOR_IDLE_MS, counted down on a chip), the
   // PIN is asked for again, a warning showing for its last ten seconds. Any tap or key resets the clock. (Corrected in pass NJ, when the
   // student's clock was written beside it: this said four and five quiet minutes, and the next effect's comment thirty seconds.)
@@ -13447,9 +13586,14 @@ function EduSphereScreens() {
   }, [screen, moduleId, courseStoryId]);
   // A pre-reader hears the Wonder question and then each choice, the choice being read lit on screen (pass IS). Leaving
   // the screen stops the reading, so the short voices that follow (four since pass MH) are never talked over.
+  // Since pass NP the question's own words read along too: while the voice reads the question (its first text) its sentences ahead of
+  // the voice are faint, and once it moves on to the choices, ends or is stopped, the question is at full ink (followReading). The
+  // speaker under the question reads it again the same way (readWonderAloud), and each choice keeps its light (Q111 (a)).
+  const readWonderAloud = () => { const asked = followReading('wonder', wonder.prompt);
+    return speakSequence(wonderSpokenParts(wonder), (i, s) => { setWonderLit(i - 1); asked(i === 0 ? s || 0 : null); }, () => { setWonderLit(-1); asked(null); }); };
   useEffect(() => {
     if (!(screen === 'wonder' && readAloud && wonder)) return undefined;
-    const stop = speakSequence(wonderSpokenParts(wonder), (i) => setWonderLit(i - 1), () => setWonderLit(-1));
+    const stop = readWonderAloud();
     return () => stop();
   }, [screen, readAloud, wonder]);
   // Each card a pre-reader meets after the Wonder question is spoken as it appears: the four short voices (two until pass MH), then since pass MG
@@ -13459,7 +13603,8 @@ function EduSphereScreens() {
   const wonderAnswered = record ? record.events.filter((e) => e.type === 'wonder_answered').length : 0;
   const preReaderCards = screen === 'wonder-voices' && readAloud && wonder ? wonderPreReaderCards(wonder, wonderAnswered) : null;
   const spokenCard = preReaderCards ? wonderCardSpoken(preReaderCards[Math.min(wonderVoiceStep, preReaderCards.length - 1)]) : null;
-  useEffect(() => { if (spokenCard) speak(spokenCard); }, [spokenCard, wonderVoiceStep]);
+  // Since pass NP a card's words read along as it is spoken (followReading; the card draws them by its parts, wonderCardParts).
+  useEffect(() => { if (spokenCard) speak(spokenCard, { onPlace: followReading('card', spokenCard) }); }, [spokenCard, wonderVoiceStep]);
   // The test hook: what screen is up, which question, and a way to open a named module without
   // hunting for its card, so a browser check can go straight to a lesson.
   // A phone held sideways is asked to turn upright rather than shown a squeezed layout. Tablets and
@@ -13726,7 +13871,9 @@ function EduSphereScreens() {
     setActionItems(Object.fromEntries(pairs.map(([id, , , items]) => [id, items])));
   })(); }, [screen, roster]);
   // A young learner who was wrong tries again, so the voice must not give the answer away.
-  useEffect(() => { if (screen === 'practice' && readAloud && checked && q) speak(wasCorrect ? 'Correct. ' + q.explain : preReaderWrongWords(q, String(given), wrongPicks), q.voices ? { voices: q.voices } : {}); }, [checked]);   // an answer's sentence said in its question's manner (pass MV)
+  // Since pass NP the words come from answerReadParts in logic ("Correct." and the explanation, or the reason after a wrong tap, the same
+  // words as before), and the card reads along as they are said (followReading).
+  useEffect(() => { if (screen === 'practice' && readAloud && checked && q) { const said = readAlongLine(answerReadParts(q, wasCorrect, String(given), wrongPicks)); speak(said, { ...(q.voices ? { voices: q.voices } : {}), onPlace: followReading('after', said) }); } }, [checked]);   // an answer's sentence said in its question's manner (pass MV)
 
   // ---------- Screens ----------
   const refreshIds = refresherIds(record ? record.events : []);
@@ -14711,6 +14858,18 @@ function EduSphereScreens() {
     // while the card is up, so the letter it asks about is never on the screen with the card's words; Ready shows them with the answers.
     const cardHides = !!grownCard && grownCard.hides && cardUp;
     const shownQ = grownCard ? cardQuestion(q, cardUp) : printedQuestion(q, canSpeak());
+    // The read-along (pass NP, Mikey's answer to Q110): where the voice is in the question's setup and question, and in the card after an
+    // answer ("Correct" and the explanation, or the reason after a wrong tap), each mapped from what the voice says to what this screen
+    // prints (readAlongMap over questionReadParts and answerReadParts in logic). A part printed in other words than it is said (a heard
+    // question's frame, a reason that hides a sound) turns full ink as a block when the voice begins it. At rest, and with no voice on
+    // the device (the grown-up's card included), nothing is faint.
+    const askedAt = readAlongMap(questionReadParts(q, shownQ), readingIn('question', questionText));
+    const afterParts = checked ? answerReadParts(q, wasCorrect, String(given), wrongPicks, canSpeak() || !!grownCard) : [];
+    const afterAt = readAlongMap(afterParts, readingIn('after', readAlongLine(afterParts)));
+    // The explanation is printed a sentence a line (formatTeachingText), so its place is the line that holds the sentence being read,
+    // as More Info's explanation's is (lineOfSentence); on the green strip after a right answer, whose faint is worked out for it.
+    const explained = formatTeachingText(q.explain); const explainedAt = afterAt[1] && afterAt[1].reached !== Infinity ? afterAt[1] : null;
+    const explainLook = !explainedAt ? {} : String(explained || '').split('\n').length === 1 ? { lit: explainedAt.lit >= 0 ? explainedAt.lit : null, ahead: explainedAt.reached === 0 } : { litLine: explainedAt.lit >= 0 ? lineOfSentence(explained, explainedAt.lit) : null, ahead: explainedAt.reached === 0 };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* The round's question count on the left (the Quick Review's in the middle, under its name) and a bold green X on the
@@ -14739,7 +14898,7 @@ function EduSphereScreens() {
               above the fold on 110 of the 489 screens it was under; as fitted, 198 of the 712 lessons' titles wrap at 320, and Check
               answer is under the fold on 437 of the 2,412 pre-K question screens there in the light theme). */}
           {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center', ...(narrowScreen() ? { minWidth: 0 } : null) }}>{narrowScreen() ? <FitText size={18} min={15} within="[data-title-row]" less={2 * (44 + 8)}>{titleCase(mod.title)}</FitText> : titleCase(mod.title)}</p>}
-          <SpeakButton mini text={questionText} voices={q && q.voices ? q.voices : null} label={readAloud ? 'Hear it again' : 'Read it to me'} />
+          <SpeakButton mini text={questionText} voices={q && q.voices ? q.voices : null} label={readAloud ? 'Hear it again' : 'Read it to me'} follow={followReading('question', questionText)} />
         </div>
         {/* On a short phone the card sits a little tighter, and a question whose answers are each one picture draws them, and its own
             picture, at SHORT_PICTURES of their size (pass MZ, EARMARKS A80: 21 pre-K questions ended Check answer under a 375 by 667
@@ -14751,10 +14910,13 @@ function EduSphereScreens() {
           {/* What prints is printedQuestion's (pass MM): a letter question shows no letter while the voice can say it. Since pass NG a
               question with a grown-up's card prints cardQuestion's instead, with no voice (shownQ, above). */}
           {/* Each keeps 12 pixels above it when Ready brings it into view (round two's screen read, pass NG: its first line met the screen's top). */}
-          {shownQ.story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink, textWrap: 'balance', scrollMarginTop: 12 }}><RichText text={shownQ.story} size={17} center lineGap={8} /></div>}
+          {/* While the voice reads it (pass NP) the setup's sentences ahead of the voice are faint, or, printed in words of its own, the whole
+              setup is marked as read once the voice begins it (data-read-lit on its box). */}
+          {shownQ.story && <div data-question-setup="" data-read-lit={askedAt[0].whole && askedAt[0].lit === 0 ? '' : undefined} style={{ margin: '0 0 10px', color: C.ink, textWrap: 'balance', scrollMarginTop: 12 }}><RichText text={shownQ.story} size={17} center lineGap={8} lit={!askedAt[0].whole && askedAt[0].lit >= 0 ? askedAt[0].lit : null} ahead={askedAt[0].reached === 0} /></div>}
           {/* The printed question wraps balanced too, so it never ends on one lone word (pass MY, round one's screen check). */}
           {/* A hiding kind's card stands alone while it is up (pass NH, Q97 (a)): no question prints above it. */}
-          {shownQ.prompt !== '' && <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance', scrollMarginTop: 12 }}>{shownQ.prompt}</p>}
+          {/* While the voice reads the setup the question is faint, and its sentences turn full ink as the voice begins each (pass NP). */}
+          {shownQ.prompt !== '' && readAlongOver(<p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance', scrollMarginTop: 12 }}>{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
           {q.visual && !cardHides && <div data-question-picture="" style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
@@ -14950,10 +15112,11 @@ function EduSphereScreens() {
                   their lines end short of it. The explanation keeps it as one block, its words and its picture together (a spacing bank's
                   explanation shows its sentence as print fitted to its box, PrintWords, and "splash." and "dog." sat under the cue after the
                   right tap). The box keeps its full width and color; only what is in it steps aside. */}
-              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textAlign: 'center', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneLetters(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
+              {/* While the voice says it (pass NP) the line reads along on its strip, its faint worked out for the green or the clay. */}
+              {readAlongOver(<p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textAlign: 'center', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneLetters(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>, readAloud ? lookFor(afterAt[0], wasCorrect ? C.greenSoft : C.claySoft, wasCorrect ? C.green : C.clayInk) : null)}
               {(wasCorrect || !readAloud) && (
                 <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}>
-                  <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} center />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} center /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>{q.choiceNotes[given]}</p>}</div>
+                  <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} center ground={wasCorrect ? C.greenSoft : C.claySoft} {...explainLook} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} center /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>{q.choiceNotes[given]}</p>}</div>
                   {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
                   {Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
                   {q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
@@ -15268,17 +15431,19 @@ function EduSphereScreens() {
       setWonderVoiceStep(0);
       setScreen('wonder-voices');
     };
+    // The question's read-along (pass NP): its sentences ahead of the voice faint, on its white card, while the voice reads it.
+    const askedLook = lookFor(readAlongMap([{ said: wonder.prompt, shows: wonder.prompt }], readingIn('wonder', wonder.prompt))[0], C.surface);
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <h1 className="edu-slide-in" style={{ fontSize: 30, margin: '8px 0 12px', textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
         {/* The pondering pictures around the question (pass MH, Mikey: "The let's wonder question should also be spiced up with icons
             around the question."). */}
         <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px', margin: '0 0 14px' }}>
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
+          {readAlongOver(<p style={{ fontSize: 22, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>, askedLook)}
         </PonderFrame>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
-            <button type="button" onClick={() => speakSequence(wonderSpokenParts(wonder), (i) => setWonderLit(i - 1), () => setWonderLit(-1))} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => readWonderAloud()} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
@@ -15313,6 +15478,9 @@ function EduSphereScreens() {
     const step = Math.min(wonderVoiceStep, cards.length - 1);
     const v = cards[step];
     const last = step >= cards.length - 1;
+    // The card's read-along (pass NP): where the voice is in what it says (wonderCardParts in logic: a voice's name and label, which the
+    // card shows its own way and so never fade, then its words; the closing card's title, then its line), while it says them.
+    const cardSaid = wonderCardSpoken(v); const cardAt = readAlongMap(wonderCardParts(v), readingIn('card', cardSaid));
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* The question stays above the voices, small, so a child remembers what they are talking about (pass MH, Mikey: "They should
@@ -15320,7 +15488,7 @@ function EduSphereScreens() {
             be discrete."). */}
         <p data-wonder-asked="" style={{ margin: '4px 0 10px', fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
         {v.closing
-          ? <div key={step}><PonderCard wonder={wonder} title={v.title} text={v.closing} big attrs={{ 'data-wonder-closing': '' }} /></div>
+          ? <div key={step}><PonderCard wonder={wonder} title={v.title} text={v.closing} big attrs={{ 'data-wonder-closing': '' }} reading={{ title: cardAt[0], line: cardAt[1] }} /></div>
           : <div key={step} className="edu-rise" data-wonder-voice-card={wonderVoice(v.voice) ? wonderVoice(v.voice).name : ''} style={{ ...card, textAlign: 'center', padding: '20px 18px 22px' }}>
             {/* Mikey's layout: the name at the top, the label under it, the portrait under both, then the words in quotes. */}
             <VoiceName label={v.voice} size={21} color={C.green} />
@@ -15330,12 +15498,13 @@ function EduSphereScreens() {
                 on all 552 short voices at 320 to 430 pixels wide (round three's read): 103 to 186 ended on one word alone with the page's own wrap,
                 2 to 49 with textWrap pretty, none with this, and no card's line count or height changed; balance alone left 3 of 3,864 card
                 screens on one word, and the held pair alone 1, a closing quote mark on a line of its own after the box that holds a pair of 20.
-                Its mark, data-wonder-voice-says, is for the browser check that reads it. */}
-            <p data-wonder-voice-says="" style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0', textWrap: 'balance' }}>{'\u201C'}{lastTwoTogether(wholeHyphens(v.says), v.says)}{'\u201D'}</p>
+                Its mark, data-wonder-voice-says, is for the browser check that reads it. Since pass NP its words read along while the
+                voice says them, laid over the words as drawn (readAlongOver), so the held pair and the balance stay as they are. */}
+            {readAlongOver(<p data-wonder-voice-says="" style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0', textWrap: 'balance' }}>{'\u201C'}{lastTwoTogether(wholeHyphens(v.says), v.says)}{'\u201D'}</p>, lookFor(cardAt[1], C.surface))}
           </div>}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
-            <button type="button" onClick={() => speak(wonderCardSpoken(v))} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => speak(cardSaid, { onPlace: followReading('card', cardSaid) })} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
@@ -15367,6 +15536,8 @@ function EduSphereScreens() {
       await addEvent(makeWonderEvent(wonder.id, moduleId, new Date().toISOString(), seconds, words));
       setScreen('wonder-voices');
     };
+    // The question's read-along (pass NP): while its speaker reads it, its sentences ahead of the voice are faint, on its white card.
+    const askedLook = lookFor(readAlongMap([{ said: wonder.prompt, shows: wonder.prompt }], readingIn('wonder', wonder.prompt))[0], C.surface);
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* The speaker sits to the right of the title here too (pass HG, Mikey), in a column of its own as wide as an empty one on the
@@ -15376,11 +15547,11 @@ function EduSphereScreens() {
           {/* A little smaller on a narrow phone, so the title stays on one line between its two side columns (pass MR, round two's
               screen read: at 320 pixels it broke into "Let's" and "Wonder!"). */}
           <h1 className="edu-slide-in" style={{ fontSize: 'clamp(24px, 7.5vw, 30px)', margin: 0, textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
-          <span style={{ justifySelf: 'start' }}><SpeakButton mini text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} /></span>
+          <span style={{ justifySelf: 'start' }}><SpeakButton mini text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} follow={followReading('wonder', wonder.prompt)} /></span>
         </div>
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
         <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} style={{ ...card, margin: '0 0 14px' }}>
-          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
+          {readAlongOver(<p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>, askedLook)}
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
               {wonder.options.map((o) => (
@@ -15403,7 +15574,11 @@ function EduSphereScreens() {
   }
 
   if (screen === 'wonder-voices' && wonder) {
-    const allText = wonder.perspectives.map((p) => `${wonderVoiceSpoken(p.voice)}: ${p.says}`).join(' ') + ' ' + wonder.closing;
+    // Read it to me reads every voice and then the closing line as one line (wonderVoicesParts in logic: each voice by name and label,
+    // then its words), and since pass NP each card's words read along as it does: faint until the voice reaches them, then sentence by
+    // sentence; the closing card's title is not read, so it never fades.
+    const voicesParts = wonderVoicesParts(wonder); const allText = readAlongLine(voicesParts);
+    const voicesAt = readAlongMap(voicesParts, readingIn('voices', allText));
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <p style={{ color: C.muted, fontSize: 14, margin: '4px 0 6px' }}>How others might see it</p>
@@ -15411,17 +15586,17 @@ function EduSphereScreens() {
         <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge }}>
           <p style={{ margin: 0, fontSize: 17, fontWeight: 600, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
         </div>
-        <SpeakButton text={allText} label="Read it to me" />
+        <SpeakButton text={allText} label="Read it to me" follow={followReading('voices', allText)} />
         {/* Each voice (pass MH, Mikey's layout): the name, the label and the portrait centered, then the words in quotes, which run
-            to several lines for a reader and so sit left-aligned to be read easily. */}
-        {wonder.perspectives.map((p) => (
+            to several lines for a reader and so sit left-aligned to be read easily. The k-th voice's words are its parts' 2k + 1th. */}
+        {wonder.perspectives.map((p, k) => (
           <div key={p.voice} data-wonder-voice-card={wonderVoice(p.voice) ? wonderVoice(p.voice).name : ''} style={{ ...card, textAlign: 'center' }}>
             <VoiceName label={p.voice} size={16} color={C.green} />
             <WonderPortrait name={wonderVoice(p.voice) ? wonderVoice(p.voice).name : ''} size={64} note={!!(record && record.preview)} />
-            <p style={{ margin: 0, fontSize: 16, textAlign: 'left' }}>{'\u201C'}{wholeHyphens(p.says)}{'\u201D'}</p>
+            {readAlongOver(<p style={{ margin: 0, fontSize: 16, textAlign: 'left' }}>{'\u201C'}{wholeHyphens(p.says)}{'\u201D'}</p>, lookFor(voicesAt[2 * k + 1], C.surface))}
           </div>
         ))}
-        <PonderCard wonder={wonder} title={ponderTitle(wonder, wonderAnswered)} text={wonder.closing} attrs={{ 'data-wonder-closing': '' }} />
+        <PonderCard wonder={wonder} title={ponderTitle(wonder, wonderAnswered)} text={wonder.closing} attrs={{ 'data-wonder-closing': '' }} reading={{ title: null, line: voicesAt[voicesAt.length - 1] }} />
         <Btn full onClick={() => setScreen('overview')}>Back to overview</Btn>
         <VoiceNote />
       </div></div>
@@ -16885,6 +17060,10 @@ function EduSphereScreens() {
     // every course the same way: two short unpainted stories a page, a painted or long story on sheets that split only
     // between paragraphs (each paragraph with its own picture), the long story last on as many sheets as it needs.
     const { groups, csParts, msParts } = bookPages(chapters, cs, hasArt, ms);
+    // Where Read the whole book to me is, for each story's page (pass NP): k is the story's number among bookItems (the chapters, then the
+    // long story, then the next one). A story the voice has read past, and every story with no reading on, is at full ink (null); the
+    // story being read follows the voice sentence by sentence; every story after it, title and paragraphs, is faint (at -1).
+    const bookFollow = (k) => (!bookAt || k < bookAt.story ? null : k > bookAt.story ? { at: -1, s: 0 } : { at: bookAt.at, s: bookAt.s });
     // The last pages: which of the state's standards each story serves, from the standards map (2026-09-24, Mikey), on as many
     // sheets as the list needs (pass MA). A story with no standard in the educator's framework is left out, and the page says so.
     const fw = frameworkForState(stateCode || 'CA');
@@ -16907,7 +17086,7 @@ function EduSphereScreens() {
           <button type="button" onClick={() => setScreen('story-log')} style={{ ...linkBtn }}>Back to Story Log</button>
           <button type="button" onClick={printBook} style={{ ...linkBtn }}>Print or Save</button>
         </div>
-        <BookReader items={bookItems} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} />
+        <BookReader items={bookItems} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} onPlace={followBook} />
         <div className="edu-book-sheet">
           <div className="edu-book-group edu-book-cover-group"><div className="edu-book-cover" style={{ ...card, textAlign: 'center', padding: '48px 22px', position: 'relative', overflow: 'hidden' }}>
             <CoverArt />
@@ -16921,24 +17100,24 @@ function EduSphereScreens() {
           {groups.map((g, gi) => (
             <div key={gi} className={`edu-book-group${g.per === 2 ? ' edu-book-dense' : ''}`}>
               {g.items.map(({ m, st, i, part }) => (
-                <div key={`${m.id}-${part ? part.from : 0}`} className="edu-book-story" data-book-story={!part || part.head ? i : undefined} style={{ marginTop: 18 }}>
+                <div key={`${m.id}-${part ? part.from : 0}`} className="edu-book-story" data-book-story={!part || part.head ? i : undefined} data-book-of={i} style={{ marginTop: 18 }}>
                   <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{!part || part.head ? `Story ${i + 1}. ${titleCase(m.title)}` : `Story ${i + 1}, continued`}</p>
-                  <StoryBody story={st} part={part} />
+                  <StoryBody story={st} part={part} follow={bookFollow(i)} />
                 </div>
               ))}
               <p className="edu-book-foot">{titleCase(c.title)} · Page {gi + 2} of {pageTotal}</p>
             </div>
           ))}
           {csParts.map((part, k) => (
-            <div key={`cs-${k}`} className="edu-book-group"><div className="edu-book-story" data-book-story={k === 0 ? chapters.length : undefined} style={{ marginTop: 18 }}>
+            <div key={`cs-${k}`} className="edu-book-group"><div className="edu-book-story" data-book-story={k === 0 ? chapters.length : undefined} data-book-of={chapters.length} style={{ marginTop: 18 }}>
               <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{k === 0 ? 'The long story' : 'The long story, continued'}</p>
-              <StoryBody story={cs} part={part} />
+              <StoryBody story={cs} part={part} follow={bookFollow(chapters.length)} />
             </div><p className="edu-book-foot">{titleCase(c.title)} · Page {groups.length + 2 + k} of {pageTotal}</p></div>
           ))}
           {msParts.map((part, k) => (
-            <div key={`ms-${k}`} className="edu-book-group"><div className="edu-book-story" data-book-story={k === 0 ? chapters.length + (cs ? 1 : 0) : undefined} style={{ marginTop: 18 }}>
+            <div key={`ms-${k}`} className="edu-book-group"><div className="edu-book-story" data-book-story={k === 0 ? chapters.length + (cs ? 1 : 0) : undefined} data-book-of={chapters.length + (cs ? 1 : 0)} style={{ marginTop: 18 }}>
               <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{k === 0 ? 'The next long story' : 'The next long story, continued'}</p>
-              <StoryBody story={ms} part={part} />
+              <StoryBody story={ms} part={part} follow={bookFollow(chapters.length + (cs ? 1 : 0))} />
             </div><p className="edu-book-foot">{titleCase(c.title)} · Page {groups.length + 2 + csParts.length + k} of {pageTotal}</p></div>
           ))}
           {standardSheets.map((sheet, k) => (

@@ -282,9 +282,10 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
 {
   const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
   // Since pass MG a pre-reader's cards are spoken through wonderCardSpoken in logic, which says each voice with wonderVoiceSpoken,
-  // so the screen's spoken voices are counted through either, and logic's one must use the named form.
+  // so the screen's spoken voices are counted through either, and logic's one must use the named form. Since pass NP a reader's voices page
+  // reads through wonderVoicesParts in logic, each voice's card by wonderCardParts, which says it by name (wonderVoiceSpoken), so it counts too.
   { const logicSrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const cardFn = logicSrc.slice(logicSrc.indexOf('export function wonderCardSpoken'), logicSrc.indexOf('export function wonderSpokenParts'));
-    ok('every Wonder voice on screen is shown and spoken by name', !/\{(p|v)\.voice\}<\/(p|span)>/.test(ui) && !ui.includes('`${v.voice}:`') && (ui.match(/<VoiceName /g) || []).length >= 4 && (ui.match(/wonderVoiceSpoken\(|wonderCardSpoken\(/g) || []).length >= 3 && cardFn.includes('wonderVoiceSpoken(card.voice)') && !ui.includes('${v.voice}. ') && !ui.includes('${p.voice} says')); }
+    ok('every Wonder voice on screen is shown and spoken by name', !/\{(p|v)\.voice\}<\/(p|span)>/.test(ui) && !ui.includes('`${v.voice}:`') && (ui.match(/<VoiceName /g) || []).length >= 4 && (ui.match(/wonderVoiceSpoken\(|wonderCardSpoken\(|wonderVoicesParts\(/g) || []).length >= 3 && cardFn.includes('wonderVoiceSpoken(card.voice)') && cardFn.includes('wonderCardParts({ voice: p.voice, says: p.says })') && !ui.includes('${v.voice}. ') && !ui.includes('${p.voice} says')); }
 }
 // No white drawing on a gold or green tap (pass MG, Mikey's answer to Q23, "change"): read from the source, every element filled
 // with C.gold or C.green holds no white up to that element's end, so the shelf's cover badge and the result and story arrows are
@@ -719,7 +720,9 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // The eight older vocabulary lessons Q77 (a) left as they were (pass MT) play the game since Mikey's answer to Q81 (pass MU), so no
   // lesson waits: the list is held empty, so it can never grow by a quiet edit.
   const WAITING_NONE = [];
-  const vocab = (m) => /II\.D\.[12]\b|P-LC [67]\b/.test([].concat(m.sources || []).join(' '));   // ELOF's vocabulary goals are P-LC 6 and 7 (round one's alignment read)
+  // II.D.1 and II.D.2 standing alone, never inside III.D.1 (pass NP: Act it out and Tell it again cite III.D.1, retelling and
+  // re-enacting a story, and read as vocabulary lessons until the code was read).
+  const vocab = (m) => /(?<!I)II\.D\.[12]\b|P-LC [67]\b/.test([].concat(m.sources || []).join(' '));   // ELOF's vocabulary goals are P-LC 6 and 7 (round one's alignment read)
   const problems = (mods, { lessons = L.SAY_ALONG_LESSONS, waits = L.SAY_ALONG_WAITS, pieces = L.speechPieces, syllables = L.SAY_ALONG_SYLLABLES } = {}) => { const bad = []; const styles = new Set(); const used = new Set(); let n = 0; const lessonsWith = new Set(); let mikey = false;
     for (const m of mods) { const orders = new Map(); const heard = [0, 1, 2, 3, 4].map(() => new Set()); let games = 0;
       for (const [li, line] of (m.lesson.script || []).entries()) {
@@ -864,13 +867,17 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // Since the second read of round one, every line that lights with readLit() is read too, so a Wonder choice being read (its fill
   // faded over 200 ms while its ink turned at once) or a lit sentence's unlit side fades nowhere; near miss: the Wonder button's fade.
   const litLineFades = (src) => src.split('\n').some((l) => /readLit\(\)[^\n]*transition: '[^']*background/.test(l) || /transition: '[^']*background[^\n]*readLit\(\)/.test(l));
-  const fades = (src) => /const LIT_WORDS = \{[^}]*transition/.test(src) || /data-say-along-syllable=\{k\} style=\{[^\n]*transition: 'background/.test(src) || /litSentence >= 0 && i > litSentence \? readAhead\(\) : \{[^}]*transition/.test(src) || /const readAhead = \(\) => \(\{[^}]*transition/.test(src) || litLineFades(src);
+  // Since pass NP the faint worked out for a tint (readAheadOn) and the read-along laid over drawn words (readAlongWords' marks) fade nowhere
+  // either; near miss: readAheadOn given a 200 ms fade.
+  const tintFades = (src) => { const i = src.indexOf('function readAheadOn('); return i < 0 || /transition/.test(src.slice(i, src.indexOf('\n}\n', i))) || !src.includes('data-read-ahead="" style={look.faint}>') || /data-read-(?:ahead|lit)="" style=\{\{[^}]*transition/.test(src); };
+  const fades = (src) => /const LIT_WORDS = \{[^}]*transition/.test(src) || /data-say-along-syllable=\{k\} style=\{[^\n]*transition: 'background/.test(src) || /litSentence >= 0 && i > litSentence \? readAhead\(\) : \{[^}]*transition/.test(src) || /const readAhead = \(\) => \(\{[^}]*transition/.test(src) || litLineFades(src) || tintFades(src);
   const wonderAt = ui.indexOf('data-wonder-lit=');
   const wonderFade = wonderAt > 0 ? ui.slice(0, wonderAt) + ui.slice(wonderAt).replace("transition: 'transform 200ms'", "transition: 'transform 200ms, background 200ms'") : ui;
   // Since pass NO (Mikey's answer to Q110) a sentence ahead of the voice is faint (readAhead) in place of the green, and it turns full in
   // one frame too; near miss: the faint given a 200 ms fade.
   const faintFade = ui.replace("({ opacity: C.mode === 'dark' ? 0.55 : 0.66 })", "({ opacity: C.mode === 'dark' ? 0.55 : 0.66, transition: 'opacity 200ms' })");
-  ok('no read-along light fades: the strip\'s syllables, LIT_WORDS, the lesson\'s and every lit sentence, the faint ahead of the voice and a Wonder choice being read change ink and fill in one frame (round one and its second read, pass MT; pass NO; three near misses caught)', !fades(ui) && fades(ui.replace("...LIT_WORDS, transition: 'none', margin: 0", "...LIT_WORDS, transition: 'background 40ms', margin: 0")) && wonderFade !== ui && fades(wonderFade) && faintFade !== ui && fades(faintFade), `fades ${fades(ui)}`);
+  const tintFade = ui.replace('  return { opacity: a };\n}', "  return { opacity: a, transition: 'opacity 200ms' };\n}");
+  ok('no read-along light fades: the strip\'s syllables, LIT_WORDS, the lesson\'s and every lit sentence, the faint ahead of the voice (and since pass NP on a tint, and laid over drawn words) and a Wonder choice being read change ink and fill in one frame (round one and its second read, pass MT; pass NO; pass NP; four near misses caught)', !fades(ui) && fades(ui.replace("...LIT_WORDS, transition: 'none', margin: 0", "...LIT_WORDS, transition: 'background 40ms', margin: 0")) && wonderFade !== ui && fades(wonderFade) && faintFade !== ui && fades(faintFade) && tintFade !== ui && fades(tintFade), `fades ${fades(ui)}`);
   // The light's timing (logic): a piece lights each syllable once, in order, inside the time the voice is guessed to take, a word of one
   // syllable whole; a way said in one breath lights every saying in turn, a little ahead (SAY_ALONG_JOINED_LEAD); the child's turn
   // sits between 0.7 and 1.8 seconds.

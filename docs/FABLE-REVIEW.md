@@ -200,6 +200,25 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NP (Mikey's answer Q111, six pre-K lessons of Domain III, the read-along in questions, Wonder and the book, and four early Wonder questions)
+
+- A lesson that teaches a guess builds its stories in mirrored pairs: each picture is the good guess after one story and the wrong one after its mirror (dark clouds bring rain, and when the clouds go away the sun is the good guess), since when the rain was always the good guess a child who always tapped it was right about two times in three without listening.
+- A picture that holds another picture is never set beside it: the snow is the cloud with three flakes under it, so a child who tapped the snow for "Which one was a clue?" had tapped a cloud, and heard that the snow is not in the story.
+- Every word a reason or a question uses is said in the lesson's lines first, fit among them, and each kind of question is asked in a line in the words its bank uses: "Which one was a clue?" and "Was our guess right?" were worked in the lines and never asked.
+- A feeling is told by the story's moment, never by another lesson's faces ("Mad is not a good guess, because a tear rolled down Ava's cheek.").
+- What a line says a print says is the print it shows: the voice said "Ben helps Ava." over three prints of "Ben hugs Ava.", in the lesson that teaches following print.
+- A claim about which way we read is said of English ("In English, we read along each line the way this arrow points"), since a child may have Arabic, Hebrew, Urdu or Persian books at home.
+- Acting a story out, retelling it aloud and handling a real book are read alike, as the child's own: the lesson teaches and asks what each takes, a turn with a grown-up asks for the doing, and the outcome is cited in part.
+- Two drawings alike in color and shape are kept off one row for a three-year-old: the apple and the ball, both red and round, never share a row in Act it out or Tell it again.
+- A grown-up's look is read against the course's teachers too, since the look tool leaves them out (a grandma in a gray bob and teal repeated First Steps' teacher, the one color that had looked free), and a batch's people are read together: with the tool's palette spent near the pre-K Reading courses, four of the six leads came out blond (Q114).
+- What a grown-up holds is put down in the words before a picture shows her hands free (Mom's half-folded towel goes on the stack), and a night scene says night in its prompts, in warm lamplight, its mood warm and not bright.
+- One voice tag never asks for two paces ("quick ... slowly" became Ramona's "high, squeaky" voice, a sound and not a speed), and the narrator never states a general fact in the present tense ("where wheels go" became "the right way").
+- A phrase that can belong to two words is moved to its own ("At school, Ramona heard a story about a fox."), and so before a feeling word is heard as very, so a line says "so we can guess she will feel happy".
+- A Wonder voice brings a point no older early voice makes: Chloe's book that stayed the same while she grew was the skeptic's punchline in the question about shoes too small, and Frederick's count of a sad story's pages was the measure four older voices take of a bad day.
+- Two short voices of one question never make one point, and a skeptic's doubt is never heard as an answer to the grandparent just before it, in the long voices as in the short.
+- A round's fixes are read across the batch together: written voice by voice, they wore one opening thin (three of one question's long voices opened on a grown-up reading to the child) and brought in older images (a prayer of thanks at the door, a comfort that comes along the road home).
+- A study a voice tells is read in its paper, and where only an extract could be fetched, the record says so and asks for one read against the page itself.
+
 ## Learned in pass NM (Mikey's answer Q108, pre-K's questions about a story and print and pictures in three lessons)
 
 - A question that asks for a word is read for every word that does what it asks: "Which word can start your question?" had two true answers, since what can start a question about a time or a place, so the bank asks for the word by what it asks about.

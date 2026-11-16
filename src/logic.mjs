@@ -1590,6 +1590,15 @@ export function printedQuestion(q, voice = true) {
   if (q.unvoicedStory) return { story: q.unvoicedStory, prompt: q.prompt };
   return { story: q.story ? mannerCues(q.story, q.voices) : null, prompt: q.prompt };
 }
+// What a read-aloud question says and prints, part by part, for the read-along (pass NP, readAlongMap): its setup, then its question,
+// each said as written and printed as the screen prints it (shown, printedQuestion's with a voice unless the screen hands its own), so a
+// heard question's printed frame turns full ink as the voice begins its part, never sentence by sentence against words it does not print.
+// readAlongLine of these parts is the line the screen hands the voice, the setup and the question joined by one space.
+export function questionReadParts(q, shown = null) {
+  if (!q) return [];
+  const printed = shown || printedQuestion(q, true);
+  return [{ said: q.story || '', shows: printed.story || '' }, { said: q.prompt || '', shows: printed.prompt || '' }];
+}
 // The grown-up's card (Q91, Mikey's answer in pass NG: "Q91 - A"; EARMARKS A96). In plain terms: on a phone, tablet or computer with
 // no voice, a grown-up reads each question aloud, and in 24 kinds of letters question the whole question printed the sound or the
 // word the voice would have said ("Listen to this sound. Sss." above S and B), so a child who matches shapes could answer without
@@ -4782,15 +4791,15 @@ function LETTER_MODULES() { return [
     tagline: 'Left to right, top to bottom',
     requires: ['letter-names'],
     lesson: {
-      paragraphs: ['We read from left to right. The first word in a line is the one on the left, and the last word is the one on the right. A space sits between each word and the next, so you can tell where one word ends and count how many there are.', 'Letters inside a word go left to right too, so in A B C, A comes first and C comes last. When a line ends, we go back to the left and down to the next line, and keep reading from there.', 'Reading the other way scrambles the words, so the cat sat would come out sat cat the, which makes no sense.'],
+      paragraphs: ['In English, we read from left to right. The first word in a line is the one on the left, and the last word is the one on the right. A space sits between each word and the next, so you can tell where one word ends and count how many there are.', 'Letters inside a word go left to right too, so in A B C, A comes first and C comes last. When a line ends, we go back to the left and down to the next line, and keep reading from there.', 'Reading the other way scrambles the words, so the cat sat would come out sat cat the, which makes no sense.'],
       keyIdea: 'Start on the left. Go right. Then go back to the left and down to the next line.',
       example: { kind: 'letters', text: 'the cat sat', caption: 'The comes first, then cat, then sat.' },
       script: [
-        { say: 'We read from left to right. In the cat sat, the comes first, because it is on the left.', show: { kind: 'letters', text: 'the cat sat' } },
+        { say: 'In English, we read from left to right. So in the cat sat, the comes first, because it is on the left.', show: { kind: 'letters', text: 'the cat sat' } },
         { say: 'Then we move right. After the comes cat, and after cat comes sat, the last word, on the right.', show: { kind: 'letters', text: 'the cat sat' } },
         { say: 'A space sits between each word and the next. Count the words, the, cat and sat, and you get three.', show: { kind: 'letters', text: 'the cat sat' } },
         { say: 'Letters go the same way. In A B C, A comes first, on the left, and C comes last.', show: { kind: 'letters', text: 'A B C' } },
-        { say: 'Reading the other way scrambles the words. Sat cat the does not make sense, so always start on the left.', show: { kind: 'letters', text: 'sat cat the' } },
+        { say: 'Reading the other way scrambles the words. Sat cat the does not make sense, so in English, always start on the left.', show: { kind: 'letters', text: 'sat cat the' } },
         { say: 'When a line ends, we go back to the left and down to the next line, and keep reading.', show: null },
         { say: 'Start on the left, go right, then go back to the left and down to the next line.', show: null },
       ],
@@ -6620,7 +6629,7 @@ function PREK3_READING_MODULES() { return [
   // lines say and draw (TALE3_ANIMALS, TALE3_THINGS, TALE3_PLACES), so a question asks only what its own story told; its wrong choice is
   // the other friend, the other place or the other feeling of that same story, or, for the thing that was lost, one the story never
   // names. Head Start's 36 to 48 month progression asks a child to answer questions about main characters and events, and about likes and
-  // dislikes, which the last line's turn asks of a grown-up; asking questions and making predictions wait (EARMARKS E12).
+  // dislikes, which the last line's turn asks of a grown-up; making predictions is What happens next?'s since pass NP, and asking questions about a story waits (EARMARKS E12).
   {
     id: 'listen-to-the-story',
     skill: 'Listening',
@@ -6649,7 +6658,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Now you try. Which story did you like best, the lost hat or the lost sock? Tell a grown-up.', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'sock' } }, voices: [['Which story did you like best, the lost hat or the lost sock?', 'ask'], ['Tell a grown-up.', 'tell', 'turn']] },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and teaches listening for who is in a story, what they do, where things are and how someone feels, and asks the child who lost or found a thing, what a friend lost or found, where a friend looked or found it, how a friend felt and whether a friend lost or found it, the child responding by tapping a picture or Yes or No, the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson answers questions about a story\'s main characters and events and asks the child which story they liked best, to tell a grown-up in a turn of their own, while asking questions about a story and making predictions wait (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and teaches listening for who is in a story, what they do, where things are and how someone feels, and asks the child who lost or found a thing, what a friend lost or found, where a friend looked or found it, how a friend felt and whether a friend lost or found it, the child responding by tapping a picture or Yes or No, the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson answers questions about a story\'s main characters and events and asks the child which story they liked best, to tell a grown-up in a turn of their own, while making predictions is What happens next?\'s, and asking questions about a story waits (EARMARKS E12).'],
     generators: ['p3-tale-who', 'p3-tale-what', 'p3-tale-where', 'p3-tale-feel', 'p3-tale-yesno'],
   },
   // Pictures and words (pass NM, PK3 III.E.2 whole and Head Start P-LIT 2's 36 to 48 month progression whole; Claude's design): a page
@@ -6687,6 +6696,119 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.2 (can distinguish between pictures and print.), since the lesson teaches that a page can have a picture and words, that the picture shows and the words tell, that in English words are made of letters and these pictures have none, and that we read the words and look at the picture, and asks the child to tap the words or the picture, to find the one we read or a grown-up can read, to say whether a thing shown is a picture or words, to find the one with letters or the one with none, and to find the picture that goes with words read aloud, so it is taught whole, and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 36 to 48 month progression reads "Distinguishes print from pictures and shows an understanding that print is something meaningful, such as asking an adult "What does this say?" or "Read this."", since the lesson teaches telling print from pictures, that words tell something a grown-up can read, and asking a grown-up, what does this say?, in a turn of the child\'s own, so it is taught whole, with Space between words beside it, which teaches a rule of how print works, a space between words.'],
     generators: ['p3-print-tap', 'p3-print-read', 'p3-print-yesno', 'p3-print-letters', 'p3-print-says'],
+  },
+  // What happens next? (pass NP, PK3 III.D.5 whole and Head Start P-LIT 5 in part; Claude's design): before a story tells what
+  // happens, we can guess what will happen next, and that guess is called a prediction. Clues, things the story tells us, help us make
+  // a good guess, and a good guess fits its story's clues, so a picture that is a good guess after one story is not after another (the
+  // dark clouds and the clouds going away, the cold snow and the hot day, the sleepy night and the wide-awake morning). Not everything in
+  // a story is a clue; we listen on to find out whether the guess was right, and a guess that is not right is okay. Each bank's story is
+  // one of the lines' own (NEXT3_STORIES, NEXT3_CLUES, NEXT3_CHECKS with the dog and the puddle, and NEXT3_FEELS: Mia's dropped ice cream
+  // and her new one), so every guess, clue and outcome a question asks about is one the lines say and draw. It builds on Listen to the
+  // story, which listens for who is in a story and what happens (Mikey's answer to Q84).
+  {
+    id: 'what-happens-next',
+    skill: 'Listening',
+    order: 30,
+    requires: ['listen-to-the-story'],
+    requiresWhy: 'What happens next? guesses what will happen in a story read aloud, from its clues, so it builds on Listen to the story, which listens for who is in a story and what happens.',
+    title: 'What happens next?',
+    tagline: 'Guess, then listen',
+    lesson: {
+      paragraphs: ['Before a story tells us what happens, we can guess what will happen next. A guess like that is called a prediction. Clues help us make a good guess, and a clue is something a story tells us.', 'A good guess fits the clues. When dark clouds come, rain is a good guess, because dark clouds often bring rain. When the clouds go away, the sun is a good guess instead. Not everything a story tells is a clue, and a dog sitting by the door tells us nothing about the rain.', 'Then we listen to find out what happens. Sometimes a guess is not right, and that is okay. Guessing and finding out is part of the fun of a story.'],
+      keyIdea: 'Use clues to guess what will happen next, and then listen to find out.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'cloud' }, b: { kind: 'icon', name: 'rain' }, caption: 'Dark clouds are a clue, and rain is a good guess.' },
+      script: [
+        { say: 'When we read a book, we can guess what will happen next, before the story tells us. That guess is called a prediction. Clues help us make a good guess.', show: { kind: 'icon', name: 'book' } },
+        { say: 'Listen. The sky got dark, and big gray clouds came. Sam\'s dog sat by the door. What do you think will happen next?', show: { kind: 'pair', a: { kind: 'icon', name: 'cloud' }, b: { kind: 'icon', name: 'dog' } } },
+        { say: 'Dark clouds often bring rain, so rain is a good guess. A good guess fits the clues, and the sun does not fit. Which one was a clue? The clouds were the clue, and the dog was not.', show: { kind: 'row', items: [{ kind: 'icon', name: 'cloud' }, { kind: 'icon', name: 'rain' }, { kind: 'icon', name: 'sun' }] } },
+        { say: 'Let\'s listen and find out what happens. Then rain began to fall. Was our guess right? Yes, we guessed it would rain, and it did!', show: { kind: 'icon', name: 'rain' } },
+        { say: 'Listen. Later, the rain stopped, and the clouds went away. Is this a good guess now? Yes! The sun is a good guess, and the rain is not.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'Here is a new story. It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window.', show: { kind: 'pair', a: { kind: 'icon', name: 'snow' }, b: { kind: 'pic', name: 'cat' } } },
+        { say: 'What will Ava do next, put on her warm coat, or turn on a fan? The snow is a clue that it is cold. A coat keeps us warm, so the coat is a good guess, and the fan is not.', show: { kind: 'pair', a: { kind: 'icon', name: 'coat' }, b: { kind: 'icon', name: 'fan' } } },
+        { say: 'Listen. It was a hot, hot day, and Ava felt very warm. A fan cools us down, so now the fan is a good guess, and the coat is not!', show: { kind: 'pair', a: { kind: 'icon', name: 'fan' }, b: { kind: 'icon', name: 'coat' } } },
+        { say: 'Listen. It was night, and the moon was up, and Ben yawned a big yawn. What will Ben do next, go to bed, or play ball? The moon and the big yawn are clues that Ben is sleepy, so bed is a good guess.', show: { kind: 'row', items: [{ kind: 'icon', name: 'moon' }, { kind: 'icon', name: 'bed' }, { kind: 'icon', name: 'ball' }] } },
+        { say: 'Listen. The sun came up, and Ben was wide awake. The sun is a clue, so now playing ball is a good guess, and bed is not!', show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }] } },
+        { say: 'We can guess feelings, too. Mia dropped her ice cream on the ground. How do you think Mia will feel? Sad is a good guess, because a dropped treat makes us sad. Then Mia\'s mom got her a new ice cream, so we can guess she will feel happy!', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'happy' } } },
+        { say: 'Sometimes a story surprises us. The dog saw a big puddle, and we guessed it would jump in. But the dog walked all the way around it! Our guess was not right, and that is okay.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'Now you try. When a grown-up reads you a book, stop and guess what will happen next. Then listen to find out.', show: { kind: 'icon', name: 'book' }, voices: [['When a grown-up reads you a book, stop and guess what will happen next.', 'tell'], ['Then listen to find out.', 'tell', 'turn']] },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.5 (attempts to make predictions about a text with adult assistance), since the lesson teaches that a guess about what will happen next in a story is called a prediction, that clues the story tells us help us make a good guess, that a good guess fits its story\'s clues, so a picture that is a good guess after one story is not after another, and that not everything in a story is a clue, that we listen on to find out whether a guess was right, and that a guess that is not right is okay, and asks the child what will happen next in a short story read aloud, how someone will feel, which one was the clue, whether a guess was right once the story told what happened, and whether a guess shown is a good one, the child making each prediction by a tap and the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson models predictions about events that might happen next and has the child make them with support, while answering questions about likes and about main characters and events are Listen to the story\'s, and asking questions about a story waits (EARMARKS E12).'],
+    generators: ['p3-next-guess', 'p3-next-feel', 'p3-next-clue', 'p3-next-check', 'p3-next-good'],
+  },
+  // Act it out (pass NP, PK3 III.D.1 and Head Start P-LIT 4 in part; Claude's design): after a story, we can act it out, pretending to
+  // be the friends in it and doing what they did, in the same order it happened; things we use to act, a hat or a ball, are props.
+  // Each bank's story is two things one friend did, from the five the lines say and draw (ACT3_ANIMALS, ACT3_DOES), so a question asks
+  // only what its own story told; each is a thing a child can hold and act with, a prop. The acting itself is the child's own, which
+  // the last line's turn asks for, with a grown-up. It builds on Listen to the story, which listens for who is in a story and what they
+  // do (Mikey's answer to Q84).
+  {
+    id: 'act-it-out',
+    skill: 'Listening',
+    order: 31,
+    requires: ['listen-to-the-story'],
+    requiresWhy: 'Act it out pretends to be the friends in a story and does what they did, in order, so it builds on Listen to the story, which listens for who is in a story and what they do.',
+    title: 'Act it out',
+    tagline: 'Be the friends in the story',
+    lesson: {
+      paragraphs: ['After we hear a story, we can act it out. We pretend to be the friends in the story, and we do what they did, in the same order it happened.', 'In one story, the frog ate an apple, and then the frog played the guitar. To act it out, a child hops like the frog, pretends to eat an apple, and then pretends to play the guitar.', 'Things we use to act out a story, like a hat or a ball, are called props.'],
+      keyIdea: 'To act out a story, pretend to be its friends, and do what they did, in order.',
+      example: { kind: 'row', items: [{ kind: 'pic', name: 'frog' }, { kind: 'icon', name: 'apple' }, { kind: 'icon', name: 'guitar' }], caption: 'The frog ate an apple, and then the frog played the guitar.' },
+      script: [
+        { say: 'After we hear a story, we can act it out! We pretend to be the friends in the story, and we do what they did.', show: { kind: 'pic', name: 'frog' } },
+        { say: 'Listen. The frog ate an apple, and then the frog played the guitar.', show: { kind: 'row', items: [{ kind: 'pic', name: 'frog' }, { kind: 'icon', name: 'apple' }, { kind: 'icon', name: 'guitar' }] } },
+        { say: 'Who is in this story? The frog! So you can pretend to be the frog, hop, hop!', show: { kind: 'pic', name: 'frog' } },
+        { say: 'What did the frog do first? It ate an apple. Let\'s pretend to eat an apple, crunch, crunch!', show: { kind: 'icon', name: 'apple' } },
+        { say: 'What did the frog do after it ate the apple? It played the guitar. Let\'s pretend to play the guitar, strum, strum!', show: { kind: 'icon', name: 'guitar' } },
+        { say: 'We act out a story in the same order it happened, first the apple, and then the guitar.', show: { kind: 'row', items: [{ kind: 'icon', name: 'apple' }, { kind: 'icon', name: 'guitar' }] } },
+        { say: 'A hat or a ball can help us act out a story. Things we use to act are called props.', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Listen. The bear put on a hat. Then the bear played with a ball.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bear' }, { kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'ball' }] } },
+        { say: 'Which thing could help you act out the bear\'s story, a hat or a book? A hat, because the bear put on a hat!', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'book' } } },
+        { say: 'Listen. The duck read a book. Then the duck played the guitar. We can tap the pictures in order, first the book, and then the guitar.', show: { kind: 'row', items: [{ kind: 'pic', name: 'duck' }, { kind: 'icon', name: 'book' }, { kind: 'icon', name: 'guitar' }] } },
+        { say: 'Now you try. Act out the frog\'s story with a grown-up. Eat a pretend apple, and then play a pretend guitar.', show: { kind: 'pic', name: 'frog' }, voices: [['Act out the frog\'s story with a grown-up.', 'tell'], ['Eat a pretend apple, and then play a pretend guitar.', 'tell', 'turn']] },
+        { say: 'To act out a story, pretend to be its friends, and do what they did, in order.', show: { kind: 'row', items: [{ kind: 'pic', name: 'frog' }, { kind: 'pic', name: 'bear' }, { kind: 'pic', name: 'duck' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.1 (re-enacts a story after it has been read aloud.), in part, since the lesson teaches what acting out a story takes, pretending to be the friends in it and doing what they did in the same order it happened, with things to act with called props, and asks the child who is in a story read aloud, what a friend did first and what it did after, which thing could help act the story out, and to tap what a friend did in order, while the child\'s own acting out of a story, with a grown-up, is the child\'s own, which a turn of the child\'s own asks for (EARMARKS E12), and Head Start ELOF Goal P-LIT 4 (demonstrates an understanding of narrative structure through storytelling/re-telling), whose 36 to 48 month progression reads "With support, may be able to tell one or two key events from a story or may act out a story with pictures or props.", in part, since the lesson has the child show a story\'s two key events in order by tapping their pictures, with the voice\'s support, and teaches acting a story out with props, while telling the events aloud and the acting itself are the child\'s own (EARMARKS E12).'],
+    generators: ['p3-act-who', 'p3-act-first', 'p3-act-then', 'p3-act-prop', 'p3-act-order'],
+  },
+  // Hold a book (pass NP, PK3 III.E.3 in part since round one; Claude's design): a book has a front, with its name and a picture, and a back; we hold
+  // it right side up, its picture the right way, open it at the front and turn one page at a time; and on a page we start reading at
+  // the top, by the first word, read along each line, and stop at the bottom, after the last word. Each bank asks about a book or a page
+  // the lines draw (book~cover, book~back, book~down, page~start, page~end), and each asks it either way (the front or the back, right
+  // side up or upside down, where we start or where we stop), so each picture is the answer to one question and the wrong choice in
+  // the other (the lead's blind read, pass NP). The child's own handling of a real book is the turn's, with a grown-up. It builds on
+  // Pictures and words, which shows that a page has a picture and words, and that we read the words (Mikey's answer to Q84).
+  {
+    id: 'hold-a-book',
+    skill: 'Writing',
+    order: 32,
+    requires: ['pictures-and-words'],
+    requiresWhy: 'Hold a book finds the front of a book, holds it right side up and finds where the words on a page start, so it builds on Pictures and words, which shows that a page has a picture and words, and that we read the words.',
+    title: 'Hold a book',
+    tagline: 'Front, right side up, top',
+    lesson: {
+      paragraphs: ['A book has a front and a back. The front has the book\'s name and often a picture, and we start a book at the front.', 'We hold a book right side up, so its picture is the right way. We turn one page at a time, gently, so the pages do not tear.', 'On a page, we start reading at the top, by the first word, and we read along each line. We stop at the bottom of the page, after the last word.'],
+      keyIdea: 'Hold a book right side up, start at the front, and read from the top of each page.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'book~cover' }, b: { kind: 'icon', name: 'page~start' }, caption: 'The front of a book, and where a page starts.' },
+      script: [
+        { say: 'This is the front of a book. It has the book\'s name on it, and a picture that shows what the book is about.', show: { kind: 'icon', name: 'book~cover' } },
+        { say: 'This is the back of the book, with no name and no picture. We start a book at the front, and the back is where it ends.', show: { kind: 'icon', name: 'book~back' } },
+        { say: 'Which one is the front of the book? The one with its name and a picture on it, because the back of this book has none.', show: { kind: 'pair', a: { kind: 'icon', name: 'book~cover' }, b: { kind: 'icon', name: 'book~back' } } },
+        { say: 'Is this the front of the book? Yes! It has the book\'s name and a picture, so it is the front.', show: { kind: 'icon', name: 'book~cover' } },
+        { say: 'Uh-oh, this book is upside down! Its sun is at the bottom, and its hill is on top.', show: { kind: 'icon', name: 'book~down' } },
+        { say: 'Which book is right side up? This one, with its sun at the top and its hill at the bottom. Its picture is the right way.', show: { kind: 'pair', a: { kind: 'icon', name: 'book~cover' }, b: { kind: 'icon', name: 'book~down' } } },
+        { say: 'We open a book at the front. We turn one page at a time, gently, so the pages do not tear.', show: { kind: 'icon', name: 'book~cover' } },
+        { say: 'On a page, we start reading at the top, by the first word, where this dot is. In English, we read along each line the way this arrow points.', show: { kind: 'pair', a: { kind: 'icon', name: 'page~start' }, b: { kind: 'icon', name: 'arrow' } } },
+        { say: 'We stop at the bottom of the page, after the last word. This dot is where we stop.', show: { kind: 'icon', name: 'page~end' } },
+        { say: 'Where do we start reading on this page? At the top, by the first word! And we stop at the bottom, after the very last word on the page.', show: { kind: 'pair', a: { kind: 'icon', name: 'page~start' }, b: { kind: 'icon', name: 'page~end' } } },
+        { say: 'Is this where we start? No, this dot is at the bottom of the page, so it shows where we stop.', show: { kind: 'icon', name: 'page~end' } },
+        { say: 'Now you try. Hold a book with a grown-up, and find its front. Then turn the pages one at a time, point to where each page starts, and pretend to read it.', show: { kind: 'icon', name: 'book~cover' }, voices: [['Hold a book with a grown-up, and find its front.', 'tell'], ['Then turn the pages one at a time, point to where each page starts, and pretend to read it.', 'tell', 'turn']] },
+        { say: 'Hold a book right side up, start at the front, and read from the top of each page.', show: { kind: 'icon', name: 'book~cover' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.3 (handles books with increasing skill and imitates reading with awareness of directionality.), in part, since the lesson teaches the front and the back of a book, holding it right side up, opening it at the front and turning one page at a time, and that on a page we start reading at the top, by the first word, read along each line, in English, the way an arrow points, and stop at the bottom, after the last word, and asks the child which one is the front or the back of a book, which book is right side up or upside down, and where on a page we start or stop reading, the child answering by a tap, while the child\'s own handling of a real book and pretending to read it, with a grown-up, are the child\'s own, which a turn of the child\'s own asks for (EARMARKS E12).'],
+    generators: ['p3-book-front', 'p3-book-up', 'p3-book-start', 'p3-book-isfront', 'p3-book-isstart'],
   },
 ]; }
 
@@ -9033,7 +9155,7 @@ function PREK_READING_MODULES() { return [
         { say: 'When we write, we leave a space between words, so a reader can see where each word starts and stops.', show: { kind: 'print', text: 'The sun is hot.' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.5 (demonstrates use of spacing in their writing with adult support as needed.), in part, since the lesson shows writing with a space between words, says that the spaces show a reader where each word starts and stops and that words without them run together, shows how a writer makes a space with a finger and says to put a finger space after each word when writing with a grown-up, and asks which writing has a space between every word, whether writing has a space between every word, which writing has the most words and how many words a written sentence has, while the child\'s own writing, with a grown-up and on paper, is the child\'s own (EARMARKS E13), and III.E.2 (can distinguish between elements of print including letters, words, and pictures.), since the lesson says that a word can be one letter or a group of letters, that letters make words and words make sentences, that the letter d by itself is not a word, and that a picture of a dog has no letters, shows the letter d beside the word dog and then a picture of a dog, asks whether the picture is a word or a picture, and asks which one is a letter, which one is a word and which one is a picture, and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson connects each word said to a group of letters written and teaches one rule of how print works, a space between words, while holding a book and following it left to right wait.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.5 (demonstrates use of spacing in their writing with adult support as needed.), in part, since the lesson shows writing with a space between words, says that the spaces show a reader where each word starts and stops and that words without them run together, shows how a writer makes a space with a finger and says to put a finger space after each word when writing with a grown-up, and asks which writing has a space between every word, whether writing has a space between every word, which writing has the most words and how many words a written sentence has, while the child\'s own writing, with a grown-up and on paper, is the child\'s own (EARMARKS E13), and III.E.2 (can distinguish between elements of print including letters, words, and pictures.), since the lesson says that a word can be one letter or a group of letters, that letters make words and words make sentences, that the letter d by itself is not a word, and that a picture of a dog has no letters, shows the letter d beside the word dog and then a picture of a dog, asks whether the picture is a word or a picture, and asks which one is a letter, which one is a word and which one is a picture, and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson connects each word said to a group of letters written and teaches one rule of how print works, a space between words, while holding a book and following it left to right are Which way we read\'s.'],
     generators: ['p4-space-which', 'p4-space-dots', 'p4-space-kind', 'p4-space-yesno', 'p4-space-more'],
   },
   // Start or end of the name (pass NE, the standards review of Domain III's letters and their sounds, EARMARKS E13): PK4 III.C.2 and
@@ -9405,7 +9527,7 @@ function PREK_READING_MODULES() { return [
         { say: 'A sentence starts with a big letter. It ends with a period when it tells, a question mark when it asks, and an exclamation point when it has a strong feeling.', show: { kind: 'letters', text: '.   ?   !' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.4 (can identify some conventional features of print that communicate meaning including end punctuation and case.), since the lesson teaches three end marks, a period that ends a sentence that tells, a question mark that ends one that asks and an exclamation point that ends one said with a strong feeling, each by its name, its shape and what it tells, and that a sentence starts with a big letter, and asks the child to find each mark by its name, to tell what the mark at a sentence\'s end shows, telling, asking or a strong feeling, to choose the mark for a sentence heard, to say whether a mark is the one named and to find the sentence that starts with a big letter, so it is taught whole, and IV.C.6 (experiments with and uses punctuation when writing.), in part, since the lesson teaches starting a sentence with a big letter and putting a mark at its end when writing, has the child choose the mark for a sentence heard and draw a question mark in the air in a turn of their own, while the child\'s own writing with punctuation, with a grown-up and on paper, waits (EARMARKS E13), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson connects a voice that tells, asks or speaks with a strong feeling to the mark that ends a written sentence, and teaches two of print\'s conventions, a sentence\'s big first letter and its end mark, while holding a book and following it left to right wait.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.4 (can identify some conventional features of print that communicate meaning including end punctuation and case.), since the lesson teaches three end marks, a period that ends a sentence that tells, a question mark that ends one that asks and an exclamation point that ends one said with a strong feeling, each by its name, its shape and what it tells, and that a sentence starts with a big letter, and asks the child to find each mark by its name, to tell what the mark at a sentence\'s end shows, telling, asking or a strong feeling, to choose the mark for a sentence heard, to say whether a mark is the one named and to find the sentence that starts with a big letter, so it is taught whole, and IV.C.6 (experiments with and uses punctuation when writing.), in part, since the lesson teaches starting a sentence with a big letter and putting a mark at its end when writing, has the child choose the mark for a sentence heard and draw a question mark in the air in a turn of their own, while the child\'s own writing with punctuation, with a grown-up and on paper, waits (EARMARKS E13), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson connects a voice that tells, asks or speaks with a strong feeling to the mark that ends a written sentence, and teaches two of print\'s conventions, a sentence\'s big first letter and its end mark, while holding a book and following it left to right are Which way we read\'s.'],
     generators: ['p4-mark-name', 'p4-mark-means', 'p4-mark-heard', 'p4-mark-yesno', 'p4-mark-start'],
   },
   // Almost the same (pass NL, PK4 III.C.1, with More small letters after it; Claude's design): small k, p, u and y, four small letters that
@@ -9496,7 +9618,7 @@ function PREK_READING_MODULES() { return [
   // when a time. Every animal, thing, place and time a bank's story can name is one the lines say and draw (TALE4_ANIMALS, TALE4_THINGS,
   // TALE4_PLACES, TALE4_TIMES), and every story says the time by what was up in the sky, so when is answered by what the story said,
   // never by what is usually true. A wrong choice is the other friend or the other thing of the same story, or one the story never
-  // names. Inferential questions, predictions and how or why something happens, Head Start's other half and III.D.5, wait (EARMARKS E13).
+  // names. Inferential questions, predictions and how or why something happens, Head Start's other half and III.D.5, are Story clues' since pass NP (EARMARKS E13).
   {
     id: 'story-questions',
     skill: 'Listening',
@@ -9525,8 +9647,122 @@ function PREK_READING_MODULES() { return [
         { say: 'Listen for who, what, where and when in a story, and ask questions about it too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'fox' }, { kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'rabbit' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (asks and responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and asks the child who found a thing, what a friend found, where the friends went and when, the child responding by tapping a picture, the voice the adult assistance, teaches asking a question that starts with who, what, where or when, each by what it asks about, someone, a thing, a place or a time, asks the child which word asks about what they want to know, and gives the child a turn to ask a grown-up a question about a story, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 48 to 60 month progression reads "With support, provides basic answers to specific questions about details of a story, such as who, what, when, or where. With support, can answer inferential questions about stories, such as predictions or how/why something is happening in a particular moment.", in part, since the lesson asks who, what, where and when about a story\'s details, while inferential questions, predictions and how or why something is happening, wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (asks and responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and asks the child who found a thing, what a friend found, where the friends went and when, the child responding by tapping a picture, the voice the adult assistance, teaches asking a question that starts with who, what, where or when, each by what it asks about, someone, a thing, a place or a time, asks the child which word asks about what they want to know, and gives the child a turn to ask a grown-up a question about a story, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 48 to 60 month progression reads "With support, provides basic answers to specific questions about details of a story, such as who, what, when, or where. With support, can answer inferential questions about stories, such as predictions or how/why something is happening in a particular moment.", in part, since the lesson asks who, what, where and when about a story\'s details, while inferential questions, predictions and how or why something is happening are Story clues\'.'],
     generators: ['p4-tale-who', 'p4-tale-what', 'p4-tale-where', 'p4-tale-when', 'p4-tale-ask'],
+  },
+  // Story clues (pass NP, PK4 III.D.5 whole and Head Start P-LIT 5 in part; Claude's design): clues, the things a story tells us, help
+  // us guess what will happen next, a prediction, and figure out what a story does not say, an inference: why something happened, and
+  // how someone felt, from what they did. A good guess fits its clues (big gray clouds and a blue sky, an ice cube in the hot sun and
+  // water in the freezer), and a clue fits the guess it helps: in one story the moon is the clue if we guess Ben will go to bed, and his
+  // dog by the door is the clue if we guess it wants to go outside. We listen on to find out, and a guess that is not right is okay.
+  // Each bank's story is one of the lines' own (CLUE4_STORIES, CLUE4_WHICH, CLUE4_CHECKS with the cat and the ball, CLUE4_WHYS, and
+  // CLUE4_FEELS: what Ava did, by Feelings show's signs), so every clue, guess and reason a question asks about is one the lines say and
+  // draw. It builds on Questions about a story, which answers who, what, where and when about a story read aloud (Mikey's answer to Q84).
+  {
+    id: 'story-clues',
+    skill: 'Listening',
+    order: 45,
+    requires: ['story-questions'],
+    requiresWhy: 'Story clues uses what a story tells us to guess what will happen next and to figure out what it does not say, so it builds on Questions about a story, which answers who, what, where and when about a story read aloud.',
+    title: 'Story clues',
+    tagline: 'Guess what happens, and why',
+    lesson: {
+      paragraphs: ['When we hear a story, we can use clues to guess what will happen next. A guess like that is called a prediction. Then we listen to find out, and a guess that is not right is okay.', 'A thing can be a clue for one guess and not for another. If we guess Ben will go to bed, the moon is a clue. If we guess his dog wants to go outside, the dog sitting by the door is the clue.', 'Clues also tell us things a story does not say. When Leo pulls on his boots and opens his umbrella, the story does not say it is raining. But the umbrella and the boots are clues that it is.', 'Clues tell us how someone feels, too. A friend who jumps and claps may feel happy, and a friend who hides when the thunder booms may feel scared.'],
+      keyIdea: 'Use clues to guess what will happen next, and to figure out what a story does not say.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'umbrella' }, b: { kind: 'icon', name: 'rain' }, caption: 'An umbrella and boots are clues that it is raining.' },
+      script: [
+        { say: 'When a grown-up reads us a book, we can use clues to guess what will happen next. A guess like that is called a prediction.', show: { kind: 'icon', name: 'book' } },
+        { say: 'Listen. Big gray clouds rolled in. What will happen next? Rain is a good guess, because big gray clouds often bring rain. A good guess fits its clues. Later, the clouds rolled away, and the sky turned blue, so now the sun is a good guess!', show: { kind: 'row', items: [{ kind: 'icon', name: 'cloud' }, { kind: 'icon', name: 'rain' }, { kind: 'icon', name: 'sun' }] } },
+        { say: 'Listen. Mia left an ice cube out in the hot sun. What will happen next? It will melt into water, drop by drop, because the sun is hot. Then Mia put a cup of water in the freezer. A freezer is very cold, so now we can guess it will turn to ice!', show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'ice' }, { kind: 'icon', name: 'drop' }] } },
+        { say: 'Listen. It was night, and the moon was up. Ben\'s dog sat by the door. If we guessed Ben would go to bed, which one was a clue? The moon was the clue, and the dog sitting by the door was not! If we guess the dog wants to go outside, the dog is the clue!', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'dog' } } },
+        { say: 'Listen. Snow was falling, and Kai\'s dog brought him its leash. If we guess Kai will build a snowman, the snow is a clue. If we guess Kai and his dad will go for a walk, the dog is the clue!', show: { kind: 'pair', a: { kind: 'icon', name: 'snow' }, b: { kind: 'icon', name: 'dog' } } },
+        { say: 'Sometimes a story surprises us. The cat saw a ball roll by, and we guessed it would chase the ball. But the cat curled up and went to sleep! Was our guess right? No, and that is okay.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Clues can also tell us things a story does not say. Listen. Leo pulled on his boots and opened his umbrella. Why? It was raining! The umbrella and the boots are clues.', show: { kind: 'pair', a: { kind: 'icon', name: 'umbrella' }, b: { kind: 'icon', name: 'rain' } } },
+        { say: 'Everyone sang a song to Zoe, and she opened her presents. Why? It was her birthday, a day for cake! The song and the presents are clues.', show: { kind: 'icon', name: 'cake' } },
+        { say: 'Nora\'s eyes kept closing, and she put her head on her pillow. Why? She was sleepy and ready for bed!', show: { kind: 'icon', name: 'bed' } },
+        { say: 'Clues tell us how someone feels, too. When Ava jumped up and down and clapped, how do you think she felt? Happy is a good guess! A tear rolled down Ava\'s cheek, so we can guess she felt sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } } },
+        { say: 'Ava stomped her feet and made tight fists. Mad is a good guess! Ava hid under her blanket when the thunder boomed, so we can guess she felt scared.', show: { kind: 'pair', a: { kind: 'face', feeling: 'mad' }, b: { kind: 'face', feeling: 'scared' } } },
+        { say: 'Now you try. When a grown-up reads you a book, stop and guess what will happen next, and tell why. Then listen to find out.', show: { kind: 'icon', name: 'book' }, voices: [['When a grown-up reads you a book, stop and guess what will happen next, and tell why.', 'tell'], ['Then listen to find out.', 'tell', 'turn']] },
+        { say: 'An umbrella can be a clue about rain. Use clues to guess what will happen next, and to figure out what a story does not say.', show: { kind: 'pair', a: { kind: 'icon', name: 'umbrella' }, b: { kind: 'icon', name: 'rain' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.5 (makes predictions and attempts to make inferences about a text with adult assistance.), since the lesson teaches that a guess about what will happen next is a prediction made from a story\'s clues, that a good guess fits its clues and that a clue fits the guess it helps, so a thing a story tells can be the clue for one guess and not for another, that we listen on to find out and a guess that is not right is okay, and that clues tell us what a story does not say, why something happened and how someone felt, and asks the child what will happen next, why something happened, how someone felt, which one was a clue and whether a guess was right, the child answering by a tap and the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 48 to 60 month progression reads "With support, provides basic answers to specific questions about details of a story, such as who, what, when, or where. With support, can answer inferential questions about stories, such as predictions or how/why something is happening in a particular moment.", in part, since the lesson asks inferential questions with support, predictions, why something is happening and how someone feels in a particular moment, while basic answers about who, what, when and where are Questions about a story\'s.'],
+    generators: ['p4-clue-next', 'p4-clue-why', 'p4-clue-feel', 'p4-clue-check', 'p4-clue-which'],
+  },
+  // Tell it again (pass NP, PK4 III.D.1 and Head Start P-LIT 4 in part; Claude's design): to retell a story is to tell it again in our
+  // own words, its main events in the order they happened, first, next and last. Each bank's story is three things the fox or the owl
+  // did, from the six the lines say and draw (RETELL4_ANIMALS, RETELL4_DOES), told with first, next and last or with then, so a question
+  // asks only what its own story told, and the word kind's story never says the word it asks for. The retelling itself, said aloud to a
+  // grown-up, is the child's own talk, which the turn asks for. It builds on Questions about a story, which listens to a story and
+  // answers who, what, where and when (Mikey's answer to Q84).
+  {
+    id: 'tell-it-again',
+    skill: 'Listening',
+    order: 46,
+    requires: ['story-questions'],
+    requiresWhy: 'Tell it again retells a story\'s main events in order, first, next and last, so it builds on Questions about a story, which listens to a story and answers who, what, where and when.',
+    title: 'Tell it again',
+    tagline: 'First, next and last',
+    lesson: {
+      paragraphs: ['When we retell a story, we tell it again in our own words. We tell the big things that happened, in the order they happened.', 'In one story, first the fox ate an apple, next the fox read a book, and last the fox flew a kite. Words like first, next and last help us tell it in order.', 'A good retelling starts at the beginning, tells the middle, and tells how the story ended.'],
+      keyIdea: 'To retell a story, tell what happened first, next and last.',
+      example: { kind: 'row', items: [{ kind: 'icon', name: 'apple' }, { kind: 'icon', name: 'book' }, { kind: 'icon', name: 'kite' }], caption: 'First the apple, next the book, and last the kite.' },
+      script: [
+        { say: 'When we retell a story, we tell it again in our own words. We tell what happened, in the order it happened.', show: { kind: 'pic', name: 'fox' } },
+        { say: 'Listen. First, the fox ate an apple, and next, the fox read a book. Last, the fox flew a kite.', show: { kind: 'row', items: [{ kind: 'icon', name: 'apple' }, { kind: 'icon', name: 'book' }, { kind: 'icon', name: 'kite' }] } },
+        { say: 'To retell it, start at the beginning. What did the fox do first? It ate an apple, so that is where our retelling starts.', show: { kind: 'icon', name: 'apple' } },
+        { say: 'Then tell what happened next. In the middle of the story, the fox read a book.', show: { kind: 'icon', name: 'book' } },
+        { say: 'Tell how the story ended, too. Last, the fox flew a kite, and that is the end!', show: { kind: 'icon', name: 'kite' } },
+        { say: 'We can tap the pictures in order too, first the apple, next the book, and last the kite.', show: { kind: 'row', items: [{ kind: 'icon', name: 'apple' }, { kind: 'icon', name: 'book' }, { kind: 'icon', name: 'kite' }] } },
+        { say: 'What did the fox do right after it ate the apple? It read a book. And right before it flew the kite? That was the book too, right in the middle of the story.', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'kite' } } },
+        { say: 'Listen to a new story. The owl played the guitar, then played with a ball, then put on a hat.', show: { kind: 'row', items: [{ kind: 'icon', name: 'guitar' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'hat' }] } },
+        { say: 'When did the owl put on a hat, first, next or last? Last! The hat came at the end of the story.', show: { kind: 'icon', name: 'hat' } },
+        { say: 'When did the owl play the guitar? First! It played the guitar before it did anything else.', show: { kind: 'icon', name: 'guitar' } },
+        { say: 'A retelling tells the big things that happened, in order, like the guitar, the ball and the hat. Words like first, next and last help us tell it.', show: { kind: 'row', items: [{ kind: 'icon', name: 'guitar' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'hat' }] } },
+        { say: 'Now you try. Retell the fox\'s story to a grown-up. Start with first, then say next, and end with last.', show: { kind: 'pic', name: 'fox' }, voices: [['Retell the fox\'s story to a grown-up.', 'tell'], ['Start with first, then say next, and end with last.', 'tell', 'turn']] },
+        { say: 'To retell a story, tell what happened first, next and last.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'owl' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.1 (retells or re-enacts the main events of a story.), in part, since the lesson teaches that a retelling tells a story again in our own words, its main events in the order they happened, told with first, next and last, and asks the child what a friend did first, what it did last, what it did right after or right before something, to tap a story\'s three events in order, and which word tells when a friend did something, first, next or last, while the child\'s own retelling, said aloud to a grown-up, is the child\'s own talk, which a turn of the child\'s own asks for (EARMARKS E13), and Head Start ELOF Goal P-LIT 4 (demonstrates an understanding of narrative structure through storytelling/re-telling), whose 48 to 60 month progression reads "Retells two or three key events from a well-known story, typically in the right temporal order and using some simple sequencing terms, such as first … and then.", in part, since the lesson teaches a story\'s three key events in their order and the sequencing words first, next and last, in short stories the child has just heard rather than a well-known one, while the child\'s own retelling aloud is the child\'s own (EARMARKS E13).'],
+    generators: ['p4-retell-first', 'p4-retell-last', 'p4-retell-near', 'p4-retell-order', 'p4-retell-word'],
+  },
+  // Which way we read (pass NP, PK4 III.E.3 and Head Start P-LIT 2 in part, III.E.3 since round one; Claude's design): we hold a book right side up and
+  // open it at the front; on a line we read the words from left to right, from the start of the line to its end; the top line comes
+  // first and then the line under it; and at the end of a line we go down to the start of the next one. The words are short sentences
+  // of two names and a doing word (WAY4_NAMES, WAY4_DOES), each name one the lines say, and each kind asks either way (first or last,
+  // right side up or upside down, along a line or down to the next one), so each word and picture is the answer to one question and the
+  // wrong choice in another. A word on a choice is never read aloud (choiceSpeaks), so a child finds it on the page by its letters. The
+  // child's own pointing, as a grown-up reads, is the turn's. It builds on Spaces between words, which shows where each word on a line
+  // starts and stops (Mikey's answer to Q84).
+  {
+    id: 'which-way-we-read-pk',
+    skill: 'Writing',
+    order: 47,
+    requires: ['spaces-between-words'],
+    requiresWhy: 'Which way we read follows the words on a line from its start to its end, and the lines from top to bottom, so it builds on Spaces between words, which shows where each word on a line starts and stops.',
+    title: 'Which way we read',
+    tagline: 'Along a line, then down',
+    lesson: {
+      paragraphs: ['We hold a book right side up, with its picture the right way, and we open it at the front.', 'In English, we read the words on a line from left to right, from the start of the line to its end. The word at the start comes first, and the word at the end comes last.', 'A page can have more than one line. We read the top line first. At the end of a line, we go down to the start of the next line and read on.'],
+      keyIdea: 'Hold a book right side up, and read each line from its start to its end, top to bottom.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'arrow' }, b: { kind: 'icon', name: 'arrow~down' }, caption: 'Along a line, and then down to the next one.' },
+      script: [
+        { say: 'When we read a book, we hold it right side up, with its picture the right way. We open it at the front.', show: { kind: 'icon', name: 'book~cover' } },
+        { say: 'Is this book right side up? No! Its sun is at the bottom, so it is upside down.', show: { kind: 'icon', name: 'book~down' } },
+        { say: 'In English, we read the words on a line from left to right. We go from the start of the line to its end. Mom sees Dad.', show: { kind: 'print', text: 'Mom sees Dad.' } },
+        { say: 'This arrow shows the way we read along a line, from the first word to the last word.', show: { kind: 'icon', name: 'arrow' } },
+        { say: 'Which word do we read first? Mom, because it is the word at the start of the line. And the word we read last is Dad, at the end.', show: { kind: 'print', text: 'Mom sees Dad.' } },
+        { say: 'A page can have two lines of words. We read the top line first, and then the line under it.', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'Ben helps Ava.' }, b: { kind: 'print', text: 'Sam likes Kai.' } } },
+        { say: 'Which line do we read first? The top one, and it says, Ben helps Ava. The bottom one comes last, and it says, Sam likes Kai.', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'Ben helps Ava.' }, b: { kind: 'print', text: 'Sam likes Kai.' } } },
+        { say: 'At the end of a line, we go down to the next line, and back to its start. This arrow points down.', show: { kind: 'icon', name: 'arrow~down' } },
+        { say: 'After we read the top line, which word comes next? Sam, at the start of the next line!', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'Ben helps Ava.' }, b: { kind: 'print', text: 'Sam likes Kai.' } } },
+        { say: 'Which arrow shows the way we read along a line? This one! And the arrow that points down shows the way to the next line.', show: { kind: 'pair', a: { kind: 'icon', name: 'arrow' }, b: { kind: 'icon', name: 'arrow~down' } } },
+        { say: 'Now you try. Hold a book with a grown-up. Point to each word as they read it, from the start of the line to its end.', show: { kind: 'icon', name: 'book~cover' }, voices: [['Hold a book with a grown-up.', 'tell'], ['Point to each word as they read it, from the start of the line to its end.', 'tell', 'turn']] },
+        { say: 'Hold a book right side up, and read each line from its start to its end, top to bottom.', show: { kind: 'icon', name: 'book~cover' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.3 (holds books right side up and demonstrates understanding of print directionality.), in part, since the lesson teaches holding a book right side up and opening it at the front, reading the words on a line, in English, from left to right, from its start to its end, the top line first and then the line under it, and going down to the start of the next line at the end of a line, and asks the child whether a book is right side up or upside down, which word on a line and which line we read first or last, which word we read next when a line ends, and which arrow shows the way along a line or down to the next one, the child answering by a tap, while the child\'s own holding of a real book and pointing to each word as a grown-up reads are the child\'s own, which a turn of the child\'s own asks for (EARMARKS E13), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson teaches two of print\'s rules, holding a book right side up and following it left to right and from top to bottom, while the connection between speech and print is Spaces between words\'.'],
+    generators: ['p4-way-up', 'p4-way-word', 'p4-way-line', 'p4-way-next', 'p4-way-arrow'],
   },
 ]; }
 
@@ -34193,6 +34429,305 @@ Object.assign(GENERATORS, {
       whyNot: { [`icon:${y}`]: { name: `The picture of the ${y}`, why: `shows the ${y}.` } }, alsoRight: [] }; },
 });
 
+// What happens next? (pre-K 3, pass NP, PK3 III.D.5): a short story read aloud, and a guess about what will happen next. Each story is
+// one the lesson's lines tell, and each has its mirror, a story whose clues make the other picture of its pair the good guess (the dark
+// clouds and the clouds going away, the cold snow and the hot day, the sleepy night and the wide-awake morning), so the same two pictures
+// come with both stories and only the story's clues tell which is the good guess (the lead's blind read, pass NP: with one story to a
+// pair, a child who always tapped the rain was right two times in three). A story with a detail that is no clue is told in either of
+// two orders. The five kinds: what will happen next, how someone will feel, which one was a clue (the story's own clue, beside another
+// story's, which this story never tells), whether our guess was right, and whether a guess shown is a good one. Every picture a
+// question shows is one the lines draw, and a reason after a wrong tap says only why the tapped choice does not fit, never naming the
+// answer.
+export const NEXT3_STORIES = {
+  rain: { told: ['The sky got dark, and big gray clouds came. Sam\'s dog sat by the door.', 'Sam\'s dog sat by the door. The sky got dark, and big gray clouds came.'], ask: 'What do you think will happen next?', good: 'icon:rain', bad: 'icon:sun', fits: 'dark clouds often bring rain',
+    why: 'Dark clouds often bring rain, so rain is a good guess.', badName: 'The sun', badWhy: 'does not fit the dark clouds.' },
+  sunny: { told: ['The rain stopped, and the clouds went away.'], ask: 'What do you think will happen next?', good: 'icon:sun', bad: 'icon:rain', fits: 'the clouds went away',
+    why: 'The rain stopped, and the clouds went away, so the sun is a good guess.', badName: 'The rain', badWhy: 'does not fit, because the rain stopped and the clouds went away.' },
+  cold: { told: ['It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window.', 'Ava\'s cat sat in the window. It was very cold, and snow was falling, and Ava wanted to play outside.'], ask: 'What will Ava do next?', good: 'icon:coat', bad: 'icon:fan', fits: 'the snow tells us it is cold',
+    why: 'The snow is a clue that it is cold, and a coat keeps us warm, so the coat is a good guess.', badName: 'The fan', badWhy: 'cools us down, and the snow tells us it is cold.' },
+  hot: { told: ['It was a hot, hot day, and Ava felt very warm.'], ask: 'What will Ava do next?', good: 'icon:fan', bad: 'icon:coat', fits: 'it was a hot, hot day',
+    why: 'It was a hot day, and a fan cools us down, so the fan is a good guess.', badName: 'The coat', badWhy: 'keeps us warm, and Ava already felt very warm.' },
+  sleepy: { told: ['It was night, and the moon was up, and Ben yawned a big yawn.'], ask: 'What will Ben do next?', good: 'icon:bed', bad: 'icon:ball', fits: 'Ben is sleepy',
+    why: 'The moon and the big yawn are clues that Ben is sleepy, so bed is a good guess.', badName: 'The ball', badWhy: 'is not a good guess, because the moon and the yawn tell us Ben is sleepy.' },
+  awake: { told: ['The sun came up, and Ben was wide awake.'], ask: 'What will Ben do next?', good: 'icon:ball', bad: 'icon:bed', fits: 'Ben was wide awake',
+    why: 'The sun came up, and Ben was wide awake, so playing ball is a good guess.', badName: 'The bed', badWhy: 'is not a good guess, because Ben was wide awake.' },
+};
+// Which one was a clue: the four stories whose clue the lines draw, the clue, its name as a reason says it, and the guess as we say it.
+// Each clue is asked beside a clue of the other kind (with): the dark clouds or the snow beside the moon or the sun coming up, so the
+// cloud and the snow, the snow drawn as the cloud with flakes under it, are never asked together (a child who tapped the snow beside
+// the rain story's cloud tapped a cloud; round one's lesson read, pass NP), and each picture is the answer half the times it is shown.
+export const NEXT3_CLUES = {
+  rain: { clue: 'icon:cloud', with: ['sleepy', 'awake'], clueName: 'The cloud', guessed: 'it would rain', clueWhy: 'The dark clouds were the clue, because dark clouds often bring rain.',
+    // A dark sky can sound like night, so the moon beside it says why the sky got dark (round two's lesson read, pass NP).
+    whyBeside: { sleepy: 'is not in this story, and the sky got dark because big gray clouds came.' } },
+  cold: { clue: 'icon:snow', with: ['sleepy', 'awake'], clueName: 'The snow', guessed: 'Ava would put on her warm coat', clueWhy: 'The snow was the clue, because snow tells us it is cold.' },
+  sleepy: { clue: 'icon:moon', with: ['rain', 'cold'], clueName: 'The moon', guessed: 'Ben would go to bed', clueWhy: 'The moon and the big yawn were clues that Ben was sleepy.' },
+  awake: { clue: 'icon:sun', with: ['rain', 'cold'], clueName: 'The sun', guessed: 'Ben would play ball', clueWhy: 'The sun coming up was a clue, and Ben was wide awake.' },
+};
+// Was our guess right: the story, the guess as we say it, and what happened, our guess or not, each told with Then, so the word that
+// starts it never tells the answer; every story the guesses come from, mirrors and all, so a round that keeps one story's questions
+// apart keeps a story and its mirror apart alike, and the dog and the big puddle among them.
+export const NEXT3_CHECKS = {
+  rain: { told: 'The sky got dark, and big gray clouds came.', guessed: 'it would rain', right: 'Then rain began to fall.', wrong: 'Then the clouds went away, and the sun came out.', rightSaid: 'rain began to fall', wrongSaid: 'the sun came out' },
+  sunny: { told: 'The rain stopped, and the clouds went away.', guessed: 'the sun would come out', right: 'Then the sun came out.', wrong: 'Then dark clouds came back, and it rained again.', rightSaid: 'the sun came out', wrongSaid: 'it rained again' },
+  cold: { told: 'It was very cold, and snow was falling.', guessed: 'Ava would put on her warm coat', right: 'Then Ava put on her warm coat.', wrong: 'Then Ava stayed inside and played with her blocks.', rightSaid: 'Ava put on her warm coat', wrongSaid: 'Ava stayed inside' },
+  hot: { told: 'It was a hot, hot day, and Ava felt very warm.', guessed: 'Ava would turn on a fan', right: 'Then Ava turned on a fan.', wrong: 'Then Ava drank a big glass of cold water.', rightSaid: 'Ava turned on a fan', wrongSaid: 'Ava drank a big glass of cold water' },
+  sleepy: { told: 'It was night, and the moon was up, and Ben yawned a big yawn.', guessed: 'Ben would go to bed', right: 'Then Ben went to bed.', wrong: 'Then Ben jumped up and danced around his room.', rightSaid: 'Ben went to bed', wrongSaid: 'Ben danced around his room' },
+  awake: { told: 'The sun came up, and Ben was wide awake.', guessed: 'Ben would play ball', right: 'Then Ben played ball.', wrong: 'Then Ben read a book with his dad.', rightSaid: 'Ben played ball', wrongSaid: 'Ben read a book with his dad' },
+  dog: { told: 'The dog saw a big puddle.', guessed: 'it would jump in', right: 'Then the dog jumped right in, splash!', wrong: 'Then the dog walked all the way around it.', rightSaid: 'the dog jumped right in', wrongSaid: 'the dog walked all the way around it' },
+};
+// How someone will feel: Mia's two stories, each with the feeling that is a good guess and why the other does not fit, so the name a
+// question asks about never tells the face.
+export const NEXT3_FEELS = [
+  { told: 'Mia dropped her ice cream on the ground.', who: 'Mia', feel: 'sad', other: 'happy', why: 'Mia dropped her ice cream, so we can guess she will feel sad.', otherWhy: 'is not a good guess, because Mia dropped her ice cream.' },
+  { told: 'Mia\'s mom got her a new ice cream.', who: 'Mia', feel: 'happy', other: 'sad', why: 'Mia\'s mom got her a new ice cream, so we can guess she will feel happy.', otherWhy: 'is not a good guess, because Mia\'s mom got her a new ice cream.' },
+];
+const NEXT3_FACE_NAMES = { happy: 'Happy', sad: 'Sad', mad: 'Mad', scared: 'Scared' };
+// A guess checked: the story, the guess as we say it, and what happened, our guess about half the time.
+function guessCheck(rng, s) { const right = rng() < 0.5;
+  return { type: 'choice', story: `Listen. ${s.told} We guessed ${s.guessed}. ${right ? s.right : s.wrong}`, prompt: 'Was our guess right?', choices: yesNo(rng), answer: right ? 'Yes' : 'No',
+    explain: right ? `Yes. We guessed ${s.guessed}, and ${s.rightSaid}.` : `No. We guessed ${s.guessed}, but ${s.wrongSaid}, and that is okay.`, visual: null, explainVisual: null,
+    whyNot: right ? { No: { name: 'No', why: `would mean our guess did not happen, but ${s.rightSaid}.` } } : { Yes: { name: 'Yes', why: `would mean our guess happened, but ${s.wrongSaid}.` } }, alsoRight: [] }; }
+
+// Story clues (pre-K 4, pass NP, PK4 III.D.5): the same kind of story, with inferences beside the predictions. The prediction stories
+// come in mirrored pairs as pre-K 3's do (big gray clouds and a blue sky, an ice cube in the hot sun and water in the freezer), so only
+// a story's clues tell which picture of its pair is the good guess. Which one was a clue asks about one story and two guesses, so the
+// same picture is the clue for one guess and not for the other: a clue fits the guess it helps. The why stories each come with one of
+// the other two stories' reasons beside their own, and the feelings are four things Ava did, each a sign Feelings show teaches, so the
+// name a question asks about never tells the answer.
+export const CLUE4_STORIES = {
+  rain: { told: 'Big gray clouds rolled in.', good: 'icon:rain', bad: 'icon:sun', why: 'Rain is a good guess, because big gray clouds often bring rain.', badName: 'The sun', badWhy: 'does not fit the big gray clouds.' },
+  sunny: { told: 'The clouds rolled away, and the sky turned blue.', good: 'icon:sun', bad: 'icon:rain', why: 'The sun is a good guess, because the clouds rolled away and the sky turned blue.', badName: 'The rain', badWhy: 'does not fit a blue sky with no clouds.' },
+  melt: { told: 'Mia left an ice cube out in the hot sun.', good: 'icon:drop', bad: 'icon:ice', why: 'It will melt into water, because the sun is hot.', badName: 'The ice', badWhy: 'does not fit, because the hot sun melts ice.' },
+  freeze: { told: 'Mia put a cup of water in the freezer.', good: 'icon:ice', bad: 'icon:drop', why: 'It will turn to ice, because a freezer is very cold.', badName: 'The drop of water', badWhy: 'does not fit, because a freezer is very cold.' },
+};
+// Was our guess right, as pre-K 3's is: every prediction story the lines tell, mirrors and all, and the cat and the ball among them.
+export const CLUE4_CHECKS = {
+  rain: { told: 'Big gray clouds rolled in.', guessed: 'it would rain', right: 'Then rain began to fall.', wrong: 'Then the clouds rolled away, and the sun came out.', rightSaid: 'rain began to fall', wrongSaid: 'the sun came out' },
+  sunny: { told: 'The clouds rolled away, and the sky turned blue.', guessed: 'the sun would come out', right: 'Then the sun came out.', wrong: 'Then big gray clouds rolled back in.', rightSaid: 'the sun came out', wrongSaid: 'big gray clouds rolled back in' },
+  melt: { told: 'Mia left an ice cube out in the hot sun.', guessed: 'it would melt into water', right: 'Then the ice cube melted into water.', wrong: 'Then Mia put the ice cube back in the freezer, and it did not melt.', rightSaid: 'the ice cube melted into water', wrongSaid: 'it did not melt' },
+  freeze: { told: 'Mia put a cup of water in the freezer.', guessed: 'it would turn to ice', right: 'Then the water turned to ice.', wrong: 'Then Mia took the cup out right away, and it was still water.', rightSaid: 'the water turned to ice', wrongSaid: 'it was still water' },
+  cat: { told: 'The cat saw a ball roll by.', guessed: 'it would chase the ball', right: 'Then the cat ran after the ball!', wrong: 'Then the cat curled up and went to sleep.', rightSaid: 'the cat ran after the ball', wrongSaid: 'the cat curled up and went to sleep' },
+};
+// Which one was a clue: two stories the lines tell, each with two guesses, the clue for each, and the thing the story told that is the
+// clue for the other guess and not for this one.
+export const CLUE4_WHICH_TOLD = { night: ['It was night, and the moon was up. Ben\'s dog sat by the door.', 'Ben\'s dog sat by the door. It was night, and the moon was up.'], snow: ['Snow was falling, and Kai\'s dog brought him its leash.'] };
+export const CLUE4_WHICH = {
+  'night bed': { story: 'night', guessed: 'Ben would go to bed', clue: 'icon:moon', not: 'icon:dog', clueWhy: 'The moon up in the night sky is the clue, because Ben goes to bed at night.', notName: 'The dog', notWhy: 'sat by the door, and that does not tell us Ben will go to bed.' },
+  'night out': { story: 'night', guessed: 'the dog wanted to go outside', clue: 'icon:dog', not: 'icon:moon', clueWhy: 'The dog sitting by the door is a clue that it wants to go outside.', notName: 'The moon', notWhy: 'is up in the night sky, and that is not about going outside.' },
+  'snow snowman': { story: 'snow', guessed: 'Kai would build a snowman', clue: 'icon:snow', not: 'icon:dog', clueWhy: 'The falling snow is a clue, because we build a snowman out of snow.', notName: 'The dog', notWhy: 'brought its leash, and that does not tell us what Kai will build.' },
+  'snow walk': { story: 'snow', guessed: 'Kai and his dad would go for a walk', clue: 'icon:dog', not: 'icon:snow', clueWhy: 'The dog bringing its leash is a clue that it wants to go for a walk.', notName: 'The snow', notWhy: 'tells us it is cold, and that is not about a walk.' },
+};
+// Why something happened: the clues a story tells, the reason they point to, and the other two stories' reasons, either of which may be
+// shown beside it with why it does not fit, so each reason is the answer to one story and a wrong choice for the other two.
+export const CLUE4_WHYS = [
+  { key: 'umbrella', told: 'Leo pulled on his boots and opened his umbrella.', answer: 'icon:rain', explain: 'It was raining. The umbrella and the boots are clues.',
+    others: { 'icon:cake': ['The cake', 'is for a birthday, and this story has no birthday in it.'], 'icon:bed': ['The bed', 'does not fit an umbrella and boots.'] } },
+  { key: 'presents', told: 'Everyone sang a song to Zoe, and she opened her presents.', answer: 'icon:cake', explain: 'It was Zoe\'s birthday. The song and the presents are clues.',
+    others: { 'icon:rain': ['The rain', 'does not fit a song and presents.'], 'icon:bed': ['The bed', 'does not fit a song and presents.'] } },
+  { key: 'pillow', told: 'Nora\'s eyes kept closing, and she put her head on her pillow.', answer: 'icon:bed', explain: 'Nora was sleepy. Her eyes closing and her head on her pillow are clues.',
+    others: { 'icon:rain': ['The rain', 'does not fit eyes that keep closing.'], 'icon:cake': ['The cake', 'is for a birthday, and this story has no birthday in it.'] } },
+];
+// How Ava felt, from what she did: the signs Feelings show teaches (a jump and a clap; a tear; a stomp and tight fists; hiding), each
+// said in the lines.
+export const CLUE4_FEELS = [
+  { told: 'Ava jumped up and down and clapped.', who: 'Ava', feel: 'happy' },
+  { told: 'A tear rolled down Ava\'s cheek.', who: 'Ava', feel: 'sad' },
+  { told: 'Ava stomped her feet and made tight fists.', who: 'Ava', feel: 'mad' },
+  { told: 'Ava hid under her blanket when the thunder boomed.', who: 'Ava', feel: 'scared' },
+];
+
+// Act it out (pre-K 3, pass NP, PK3 III.D.1): a story of two things one friend did, from the five the lines say and draw, each a thing
+// a child can hold and act with, a prop. Each is drawn by the name its words say (the guitar, never a song's music note), so an order
+// question's explanation names its steps' pictures in order.
+export const ACT3_ANIMALS = ['frog', 'bear', 'duck'];
+export const ACT3_DOES = { apple: 'ate an apple', book: 'read a book', ball: 'played with a ball', guitar: 'played the guitar', hat: 'put on a hat' };
+export const ACT3_NAMES = { apple: 'The apple', book: 'The book', ball: 'The ball', guitar: 'The guitar', hat: 'The hat' };
+export const ACT3_PROPS = ['apple', 'book', 'ball', 'guitar', 'hat'];
+// A question about what the friend did is keyed to its two things in order (aboutWords), so a round asks about one order once while it
+// can: "First the frog ate an apple, and then it played the guitar." answers what the bear did after it ate an apple. Who is in the
+// story is keyed to the friend, which no explanation of the order asks.
+// The apple and the ball, both red and round, are never on one row (round one's screen read, pass NP: a child unsure of the apple's
+// leaf could swap an order for a reason that is not the order). So a story's four pictures are the five things but the apple or the
+// ball, in a shuffled order: the story does the first two, and the other two are the ones a question shows beside them.
+function act3(rng) { const a = pick(rng, ACT3_ANIMALS); const out = pick(rng, ['apple', 'ball']); const [e1, e2, f1, f2] = shuffle(rng, Object.keys(ACT3_DOES).filter((e) => e !== out));
+  return { a, e1, e2, f1, f2, key: `${e1} then ${e2}`, story: `Listen. The ${a} ${ACT3_DOES[e1]}. Then the ${a} ${ACT3_DOES[e2]}.` }; }
+
+// Tell it again (pre-K 4, pass NP, PK4 III.D.1): a story of three things the fox or the owl did, from the six the lines say and draw,
+// told with first, next and last, or with then. Each thing is said as the story says it and as a question asks it (play the guitar).
+// Every question is keyed to its story's three things in order (aboutWords), whichever friend did them, since each explanation tells
+// the whole story again.
+export const RETELL4_ANIMALS = ['fox', 'owl'];
+export const RETELL4_DOES = { apple: ['ate an apple', 'eat an apple'], book: ['read a book', 'read a book'], kite: ['flew a kite', 'fly a kite'], guitar: ['played the guitar', 'play the guitar'], ball: ['played with a ball', 'play with a ball'], hat: ['put on a hat', 'put on a hat'] };
+export const RETELL4_NAMES = { apple: 'The apple', book: 'The book', kite: 'The kite', guitar: 'The guitar', ball: 'The ball', hat: 'The hat' };
+export const RETELL4_WORDS = ['First', 'Next', 'Last'];
+// As in Act it out, the apple and the ball are never on one row: the four pictures are four of the six things but never both of those.
+function retell4(rng, words) { const a = pick(rng, RETELL4_ANIMALS); const out = pick(rng, ['apple', 'ball']); const [e1, e2, e3, x] = shuffle(rng, Object.keys(RETELL4_DOES).filter((e) => e !== out)); const D = (e) => RETELL4_DOES[e][0];
+  const story = words ? `Listen. First, the ${a} ${D(e1)}. Next, the ${a} ${D(e2)}. Last, the ${a} ${D(e3)}.` : `Listen. The ${a} ${D(e1)}, then ${D(e2)}, then ${D(e3)}.`;
+  return { a, e1, e2, e3, x, key: `${e1} then ${e2} then ${e3}`, story, explain: `First the ${a} ${D(e1)}, next it ${D(e2)}, and last it ${D(e3)}.` }; }
+
+Object.assign(GENERATORS, {
+  // What will happen next: the story's good guess, beside the other picture of its pair, which its mirror story makes the good guess.
+  'p3-next-guess': (rng) => { const k = pick(rng, Object.keys(NEXT3_STORIES)); const s = NEXT3_STORIES[k];
+    return { type: 'choice', story: `Listen. ${pick(rng, s.told)}`, prompt: s.ask, choices: shuffle(rng, [s.good, s.bad]), answer: s.good, aboutWords: [k],
+      explain: s.why, visual: null, explainVisual: null, whyNot: { [s.bad]: { name: s.badName, why: s.badWhy } }, alsoRight: [] }; },
+  // How someone will feel: Mia's two stories, a dropped ice cream and a new one.
+  'p3-next-feel': (rng) => { const f = pick(rng, NEXT3_FEELS);
+    return { type: 'choice', story: `Listen. ${f.told}`, prompt: `How do you think ${f.who} will feel?`, choices: shuffle(rng, ['face:sad', 'face:happy']), answer: `face:${f.feel}`, aboutWords: [f.feel],
+      explain: f.why, visual: null, explainVisual: null, whyNot: { [`face:${f.other}`]: { name: NEXT3_FACE_NAMES[f.other], why: f.otherWhy } }, alsoRight: [] }; },
+  // Which one was a clue: the story's own clue, beside a clue of the other kind from another story, which this story never tells.
+  'p3-next-clue': (rng) => { const k = pick(rng, Object.keys(NEXT3_CLUES)); const c = NEXT3_CLUES[k]; const ok = pick(rng, c.with); const o = NEXT3_CLUES[ok];
+    return { type: 'choice', story: `Listen. ${pick(rng, NEXT3_STORIES[k].told)} We guessed ${c.guessed}.`, prompt: 'Which one was a clue?', choices: shuffle(rng, [c.clue, o.clue]), answer: c.clue, aboutWords: [k],
+      explain: c.clueWhy, visual: null, explainVisual: null, whyNot: { [o.clue]: { name: o.clueName, why: (c.whyBeside && c.whyBeside[ok]) || 'is not in this story.' } }, alsoRight: [] }; },
+  // Was our guess right: what happened, our guess about half the time, and the dog and the puddle among the stories.
+  'p3-next-check': (rng) => { const k = pick(rng, Object.keys(NEXT3_CHECKS)); return { ...guessCheck(rng, NEXT3_CHECKS[k]), aboutWords: [k] }; },
+  // Is this a good guess: the story's good guess or the other picture of its pair, shown, about half each, so a picture is a good guess
+  // after one story and not after its mirror.
+  'p3-next-good': (rng) => { const k = pick(rng, Object.keys(NEXT3_STORIES)); const s = NEXT3_STORIES[k]; const good = rng() < 0.5; const shown = good ? s.good : s.bad;
+    return { type: 'choice', story: `Listen. ${pick(rng, s.told)}`, prompt: 'Is this a good guess?', choices: yesNo(rng), answer: good ? 'Yes' : 'No', aboutWords: [k],
+      explain: good ? `Yes. ${s.why}` : `No. ${s.badName} ${s.badWhy}`, visual: { kind: shown.split(':')[0], name: shown.split(':')[1] }, explainVisual: null,
+      whyNot: good ? { No: { name: 'No', why: `would mean it is not a good guess, but ${s.fits}.` } } : { Yes: { name: 'Yes', why: 'would mean it is a good guess, but it does not fit the clues.' } }, alsoRight: [] }; },
+  // Story clues: what will happen next, the story's good guess beside the other picture of its pair.
+  'p4-clue-next': (rng) => { const k = pick(rng, Object.keys(CLUE4_STORIES)); const s = CLUE4_STORIES[k];
+    return { type: 'choice', story: `Listen. ${s.told}`, prompt: 'What will happen next?', choices: shuffle(rng, [s.good, s.bad]), answer: s.good, aboutWords: [k],
+      explain: s.why, visual: null, explainVisual: null, whyNot: { [s.bad]: { name: s.badName, why: s.badWhy } }, alsoRight: [] }; },
+  // Why something happened: the reason the story's clues point to, beside one of the other two stories' reasons. The question is the
+  // lines' own Why?, so it never names the story it asks about.
+  'p4-clue-why': (rng) => { const w = pick(rng, CLUE4_WHYS); const o = pick(rng, Object.keys(w.others));
+    return { type: 'choice', story: `Listen. ${w.told}`, prompt: 'Why?', choices: shuffle(rng, [w.answer, o]), answer: w.answer, aboutWords: [w.key],
+      explain: w.explain, visual: null, explainVisual: null, whyNot: { [o]: { name: w.others[o][0], why: w.others[o][1] } }, alsoRight: [] }; },
+  // How Ava felt, from what she did: the feeling the signs point to, beside two of the other three.
+  'p4-clue-feel': (rng) => { const f = pick(rng, CLUE4_FEELS); const others = shuffle(rng, Object.keys(NEXT3_FACE_NAMES).filter((x) => x !== f.feel)).slice(0, 2);
+    return { type: 'choice', story: `Listen. ${f.told}`, prompt: `How do you think ${f.who} felt?`, choices: shuffle(rng, [f.feel, ...others].map((x) => `face:${x}`)), answer: `face:${f.feel}`, aboutWords: [f.feel],
+      explain: `${f.told.slice(0, -1)}, so we can guess she felt ${f.feel}.`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((x) => [`face:${x}`, { name: NEXT3_FACE_NAMES[x], why: `is not a good guess, because ${f.told.replace(/^A /, 'a ')}` }])), alsoRight: [] }; },
+  // Was our guess right.
+  'p4-clue-check': (rng) => { const k = pick(rng, Object.keys(CLUE4_CHECKS)); return { ...guessCheck(rng, CLUE4_CHECKS[k]), aboutWords: [k] }; },
+  // Which one was a clue: one story and one of its two guesses, the clue for that guess beside the thing the story told that is the clue
+  // for the other, so each picture is the clue for one guess and not for the other.
+  'p4-clue-which': (rng) => { const k = pick(rng, Object.keys(CLUE4_WHICH)); const c = CLUE4_WHICH[k];
+    return { type: 'choice', story: `Listen. ${pick(rng, CLUE4_WHICH_TOLD[c.story])} We guessed ${c.guessed}.`, prompt: 'Which one was a clue?', choices: shuffle(rng, [c.clue, c.not]), answer: c.clue, aboutWords: [k],
+      explain: c.clueWhy, visual: null, explainVisual: null, whyNot: { [c.not]: { name: c.notName, why: c.notWhy } }, alsoRight: [] }; },
+  // Act it out: who is in the story, the friend it tells about beside one it does not.
+  'p3-act-who': (rng) => { const s = act3(rng); const other = pick(rng, ACT3_ANIMALS.filter((x) => x !== s.a));
+    return { type: 'choice', story: s.story, prompt: 'Who is in this story?', choices: shuffle(rng, [`pic:${s.a}`, `pic:${other}`]), answer: `pic:${s.a}`, aboutWords: [s.a],
+      explain: `The ${s.a} is in this story, so you can pretend to be the ${s.a}.`, visual: null, explainVisual: null, whyNot: { [`pic:${other}`]: { name: `The ${other}`, why: 'is not in this story.' } }, alsoRight: [] }; },
+  // What the friend did first: the story's two things.
+  'p3-act-first': (rng) => { const s = act3(rng);
+    return { type: 'choice', story: s.story, prompt: `What did the ${s.a} do first?`, choices: shuffle(rng, [`icon:${s.e1}`, `icon:${s.e2}`]), answer: `icon:${s.e1}`, aboutWords: [s.key],
+      explain: `First the ${s.a} ${ACT3_DOES[s.e1]}, and then it ${ACT3_DOES[s.e2]}.`, visual: null, explainVisual: null, whyNot: { [`icon:${s.e2}`]: { name: ACT3_NAMES[s.e2], why: `is what the ${s.a} did after, not first.` } }, alsoRight: [] }; },
+  // What the friend did after the first thing: the second thing, beside one the story never names.
+  'p3-act-then': (rng) => { const s = act3(rng); const x = s.f1;
+    return { type: 'choice', story: s.story, prompt: `What did the ${s.a} do after it ${ACT3_DOES[s.e1]}?`, choices: shuffle(rng, [`icon:${s.e2}`, `icon:${x}`]), answer: `icon:${s.e2}`, aboutWords: [s.key],
+      explain: `After it ${ACT3_DOES[s.e1]}, the ${s.a} ${ACT3_DOES[s.e2]}.`, visual: null, explainVisual: null, whyNot: { [`icon:${x}`]: { name: ACT3_NAMES[x], why: 'is not in this story.' } }, alsoRight: [] }; },
+  // Which thing could help act it out: a prop from the story, beside one it never names.
+  'p3-act-prop': (rng) => { const s = act3(rng); const p = pick(rng, [s.e1, s.e2].filter((e) => ACT3_PROPS.includes(e))); const x = pick(rng, [s.f1, s.f2].filter((e) => ACT3_PROPS.includes(e)));
+    return { type: 'choice', story: s.story, prompt: 'Which thing could help you act out this story?', choices: shuffle(rng, [`icon:${p}`, `icon:${x}`]), answer: `icon:${p}`, aboutWords: [s.key],
+      explain: `${ACT3_NAMES[p]} could help, because the ${s.a} ${ACT3_DOES[p]} in the story.`, visual: null, explainVisual: null, whyNot: { [`icon:${x}`]: { name: ACT3_NAMES[x], why: 'is not in this story.' } }, alsoRight: [] }; },
+  // Tap what the friend did first and then what it did after that, among four pictures.
+  'p3-act-order': (rng) => { const s = act3(rng); const others = [s.f1, s.f2];
+    return { ...stepsQuestion(rng, { story: s.story, prompt: `Tap what the ${s.a} did first, and then what it did after that.`, steps: [`icon:${s.e1}`, `icon:${s.e2}`], others: others.map((e) => `icon:${e}`), explain: `First the ${s.a} ${ACT3_DOES[s.e1]}, and then it ${ACT3_DOES[s.e2]}.` }), aboutWords: [s.key] }; },
+  // Tell it again: what the friend did first.
+  'p4-retell-first': (rng) => { const s = retell4(rng, rng() < 0.5);
+    return { type: 'choice', story: s.story, prompt: `What did the ${s.a} do first?`, choices: shuffle(rng, [s.e1, s.e2, s.e3].map((e) => `icon:${e}`)), answer: `icon:${s.e1}`, aboutWords: [s.key], explain: s.explain, visual: null, explainVisual: null,
+      whyNot: { [`icon:${s.e2}`]: { name: RETELL4_NAMES[s.e2], why: `is what the ${s.a} did next, not first.` }, [`icon:${s.e3}`]: { name: RETELL4_NAMES[s.e3], why: `is what the ${s.a} did last.` } }, alsoRight: [] }; },
+  // What the friend did last.
+  'p4-retell-last': (rng) => { const s = retell4(rng, rng() < 0.5);
+    return { type: 'choice', story: s.story, prompt: `What did the ${s.a} do last?`, choices: shuffle(rng, [s.e1, s.e2, s.e3].map((e) => `icon:${e}`)), answer: `icon:${s.e3}`, aboutWords: [s.key], explain: s.explain, visual: null, explainVisual: null,
+      whyNot: { [`icon:${s.e1}`]: { name: RETELL4_NAMES[s.e1], why: `is what the ${s.a} did first.` }, [`icon:${s.e2}`]: { name: RETELL4_NAMES[s.e2], why: `is what the ${s.a} did next, not last.` } }, alsoRight: [] }; },
+  // What the friend did right after the first thing, or right before the last: the middle thing, beside the other end and one the
+  // story never names.
+  'p4-retell-near': (rng) => { const s = retell4(rng, rng() < 0.5); const after = rng() < 0.5; const D = (e) => RETELL4_DOES[e][0];
+    const end = after ? s.e3 : s.e1;
+    return { type: 'choice', story: s.story, prompt: after ? `What did the ${s.a} do right after it ${D(s.e1)}?` : `What did the ${s.a} do right before it ${D(s.e3)}?`, choices: shuffle(rng, [s.e2, end, s.x].map((e) => `icon:${e}`)), answer: `icon:${s.e2}`, aboutWords: [s.key], explain: s.explain, visual: null, explainVisual: null,
+      whyNot: { [`icon:${end}`]: { name: RETELL4_NAMES[end], why: after ? `is what the ${s.a} did last, not right after.` : `is what the ${s.a} did first, not right before.` }, [`icon:${s.x}`]: { name: RETELL4_NAMES[s.x], why: 'is not in this story.' } }, alsoRight: [] }; },
+  // Tap the story's three things in order, among four pictures.
+  'p4-retell-order': (rng) => { const s = retell4(rng, rng() < 0.5);
+    return { ...stepsQuestion(rng, { story: s.story, prompt: 'Tap the pictures in the order of the story.', steps: [s.e1, s.e2, s.e3].map((e) => `icon:${e}`), others: [`icon:${s.x}`], explain: s.explain }), aboutWords: [s.key] }; },
+  // When the friend did one of its three things, first, next or last: the story told with then, so it never says the word asked for.
+  'p4-retell-word': (rng) => { const s = retell4(rng, false); const k = Math.floor(rng() * 3); const ev = [s.e1, s.e2, s.e3][k];
+    const means = { First: 'would mean it came at the start, before the other two.', Next: 'would mean it came in the middle.', Last: 'would mean it came at the end.' };
+    return { type: 'choice', story: s.story, prompt: `When did the ${s.a} ${RETELL4_DOES[ev][1]}, first, next or last?`, choices: shuffle(rng, RETELL4_WORDS), answer: RETELL4_WORDS[k], aboutWords: [s.key], explain: s.explain, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(RETELL4_WORDS.filter((w, j) => j !== k).map((w) => [w, { name: w, why: means[w] }])), alsoRight: [] }; },
+});
+
+// Hold a book (pre-K 3, pass NP, PK3 III.E.3): each question asks about a book or a page the lines draw, either way (the front or the
+// back, right side up or upside down, where we start or where we stop), so each picture is the answer to one question and the wrong
+// choice in the other. A yes or no shows one picture and asks about either side, so neither the picture nor the question alone tells
+// the answer.
+export const BOOK3_ASKS = {
+  front: { prompt: 'Which one is the front of the book?', right: 'icon:book~cover', wrong: 'icon:book~back', explain: 'The front has the book\'s name and a picture on it.', wrongName: 'The back of the book', wrongWhy: 'has no name and no picture on it.' },
+  back: { prompt: 'Which one is the back of the book?', right: 'icon:book~back', wrong: 'icon:book~cover', explain: 'The back of this book has no name and no picture on it.', wrongName: 'The front of the book', wrongWhy: 'has the book\'s name and a picture on it.' },
+  up: { prompt: 'Which book is right side up?', right: 'icon:book~cover', wrong: 'icon:book~down', explain: 'This book is right side up, with its sun at the top.', wrongName: 'The upside-down book', wrongWhy: 'has its sun at the bottom.' },
+  down: { prompt: 'Which book is upside down?', right: 'icon:book~down', wrong: 'icon:book~cover', explain: 'This book is upside down, with its sun at the bottom.', wrongName: 'The book that is right side up', wrongWhy: 'has its sun at the top.' },
+  start: { prompt: 'Where do we start reading?', right: 'icon:page~start', wrong: 'icon:page~end', explain: 'We start at the top of the page, by the first word.', wrongName: 'The page with its dot at the bottom', wrongWhy: 'shows where we stop.' },
+  stop: { prompt: 'Where do we stop reading?', right: 'icon:page~end', wrong: 'icon:page~start', explain: 'We stop at the bottom of the page, after the last word.', wrongName: 'The page with its dot at the top', wrongWhy: 'shows where we start.' },
+};
+// A yes or no about the front or the back: what each picture has, as its reason says it.
+const BOOK3_HAS = { 'book~cover': ['front', 'it has the book\'s name and a picture'], 'book~back': ['back', 'it has no name and no picture'] };
+// A yes or no about where we start or stop: where each page's dot is, said whole in the explanation and shorter in the reason after a
+// wrong tap, which is at most 18 words (pass NP's rules run: "No would mean we do not stop here, but this dot is after the last word, at
+// the bottom." was 19).
+const BOOK3_DOT = { 'page~start': ['start', 'this dot is by the first word, at the top', 'this dot is by the first word'], 'page~end': ['stop', 'this dot is after the last word, at the bottom', 'this dot is after the last word'] };
+// Which way we read (pre-K 4, pass NP, PK4 III.E.3): short sentences of two names and a doing word, every name and doing word one the
+// lines say, each name with its own first letter, so a child finds a word on a choice by its letters.
+export const WAY4_NAMES = ['Mom', 'Dad', 'Ben', 'Ava', 'Sam', 'Kai'];
+export const WAY4_DOES = ['sees', 'helps', 'likes'];
+// A yes or no about right side up or upside down: where each book's sun is.
+const WAY4_SUN = { 'book~cover': ['right side up', 'top'], 'book~down': ['upside down', 'bottom'] };
+// The names go in three pairs, each pair one line's two names either way round, so two lines never share a name and the line banks'
+// passages are a few hundred, each read by the rules test (pass NP's rules run: names drawn freely made over six thousand two-line
+// passages, still new at seed 53,817 of 76,800).
+const WAY4_PAIRS = [['Mom', 'Dad'], ['Ben', 'Ava'], ['Sam', 'Kai']];
+function way4(rng, n) { return shuffle(rng, WAY4_PAIRS).slice(0, n).map((p) => { const [a, b] = shuffle(rng, p); return { a, b, text: `${a} ${pick(rng, WAY4_DOES)} ${b}.` }; }); }
+
+Object.assign(GENERATORS, {
+  // Hold a book: the front or the back.
+  'p3-book-front': (rng) => { const k = pick(rng, ['front', 'back']); const s = BOOK3_ASKS[k];
+    return { type: 'choice', story: 'Look at these two books.', prompt: s.prompt, choices: shuffle(rng, [s.right, s.wrong]), answer: s.right, aboutWords: [k], explain: s.explain, visual: null, explainVisual: null, whyNot: { [s.wrong]: { name: s.wrongName, why: s.wrongWhy } }, alsoRight: [] }; },
+  // Right side up or upside down.
+  'p3-book-up': (rng) => { const k = pick(rng, ['up', 'down']); const s = BOOK3_ASKS[k];
+    return { type: 'choice', story: 'Look at these two books.', prompt: s.prompt, choices: shuffle(rng, [s.right, s.wrong]), answer: s.right, aboutWords: [k], explain: s.explain, visual: null, explainVisual: null, whyNot: { [s.wrong]: { name: s.wrongName, why: s.wrongWhy } }, alsoRight: [] }; },
+  // Where on a page we start, or stop, reading.
+  'p3-book-start': (rng) => { const k = pick(rng, ['start', 'stop']); const s = BOOK3_ASKS[k];
+    return { type: 'choice', story: 'Look at these two pages.', prompt: s.prompt, choices: shuffle(rng, [s.right, s.wrong]), answer: s.right, aboutWords: [k], explain: s.explain, visual: null, explainVisual: null, whyNot: { [s.wrong]: { name: s.wrongName, why: s.wrongWhy } }, alsoRight: [] }; },
+  // Is this the front, or the back, of the book: one picture, asked about either side.
+  'p3-book-isfront': (rng) => { const shown = pick(rng, Object.keys(BOOK3_HAS)); const asked = pick(rng, ['front', 'back']); const [side, has] = BOOK3_HAS[shown]; const yes = side === asked;
+    return { type: 'choice', story: 'Look at this book.', prompt: `Is this the ${asked} of the book?`, choices: yesNo(rng), answer: yes ? 'Yes' : 'No', aboutWords: [asked],
+      explain: yes ? `Yes. This is the ${side}, because ${has}.` : `No. This is the ${side}, because ${has}.`, visual: { kind: 'icon', name: shown }, explainVisual: null,
+      whyNot: yes ? { No: { name: 'No', why: `would mean this is not the ${asked}, but ${has}.` } } : { Yes: { name: 'Yes', why: `would mean this is the ${asked}, but ${has}.` } }, alsoRight: [] }; },
+  // Is this where we start, or stop, reading: one page, asked about either end.
+  'p3-book-isstart': (rng) => { const shown = pick(rng, Object.keys(BOOK3_DOT)); const asked = pick(rng, ['start', 'stop']); const [end, dot, near] = BOOK3_DOT[shown]; const yes = end === asked;
+    return { type: 'choice', story: 'Look at this page.', prompt: `Is this where we ${asked} reading?`, choices: yesNo(rng), answer: yes ? 'Yes' : 'No', aboutWords: [asked],
+      explain: yes ? `Yes. We ${end} here, because ${dot}.` : `No. We ${end} here, because ${dot}.`, visual: { kind: 'icon', name: shown }, explainVisual: null,
+      whyNot: yes ? { No: { name: 'No', why: `would mean we do not ${asked} here, but ${near}.` } } : { Yes: { name: 'Yes', why: `would mean we ${asked} here, but ${near}.` } }, alsoRight: [] }; },
+  // Which way we read: is this book right side up, or upside down, asked either way of one picture.
+  'p4-way-up': (rng) => { const shown = pick(rng, Object.keys(WAY4_SUN)); const asked = pick(rng, ['right side up', 'upside down']); const [is, sun] = WAY4_SUN[shown]; const yes = is === asked;
+    return { type: 'choice', story: 'Look at this book.', prompt: `Is this book ${asked}?`, choices: yesNo(rng), answer: yes ? 'Yes' : 'No', aboutWords: [asked],
+      explain: `${yes ? 'Yes' : 'No'}. Its sun is at the ${sun}, so it is ${is}.`, visual: { kind: 'icon', name: shown }, explainVisual: null,
+      whyNot: yes ? { No: { name: 'No', why: `would mean it is not ${asked}, but its sun is at the ${sun}.` } } : { Yes: { name: 'Yes', why: `would mean it is ${asked}, but its sun is at the ${sun}.` } }, alsoRight: [] }; },
+  // Which word on a line we read first, or last.
+  'p4-way-word': (rng) => { const [s] = way4(rng, 1); const first = rng() < 0.5; const right = first ? s.a : s.b; const wrong = first ? s.b : s.a;
+    return { type: 'choice', story: 'Look at these words.', prompt: `Which word do we read ${first ? 'first' : 'last'}?`, choices: shuffle(rng, [`print:${s.a}`, `print:${s.b}`]), answer: `print:${right}`, aboutWords: [s.text],
+      explain: first ? `We read ${s.a} first, because it is at the start of the line.` : `We read ${s.b} last, because it is at the end of the line.`, visual: { kind: 'print', text: s.text }, explainVisual: null,
+      whyNot: { [`print:${wrong}`]: { name: wrong, why: first ? 'is at the end of the line, so we read it last.' : 'is at the start of the line, so we read it first.' } }, alsoRight: [] }; },
+  // Which of two lines we read first, or last.
+  'p4-way-line': (rng) => { const [s1, s2] = way4(rng, 2); const first = rng() < 0.5; const right = first ? s1.text : s2.text; const wrong = first ? s2.text : s1.text;
+    return { type: 'choice', story: 'Look at these two lines.', prompt: `Which line do we read ${first ? 'first' : 'last'}?`, choices: shuffle(rng, [`print:${s1.text}`, `print:${s2.text}`]), answer: `print:${right}`, aboutWords: [s1.text, s2.text],
+      explain: first ? 'We read the top line first.' : 'We read the bottom line last, after the top one.', visual: { kind: 'pair', stack: true, a: { kind: 'print', text: s1.text }, b: { kind: 'print', text: s2.text } }, explainVisual: null,
+      whyNot: { [`print:${wrong}`]: first ? { name: 'The bottom line', why: 'comes after the top one, so we read it last.' } : { name: 'The top line', why: 'comes first, before the line under it.' } }, alsoRight: [] }; },
+  // At the end of the top line, which word we read next: the start of the next line, beside its end.
+  'p4-way-next': (rng) => { const [s1, s2] = way4(rng, 2);
+    return { type: 'choice', story: 'We read to the end of the top line.', prompt: 'Which word do we read next?', choices: shuffle(rng, [`print:${s2.a}`, `print:${s2.b}`]), answer: `print:${s2.a}`, aboutWords: [s1.text, s2.text],
+      explain: `Next comes ${s2.a}, at the start of the next line.`, visual: { kind: 'pair', stack: true, a: { kind: 'print', text: s1.text }, b: { kind: 'print', text: s2.text } }, explainVisual: null,
+      whyNot: { [`print:${s2.b}`]: { name: s2.b, why: 'is at the end of the next line, so we read it last.' } }, alsoRight: [] }; },
+  // Which arrow shows the way along a line, or the way down to the next line.
+  'p4-way-arrow': (rng) => { const along = rng() < 0.5;
+    return { type: 'choice', story: 'Look at these two arrows.', prompt: along ? 'Which arrow shows the way we read along a line?' : 'Which arrow shows the way to the next line?', choices: shuffle(rng, ['icon:arrow', 'icon:arrow~down']), answer: along ? 'icon:arrow' : 'icon:arrow~down', aboutWords: [along ? 'along' : 'down'],
+      explain: along ? 'We read along a line this way, from the start to the end.' : 'This arrow points down, to the next line.', visual: null, explainVisual: null,
+      whyNot: along ? { 'icon:arrow~down': { name: 'The arrow that points down', why: 'shows the way to the next line.' } } : { 'icon:arrow': { name: 'The arrow that points along', why: 'shows the way we read along a line.' } }, alsoRight: [] }; },
+});
+
 // Write it by its sounds (pass NE, PK4 IV.C.3): each word the lesson's lines say, with the letter for its first sound and the letter for
 // its last sound, each spelled with that letter first and that letter last; and the sound each of those letters says, as the letters
 // lessons teach it. Every question is a tap, and nothing a child writes is asked for or kept; a word heard is never printed while the voice
@@ -38041,17 +38576,17 @@ Object.assign(GENERATORS, {
   'rw-first': (rng) => {
     const line = pick(rng, READ_LINES);
     return { type: 'choice', story: `${line.join(' ')}`, prompt: 'Which word do we read first?', choices: shuffle(rng, [...new Set(line)]), answer: line[0],
-      explain: `We start reading on the left, so the first word is ${line[0]}.`, visual: { kind: 'letters', text: line.join(' ') }, explainVisual: null };
+      explain: `In English, we start reading on the left, so the first word is ${line[0]}.`, visual: { kind: 'letters', text: line.join(' ') }, explainVisual: null };
   },
   'rw-last': (rng) => {
     const line = pick(rng, READ_LINES);
     return { type: 'choice', story: `${line.join(' ')}`, prompt: 'Which word do we read last?', choices: shuffle(rng, [...new Set(line)]), answer: line[line.length - 1],
-      explain: `We read toward the right, so the last word in the line is ${line[line.length - 1]}.`, visual: { kind: 'letters', text: line.join(' ') }, explainVisual: null };
+      explain: `In English, we read toward the right, so the last word in the line is ${line[line.length - 1]}.`, visual: { kind: 'letters', text: line.join(' ') }, explainVisual: null };
   },
   'rw-next': (rng) => {
     const line = pick(rng, READ_LINES); const i = randInt(rng, 0, line.length - 2);
     return { type: 'choice', story: `${line.join(' ')}`, prompt: `Which word comes right after the word ${line[i]}?`, choices: shuffle(rng, [...new Set(line)].filter((w) => w !== line[i])), answer: line[i + 1],
-      explain: `After ${line[i]} comes ${line[i + 1]}, because we read to the right.`, visual: { kind: 'letters', text: line.join(' ') }, explainVisual: null };
+      explain: `After ${line[i]} comes ${line[i + 1]}, because in English we read to the right.`, visual: { kind: 'letters', text: line.join(' ') }, explainVisual: null };
   },
   'rw-count-words': (rng) => {
     const line = pick(rng, READ_LINES);
@@ -38060,8 +38595,8 @@ Object.assign(GENERATORS, {
   },
   'rw-which-way': (rng) => {
     const yes = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: yes ? 'We read from left to right, A then B then C.' : 'We read from right to left, C then B then A.', prompt: 'Is this right?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
-      explain: yes ? 'We read from left to right, so A comes first, then B, then C. This is right.' : 'We read from left to right, not right to left, so A comes first and C comes last.', visual: { kind: 'letters', text: 'A B C' }, explainVisual: null };
+    return { type: 'choice', story: yes ? 'In English, we read from left to right, A then B then C.' : 'In English, we read from right to left, C then B then A.', prompt: 'Is this right?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
+      explain: yes ? 'In English, we read from left to right, so A comes first, then B, then C. This is right.' : 'In English, we read from left to right, not right to left, so A comes first and C comes last.', visual: { kind: 'letters', text: 'A B C' }, explainVisual: null };
   },
 });
 
@@ -38873,7 +39408,10 @@ export function dotsBesideDrawing(v, other) {
 export const DRAWING_NAMES = { outside: 'drawing of the sun and a ball', rain: 'drawing of a cloud and an umbrella', bedtime: 'drawing of the moon and a bed' };
 // A look whose thing is named by more than its own word (pass NC): the stop sign is a sign, named a stop sign, so a line's words and a
 // screen reader say what it is (the app's stop is the raised hand).
-export const LOOK_NAMES = { 'sign~stop': 'stop sign' };
+// Since pass NP the books and pages of Hold a book and Which way we read, and the arrow that points down, each named by what it shows,
+// never by a word its questions ask for (round one's code read: "the front of a book" answered Which one is the front of the book? to
+// a screen reader, as the pages' first names did).
+export const LOOK_NAMES = { 'sign~stop': 'stop sign', 'book~cover': 'book with a name and a sun at the top', 'book~back': 'book with no name and no picture', 'book~down': 'book with its sun at the bottom', 'page~start': 'page with a dot at the top', 'page~end': 'page with a dot at the bottom', 'arrow~down': 'arrow pointing down' };
 // Turns a choice like 'dots:4' into words a child can hear: "the group with 4".
 export function describeChoice(choice, q = null) {
   const raw = String(choice).replace(/#\d+$/, '');
@@ -39744,6 +40282,44 @@ export function speechPieces(text, opts = {}) {
   }
   return pieces.filter((x) => x.sound || /[A-Za-z0-9]/.test(x.text));
 }
+// The read-along's map (pass NP, Mikey's answer to Q110, "Q110 - B", built where the voice read words on the screen with no look yet: a
+// question's own words, the words after an answer, the Wonder question and its voices). In plain terms: a screen hands the voice one line
+// made of parts, joined by one space (a question's setup, then its question; a Wonder voice's name, then its words), and prints each part
+// either in the words the voice says or in other words of its own (a heard question prints none of the words it asks about, and the
+// line after a wrong tap can hide a sound the question hides). Told the sentence of that line the voice has just begun (s, numbered as
+// speechPieces numbers them), readAlongMap says for each part how far the voice has come in what the screen prints for it: reached, how
+// many of its printed sentences the voice has begun (every sentence from reached on is still ahead of the voice, and faint), and lit,
+// the one it is on (or -1). A part printed in words of its own (whole) is one block: it turns full ink when the voice begins any of its
+// words, never sentence by sentence against words it does not print. A part the screen does not print, or the voice does not say, is
+// never faint; and with no voice reading (s null) nothing is.
+// sentenceSpans: where each sentence of a text starts and ends, cut by SENTENCE_BREAK as speechPieces cuts it (a piece of only spaces is
+// no sentence), so the map, the screen and the voice count the same sentences.
+export function sentenceSpans(text) {
+  const out = []; let at = 0;
+  String(text || '').split(new RegExp(`(${SENTENCE_BREAK.source})`)).forEach((piece, k) => { if (!(k % 2) && piece.trim()) out.push({ from: at, to: at + piece.length }); at += piece.length; });
+  return out;
+}
+// The line the voice is handed for a reading's parts: every part it says, in order, joined by one space.
+export function readAlongLine(parts) { return (parts || []).map((p) => (p && p.said ? String(p.said) : '')).filter(Boolean).join(' '); }
+export function readAlongMap(parts, s) {
+  const list = (parts || []).map((p) => ({ said: p && p.said ? String(p.said) : '', shows: p && p.shows ? String(p.shows) : '' }));
+  const rest = { reached: Infinity, lit: -1, whole: false };
+  if (s === null || s === undefined || !(Number(s) >= 0)) return list.map(() => rest);
+  const voiced = sentenceSpans(readAlongLine(list)); const now = voiced[Math.min(Math.floor(Number(s)), voiced.length - 1)];
+  if (!now) return list.map(() => rest);
+  let at = 0;
+  return list.map((p) => {
+    if (!p.said) return rest;
+    const from = at; at += p.said.length + 1;   // where this part starts in the line, and where the next one will
+    if (!p.shows) return rest;
+    const whole = p.shows !== p.said;
+    // A printed sentence (or the whole block) is begun once it starts before the end of the sentence the voice is on, and is the one
+    // being read while the two overlap; a part's sentences all begun are all at full ink.
+    let reached = 0; let lit = -1;
+    (whole ? [{ from: 0, to: p.said.length }] : sentenceSpans(p.said)).forEach((u, j) => { if (from + u.from < now.to) { reached = j + 1; if (from + u.to > now.from) lit = j; } });
+    return { reached, lit, whole };
+  });
+}
 // The sounds themselves (pass MO). Each is made from numbers, the same on every device and every time (a seeded noise source), at
 // 32,000 samples a second, so the app needs no recording and no download. A held sound lasts 0.85 seconds, or 1.1 on the snail's
 // slower pace, and rises and falls gently so it never clicks; since pass MP sss, fff and zzz come as two breaths of 0.32 seconds
@@ -40214,12 +40790,22 @@ export function preReaderWrongWords(q, picked, ruledOut = [], printed = false) {
   if (q && q.type === 'trace') return q.traceKind === 'dots' ? "Let's try it again. Start at dot number 1." : "Let's trace it again. Start at the dot.";
   // A direction of steps (pass MO): the child hears the direction again, since it is the whole question and names nothing its words
   // have not already said.
-  if (q && q.type === 'order' && q.pick) return `Let's listen again. ${[q.story, q.prompt].filter(Boolean).join(' ')}`;
+  // A story that begins "Listen." is told without it here, since the line has just said so (round one's screen read, pass NP).
+  if (q && q.type === 'order' && q.pick) return `Let's listen again. ${[q.story && q.story.replace(/^Listen\. /, ''), q.prompt].filter(Boolean).join(' ')}`;
   const entry = q && q.whyNot && q.whyNot[picked];
   if (!entry) return 'Not that one. Have another try.';
   const out = new Set([String(picked), ...(ruledOut || []).map(String)]);
   const open = (q.choices || []).map(String).filter((c) => !out.has(c));
   return open.length >= 2 && (whyNotNamesAnswer(q, picked) || whyNotNamesOpenWrong(q, picked, open)) ? 'Not that one. Have another try.' : `${whyNotSentence(printed && entry.printedWhy ? { ...entry, why: entry.printedWhy } : entry)} Have another try.`;
+}
+// What a pre-reader hears after an answer and what the card prints for it, part by part, for the read-along (pass NP, readAlongMap):
+// after a right answer "Correct." (printed Correct) and then the explanation, said and printed as written; after a wrong tap the reason,
+// said in its own words and printed as preReaderWrongWords prints it (printed: true while the voice can speak or a grown-up's card is
+// up), so a reason whose printed words hide a sound is one block. readAlongLine of these parts is what the voice is handed.
+export function answerReadParts(q, correct, picked, ruledOut = [], printed = true) {
+  if (!q) return [];
+  if (correct) return [{ said: 'Correct.', shows: 'Correct' }, { said: q.explain || '', shows: q.explain || '' }];
+  return [{ said: preReaderWrongWords(q, picked, ruledOut), shows: preReaderWrongWords(q, picked, ruledOut, printed) }];
 }
 
 // The story rule, applied to science: a wrong answer on a fact question is followed by the fact
@@ -46817,6 +47403,118 @@ export const WONDER = [
     ],
     closing: 'How would you cheer for a friend who did something hard?',
   },
+  // Pass NP: four early questions, two for ups-and-downs (34 before the pass), one for feelings and one for failure (35 each), so
+  // each early theme has 36. They sit beside the pass's lessons on guessing what comes next in a story, retelling it, and how a book
+  // is held and read. The same story again: Horst, Parsons and Bryan, 2011, "Get the story straight: contextual repetition promotes
+  // word learning from storybooks", Frontiers in Psychology 2:17 (doi 10.3389/fpsyg.2011.00017), read at frontiersin.org on November
+  // 15, 2026. No reader opened the page itself (the proxy refused a direct download): the writer, the lead, round one's reader and
+  // the writer of round one's fixes each read it through a fetch tool's extract, so these quotes are the extract's and want one read
+  // against the page itself. The first 100,000 of the extract's 127,580 characters hold the abstract, the method, the results
+  // and the Discussion; the last 27,580 hold the end of the reference list and the site's own page text. That the scientists worked
+  // in England is the authors' school, which the page lists as the School of Psychology of the University of Sussex, in Brighton,
+  // UK. "Sixteen 3-year-old monolingual, British English speaking children participated.", eight to a condition, "visited in
+  // their homes three times within 1 week"; at each visit a child heard the same story three times or three different stories, from
+  // nine storybooks made for the study, each with two made-up names for objects, every name heard the same number of times; the test
+  // was pointing to one of four pictures; "Children who heard the same stories repeatedly were very accurate on both the immediate
+  // recall and retention tasks.", and on the words kept from earlier visits the different-stories children did no better than chance
+  // (0.31 and 0.19 against 0.59 and 0.72, chance 0.25). The scientist says how small the study is, and that the question needs more
+  // testing: Flack, Field and Horst, 2018, "The effects of shared storybook reading on word learning: a meta-analysis", Developmental
+  // Psychology 54(7), pages 1334 to 1346 (doi 10.1037/dev0000512), its abstract read on the University of Brighton's record on
+  // November 15, 2026, a review of 38 studies with 2,455 children: "We identify story repetition and word types as topics which merit
+  // further research." No reader opened the journal's own page for it; round one's reader read its accepted manuscript too, and
+  // round two's reader read the text of the 2011 paper's PDF through the fetch tool, which agreed with these quotes and numbers. That
+  // his bear book felt good is his own memory, and that knowing it left him room to catch its words is his maybe, never a finding. The grandparent's voice stays in her girlhood, with no
+  // godson (a grown man on the clock) and no turn to later years. The sad part of the story, the new way home and two pages at
+  // once: every line is a voice's own memory or noticing, the scientist's fourteen books and ten among them, and none tells a
+  // study; the skeptic's mother says plainly, in his short voice too, that some stories end sad.
+  {
+    id: 'w-early-same-story-again',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Tonight you ask for the same story you heard last night. Why does a story you know feel so good?',
+    options: ['I know what comes next', 'I love the words', 'It feels cozy'],
+    simple: [
+      { voice: 'A scientist says', says: 'Dad read me the same bear book almost every night. In a small study, children who heard one story again remembered more new words!' },
+      { voice: 'An artist says', says: 'On hard days, I asked for my fox book. I knew its last page was warm and gold. I could pick that feeling!' },
+      { voice: 'A grandparent of faith says', says: 'Grandmother told me a story her grandmother had told her. It felt cozy, like a quilt. I believe love can ride inside a story.' },
+      { voice: 'A skeptic says', says: 'I said I knew every word of my truck book. I told it, and Dad checked. I got two parts in the wrong order!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'One of my favorite studies is about story time. Scientists in England made picture books with a few made-up words in them. They read the books to sixteen children who were three years old. At each visit, half of the children heard the same story three times, and the other half heard three different stories. Every child heard each made-up word the same number of times. Then the children pointed to pictures to show what each new word named. The children who heard the same story again and again remembered many more of the new words. The study was small, and scientists who looked at many studies together have written that hearing a story again needs more testing. So I count it as a good clue and not the last word. It fits what I remember, though. My dad read me the same bear book almost every night. I knew what was coming on each page, and it felt good to know. Maybe knowing the story left me room to catch its words.' },
+      { voice: 'An artist', says: 'My fox book was the one I asked for most, and soon I knew every one of its pictures. I knew the dark woods in the middle. Best of all, I knew the last page, which is all gold, with the fox curled up beside a fire. One hard day, I went to the shelf and chose that book on purpose. I was not asking what would happen. I was asking for the gold page at the end. A new book can surprise me, and I love that too. To me, a book I know is a feeling I can pick off the shelf. Some days I want a surprise, and some days I want the gold page.' },
+      { voice: 'A grandparent of faith', says: 'While she braided my hair, my grandmother told me one story more often than any other. It was an old story about a girl who carries a lamp through a long night, and I asked for it again and again. One morning she said that her own grandmother had told it to her, in a kitchen far away. I thought about that for a long while. The story had gone from one grandmother to the next, like a quilt handed down. After that, when she told it, I felt as if both grandmothers were telling it to me. I believe love can ride inside a story, and I think that is part of why a story I know feels cozy to me.' },
+      { voice: 'A skeptic', says: 'I asked for my truck book so many nights that I was sure I knew every word of it. I told my dad he did not need to read it anymore. So he closed the book and said I could tell it to him. I started out just fine. The red truck went up the hill. Then I said the truck got stuck in the mud, and after that it crossed the bridge. My dad opened the book, and we looked. The bridge came first, and the mud came after! The bridge and the mud had traded places in my head. It did not feel bad. It felt like finding a sock I had not known was missing. I asked him to read it again that same night, and I listened for the bridge. A story I knew still had a piece in it for me to find.' },
+    ],
+    closing: 'Which story do you like to hear again and again?',
+  },
+  {
+    id: 'w-early-sad-part-of-the-story',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'The story comes to a sad part, and you want to stop. What could you do?',
+    options: ['Hear what comes next', 'Take a break', 'Sit closer'],
+    simple: [
+      { voice: 'A scientist says', says: 'A lost duck made me sad. Dad and I checked my books. Their sad parts mostly sat in the middle, with more story after!' },
+      { voice: 'An artist says', says: 'On the sad page, a puppy sat alone in the rain. Then I spotted a girl at a window, watching him!' },
+      { voice: 'A grandparent of faith says', says: 'I asked Grandmother to stop at the sad part. She laid the book\'s ribbon on that page. The story will wait, she said.' },
+      { voice: 'A skeptic says', says: 'Do all stories end happy? I asked Mom. She said some end sad. We read on, and the kitten in my book got home.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'The duck in my book gets lost, and on one page he is alone in the tall grass. When my dad turned to that page, my tummy felt tight, even though I was safe on his lap. I asked him to stop. He did, and then he asked me a question. Was this my only book with a sad part? I did not know, so we took my books down from the shelf and looked through them, one by one. There were fourteen, and ten of them had a sad part or a scary one. Then I noticed where those parts were. Not one was on the first page. Nearly all of them sat somewhere in the middle, with pages still to come. So the sad part told me something about where I was in my duck story. I was most likely in the middle of it, and the middle is not where a story ends.' },
+      { voice: 'An artist', says: 'In one of my picture books, a puppy is left out in the rain. On the saddest page, the whole picture is gray and blue, and the puppy sits alone by a fence with his ears down. I did not want to look at it. My mom held the page open and asked me what else the painter had put there. I looked again, very slowly this time. Far back in the picture there was a house. In one window there was a small yellow light, and a girl with her hands on the glass. She was looking right at the puppy! I had missed her every time. Two pages later, she is the one who opens the door. Since then, I look into the corners of a sad picture to see who is near. A sad page is easier for me to stay with once I have found them.' },
+      { voice: 'A grandparent of faith', says: 'Our evening storybook was a big one, with a red ribbon sewn into it. One night, while my grandmother was reading, the story turned sad. A little goat had wandered away from the others, and night was coming. I put my hand flat on the page and asked her to stop. She laid the ribbon across the page and closed the book. A story will wait for us, she said. Then we said our night prayers, the same as every night, and I slept. The next evening I was ready, and I opened the book to the ribbon myself. Her prayer book had a ribbon just like it. I think that is where she learned what she taught me that night, that a hard page can be set down for a while and come back to.' },
+      { voice: 'A skeptic', says: 'A kitten floated off down a river on a log, halfway through a book my mom was reading me. I told her to stop, because I had a question first. Do all stories end happy? My mom thought about it before she answered. No, she said, not every one. Some stories end sad, and she was not going to tell me which kind this one was. That was not the answer I wanted. It was a true one, though, and I found that I could listen better with a true one. So I sat closer, and we read on to see. A man fishing from a boat lifts the kitten off the log, and she rides home in his hat. I had found out by listening, and my mom had not needed to tell me one thing that was not true.' },
+    ],
+    closing: 'Who do you like to sit beside for a story?',
+  },
+  {
+    id: 'w-early-new-way-home',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'The road home is closed today, so your grown-up goes a new way. Nothing looks the same. How does that feel?',
+    options: ['Fun', 'A little scary', 'Both'],
+    simple: [
+      { voice: 'A scientist says', says: 'Dad drove home on a street I did not know. After supper we drew both roads on paper. Both lines ended at our house!' },
+      { voice: 'An artist says', says: 'I saw a whale painted on a wall when Mom drove home by the river! A new street woke my eyes up!' },
+      { voice: 'A grandparent of faith says', says: 'Grandmother and I had to walk home through strange fields. I was scared, so I held her coat. It smelled like our kitchen!' },
+      { voice: 'A skeptic says', says: 'Was Dad sure of the way? He was not! He said we could turn around. We did, one time, and we still got home.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Workers closed our road one afternoon, and my dad turned the car down a street I had never seen. Nothing outside my window looked like the way home. After supper, he got out a pencil and paper. He drew our house as a dot, and my school as another dot. I drew the old road between them, with its five stoplights. Then he drew the new road, which went the long way around the pond. There were two lines, and both of them ended at the same dot! The new way had felt strange while I was riding on it. On paper, it was just one more line to my house.' },
+      { voice: 'An artist', says: 'The day our road was closed, my mom drove home along the river, and I pressed my nose to the window. There was a house as yellow as a lemon. There was a wall with a whale painted on it, as long as a bus. There was a man selling flowers out of buckets, red and orange and pink. I had never seen any of it, and it had all been a few streets away the whole time! That night I tried to draw our old way home, and I could hardly remember what was on it. I had ridden that road so many times that my eyes had gone to sleep on it. A new street wakes them up. The next day, on the old road, I looked for one thing I had never drawn, and I found a blue door.' },
+      { voice: 'A grandparent of faith', says: 'The spring I was six, the river came up over the little bridge near our house, and the bridge was closed. My grandmother and I had to walk home the long way, through fields I did not know. The path was muddy, and the trees were not our trees. I was scared, and I held on to her coat with both hands. Then I pressed my face against it. The wool smelled of wood smoke and soap, the way our kitchen smelled on washing day. With my nose in her sleeve, the fields did not seem so strange. I believe we can carry a little of home with us, and that day my grandmother carried it in her coat. When we came into our kitchen at last, it smelled just like her sleeve.' },
+      { voice: 'A skeptic', says: 'The street my dad took had not one house I knew, and I asked him if it went home. He said he thought so. If it did not, we would turn around and try the next one. I did not like that answer at first. I wanted him to be sure. Two streets later, the road ended at a fence, with a field behind it. My dad laughed, backed the car up and turned around. The next street came out by the big blue mailbox on our corner. My dad had been wrong about one street, and we were home anyway. He had not needed to be sure. He had needed to know what to do if he was wrong. A new way felt less scary to me after that, since a wrong turn can be turned around.' },
+    ],
+    closing: 'What do you like to look for on the way home?',
+  },
+  {
+    id: 'w-early-two-pages-at-once',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You turned two pages at once, and now the story seems mixed up. What could you do?',
+    options: ['Turn back a page', 'Ask my grown-up', 'Keep going'],
+    simple: [
+      { voice: 'A scientist says', says: 'In my book, a mouse was in bed, then in a boat! That did not fit. I looked back for what I had missed.' },
+      { voice: 'An artist says', says: 'The sky jumped from sunny to starry in my book! I turned back and found a pink sunset. The sky was telling the time!' },
+      { voice: 'A grandparent of faith says', says: 'Two pages in Grandmother\'s old book were stuck together with jam. She and I peeled them apart slowly, and read them.' },
+      { voice: 'A skeptic says', says: 'I skipped a page, and the pig in my book was wet. I guessed rain. I turned back. He had jumped in the pond!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I was turning the pages of a picture book, all by myself. On one page, a mouse was in bed with his blanket up to his chin. On the next, he was out on a lake in a boat! I stopped and stared at it. How had he gotten there? Two pages had stuck to my thumb, and the page between them had the answer. On it, the mouse wakes up early and carries his oars down to the water. I remember that little jolt, the feeling that something did not fit. I get the same jolt in my lab on days when a number comes out that I cannot explain. I have come to like it. It tells me to go back and look for a step I skipped, and very often I find one.' },
+      { voice: 'An artist', says: 'There was a book I looked at long before I could read its words. One afternoon I turned a page, and the sky jumped. It had been a bright blue morning, with a round sun over the barn. Now it was black, with stars! Skies do not do that. I turned back, and two pages came apart in my fingers. On the page I had missed, the sky was orange and pink, and the sun sat low behind the barn. After that, I went through the whole book watching only the sky. It went from pale yellow to blue to orange to black, one small step at each page. The painter had been telling the time on every page, and now I could read it. I think pictures keep a story in order just as its words do.' },
+      { voice: 'A grandparent of faith', says: 'My grandmother had a storybook that was older than she was, and she read it to all of us. I had heard it for years. One rainy afternoon, I noticed that the old woman in the story was at her door on one page and far up the mountain on the next. I asked how she had climbed so far so fast. My grandmother held the book up to the window. Two pages were stuck together with an old spot of jam! We had all been reading past them for as long as anyone knew. She let me help peel them apart, very slowly, so the paper would not tear. Inside were two pages none of us had ever seen. My grandmother said thank you out loud, as if someone had handed her a present. If a story stops fitting together, she told me, do not blame yourself, and do not blame the story yet. Go back gently, since a page may be stuck.' },
+      { voice: 'A skeptic', says: 'I skipped a page in my pig book once, and I knew it right away, because the pig was suddenly dripping wet. First I wanted to see if I could work out the missing page from what came after it. The pig was wet, and there were puddles on the path. So I guessed that it had rained on him. Then I turned back to check. There was no rain at all! The pig had jumped into the pond to get his hat, and the puddles were from his own feet. My guess was wrong, and I still liked it, because I had made it from things I could see. I did it on purpose a few times after that. I would skip a page, guess, and check. My guesses got better, and they were not right every time.' },
+    ],
+    closing: 'How do you like to turn the pages of a book?',
+  },
   {
     id: 'w-growing-left-it-at-home',
     theme: 'failure',
@@ -47413,12 +48111,23 @@ export function wonderPreReaderCards(w, answered = 0) {
   const voices = (w.simple || (w.perspectives || []).slice(0, 4).map((p) => ({ voice: p.voice, says: p.says.split('. ')[0] + '.' }))).map((v) => ({ voice: v.voice, says: v.says }));
   return w.closing ? [...voices, { closing: w.closing, title: ponderTitle(w, answered) }] : voices;
 }
-// What a card says aloud: a voice by its name and label, then its words; the closing card its title, then its line.
-export function wonderCardSpoken(card) {
-  if (!card) return '';
-  // A title with no end mark of its own (One More, Here's One) takes a period when spoken, so the voice pauses before the line.
-  const title = card.title ? (/[.!?]$/.test(card.title) ? card.title : `${card.title}.`) : '';
-  return card.closing ? (title ? `${title} ${card.closing}` : card.closing) : `${wonderVoiceSpoken(card.voice)}: ${card.says}`;
+// What a card says aloud: a voice by its name and label, then its words; the closing card its title, then its line. Since pass NP the
+// words are the card's parts joined (wonderCardParts, below), so the voice and the read-along read one line.
+export function wonderCardSpoken(card) { return readAlongLine(wonderCardParts(card)); }
+// A card's parts for the read-along (pass NP, readAlongMap): a voice card's name and label as the voice says them ("Frederick, the
+// scientist, says:"), which the card shows as a name and a label of its own and so never fades, then its words, printed as said; the
+// closing card's title, said with an end mark (a title with none of its own, One More or Here's One, takes a period, so the voice pauses
+// before the line) and printed without one, then its line.
+export function wonderCardParts(card) {
+  if (!card) return [];
+  if (card.closing) { const title = card.title ? (/[.!?]$/.test(card.title) ? card.title : `${card.title}.`) : ''; return [{ said: title, shows: card.title || '' }, { said: card.closing, shows: card.closing }]; }
+  return [{ said: `${wonderVoiceSpoken(card.voice)}:`, shows: '' }, { said: card.says, shows: card.says }];
+}
+// A reader's voices page, part by part (pass NP): each voice's card in turn, then the closing line, which Read it to me reads as one
+// line (its closing card's title is not read, so it never fades).
+export function wonderVoicesParts(w) {
+  if (!w) return [];
+  return [...(w.perspectives || []).flatMap((p) => wonderCardParts({ voice: p.voice, says: p.says })), { said: w.closing || '', shows: w.closing || '' }];
 }
 // -----------------------------------------------------------------------------------------------------------------
 // wonderSpokenParts (2026-10-03, pass IS). In plain terms: what a child who cannot read yet hears on a Wonder question,

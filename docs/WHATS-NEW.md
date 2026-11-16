@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 15, 2026 (guessing what comes next, acting out and retelling a story, holding a book, and words that light up in more places)
+
+- Three-year-olds learn to guess what will happen next in a story, to act a story out, and to hold a book the right way. In What happens next?, dark clouds make rain a good guess, and when the clouds go away the sun is, so your child learns that a good guess fits the clues and that a guess that turns out wrong is okay. In Act it out, your child pretends to be a story's friends and does what they did, in order, with props like a hat or a ball. In Hold a book, your child finds the front and the back, turns a book right side up, and learns where reading starts and stops on a page.
+- Four-year-olds use a story's clues to guess what will happen and to figure out what the story doesn't say, like why Leo opened his umbrella and how Ava felt when she jumped up and down and clapped. In Tell it again, your child learns how to retell a story's main events in order with first, next and last, and in Which way we read, learns that in English we read each line from its start to its end, top to bottom. Each of the six new lessons comes with its own story and coloring page.
+- The words that light up as the app reads now follow the voice in more places: a question's own words, the card after an answer, the Wonder questions and their four voices, and a whole book read in a row, whose page now scrolls along with the paragraph being read.
+- Four new Wonder questions for young children: hearing the same story again and again, a sad part of a story, a new way home when the road is closed, and turning two pages at once.
+
 ## November 15, 2026 (words that light up as they are read)
 
 - When the app reads to your child, the words it hasn't reached yet are a little faint now, and each sentence turns bright the moment the voice starts it. It works in lessons, in stories and in More Info, so a young reader can follow along the way a picture-book video does.

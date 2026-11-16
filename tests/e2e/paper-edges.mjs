@@ -96,7 +96,9 @@ const DEEP_GOLD = ((/const paperGold = \(\) => \(C\.mode === 'dark' \? '(#[0-9A-
 // three's whole read of RULES-AUDIT found the floors still pass NI's) 1,519, with 423 drawings in 302 of More Info's sheets, its six
 // lessons' shapes, letters and marks, read on a copy of the tree after round three's fixes; the diagrams, guides and palette unchanged.
 // Since pass NM 425 drawings in 304 of More Info's sheets, read alone after its round three's fixes; every other count unchanged.
-const FLOORS = { drawings: 1519, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 425, sheets: 304, palette: 99 };
+// Since pass NP (round three's whole read of RULES-AUDIT found the floors still pass NM's) 1,525 drawings, with 433 in 310 of More Info's
+// sheets, its six lessons' books, pages and arrow among them, read alone after its round three's fixes; the diagrams, guides and palette unchanged.
+const FLOORS = { drawings: 1525, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 433, sheets: 310, palette: 99 };
 // A picture's fields that only place or size it (a pair's frame, a step's number, a lesson's caption) are no part of its drawing, and a
 // name's #2 only tells two of one picture apart.
 const LAYOUT = ['size', 'step', 'frame', 'snap', 'gap', 'grow', 'tight', 'align', 'caption', 'another'];

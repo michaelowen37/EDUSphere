@@ -6,8 +6,8 @@
 // so a board that lost a mark, or a new game whose welcome asks for something its board never marks, is found before a child meets
 // it. Run it when a game or its welcome changes (Mikey, pass MP: "Any new games would then be edited tp match these rules as they
 // are created."); one game of every kind takes about twelve minutes, every game about two and a half times as long. Since round two of pass MP a step whose
-// pointer comes to rest under the floating Skip or off the window counts as a miss too, and --sideways plays on a phone held sideways
-// (667 by 375), where Skip floats. Since round three, once the welcome has gone Begin must sit wholly in the window, and after Begin,
+// pointer comes to rest under the floating Skip or off the window counts as a miss too, and --sideways plays on a short screen
+// (667 by 375), where Skip floats, a phone held sideways until pass MR and a laptop's short window with a mouse since Mikey's answer to Q71. Since round three, once the welcome has gone Begin must sit wholly in the window, and after Begin,
 // pressed in the page, the board's top (the pointer had left the page scrolled to the closing line's speaker, Begin out of sight
 // after 15 welcomes on a phone held sideways); and --older plays as an elementary student, so Quick fire, which asks only lessons
 // from grade 3 up, plays its welcome too (an early-years student's Quick fire has nothing to ask, so it opens with none).

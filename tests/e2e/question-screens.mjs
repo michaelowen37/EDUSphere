@@ -50,8 +50,9 @@ const audit = () => page.evaluate(() => {
 });
 // The read-along's look since pass NO (Mikey's answer to Q110, "Q110 - B"): inside root, the sentence being read (data-read-lit) wears no
 // box and stays at full ink, no word marked faint (data-read-ahead) comes before it, and every faint word is measured with its opacity
-// against what it sits on (the word audit above skips faded words, so it never read these).
-const readLook = (root = 'body') => page.evaluate((sel) => {
+// against what it sits on (the word audit above skips faded words, so it never read these). Since pass NP it reads any page it is
+// handed (pg), section 20's themed pages among them.
+const readLook = (root = 'body', pg = page) => pg.evaluate((sel) => {
   const scope = document.querySelector(sel) || document.body;
   const parse = (s) => { const m = String(s).match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(/[\s,\/]+/).filter(Boolean).map(Number); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }; };
   const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
@@ -465,8 +466,9 @@ const ponder = () => page.evaluate(() => {
   ok('Space on a focused pace button never stops the page following the voice', !!followed && followed.par >= s0 + 2 && followed.bottom > 0 && followed.top < followed.H, { s0, followed });
   await tapIf('Stop reading'); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
-// 7b. The whole book waits for the reader too (the second read of the late fixes): Read the whole book to me scrolls to each
-//     story the voice starts, and a reader who has scrolled the page is left where they are when the voice starts the next.
+// 7b. The whole book waits for the reader too (the second read of the late fixes): a reader who has scrolled the page down is never
+//     pulled back up, as the voice reads on and starts the next story. Since pass NP the book follows each paragraph its voice reads
+//     (round one's screen read), so once the voice reaches what the reader can see the page may follow it on down; it never goes up.
 { await page.setViewportSize({ width: 390, height: 600 }); await page.waitForTimeout(300);
   await page.evaluate(() => window.__eduTest.goTo('story-book')); await screenIs('story-book'); await page.waitForTimeout(800);
   await page.evaluate(() => (document.scrollingElement || document.documentElement).scrollTo(0, 0)); await page.waitForTimeout(300);
@@ -476,10 +478,10 @@ const ponder = () => page.evaluate(() => {
   await page.waitForFunction(() => /Reading story 1 of/.test(document.body.innerText), null, { timeout: 15000 });
   await page.waitForTimeout(1500);
   await page.mouse.move(195, 300); await page.mouse.wheel(0, 700); await page.waitForTimeout(600);
-  const y1 = await y();
-  await page.waitForFunction(() => /Reading story 2 of/.test(document.body.innerText), null, { timeout: 60000 }).catch(() => {});
-  await page.waitForTimeout(1500); const y2 = await y(); const at = await storyNow();
-  ok('the whole book never pulls back a reader who scrolled when the voice starts the next story', at >= 2 && y1 > 0 && Math.abs(y2 - y1) <= 5, { y1, y2, at });
+  const y1 = await y(); const ys = [];
+  for (const t0 = Date.now(); Date.now() - t0 < 60000 && (await storyNow()) < 2;) { ys.push(await y()); await page.waitForTimeout(250); }
+  await page.waitForTimeout(1500); const y2 = await y(); ys.push(y2); const at = await storyNow();
+  ok('the whole book never pulls a reader who scrolled down back up, as the voice reads on and starts the next story', at >= 2 && y1 > 0 && ys.length > 2 && Math.min(...ys) >= y1 - 5, { y1, y2, low: Math.min(...ys), at });
   await tapIf('Stop reading'); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
 // 8. The light theme's Let's Wonder! title from 700 pixels (Q27, Mikey: "whatever you think is most visually appealing from a
@@ -1819,7 +1821,8 @@ const ponder = () => page.evaluate(() => {
   ok(`in a lesson on a tablet and a laptop its own letters and print grow with the lesson's scale, in both themes, each drawn 1.4 times the phone's or more, each line's Next above the fold, while a phone keeps the letters at 44 pixels and the print at 28 or less (EARMARKS A93, pass NE, and since pass NF A101's letters and print in a pair, two letters, letters over a row, letters under a drawing, a letter beside print and prints stacked in a stacked pair, each set back to a phone's size, planted, caught; ${reads93.length} reads, ${below93.length} below the fold: ${wide93.map((x) => x.theme + ' ' + x.w + 'x' + x.h + ' ' + x.kind + ' ' + (phone93[x.theme + ' ' + x.kind] ? (x.drawn / phone93[x.theme + ' ' + x.kind]).toFixed(2) : 'none')).join(', ')}; the letter set back to 44, the print to 28 and the run drawn at 0.7, planted, caught, and since round one's code read a letter just under the bar, 1.35 times a phone's, caught)`,
     reads93.length === 90 && below93.length === 0 && reads93.every((x) => x.drawn > 0 && x.font > 0) && wide93.every((x) => phone93[x.theme + ' ' + x.kind] > 0 && x.drawn >= 1.4 * phone93[x.theme + ' ' + x.kind]) && phones93.every((x) => (PRINTISH.includes(x.kind) ? x.font <= 28 : x.font === 44)) && plantLetter93 === true && plantPrint93 === true && plantRun93 === true && nearLetter93 === true && A101_KINDS.every((k) => plants101[k] === true), { reads93: reads93.map((x) => [x.theme, x.w, x.h, x.kind, x.drawn, x.font, x.next]), below93: below93.map((x) => [x.theme, x.w, x.h, x.mod, x.line]), phone93, plantLetter93, plantPrint93, plantRun93, plants101 });
   // Section 16b (pass NF, EARMARKS A102): every lesson line whose picture is a pair of prints (eight when it was written, and twelve since
-  // pass NI's Write your name, whose lines 5, 10, 11 and 13 show a name beside a try or a mix of its letters; the counts are the code's),
+  // pass NI's Write your name, whose lines 5, 10, 11 and 13 show a name beside a try or a mix of its letters, and fifteen since pass NP's
+  // Which way we read, whose lines 6, 7 and 9 stack its sentences, the counts the code's: 90 reads at three sizes in both themes),
   // its prints read in the card: each one's font size, its lines (the rects of its text) and whether it is inside its box. The plant sets the shorter prints of Spaces between words'
   // line 7 back to 28 pixels in the page, as each fitted alone drew them at 320, and reads them again, the sizes put back after.
   const PRINT_PAIRS = []; for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) (m.lesson.script || []).forEach((l, i) => { const all = (v) => !!v && (v.kind === 'print' || (v.kind === 'pair' && all(v.a) && all(v.b))); if (l.show && l.show.kind === 'pair' && all(l.show)) PRINT_PAIRS.push([m.id, i + 1]); });
@@ -1834,7 +1837,7 @@ const ponder = () => page.evaluate(() => {
     await ctx.close(); }
   const groupOff = groups.filter((g) => g.r.length < 2 || new Set(g.r.map((x) => x.size)).size !== 1 || g.r.some((x) => x.lines !== 1 || !x.inside));
   ok(`writings a lesson line shows together are drawn at one size, the size the longest needs, each on one line inside its box, at 320 by 568, 375 by 667 and 390 by 844 in both themes (EARMARKS A102, pass NF; ${PRINT_PAIRS.length} lines, ${groups.length} reads; Spaces between words' shorter prints set back to 28 pixels at 320, planted, caught)`,
-    PRINT_PAIRS.length === 12 && groups.length === 72 && groupOff.length === 0 && plantGroup === true, { groupOff: groupOff.slice(0, 6).map((g) => [g.theme, g.w, g.mod, g.line, g.r]), plantGroup });
+    PRINT_PAIRS.length === 15 && groups.length === 90 && groupOff.length === 0 && plantGroup === true, { groupOff: groupOff.slice(0, 6).map((g) => [g.theme, g.w, g.mod, g.line, g.r]), plantGroup });
   // Section 16c (pass NF, round one's lesson read): the lone letter among pictures read in the page, each plant put back after it is read.
   const tileLetterRead = (pg, plant = '') => pg.evaluate((pl) => { const s = document.querySelector('[data-tile-letter]'); const svg = [...document.querySelectorAll('button[data-choice^="icon:"] svg')][0]; const grid = s && s.closest('button') && s.closest('button').parentElement;
     if (!s || !svg || !grid) return null; const was = [s.style.fontSize, grid.style.maxWidth]; if (pl === 'small') s.style.fontSize = '18px'; if (pl === 'big') s.style.fontSize = '90px'; if (pl === 'wide') grid.style.maxWidth = 'none';
@@ -1945,6 +1948,223 @@ const ponder = () => page.evaluate(() => {
     await ctx.close(); }
   ok(`a shape keeps its size beside the others, big, plain and little in order in a row and across a stacked pair's two rows, and the oval standing up tall draws taller than wide (pass NK, round one's code and screen reads; Any size, any turn's lines 1, 4 and 10 on ${sizeReads} screens; every picture its cell's whole width, planted, caught)`,
     sizeFaults.length === 0 && sizeReads === 4 && plantSizes === true, { sizeFaults, plantSizes }); }
+// 20. The read-along, sentence by sentence, where the voice read words on the screen with no look yet (pass NP, Mikey's answer to Q110,
+//     "Q110 - B", after his Vooks clip): a question's own words as it appears and from Hear it again, a heard question's printed question
+//     as one block, the card after an answer (its explanation on the green strip, a reason on the clay strip, and a reason printed in other
+//     words as one block), a pre-reader's Let's Wonder! question and a voice card (Mike's, whose last two words, "plate? Yes!", cross a
+//     sentence's end) and the closing card on its gold, a reader's Wonder question and voices page from Read it to me, and the whole book
+//     read in a row. In both themes at 375 by 667 and 320 by 568, with a stand-in voice: mid-read the sentence being read and those before it
+//     at full ink with no box, those after it faint, every faint measured with its opacity on its own ground at 4.5 to 1 or better (the
+//     tints' faint worked out for them, readAheadOn), no look fading and no word moved by the look; after the voice stops (its end, the
+//     page's own Stop reading, a tapped answer, leaving the page), nothing faint; a Wonder choice being named keeps its green and its little
+//     grow (Q111 (a)); with no voice on the device nothing is faint. Plants, each caught: a read sentence marked faint, a faint at 0.3, a
+//     faint that fades, a faint mark left behind and a Wonder choice that lost its green.
+{ const RA_MS = 700;   // how long the stand-in voice takes to say one piece
+  const openRA = async (theme, w, h, voice = true) => {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, reducedMotion: 'reduce' });
+    await ctx.addInitScript((t) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* none */ } }, theme);
+    const pg = await ctx.newPage(); pg.on('pageerror', (e) => errors.push(String(e).slice(0, 200))); await pg.goto(new URL('./page.html', import.meta.url).href);
+    // The stand-in voice goes in once the page has put in its own quick one (make-page's, which ends a line in 30 ms and never says it is
+    // speaking): each piece starts 20 ms after the voice is free and ends ms later, and its words are kept, so a check can read what was said.
+    // With voice false the page has none at all.
+    await pg.evaluate(([ms, on]) => { if (!on) { Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: undefined }); return; }
+      const q = []; let cur = null; let timer = null; window.__raSaid = [];
+      const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; window.__raSaid.push(mine.text); timer = setTimeout(() => { if (cur !== mine) return; if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, ms); }, 20); };
+      Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { q.push(u); if (!cur) next(); } } }); }, [RA_MS, voice]);
+    const isScreen = (n) => pg.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
+    const tap = async (name) => { const b = pg.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click({ force: true }); await pg.waitForTimeout(250); } };
+    await isScreen('welcome'); await pg.getByRole('button', { name: 'Create account', exact: true }).first().click(); await isScreen('educator-setup');
+    await pg.fill('input[placeholder="PIN"]', '2468'); await pg.fill('input[placeholder="PIN again"]', '2468'); await pg.fill('input[placeholder="This device\'s name"]', 'Read along'); await pg.selectOption('select[aria-label="Your state"]', 'TX');
+    await pg.getByRole('button', { name: 'Create account', exact: true }).click(); await isScreen('educator-pick'); await pg.waitForTimeout(400);
+    for (const n of ['Skip tour', 'Later', 'Got it']) await tap(n);
+    await pg.getByLabel('Walk through early years').first().click({ force: true }); await isScreen('overview'); await pg.waitForTimeout(300);
+    return { ctx, pg, isScreen }; };
+  const words = (t) => String(t || '').replace(/ /g, ' ').trim();
+  // The marks inside a part of the page: the words marked as being read, and each faint word.
+  const marksIn = (pg, sel) => pg.evaluate((s) => { const sc = document.querySelector(s); const w = (t) => String(t || '').replace(/ /g, ' ').trim(); return sc ? { lit: [...sc.querySelectorAll('[data-read-lit]')].map((x) => w(x.textContent)), ahead: [...sc.querySelectorAll('[data-read-ahead]')].map((x) => w(x.textContent)) } : { lit: [], ahead: [] }; }, sel);
+  const anyMarks = (pg) => pg.evaluate(() => document.querySelectorAll('[data-read-ahead], [data-read-lit]').length);
+  const waitLit = (pg, sel, text = '') => pg.waitForFunction(([s, t]) => { const sc = document.querySelector(s); const el = sc && sc.querySelector('[data-read-lit]'); return !!el && String(el.textContent).replace(/ /g, ' ').trim().startsWith(t); }, [sel, text], { timeout: 15000 }).then(() => true).catch(() => false);
+  const waitRest = (pg, sel) => pg.waitForFunction((s) => { const sc = document.querySelector(s) || document.body; return !sc.querySelector('[data-read-ahead], [data-read-lit]'); }, sel, { timeout: 20000 }).then(() => true).catch(() => false);
+  // No look fades (pass MT's rule): every mark changes in one frame.
+  const noFade = (pg) => pg.evaluate(() => [...document.querySelectorAll('[data-read-ahead], [data-read-lit]')].every((el) => getComputedStyle(el).transitionDuration.split(',').every((d) => parseFloat(d) === 0)));
+  // Each line of words inside the matched elements, its top, left and right measured from the element's own box: the same at rest as
+  // mid-read, so the look moves no word.
+  const linesOf = (pg, sel) => pg.evaluate((s) => [...document.querySelectorAll(s)].map((el) => { const box = el.getBoundingClientRect(); const r = document.createRange(); r.selectNodeContents(el); const rows = new Map();
+    for (const b of r.getClientRects()) { if (b.width < 1) continue; const top = Math.round(b.top - box.top); const row = rows.get(top) || [Infinity, -Infinity]; rows.set(top, [Math.min(row[0], b.left - box.left), Math.max(row[1], b.right - box.left)]); }
+    return [...rows.entries()].sort((x, y) => x[0] - y[0]).map(([t, [l, rr]]) => `${t}:${Math.round(l)}-${Math.round(rr)}`).join('|'); }), sel);
+  // The look on a tint (the green and clay strips after an answer, the closing card's gold, the book's paper): its faint at readAhead's
+  // strength or stronger, never full, and 4.5 to 1 or better on its ground; otherwise as lookRight.
+  const lookOn = (k) => !!k && !!k.lit && k.lit.bg === 'rgba(0, 0, 0, 0)' && k.lit.shadow === 'none' && k.lit.fade === 1 && k.ahead > 0 && k.opacity !== null && k.opacity >= 0.55 && k.opacity < 1 && k.worst !== null && k.worst >= 4.5 && !k.before;
+  const faults = []; const figures = []; let combos = 0; const plants = {};
+  for (const theme of ['light', 'dark']) for (const [w, h] of [[375, 667], [320, 568]]) {
+    const { ctx, pg, isScreen } = await openRA(theme, w, h); const at = `${theme} ${w}`; combos += 1;
+    const fault = (m, d) => faults.push(`${at}: ${m}${d === undefined ? '' : ' ' + JSON.stringify(d).slice(0, 300)}`);
+    const look = async (name, sel, rule) => { const k = await readLook(sel, pg); figures.push(`${at} ${name} ${k.opacity} ${k.worst}`); if (!rule(k)) fault(name, k); if (!(await noFade(pg))) fault(`${name}: a mark fades`); return k; };
+    const showQ = async (g, s) => { await pg.evaluate(([gg, ss]) => window.__eduTest.showQuestion(gg, ss), [g, s]); await isScreen('practice'); };
+    const firstCombo = theme === 'light' && w === 375;
+    // Each place runs on its own: an error in one is a fault of that place, and the next place still runs.
+    const step = async (name, fn) => { try { await fn(); } catch (e) { fault(`${name} stopped`, String(e && e.message).slice(0, 240)); } };
+    // a. A question as it appears, sentence by sentence (Adding to 20's story question: two sentences of setup, then the question).
+    await step('the question', async () => {
+      await showQ('g1-add-story', 1);
+      if (!(await waitLit(pg, '[data-question-card]', 'Here are 8 balls.'))) fault('the question never marked its first sentence');
+      await look('question, its first sentence', '[data-question-card]', lookRight); const qLines = await linesOf(pg, '[data-question-setup], [data-question-text]');
+      if (firstCombo) {   // plants, each put back: a faint at 0.3 and a faint that fades
+        await pg.evaluate(() => { const st = document.createElement('style'); st.id = '__raPale'; st.textContent = '[data-read-ahead]{opacity:0.3 !important}'; document.head.appendChild(st); });
+        plants.pale = !lookRight(await readLook('[data-question-card]', pg)); await pg.evaluate(() => { document.getElementById('__raPale').remove(); const st = document.createElement('style'); st.id = '__raFade'; st.textContent = '[data-read-ahead]{transition:opacity 200ms !important}'; document.head.appendChild(st); });
+        plants.fade = !(await noFade(pg)); await pg.evaluate(() => document.getElementById('__raFade').remove()); }
+      if (!(await waitLit(pg, '[data-question-card]', 'Then 2 more come.'))) fault('the question never moved on to its second sentence');
+      else { await look('question, its second sentence', '[data-question-card]', lookRight); const m = await marksIn(pg, '[data-question-card]'); if (m.ahead.join('|') !== 'How many are there now?') fault('the second sentence: only the question ahead is faint', m);
+        // Plant, put back: the sentence already read marked faint, caught as a faint before the sentence being read.
+        if (firstCombo) { plants.before = await pg.evaluate(() => { const el = [...document.querySelectorAll('[data-question-setup] span')].find((x) => x.textContent.trim() === 'Here are 8 balls.'); if (!el) return false; el.setAttribute('data-read-ahead', ''); el.setAttribute('data-ra-plant', ''); return true; }) && (await readLook('[data-question-card]', pg)).before === true;
+          await pg.evaluate(() => { const el = document.querySelector('[data-ra-plant]'); if (el) { el.removeAttribute('data-read-ahead'); el.removeAttribute('data-ra-plant'); } }); } }
+      if (!(await waitRest(pg, '[data-question-card]'))) fault('the question left a word faint after its end', await marksIn(pg, '[data-question-card]'));
+      if (JSON.stringify(await linesOf(pg, '[data-question-setup], [data-question-text]')) !== JSON.stringify(qLines)) fault('the look moved the question\'s words', { mid: qLines, rest: await linesOf(pg, '[data-question-setup], [data-question-text]') });
+      // Hear it again reads the same way, and the same button stops it with nothing left faint; near miss: a faint mark left behind.
+      await pg.getByRole('button', { name: 'Hear it again', exact: true }).first().click();
+      if (!(await waitLit(pg, '[data-question-card]', 'Here are 8 balls.'))) fault('Hear it again marked nothing');
+      await pg.getByRole('button', { name: 'Stop reading', exact: true }).first().click(); await pg.waitForTimeout(60);
+      if (await anyMarks(pg)) fault('Stop reading left a mark', await marksIn(pg, 'body'));
+      if (firstCombo) plants.left = await pg.evaluate(() => { const el = document.querySelector('[data-question-text]'); el.setAttribute('data-read-ahead', ''); const n = document.querySelectorAll('[data-read-ahead], [data-read-lit]').length; el.removeAttribute('data-read-ahead'); return n > 0; });
+    });
+    // b. A heard question (A and B in a word): its setup sentence by sentence, its printed question ("Tap the letter you hear.", where the
+    await step('the heard question', async () => {
+      //    voice says "Tap the letter B.") one block, faint until the voice begins it and then whole.
+      await showQ('p3-ab-in-word', 1);
+      if (!(await waitLit(pg, '[data-question-card]', 'Here is the word tub'))) fault('the heard question never marked its setup');
+      else { await look('heard question, its setup', '[data-question-card]', lookRight); const m = await marksIn(pg, '[data-question-card]'); if (m.ahead.join('|') !== 'Tap the letter you hear.') fault('the printed question faint as one block while the setup is read', m); }
+      if (!(await waitLit(pg, '[data-question-card]', 'Tap the letter you hear.'))) fault('the printed question never turned full as the voice began its own words');
+      else { const m = await marksIn(pg, '[data-question-card]'); if (m.ahead.length) fault('the printed question left faint while its part is read', m); }
+      if (!(await pg.evaluate(() => window.__raSaid.some((t) => /letter B/.test(t))))) fault('the voice no longer says the heard question\'s own words', await pg.evaluate(() => window.__raSaid.slice(-4)));
+    });
+    // c. A tapped answer while the question is read leaves nothing faint (the tapped number is said, so the question's reading is over).
+    await step('a tapped answer', async () => {
+      await showQ('g1-add-story', 2);
+      if (!(await waitLit(pg, '[data-question-card]'))) fault('the second question marked nothing');
+      await pg.locator('button[data-choice]').first().click(); await pg.waitForTimeout(60);
+      if ((await marksIn(pg, '[data-question-card]')).ahead.length) fault('a tapped answer left the question faint');
+    });
+    // d. After a right answer: Correct and the explanation (Quick looks: three sentences, a line each) on the green strip.
+    await step('after a right answer', async () => {
+      await showQ('ql1-empty', 1); const ans = await pg.evaluate(() => window.__eduTest.question.answer);
+      await pg.locator(`button[data-choice="${ans}"]`).first().click(); await pg.getByRole('button', { name: 'Check answer', exact: true }).click();
+      if (!(await waitLit(pg, '[data-feedback]', 'Correct'))) fault('the card after a right answer marked nothing');
+      else await look('explanation, on the green strip', '[data-feedback]', lookOn);
+      if (!(await waitLit(pg, '[data-feedback]', 'The frame holds ten.'))) fault('the explanation never marked its first line');
+      else { await look('explanation, its first line', '[data-feedback]', lookOn); const m = await marksIn(pg, '[data-feedback]'); if (m.ahead.length !== 2 || m.ahead.some((t) => /Correct|frame holds/.test(t))) fault('only the explanation\'s later lines are faint', m); }
+      if (!(await waitRest(pg, '[data-feedback]'))) fault('the explanation left a word faint after its end', await marksIn(pg, '[data-feedback]'));
+    });
+    // e. After a wrong tap: the reason on the clay strip (Talking with a friend: three sentences).
+    await step('after a wrong tap', async () => {
+      await showQ('p3-talk-room', 7); await pg.locator('button[data-choice="Right in your friend\'s face"]').first().click(); await pg.getByRole('button', { name: 'Check answer', exact: true }).click();
+      if (!(await waitLit(pg, '[data-feedback]', 'Right in your friend\'s face is too close.'))) fault('the reason after a wrong tap marked nothing');
+      else await look('reason, on the clay strip', '[data-feedback]', lookOn);
+      if (!(await waitRest(pg, '[data-feedback]'))) fault('the reason left a word faint after its end', await marksIn(pg, '[data-feedback]'));
+    });
+    // f. A reason printed in other words than it is said (Letters and sounds prints "that sound" where the voice says sss): one block.
+    await step('a reason in its own words', async () => {
+      await showQ('p3-ls-letter', 1); await pg.locator('button[data-choice="B"]').first().click(); await pg.getByRole('button', { name: 'Check answer', exact: true }).click();
+      if (!(await waitLit(pg, '[data-feedback]', 'The letter B does not say that sound.'))) fault('the printed reason was never marked as read');
+      else { const m = await marksIn(pg, '[data-feedback]'); if (m.ahead.length || m.lit.join('|') !== 'The letter B does not say that sound. Have another try.') fault('a reason printed in its own words is one block, never faint', m); }
+    });
+    // g. A pre-reader's Let's Wonder!: the question sentence by sentence; a choice being named keeps its green and its grow (Q111 (a)).
+    await step('the Wonder question', async () => {
+      await pg.evaluate(() => window.__eduTest.openWonder('w-got-it-wrong', 'big-and-little')); await isScreen('wonder');
+      if (!(await waitLit(pg, '[data-wonder-question]', 'You tried a question and got it wrong.'))) fault('the Wonder question never marked its first sentence');
+      else await look('Wonder question', '[data-wonder-question]', lookRight);
+      const named = await pg.waitForFunction(() => { const b = document.querySelector('[data-wonder-lit]'); return b && getComputedStyle(b).backgroundColor === 'rgb(170, 216, 197)' && b.style.transform === 'scale(1.04)' ? b.textContent : null; }, null, { timeout: 15000 }).then((x) => x.jsonValue()).catch(() => null);
+      const wqm = await marksIn(pg, '[data-wonder-question]');
+      if (!named || wqm.ahead.length || wqm.lit.length) fault('a named choice keeps its green and grow, and the question is whole once the choices are read', { named, wqm });
+      if (firstCombo && named) plants.green = await pg.evaluate(() => { const b = document.querySelector('[data-wonder-lit]'); if (!b) return false; const was = b.style.background; b.style.background = '#FFFFFF'; const kept = getComputedStyle(b).backgroundColor === 'rgb(170, 216, 197)'; b.style.background = was; return !kept; });
+    });
+    // h. A pre-reader's voice card: Mike's (the fourth), four sentences, its last two words held across a sentence's end; then the closing card.
+    await step('the voice cards', async () => {
+      await pg.evaluate(() => window.__eduTest.openWonderVoices('w-big-or-small', 'big-and-little')); await isScreen('wonder-voices'); await pg.waitForTimeout(300);
+      for (let k = 0; k < 3; k++) { await pg.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await pg.waitForTimeout(150); }
+      if (!(await waitLit(pg, '[data-wonder-voice-says]', '“Grown-ups call you big'))) fault('Mike\'s card never marked its first sentence');
+      else await look('voice card', '[data-wonder-voice-says]', lookRight);
+      // Two words on one row: the top of each, found in the card's own text.
+      const oneRow = () => pg.evaluate(() => { const p = document.querySelector('[data-wonder-voice-says]'); const topOf = (word) => { const tw = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); while (tw.nextNode()) { const n = tw.currentNode; const i = n.textContent.indexOf(word); if (i >= 0) { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + word.length); return r.getBoundingClientRect().top; } } return null; };
+        const a = topOf('plate?'); const b = topOf('Yes!'); return a !== null && b !== null && Math.abs(a - b) < 2; });
+      const vLines = await linesOf(pg, '[data-wonder-voice-says]'); const heldMid = await oneRow();
+      if (!(await waitRest(pg, '[data-wonder-voice-says]'))) fault('the voice card left a word faint after its end', await marksIn(pg, '[data-wonder-voice-says]'));
+      const vRest = await linesOf(pg, '[data-wonder-voice-says]'); const heldRest = await oneRow();
+      if (JSON.stringify(vRest) !== JSON.stringify(vLines) || !heldMid || !heldRest) fault('the look moved the card\'s words, or "plate? Yes!" parted', { vLines, vRest, heldMid, heldRest });
+      await pg.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true });
+      if (!(await waitLit(pg, '[data-wonder-closing]'))) fault('the closing card never marked its title');
+      else await look('closing card, on its gold', '[data-wonder-closing]', lookOn);
+      await pg.evaluate(() => window.__eduTest.goTo('overview')); await pg.waitForTimeout(100);
+      if (await anyMarks(pg)) fault('leaving the closing card mid-read left a mark');
+    });
+    // i. A reader's Wonder question from Read it to me, and its voices page, each stopped by the same button.
+    await step('the reader\'s Wonder', async () => {
+      await pg.evaluate(() => window.__eduTest.openWonder('w-time', 'hundreds-tens-ones')); await isScreen('wonder'); await pg.waitForTimeout(300);
+      await pg.getByRole('button', { name: 'Read it to me', exact: true }).first().click();
+      if (!(await waitLit(pg, '[data-wonder-question]', 'A clock measures time.'))) fault('a reader\'s Wonder question never marked its first sentence');
+      else await look('reader\'s Wonder question', '[data-wonder-question]', lookRight);
+      await pg.getByRole('button', { name: 'Stop reading', exact: true }).first().click(); await pg.waitForTimeout(60);
+      if (await anyMarks(pg)) fault('Stop reading left a reader\'s Wonder question faint');
+      await pg.evaluate(() => window.__eduTest.openWonderVoices('w-time', 'hundreds-tens-ones')); await isScreen('wonder-voices'); await pg.waitForTimeout(300);
+      await pg.getByRole('button', { name: 'Read it to me', exact: true }).first().click();
+      const cardMarks = () => pg.evaluate(() => [...document.querySelectorAll('[data-wonder-voice-card], [data-wonder-closing]')].map((c) => ({ lit: c.querySelectorAll('[data-read-lit]').length, ahead: c.querySelectorAll('[data-read-ahead]').length })));
+      if (!(await waitLit(pg, '[data-wonder-voice-card]'))) fault('Read it to me marked no voice');
+      else { await look('reader\'s voices', 'body', lookRight); const cm = await cardMarks(); if (!(cm[0].lit === 1 && cm.slice(1).every((c) => c.ahead > 0 && c.lit === 0))) fault('every later card and the closing faint while the first is read', cm); }
+      if (!(await pg.waitForFunction(() => { const c = document.querySelectorAll('[data-wonder-voice-card]')[1]; return !!c && !!c.querySelector('[data-read-lit]'); }, null, { timeout: 20000 }).then(() => true).catch(() => false))) fault('the voices page never moved on to the second voice');
+      else { const cm = await cardMarks(); if (!(cm[0].lit === 0 && cm[0].ahead === 0 && cm[1].lit === 1)) fault('a voice read stays at full ink', cm); }
+      await pg.getByRole('button', { name: 'Stop reading', exact: true }).first().click(); await pg.waitForTimeout(60);
+      if (await anyMarks(pg)) fault('Stop reading left a voice faint');
+    });
+    // j. The whole book read in a row: every title and paragraph not reached faint; its page follows the paragraph being read, holds for
+    //    a reader who scrolled away and follows again once they scroll to the voice; Stop reading and leaving the page leave nothing faint.
+    await step('the book', async () => {
+      await pg.evaluate(() => window.__eduTest.goTo('story-book')); await isScreen('story-book'); await pg.waitForTimeout(500);
+      if (await anyMarks(pg)) fault('the book has a mark at rest');
+      await pg.getByRole('button', { name: 'Read the whole book to me', exact: true }).first().click({ force: true });
+      if (!(await waitLit(pg, '[data-book-story="0"]'))) fault('the book never marked its first title');
+      else { await look('book', '.edu-book-sheet', lookOn); const later = await marksIn(pg, '[data-book-story="1"]'); if (!later.ahead.length || later.lit.length) fault('the next story, title and paragraphs, faint', later); }
+      if (!(await pg.waitForFunction(() => !!document.querySelector('[data-book-story="0"] [data-story-par] [data-read-lit]'), null, { timeout: 15000 }).then(() => true).catch(() => false))) fault('the book never moved on to a paragraph');
+      else { await look('book, a paragraph', '.edu-book-sheet', lookOn);
+        // The story's title (the first line of its paper card) is read and at full ink, with words of its paragraphs still faint after the voice.
+        const first = await pg.evaluate(() => { const s = document.querySelector('[data-book-story="0"]'); const title = s && s.querySelector(':scope > div > p'); return !!title && !title.querySelector('[data-read-ahead], [data-read-lit]') && !!s.querySelector('[data-story-par] [data-read-ahead]'); });
+        if (!first) fault('the title read is at full ink while the paragraphs after the voice stay faint'); }
+      // The book's page follows its voice as a lone story's does (round one's screen read, pass NP: it scrolled only to each story's top,
+      // so on a phone the sentence being read left the screen after each story's first paragraph). Read into a story's third paragraph
+      // or later, below the first screenful, the sentence being read is in the window. A reader who scrolls back to the top is left
+      // there while the voice reads on out of their sight; once they scroll to just ahead of the voice, the page follows it again.
+      // The book as round one read it, which followed only the stories' tops, fails the first of these (run on that copy).
+      const litAt = () => pg.evaluate(() => { const el = document.querySelector('.edu-book-sheet [data-read-lit]'); if (!el) return null; const r = el.getBoundingClientRect(); const part = el.closest('[data-book-of]'); const par = el.closest('[data-story-par]'); const y = Math.round((document.scrollingElement || document.documentElement).scrollTop);
+        return { story: part ? Number(part.getAttribute('data-book-of')) : -1, par: par ? Number(par.getAttribute('data-story-par')) : -1, top: Math.round(r.top), bottom: Math.round(r.bottom), doc: Math.round(r.top) + y, y, H: innerHeight }; });
+      const inWindow = (p) => !!p && p.top >= 0 && p.bottom <= p.H;
+      const deep = await pg.waitForFunction(() => { const el = document.querySelector('.edu-book-sheet [data-story-par] [data-read-lit]'); const par = el && el.closest('[data-story-par]'); return !!par && Number(par.getAttribute('data-story-par')) >= 2 && el.getBoundingClientRect().top + (document.scrollingElement || document.documentElement).scrollTop >= innerHeight + 40; }, null, { timeout: 40000 }).then(() => true).catch(() => false);
+      const p = deep ? (await pg.waitForTimeout(150), await litAt()) : null;
+      if (!deep || !inWindow(p)) fault('read into a story\'s third paragraph, below the first screenful, the sentence being read is in the window', p);
+      else { await pg.mouse.move(Math.round(w / 2), Math.round(h / 2)); await pg.mouse.wheel(0, -(p.y + 2000)); await pg.waitForTimeout(500);
+        const held = await litAt(); const key = (x) => (x ? `${x.story}:${x.par}` : '');
+        const moved = await pg.waitForFunction((k) => { const el = document.querySelector('.edu-book-sheet [data-read-lit]'); const par = el && el.closest('[data-story-par]'); const part = el && el.closest('[data-book-of]'); return !!par && !!part && `${part.getAttribute('data-book-of')}:${par.getAttribute('data-story-par')}` !== k; }, key(held), { timeout: 20000 }).then(() => true).catch(() => false);
+        await pg.waitForTimeout(1500); const after = await litAt();
+        if (!held || !moved || !after || held.y > 5 || Math.abs(after.y - held.y) > 5) fault('a reader who scrolled back to the top is left there while the voice reads on out of sight', { held, after, moved });
+        else { // Just after the voice starts a paragraph, the reader scrolls so the text it reads next is halfway down the window.
+          const now = await litAt(); await pg.waitForFunction((k) => { const el = document.querySelector('.edu-book-sheet [data-read-lit]'); const par = el && el.closest('[data-story-par]'); const part = el && el.closest('[data-book-of]'); return !!par && !!part && `${part.getAttribute('data-book-of')}:${par.getAttribute('data-story-par')}` !== k; }, key(now), { timeout: 20000 }).catch(() => {});
+          const y3 = await pg.evaluate(() => { const el = document.querySelector('.edu-book-sheet [data-read-lit]'); const par = el && el.closest('[data-story-par]'); const part = el && el.closest('[data-book-of]'); if (!par || !part) return -1; const k = part.getAttribute('data-book-of'); const j = Number(par.getAttribute('data-story-par'));
+            const next = document.querySelector(`[data-book-of="${k}"] [data-story-par="${j + 1}"]`) || document.querySelector(`[data-book-story="${Number(k) + 1}"]`); if (!next) return -1;
+            window.scrollBy(0, Math.round(next.getBoundingClientRect().top - innerHeight / 2)); return Math.round((document.scrollingElement || document.documentElement).scrollTop); });
+          const far = y3 < 0 ? false : await pg.waitForFunction((y0) => { const el = document.querySelector('.edu-book-sheet [data-read-lit]'); const par = el && el.closest('[data-story-par]'); return !!par && par.getBoundingClientRect().top + (document.scrollingElement || document.documentElement).scrollTop > y0 + innerHeight; }, y3, { timeout: 40000 }).then(() => true).catch(() => false);
+          const p2 = far ? (await pg.waitForTimeout(150), await litAt()) : null;
+          if (!far || !inWindow(p2) || !(p2.y > y3)) fault('once the reader scrolls to just ahead of the voice, the page follows its paragraphs again', { y3, p2, far }); } }
+      await pg.getByRole('button', { name: 'Stop reading', exact: true }).first().click({ force: true }); await pg.waitForTimeout(60);
+      if (await anyMarks(pg)) fault('Stop reading left the book faint');
+      await pg.getByRole('button', { name: 'Read the whole book to me', exact: true }).first().click({ force: true });
+      if (await waitLit(pg, '.edu-book-sheet')) { await pg.getByRole('button', { name: 'Back to Story Log', exact: true }).first().click({ force: true }); await pg.waitForTimeout(150); if (await anyMarks(pg)) fault('leaving the book mid-read left a mark');
+        await pg.evaluate(() => window.__eduTest.goTo('story-book')); await pg.waitForTimeout(300); if (await anyMarks(pg)) fault('the book came back with a mark left'); }
+    });
+    await ctx.close(); }
+  // With no voice on the device nothing is faint, a question as it appears and the grown-up's card alike.
+  { const { ctx, pg, isScreen } = await openRA('dark', 375, 667, false);
+    for (const [g, s] of [['g1-add-story', 1], ['pl-tap-letter', 3]]) { await pg.evaluate(([gg, ss]) => window.__eduTest.showQuestion(gg, ss), [g, s]); await isScreen('practice'); await pg.waitForTimeout(1200); if (await anyMarks(pg)) faults.push(`no voice: ${g} has a mark`); }
+    await ctx.close(); }
+  console.log(`INFO - the read-along's faint, by place (theme, width, place, opacity, worst contrast): ${figures.join('; ')}`);
+  ok(`the read-along sentence by sentence on a question, a heard question's printed frame, the card after an answer, a pre-reader's Wonder question and cards, a reader's Wonder question and voices, and the whole book: mid-read the words ahead faint at 4.5 to 1 or better on their own ground, the rest at full ink with no box, no look fading and no word moved; nothing faint once the voice stops by its end, Stop reading, a tapped answer or leaving, nor with no voice; a named Wonder choice keeps its green and grow; the whole book's page follows the paragraph being read, holds for a reader who scrolled away and follows again once they scroll to the voice (pass NP; ${combos} theme and size pairs; a read sentence marked faint, a faint at 0.3, a fade, a mark left behind and a choice without its green, planted, caught)`,
+    faults.length === 0 && combos === 4 && plants.before === true && plants.pale === true && plants.fade === true && plants.left === true && plants.green === true, { faults: faults.slice(0, 12), plants }); }
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

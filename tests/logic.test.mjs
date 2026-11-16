@@ -635,6 +635,194 @@ const nmPrintLettersOf = (q) => { const pp = nmPrintPair(q); if (!pp || q.story 
 const nmPrintSaysOf = (q) => { const m = /^These words say, the (\w+)\.$/.exec(q.story || ''); const v = q.visual || {}; const ch = (q.choices || []).map(String);
   if (!m || v.kind !== 'print' || !['Which picture goes with the words?', 'Which picture shows what the words say?'].includes(q.prompt) || ch.length !== 2 || !ch.every((c) => NM_PRINT.includes(nmIconThing(c))) || v.text !== 'the ' + m[1]) return null;
   return mqOne(q, (c) => c === `icon:${m[1]}`); };
+// What happens next?, Story clues, Act it out and Tell it again (pass NP): the test's own tables, copied from the lessons' lines and read
+// by no code but the check that the code's tables are these. A prediction story: its words in each order it is told, the question it is
+// asked, its good guess and the other picture of its pair, which its mirror story makes the good guess.
+const NP_N3 = {
+  rain: { told: ['The sky got dark, and big gray clouds came. Sam\'s dog sat by the door.', 'Sam\'s dog sat by the door. The sky got dark, and big gray clouds came.'], ask: 'What do you think will happen next?', good: 'icon:rain', bad: 'icon:sun' },
+  sunny: { told: ['The rain stopped, and the clouds went away.'], ask: 'What do you think will happen next?', good: 'icon:sun', bad: 'icon:rain' },
+  cold: { told: ['It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window.', 'Ava\'s cat sat in the window. It was very cold, and snow was falling, and Ava wanted to play outside.'], ask: 'What will Ava do next?', good: 'icon:coat', bad: 'icon:fan' },
+  hot: { told: ['It was a hot, hot day, and Ava felt very warm.'], ask: 'What will Ava do next?', good: 'icon:fan', bad: 'icon:coat' },
+  sleepy: { told: ['It was night, and the moon was up, and Ben yawned a big yawn.'], ask: 'What will Ben do next?', good: 'icon:bed', bad: 'icon:ball' },
+  awake: { told: ['The sun came up, and Ben was wide awake.'], ask: 'What will Ben do next?', good: 'icon:ball', bad: 'icon:bed' },
+};
+// Which one was a clue at pre-K 3: the four stories whose clue the lines draw, that clue, the guess as it is said, and the stories whose
+// clue may stand beside it, of the other kind (round one's lesson read: the snow is drawn as the cloud with flakes, so the two never meet).
+const NP_N3_CLUES = { rain: ['icon:cloud', 'it would rain', ['sleepy', 'awake']], cold: ['icon:snow', 'Ava would put on her warm coat', ['sleepy', 'awake']], sleepy: ['icon:moon', 'Ben would go to bed', ['rain', 'cold']], awake: ['icon:sun', 'Ben would play ball', ['rain', 'cold']] };
+// Was our guess right: the story told, the guess as it is said, what happened when it was right and when it was not, and those said again.
+const NP_N3_CHECKS = {
+  rain: ['The sky got dark, and big gray clouds came.', 'it would rain', 'Then rain began to fall.', 'Then the clouds went away, and the sun came out.', 'rain began to fall', 'the sun came out'],
+  sunny: ['The rain stopped, and the clouds went away.', 'the sun would come out', 'Then the sun came out.', 'Then dark clouds came back, and it rained again.', 'the sun came out', 'it rained again'],
+  cold: ['It was very cold, and snow was falling.', 'Ava would put on her warm coat', 'Then Ava put on her warm coat.', 'Then Ava stayed inside and played with her blocks.', 'Ava put on her warm coat', 'Ava stayed inside'],
+  hot: ['It was a hot, hot day, and Ava felt very warm.', 'Ava would turn on a fan', 'Then Ava turned on a fan.', 'Then Ava drank a big glass of cold water.', 'Ava turned on a fan', 'Ava drank a big glass of cold water'],
+  sleepy: ['It was night, and the moon was up, and Ben yawned a big yawn.', 'Ben would go to bed', 'Then Ben went to bed.', 'Then Ben jumped up and danced around his room.', 'Ben went to bed', 'Ben danced around his room'],
+  awake: ['The sun came up, and Ben was wide awake.', 'Ben would play ball', 'Then Ben played ball.', 'Then Ben read a book with his dad.', 'Ben played ball', 'Ben read a book with his dad'],
+  dog: ['The dog saw a big puddle.', 'it would jump in', 'Then the dog jumped right in, splash!', 'Then the dog walked all the way around it.', 'the dog jumped right in', 'the dog walked all the way around it'],
+};
+// How someone will feel (pre-K 3) and how someone felt (pre-K 4): the friend and the feeling each story's words point to.
+const NP_N3_FEELS = { 'Mia dropped her ice cream on the ground.': ['Mia', 'sad'], 'Mia\'s mom got her a new ice cream.': ['Mia', 'happy'] };
+const NP_C4_FEELS = { 'Ava jumped up and down and clapped.': ['Ava', 'happy'], 'A tear rolled down Ava\'s cheek.': ['Ava', 'sad'], 'Ava stomped her feet and made tight fists.': ['Ava', 'mad'], 'Ava hid under her blanket when the thunder boomed.': ['Ava', 'scared'] };
+const NP_FACES = ['happy', 'sad', 'mad', 'scared'];
+// Story clues' prediction stories, each asked What will happen next?, its good guess and the other picture of its pair.
+const NP_C4 = {
+  rain: { told: ['Big gray clouds rolled in.'], ask: 'What will happen next?', good: 'icon:rain', bad: 'icon:sun' },
+  sunny: { told: ['The clouds rolled away, and the sky turned blue.'], ask: 'What will happen next?', good: 'icon:sun', bad: 'icon:rain' },
+  melt: { told: ['Mia left an ice cube out in the hot sun.'], ask: 'What will happen next?', good: 'icon:drop', bad: 'icon:ice' },
+  freeze: { told: ['Mia put a cup of water in the freezer.'], ask: 'What will happen next?', good: 'icon:ice', bad: 'icon:drop' },
+};
+const NP_C4_CHECKS = {
+  rain: ['Big gray clouds rolled in.', 'it would rain', 'Then rain began to fall.', 'Then the clouds rolled away, and the sun came out.', 'rain began to fall', 'the sun came out'],
+  sunny: ['The clouds rolled away, and the sky turned blue.', 'the sun would come out', 'Then the sun came out.', 'Then big gray clouds rolled back in.', 'the sun came out', 'big gray clouds rolled back in'],
+  melt: ['Mia left an ice cube out in the hot sun.', 'it would melt into water', 'Then the ice cube melted into water.', 'Then Mia put the ice cube back in the freezer, and it did not melt.', 'the ice cube melted into water', 'it did not melt'],
+  freeze: ['Mia put a cup of water in the freezer.', 'it would turn to ice', 'Then the water turned to ice.', 'Then Mia took the cup out right away, and it was still water.', 'the water turned to ice', 'it was still water'],
+  cat: ['The cat saw a ball roll by.', 'it would chase the ball', 'Then the cat ran after the ball!', 'Then the cat curled up and went to sleep.', 'the cat ran after the ball', 'the cat curled up and went to sleep'],
+};
+// Which one was a clue at pre-K 4: two stories, each told in its orders, and for each of its two guesses the clue and the thing the story
+// told that is the clue for the other guess.
+const NP_C4_WHICH_TOLD = { night: ['It was night, and the moon was up. Ben\'s dog sat by the door.', 'Ben\'s dog sat by the door. It was night, and the moon was up.'], snow: ['Snow was falling, and Kai\'s dog brought him its leash.'] };
+const NP_C4_WHICH = { 'Ben would go to bed': ['night', 'icon:moon', 'icon:dog'], 'the dog wanted to go outside': ['night', 'icon:dog', 'icon:moon'], 'Kai would build a snowman': ['snow', 'icon:snow', 'icon:dog'], 'Kai and his dad would go for a walk': ['snow', 'icon:dog', 'icon:snow'] };
+// Why something happened: the reason each story's clues point to, and the other two stories' reasons, either of which may stand beside it.
+const NP_C4_WHYS = { 'Leo pulled on his boots and opened his umbrella.': ['icon:rain', ['icon:cake', 'icon:bed']], 'Everyone sang a song to Zoe, and she opened her presents.': ['icon:cake', ['icon:rain', 'icon:bed']], 'Nora\'s eyes kept closing, and she put her head on her pillow.': ['icon:bed', ['icon:rain', 'icon:cake']] };
+// Act it out: the three friends, the five things a friend did, each as the story says it and the picture it is, every one a prop.
+const NP_A3_ANIMALS = ['frog', 'bear', 'duck'];
+const NP_A3_DOES = { 'ate an apple': 'apple', 'read a book': 'book', 'played with a ball': 'ball', 'played the guitar': 'guitar', 'put on a hat': 'hat' };
+const NP_A3_PROPS = ['apple', 'book', 'ball', 'guitar', 'hat'];
+// Tell it again: the two friends, and the six things a friend did, each as the story says it, its picture and as a question asks it.
+const NP_R4_ANIMALS = ['fox', 'owl'];
+const NP_R4_DOES = { 'ate an apple': ['apple', 'eat an apple'], 'read a book': ['book', 'read a book'], 'flew a kite': ['kite', 'fly a kite'], 'played the guitar': ['guitar', 'play the guitar'], 'played with a ball': ['ball', 'play with a ball'], 'put on a hat': ['hat', 'put on a hat'] };
+const NP_R4_WORDS = ['First', 'Next', 'Last'];
+// A prediction story read back from its words: the story it tells, found in a table by its own words.
+const npKeyOf = (T, body) => Object.keys(T).find((k) => T[k].told.includes(body)) || null;
+// What will happen next: the story's good guess, asked in the story's own words, beside the other picture of its pair.
+const npNextOf = (T) => (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const k = m && npKeyOf(T, m[1]); if (!k || q.visual) return null; const s = T[k];
+  if (q.prompt !== s.ask) return null;
+  if (!nmSame(q, [s.good, s.bad])) return null;
+  return mqOne(q, (c) => c === s.good); };
+// How someone will feel, or felt: the face the story's words point to, the friend asked about the story's own.
+const npFeelOf = (T, will) => (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const f = m && T[m[1]]; if (!f || q.visual) return null;
+  if (q.prompt !== `How do you think ${f[0]} ${will ? 'will feel' : 'felt'}?`) return null;
+  const ch = (q.choices || []).map(String); if (ch.length !== (will ? 2 : 3) || new Set(ch).size !== ch.length || !ch.every((c) => /^face:/.test(c) && NP_FACES.includes(c.slice(5)))) return null;
+  if (will && !nmSame(q, ['face:sad', 'face:happy'])) return null;
+  return mqOne(q, (c) => c === `face:${f[1]}`); };
+// Which one was a clue at pre-K 3: the story and its guess as said, and its clue beside another story's.
+const npClue3Of = (q) => { const m = /^Listen\. (.+) We guessed (.+)\.$/.exec(q.story || ''); const k = m && npKeyOf(NP_N3, m[1]); const c = k && NP_N3_CLUES[k]; if (!c || q.visual || q.prompt !== 'Which one was a clue?') return null;
+  if (m[2] !== c[1]) return null;
+  const ch = (q.choices || []).map(String); const clues = Object.values(NP_N3_CLUES).map((x) => x[0]);
+  if (ch.length !== 2 || !ch.includes(c[0]) || !ch.every((x) => clues.includes(x))) return null;
+  return mqOne(q, (x) => x === c[0]); };
+// Was our guess right: the story told, its guess as said, and what happened, the guess or not.
+const npCheckOf = (T) => (q) => { const m = /^Listen\. (.+?) We guessed (.+?)\. (Then .+)$/.exec(q.story || ''); if (!m || q.visual || q.prompt !== 'Was our guess right?' || !nmSame(q, ['Yes', 'No'])) return null;
+  const s = Object.values(T).find((x) => x[0] === m[1]); if (!s) return null;
+  if (m[2] !== s[1]) return null;
+  return m[3] === s[2] ? 'Yes' : m[3] === s[3] ? 'No' : null; };
+// Is this a good guess: the story told, and the guess shown, its good guess or the other picture of its pair.
+const npGoodOf = (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const k = m && npKeyOf(NP_N3, m[1]); const v = q.visual || {}; if (!k || q.prompt !== 'Is this a good guess?' || !nmSame(q, ['Yes', 'No'])) return null; const s = NP_N3[k];
+  const shown = v.kind + ':' + v.name;
+  if (shown !== s.good && shown !== s.bad) return null;
+  return shown === s.good ? 'Yes' : 'No'; };
+// Why something happened: asked Why?, the reason the story's clues point to beside one of the other two stories' reasons.
+const npWhyOf = (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const w = m && NP_C4_WHYS[m[1]]; if (!w || q.visual) return null;
+  if (q.prompt !== 'Why?') return null;
+  const ch = (q.choices || []).map(String); if (ch.length !== 2 || !ch.includes(w[0]) || !ch.every((c) => c === w[0] || w[1].includes(c))) return null;
+  return mqOne(q, (c) => c === w[0]); };
+// Which one was a clue at pre-K 4: the story, its guess as said, and the clue for that guess beside the clue for the other.
+const npWhichOf = (q) => { const m = /^Listen\. (.+) We guessed (.+)\.$/.exec(q.story || ''); const e = m && NP_C4_WHICH[m[2]]; if (!e || q.visual || q.prompt !== 'Which one was a clue?') return null;
+  if (!NP_C4_WHICH_TOLD[e[0]].includes(m[1])) return null;
+  if (!nmSame(q, [e[1], e[2]])) return null;
+  return mqOne(q, (c) => c === e[1]); };
+// An act-it-out story read back from its words: the friend, and the two things it did, in order.
+const npAct3Of = (q) => { const m = /^Listen\. The (\w+) (.+)\. Then the (\w+) (.+)\.$/.exec(q.story || ''); if (!m || m[1] !== m[3] || !NP_A3_ANIMALS.includes(m[1])) return null;
+  const e1 = NP_A3_DOES[m[2]]; const e2 = NP_A3_DOES[m[4]]; if (!e1 || !e2 || e1 === e2 || q.visual) return null; return { a: m[1], e1, e2, d1: m[2], d2: m[4] }; };
+// Who is in the story: the story's friend, beside another of the three.
+const npActWhoOf = (q) => { const s = npAct3Of(q); if (!s || q.prompt !== 'Who is in this story?') return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 2 || !ch.every((c) => /^pic:/.test(c) && NP_A3_ANIMALS.includes(myName(c)))) return null;
+  return mqOne(q, (c) => c === `pic:${s.a}`); };
+// What the friend did first: the story's two things.
+const npActFirstOf = (q) => { const s = npAct3Of(q); if (!s || q.prompt !== `What did the ${s.a} do first?`) return null;
+  if (!nmSame(q, [`icon:${s.e1}`, `icon:${s.e2}`])) return null;
+  return mqOne(q, (c) => c === `icon:${s.e1}`); };
+// What the friend did after the first thing: the second thing, beside one the story never names.
+const npActThenOf = (q) => { const s = npAct3Of(q); if (!s || q.prompt !== `What did the ${s.a} do after it ${s.d1}?`) return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 2 || !ch.includes(`icon:${s.e2}`)) return null;
+  if (!ch.every((c) => /^icon:/.test(c) && Object.values(NP_A3_DOES).includes(myName(c)) && myName(c) !== s.e1)) return null;
+  return mqOne(q, (c) => c === `icon:${s.e2}`); };
+// Which thing could help act it out: of two props, the one the story names.
+const npActPropOf = (q) => { const s = npAct3Of(q); if (!s || q.prompt !== 'Which thing could help you act out this story?') return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 2 || !ch.every((c) => /^icon:/.test(c) && NP_A3_PROPS.includes(myName(c)))) return null;
+  return mqOne(q, (c) => [s.e1, s.e2].includes(myName(c))); };
+// Tap what the friend did first, and then what it did after that: the story's two things, in its order, among four.
+const npActOrderOf = (q) => { const s = npAct3Of(q); if (!s || q.type !== 'order' || q.pick !== 2 || q.prompt !== `Tap what the ${s.a} did first, and then what it did after that.`) return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 4 || new Set(ch).size !== 4 || !ch.includes(`icon:${s.e1}`) || !ch.includes(`icon:${s.e2}`)) return null;
+  return `icon:${s.e1} | icon:${s.e2}`; };
+// A retelling story read back from its words, told with first, next and last, or with then: the friend and its three things in order.
+const npRetell4Of = (q) => { const A = /^Listen\. First, the (\w+) (.+?)\. Next, the (\w+) (.+?)\. Last, the (\w+) (.+?)\.$/.exec(q.story || ''); const B = /^Listen\. The (\w+) (.+?), then (.+?), then (.+?)\.$/.exec(q.story || '');
+  let a, d; if (A) { if (A[1] !== A[3] || A[1] !== A[5]) return null; a = A[1]; d = [A[2], A[4], A[6]]; } else if (B) { a = B[1]; d = [B[2], B[3], B[4]]; } else return null;
+  if (!NP_R4_ANIMALS.includes(a) || q.visual) return null; const e = d.map((x) => (NP_R4_DOES[x] || [])[0]); if (!e.every(Boolean) || new Set(e).size !== 3) return null;
+  return { a, e1: e[0], e2: e[1], e3: e[2], d, words: !!A }; };
+const npAt = (s, which) => `icon:${[s.e1, s.e2, s.e3][which]}`;
+// What the friend did first, or last: the story's three things.
+const npRetellEndOf = (last) => (q) => { const s = npRetell4Of(q); if (!s || q.prompt !== `What did the ${s.a} do ${last ? 'last' : 'first'}?`) return null;
+  if (!nmSame(q, [npAt(s, 0), npAt(s, 1), npAt(s, 2)])) return null;
+  return mqOne(q, (c) => c === npAt(s, last ? 2 : 0)); };
+// What the friend did right after the first thing, or right before the last: the middle thing, beside the other end and one the story
+// never names.
+const npRetellNearOf = (q) => { const s = npRetell4Of(q); if (!s) return null; const after = q.prompt === `What did the ${s.a} do right after it ${s.d[0]}?`; const before = q.prompt === `What did the ${s.a} do right before it ${s.d[2]}?`;
+  if (!after && !before) return null; const ch = (q.choices || []).map(String); const end = npAt(s, after ? 2 : 0);
+  if (ch.length !== 3 || !ch.includes(npAt(s, 1)) || !ch.includes(end)) return null;
+  if (!ch.every((c) => /^icon:/.test(c) && Object.values(NP_R4_DOES).some((v) => v[0] === myName(c))) || ch.includes(npAt(s, after ? 0 : 2))) return null;
+  return mqOne(q, (c) => c === npAt(s, 1)); };
+// Tap the story's three things in order, among four.
+const npRetellOrderOf = (q) => { const s = npRetell4Of(q); if (!s || q.type !== 'order' || q.prompt !== 'Tap the pictures in the order of the story.') return null; const ch = (q.choices || []).map(String);
+  if (q.pick !== 3) return null;
+  if (ch.length !== 4 || new Set(ch).size !== 4 || ![0, 1, 2].every((k) => ch.includes(npAt(s, k)))) return null;
+  return [0, 1, 2].map((k) => npAt(s, k)).join(' | '); };
+// When the friend did one of its things, first, next or last: the story told with then, the thing asked by the question's own words.
+const npRetellWordOf = (q) => { const s = npRetell4Of(q); if (!s) return null;
+  if (s.words) return null;
+  const m = /^When did the (\w+) (.+), first, next or last\?$/.exec(q.prompt || ''); if (!m || m[1] !== s.a) return null;
+  const k = s.d.findIndex((x) => NP_R4_DOES[x][1] === m[2]); if (k < 0) return null;
+  if (!nmSame(q, NP_R4_WORDS)) return null;
+  return NP_R4_WORDS[k]; };
+// Hold a book and Which way we read (pass NP's second wave): the test's own tables, copied from the lessons' lines. Each question a
+// choice bank asks, with its right picture and the wrong one beside it; each picture a yes or no shows, with what it is.
+const NP_BOOK3 = { 'Which one is the front of the book?': ['icon:book~cover', 'icon:book~back'], 'Which one is the back of the book?': ['icon:book~back', 'icon:book~cover'], 'Which book is right side up?': ['icon:book~cover', 'icon:book~down'], 'Which book is upside down?': ['icon:book~down', 'icon:book~cover'], 'Where do we start reading?': ['icon:page~start', 'icon:page~end'], 'Where do we stop reading?': ['icon:page~end', 'icon:page~start'] };
+const NP_BOOK3_FRONT = { 'book~cover': 'front', 'book~back': 'back' };
+const NP_BOOK3_START = { 'page~start': 'start', 'page~end': 'stop' };
+const NP_WAY4_IS = { 'book~cover': 'right side up', 'book~down': 'upside down' };
+const NP_WAY4_NAMES = ['Mom', 'Dad', 'Ben', 'Ava', 'Sam', 'Kai'];
+const NP_WAY4_DOES = ['sees', 'helps', 'likes'];
+const NP_WAY4_ARROWS = { 'Which arrow shows the way we read along a line?': ['icon:arrow', 'icon:arrow~down'], 'Which arrow shows the way to the next line?': ['icon:arrow~down', 'icon:arrow'] };
+// A choice about a book or a page: the bank's own questions, its story, and the two pictures it shows, the right one first.
+const npBookPickOf = (story, asks) => (q) => { const w = asks.includes(q.prompt) && NP_BOOK3[q.prompt]; if (!w || q.story !== story || q.visual) return null;
+  if (!nmSame(q, w)) return null;
+  return mqOne(q, (c) => c === w[0]); };
+// A yes or no about one picture: what the table says it is, beside what the question asks it to be.
+const npBookIsOf = (re, T) => (q) => { const m = re.exec(q.prompt || ''); const v = q.visual || {}; if (!m || v.kind !== 'icon' || !nmSame(q, ['Yes', 'No'])) return null;
+  if (!Object.keys(T).includes(v.name)) return null;
+  return T[v.name] === m[1] ? 'Yes' : 'No'; };
+// A line of words read back from its print: its two names and its doing word, every one the lines say.
+const npWayLineOf = (text) => { const m = /^(\w+) (\w+) (\w+)\.$/.exec(text || ''); if (!m) return null;
+  if (!NP_WAY4_NAMES.includes(m[1]) || !NP_WAY4_NAMES.includes(m[3]) || !NP_WAY4_DOES.includes(m[2]) || m[1] === m[3]) return null;
+  return { a: m[1], b: m[3], text }; };
+// Which word on a line we read first, or last: the word at its start, or at its end.
+const npWayWordOf = (q) => { const v = q.visual || {}; const first = q.prompt === 'Which word do we read first?'; if (v.kind !== 'print' || (!first && q.prompt !== 'Which word do we read last?')) return null;
+  const s = npWayLineOf(v.text); if (!s) return null;
+  if (!nmSame(q, [`print:${s.a}`, `print:${s.b}`])) return null;
+  return `print:${first ? s.a : s.b}`; };
+// Two lines, stacked: the top line and the one under it, each a line of the table's words.
+const npWayTwoOf = (q) => { const v = q.visual || {}; if (v.kind !== 'pair' || !v.stack || !v.a || !v.b || v.a.kind !== 'print' || v.b.kind !== 'print') return null; const t = npWayLineOf(v.a.text); const u = npWayLineOf(v.b.text); return t && u ? [t, u] : null; };
+// Which line we read first, or last: the top one, or the bottom one.
+const npWayLineFirstOf = (q) => { const two = npWayTwoOf(q); const first = q.prompt === 'Which line do we read first?'; if (!two || (!first && q.prompt !== 'Which line do we read last?')) return null;
+  if (!nmSame(q, two.map((x) => `print:${x.text}`))) return null;
+  return `print:${two[first ? 0 : 1].text}`; };
+// At the end of the top line, the word we read next: the first word of the line under it.
+const npWayNextOf = (q) => { const two = npWayTwoOf(q); if (!two || q.story !== 'We read to the end of the top line.' || q.prompt !== 'Which word do we read next?') return null;
+  if (!nmSame(q, [`print:${two[1].a}`, `print:${two[1].b}`])) return null;
+  return mqOne(q, (c) => c === `print:${two[1].a}`); };
+// Which arrow shows the way along a line, or the way down to the next one.
+const npWayArrowOf = (q) => { const w = NP_WAY4_ARROWS[q.prompt]; if (!w || q.visual) return null;
+  if (!nmSame(q, w)) return null;
+  return mqOne(q, (c) => c === w[0]); };
 const PREK_DERIVE = {
   // Learning words (pre-K 3): the one just like the picture shown; the one not like the two alike; whether the counted row holds the
   // number asked; the one in the group's color; and the shape the lesson says has those sides or corners.
@@ -988,6 +1176,16 @@ const PREK_DERIVE = {
   'p3-tale-who': (q) => nmT3WhoOf(q), 'p3-tale-what': (q) => nmT3WhatOf(q), 'p3-tale-where': (q) => nmT3WhereOf(q), 'p3-tale-feel': (q) => nmT3FeelOf(q), 'p3-tale-yesno': (q) => nmT3YesNoOf(q),
   'p4-tale-who': (q) => nmT4WhoOf(q), 'p4-tale-what': (q) => nmT4WhatOf(q), 'p4-tale-where': (q) => nmT4WhereOf(q), 'p4-tale-when': (q) => nmT4WhenOf(q), 'p4-tale-ask': (q) => nmT4AskOf(q),
   'p3-print-tap': (q) => nmPrintTapOf(q), 'p3-print-read': (q) => nmPrintReadOf(q), 'p3-print-yesno': (q) => nmPrintIsOf(q), 'p3-print-letters': (q) => nmPrintLettersOf(q), 'p3-print-says': (q) => nmPrintSaysOf(q),
+  // What happens next?, Story clues, Act it out and Tell it again (pass NP), each from the test's own tables (NP_N3*, NP_C4*, NP_A3_*, NP_R4_*).
+  'p3-next-guess': (q) => npNextOf(NP_N3)(q), 'p3-next-feel': (q) => npFeelOf(NP_N3_FEELS, true)(q), 'p3-next-clue': (q) => npClue3Of(q), 'p3-next-check': (q) => npCheckOf(NP_N3_CHECKS)(q), 'p3-next-good': (q) => npGoodOf(q),
+  'p4-clue-next': (q) => npNextOf(NP_C4)(q), 'p4-clue-why': (q) => npWhyOf(q), 'p4-clue-feel': (q) => npFeelOf(NP_C4_FEELS, false)(q), 'p4-clue-check': (q) => npCheckOf(NP_C4_CHECKS)(q), 'p4-clue-which': (q) => npWhichOf(q),
+  'p3-act-who': (q) => npActWhoOf(q), 'p3-act-first': (q) => npActFirstOf(q), 'p3-act-then': (q) => npActThenOf(q), 'p3-act-prop': (q) => npActPropOf(q), 'p3-act-order': (q) => npActOrderOf(q),
+  'p4-retell-first': (q) => npRetellEndOf(false)(q), 'p4-retell-last': (q) => npRetellEndOf(true)(q), 'p4-retell-near': (q) => npRetellNearOf(q), 'p4-retell-order': (q) => npRetellOrderOf(q), 'p4-retell-word': (q) => npRetellWordOf(q),
+  // Hold a book and Which way we read (pass NP's second wave), each from the test's own tables (NP_BOOK3*, NP_WAY4_*).
+  'p3-book-front': (q) => npBookPickOf('Look at these two books.', ['Which one is the front of the book?', 'Which one is the back of the book?'])(q), 'p3-book-up': (q) => npBookPickOf('Look at these two books.', ['Which book is right side up?', 'Which book is upside down?'])(q),
+  'p3-book-start': (q) => npBookPickOf('Look at these two pages.', ['Where do we start reading?', 'Where do we stop reading?'])(q), 'p3-book-isfront': (q) => npBookIsOf(/^Is this the (front|back) of the book\?$/, NP_BOOK3_FRONT)(q),
+  'p3-book-isstart': (q) => npBookIsOf(/^Is this where we (start|stop) reading\?$/, NP_BOOK3_START)(q), 'p4-way-up': (q) => npBookIsOf(/^Is this book (right side up|upside down)\?$/, NP_WAY4_IS)(q),
+  'p4-way-word': (q) => npWayWordOf(q), 'p4-way-line': (q) => npWayLineFirstOf(q), 'p4-way-next': (q) => npWayNextOf(q), 'p4-way-arrow': (q) => npWayArrowOf(q),
   'p4-mark-name': (q) => nkMarkNameOf(q), 'p4-mark-means': (q) => nkMarkMeansOf(q), 'p4-mark-heard': (q) => nkMarkHeardOf(q), 'p4-mark-yesno': (q) => nkMarkIsOf(q), 'p4-mark-start': (q) => nkMarkStartOf(q),
   'p4-space-kind': (q) => { const m = /^Which one is (a letter|a word|a picture)\?$/.exec(q.prompt || ''); const ch = q.choices || []; if (!m || q.story !== 'Look at these three.' || ch.length !== 3) return null;
     const isLetter = (c) => ND_KIND.letters.includes(ndPrinted(c)); const isWord = (c) => ND_KIND.words.includes(ndPrinted(c)); const isPicture = (c) => /^icon:/.test(c) && ND_KIND.pictures.includes(myName(c));
@@ -4033,6 +4231,454 @@ const PREK_DERIVE = {
   const pct = (v) => Math.round(v * 1000) / 10;
   ok(`pass NM's story banks read by a child who heard only the story or only the question: by design the story alone answers what was lost and where and when the friends went, and the question alone the feel kind and which word asks about what (its question names the kind, the taught fact; round two's read), each at 100 percent; every other kind near chance (story only at most ${pct(Math.max(...TB.filter((g) => !DESIGN_S.includes(g)).map((g) => S[g])))}%, question only at most ${pct(Math.max(...TB.filter((g) => !DESIGN_Q.includes(g)).map((g) => Q[g])))}%); and Pictures and words' five kinds each once a round (${Object.values(now.per).map(pct).join(', ')} a round, a kind twice in ${pct(now.twice)}% of 2,000 first and later rounds; keyed with the other picture too, planted, caught)`,
     byDesign && near && once && plantCaught, JSON.stringify({ S, Q, now, planted })); }
+// What happens next?, Story clues, Act it out and Tell it again (pass NP): their twenty banks worked out from what each question says and
+// shows by the test's own tables (NP_N3*, NP_C4*, NP_A3_*, NP_R4_*), each near miss caught by the guard it names and no other: with that
+// guard taken out of its derivation's own text it gets an answer at every seed from 1 to 400, and with it in, none.
+{ const D = PREK_DERIVE; const NPB = ['what-happens-next', 'story-clues', 'act-it-out', 'tell-it-again'].flatMap((id) => L.getModule(id).generators);
+  const ASKS = [...new Set([...Object.values(NP_N3), ...Object.values(NP_C4)].map((s) => s.ask))];
+  const otherAsk = (x) => ({ ...x, prompt: ASKS.find((a) => a !== x.prompt) });
+  const otherGuess = (guesses) => (x) => { const g = /We guessed (.+?)\./.exec(x.story)[1]; const alt = guesses.find((y) => y !== g); return { ...x, story: x.story.replace(`We guessed ${g}.`, `We guessed ${alt}.`) }; };
+  const otherFriend = (x) => ({ ...x, prompt: x.prompt.replace(/^How do you think (\w+)/, (m, n) => `How do you think ${n === 'Mia' ? 'Leo' : 'Sam'}`) });
+  const N3_PICTURES = [...new Set(Object.values(NP_N3).flatMap((s) => [s.good, s.bad]))];
+  const NEAR = [
+    ['p3-next-guess', 'ask', otherAsk],
+    ['p3-next-feel', 'who', otherFriend],
+    ['p3-next-clue', 'guess', otherGuess(Object.values(NP_N3_CLUES).map((c) => c[1]))],
+    ['p3-next-check', 'guess', otherGuess(Object.values(NP_N3_CHECKS).map((c) => c[1]))],
+    ['p3-next-good', 'shown', (x) => { const s = NP_N3[npKeyOf(NP_N3, x.story.slice(8))]; const elsewhere = N3_PICTURES.find((p) => p !== s.good && p !== s.bad); return { ...x, visual: { kind: 'icon', name: myName(elsewhere) } }; }],
+    ['p4-clue-next', 'ask', otherAsk],
+    ['p4-clue-why', 'ask', (x) => ({ ...x, prompt: 'Why did that happen?' })],
+    ['p4-clue-feel', 'who', otherFriend],
+    ['p4-clue-check', 'guess', otherGuess(Object.values(NP_C4_CHECKS).map((c) => c[1]))],
+    ['p4-clue-which', 'three', (x) => ({ ...x, choices: [...x.choices, 'icon:cake'] })],
+    ['p3-act-who', 'three', (x) => ({ ...x, choices: x.choices.map((c) => (c !== x.answer ? 'pic:fox' : c)) })],
+    ['p3-act-first', 'pair', (x) => ({ ...x, choices: [...x.choices, 'icon:tree'] })],
+    ['p3-act-then', 'first', (x) => { const s = npAct3Of(x); return { ...x, choices: x.choices.map((c) => (c !== x.answer ? `icon:${s.e1}` : c)) }; }],
+    ['p3-act-prop', 'props', (x) => ({ ...x, choices: x.choices.map((c) => (c !== x.answer ? 'icon:tree' : c)) })],
+    ['p3-act-order', 'four', (x) => { const s = npAct3Of(x); const out = x.choices.find((c) => c !== `icon:${s.e1}` && c !== `icon:${s.e2}`); return { ...x, choices: x.choices.filter((c) => c !== out) }; }],
+    ['p4-retell-first', 'three', (x) => { const s = npRetell4Of(x); return { ...x, choices: x.choices.map((c) => (c === npAt(s, 2) ? 'icon:tree' : c)) }; }],
+    ['p4-retell-last', 'three', (x) => { const s = npRetell4Of(x); return { ...x, choices: x.choices.map((c) => (c === npAt(s, 0) ? 'icon:tree' : c)) }; }],
+    ['p4-retell-near', 'asked', (x) => { const s = npRetell4Of(x); const after = /right after/.test(x.prompt); const out = x.choices.find((c) => c !== npAt(s, 1) && c !== npAt(s, after ? 2 : 0)); return { ...x, choices: x.choices.map((c) => (c === out ? npAt(s, after ? 0 : 2) : c)) }; }],
+    ['p4-retell-order', 'pick', (x) => ({ ...x, pick: 2 })],
+    ['p4-retell-word', 'form', (x) => { const s = npRetell4Of(x); const P = (e) => Object.keys(NP_R4_DOES).find((k) => NP_R4_DOES[k][0] === e);
+      return { ...x, story: `Listen. First, the ${s.a} ${P(s.e1)}. Next, the ${s.a} ${P(s.e2)}. Last, the ${s.a} ${P(s.e3)}.` }; }],
+  ];
+  const FEEL_GUARD = "\n  if (q.prompt !== `How do you think ${f[0]} ${will ? 'will feel' : 'felt'}?`) return null;";
+  const RETELL_ENDS = '\n  if (!nmSame(q, [npAt(s, 0), npAt(s, 1), npAt(s, 2)])) return null;';
+  const GUARDS = {
+    'p3-next-guess ask': ['npNextOf', '\n  if (q.prompt !== s.ask) return null;'], 'p4-clue-next ask': ['npNextOf', '\n  if (q.prompt !== s.ask) return null;'],
+    'p3-next-feel who': ['npFeelOf', FEEL_GUARD], 'p4-clue-feel who': ['npFeelOf', FEEL_GUARD],
+    'p3-next-clue guess': ['npClue3Of', '\n  if (m[2] !== c[1]) return null;'],
+    'p3-next-check guess': ['npCheckOf', '\n  if (m[2] !== s[1]) return null;'], 'p4-clue-check guess': ['npCheckOf', '\n  if (m[2] !== s[1]) return null;'],
+    'p3-next-good shown': ['npGoodOf', '\n  if (shown !== s.good && shown !== s.bad) return null;'],
+    'p4-clue-why ask': ['npWhyOf', "\n  if (q.prompt !== 'Why?') return null;"],
+    'p4-clue-which three': ['npWhichOf', '\n  if (!nmSame(q, [e[1], e[2]])) return null;'],
+    'p3-act-who three': ['npActWhoOf', '\n  if (ch.length !== 2 || !ch.every((c) => /^pic:/.test(c) && NP_A3_ANIMALS.includes(myName(c)))) return null;'],
+    'p3-act-first pair': ['npActFirstOf', '\n  if (!nmSame(q, [`icon:${s.e1}`, `icon:${s.e2}`])) return null;'],
+    'p3-act-then first': ['npActThenOf', '\n  if (!ch.every((c) => /^icon:/.test(c) && Object.values(NP_A3_DOES).includes(myName(c)) && myName(c) !== s.e1)) return null;'],
+    'p3-act-prop props': ['npActPropOf', '\n  if (ch.length !== 2 || !ch.every((c) => /^icon:/.test(c) && NP_A3_PROPS.includes(myName(c)))) return null;'],
+    'p3-act-order four': ['npActOrderOf', '\n  if (ch.length !== 4 || new Set(ch).size !== 4 || !ch.includes(`icon:${s.e1}`) || !ch.includes(`icon:${s.e2}`)) return null;'],
+    'p4-retell-first three': ['npRetellEndOf', RETELL_ENDS], 'p4-retell-last three': ['npRetellEndOf', RETELL_ENDS],
+    'p4-retell-near asked': ['npRetellNearOf', ' || ch.includes(npAt(s, after ? 0 : 2))'],
+    'p4-retell-order pick': ['npRetellOrderOf', '\n  if (q.pick !== 3) return null;'],
+    'p4-retell-word form': ['npRetellWordOf', '\n  if (s.words) return null;'],
+  };
+  const HELPERS = { npNextOf, npFeelOf, npClue3Of, npCheckOf, npGoodOf, npWhyOf, npWhichOf, npActWhoOf, npActFirstOf, npActThenOf, npActPropOf, npActOrderOf, npRetellEndOf, npRetellNearOf, npRetellOrderOf, npRetellWordOf };
+  const without = (g, [where, from]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join('');
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  // Plant: a near miss a second guard also catches (the ask swapped and a third choice added) fails its proof.
+  const plantCaught = !!prove('p3-next-guess', 'ask', (x) => ({ ...otherAsk(x), choices: [...x.choices, 'icon:tree'] }));
+  ok('pass NP\'s twenty banks (What happens next?, Story clues, Act it out and Tell it again) are worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    NPB.length === 20 && NPB.every((g) => typeof D[g] === 'function') && NEAR.length === NPB.length && NEAR.every(([g]) => NPB.includes(g)) && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What pass NP's twenty banks may and may not do, read over seeds 1 to 400 by the test's own tables.
+{ const N3 = L.getModule('what-happens-next'); const C4 = L.getModule('story-clues'); const A3 = L.getModule('act-it-out'); const R4 = L.getModule('tell-it-again');
+  const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1)); const lineText = (m) => m.lesson.script.map((l) => l.say).join(' ');
+  const BANKS = [...N3.generators, ...C4.generators, ...A3.generators, ...R4.generators];
+  const lessonOf = (g) => (/^p3-next-/.test(g) ? N3 : /^p4-clue-/.test(g) ? C4 : /^p3-act-/.test(g) ? A3 : R4);
+  // 1. Every story the prediction banks tell is said in its own lesson's lines first, in one of its orders (and every guess-checking
+  //    story, feeling, reason and pre-K 4 clue story with its two guesses as the lines say them), every friend and thing the
+  //    act-it-out and retelling banks tell of is said there too, and every picture a bank shows (pic:, icon:, face:) is drawn by a line
+  //    of that lesson. Plants: What happens next?'s lines without the sleepy night, Story clues' without the umbrella, Act it out's
+  //    without the hat and Tell it again's without the kite, each caught.
+  const said = (text, t) => text.toLowerCase().includes(t.replace(/[.!?]$/, '').toLowerCase());
+  const need = (text, words) => words.filter((w) => !said(text, w));
+  const WHICH_SAID = { 'Ben would go to bed': 'If we guessed Ben would go to bed', 'the dog wanted to go outside': 'If we guess the dog wants to go outside', 'Kai would build a snowman': 'If we guess Kai will build a snowman', 'Kai and his dad would go for a walk': 'If we guess Kai and his dad will go for a walk' };
+  const n3Missing = (text) => [...Object.entries(NP_N3).filter(([, s]) => !s.told.some((t) => said(text, t))).map(([k]) => 'story ' + k), ...need(text, [...Object.values(NP_N3_CHECKS).map((c) => c[0]), ...Object.keys(NP_N3_FEELS), 'prediction', 'clue', 'good guess', 'listen and find out', 'we guessed it would jump in'])];
+  const c4Missing = (text) => [...Object.entries(NP_C4).filter(([, s]) => !s.told.some((t) => said(text, t))).map(([k]) => 'story ' + k), ...Object.entries(NP_C4_WHICH_TOLD).filter(([, ts]) => !ts.some((t) => said(text, t))).map(([k]) => 'which ' + k),
+    ...need(text, [...Object.values(NP_C4_CHECKS).map((c) => c[0]), ...Object.values(WHICH_SAID), ...Object.keys(NP_C4_WHYS), ...Object.keys(NP_C4_FEELS), 'prediction', 'Why?'])];
+  const a3Missing = (text) => need(text, [...NP_A3_ANIMALS.map((x) => 'the ' + x), ...Object.keys(NP_A3_DOES), 'props', 'in order', 'first', 'after']);
+  const r4Missing = (text) => need(text, [...NP_R4_ANIMALS.map((x) => 'the ' + x), ...Object.keys(NP_R4_DOES), 'first', 'next', 'last', 'right after', 'right before', 'retell']);
+  const drawnIn = (m) => { const out = new Set(); const walk = (v) => { if (!v) return; if (v.kind === 'pair') { walk(v.a); walk(v.b); } else if (v.kind === 'row') (v.items || []).forEach(walk); else if (v.kind === 'pic' || v.kind === 'icon') out.add(v.kind + ':' + v.name); else if (v.kind === 'face') out.add('face:' + v.feeling); };
+    m.lesson.script.forEach((l) => walk(l.show)); return out; };
+  const notDrawn = BANKS.flatMap((g) => { const d = drawnIn(lessonOf(g)); return gen(g, 400).flatMap((x) => [...x.choices, ...(x.visual ? [x.visual.kind + ':' + x.visual.name] : [])].filter((c) => /^(?:pic|icon|face):/.test(String(c)) && !d.has(String(c))).map((c) => g + ' ' + c)); });
+  const n3Now = n3Missing(lineText(N3)); const c4Now = c4Missing(lineText(C4)); const a3Now = a3Missing(lineText(A3)); const r4Now = r4Missing(lineText(R4));
+  const plants = n3Missing(lineText(N3).replace(/Ben yawned a big yawn/g, 'Ben sat down')).length > 0 && c4Missing(lineText(C4).replace(/umbrella/g, 'hat')).length > 0 && a3Missing(lineText(A3).replace(/put on a hat/g, 'wore a cap')).length > 0 && r4Missing(lineText(R4).replace(/flew a kite/g, 'ran fast')).length > 0;
+  ok('every story pass NP\'s prediction banks tell, and every friend and thing its act-it-out and retelling banks tell of, is said in its own lesson\'s lines first, with the guesses, reasons and feelings they ask about, and every picture the twenty banks show is drawn there (the lines without the sleepy night, the umbrella, the hat and the kite, planted, each caught)', n3Now.length === 0 && c4Now.length === 0 && a3Now.length === 0 && r4Now.length === 0 && notDrawn.length === 0 && plants, JSON.stringify({ n3Now, c4Now, a3Now, r4Now, notDrawn: [...new Set(notDrawn)].slice(0, 6) }));
+  // 2. Every reason and explanation is the one the test's tables give for its story and its choice: the other picture of a pair, a
+  //    clue this story never tells, a face by its sign and what was told, a reason that does not fit, the clue for the other guess, a
+  //    friend or a thing the story never names, a thing in another place, and what each word of first, next and last means. Plants: the
+  //    cold story's reason for the fan beside the hot story, and an explanation that puts the last thing first, each caught.
+  const FACE = { happy: 'Happy', sad: 'Sad', mad: 'Mad', scared: 'Scared' };
+  const THING = { apple: 'The apple', book: 'The book', ball: 'The ball', guitar: 'The guitar', hat: 'The hat', kite: 'The kite' };
+  const N3_WHY = { rain: ['Dark clouds often bring rain, so rain is a good guess.', 'The sun', 'does not fit the dark clouds.'], sunny: ['The rain stopped, and the clouds went away, so the sun is a good guess.', 'The rain', 'does not fit, because the rain stopped and the clouds went away.'],
+    cold: ['The snow is a clue that it is cold, and a coat keeps us warm, so the coat is a good guess.', 'The fan', 'cools us down, and the snow tells us it is cold.'], hot: ['It was a hot day, and a fan cools us down, so the fan is a good guess.', 'The coat', 'keeps us warm, and Ava already felt very warm.'],
+    sleepy: ['The moon and the big yawn are clues that Ben is sleepy, so bed is a good guess.', 'The ball', 'is not a good guess, because the moon and the yawn tell us Ben is sleepy.'], awake: ['The sun came up, and Ben was wide awake, so playing ball is a good guess.', 'The bed', 'is not a good guess, because Ben was wide awake.'] };
+  // What a wrong No hears for each story's good guess (round two's lesson read), and the rain story's reason beside the moon.
+  const N3_FITS = { rain: 'dark clouds often bring rain', sunny: 'the clouds went away', cold: 'the snow tells us it is cold', hot: 'it was a hot, hot day', sleepy: 'Ben is sleepy', awake: 'Ben was wide awake' };
+  const N3_BESIDE = { 'rain sleepy': 'is not in this story, and the sky got dark because big gray clouds came.' };
+  const N3_CLUE = { rain: ['The dark clouds were the clue, because dark clouds often bring rain.', 'The cloud', 'cloud'], cold: ['The snow was the clue, because snow tells us it is cold.', 'The snow', 'snow'], sleepy: ['The moon and the big yawn were clues that Ben was sleepy.', 'The moon', 'moon'], awake: ['The sun coming up was a clue, and Ben was wide awake.', 'The sun', 'sun'] };
+  const C4_WHY = { rain: ['Rain is a good guess, because big gray clouds often bring rain.', 'The sun', 'does not fit the big gray clouds.'], sunny: ['The sun is a good guess, because the clouds rolled away and the sky turned blue.', 'The rain', 'does not fit a blue sky with no clouds.'],
+    melt: ['It will melt into water, because the sun is hot.', 'The ice', 'does not fit, because the hot sun melts ice.'], freeze: ['It will turn to ice, because a freezer is very cold.', 'The drop of water', 'does not fit, because a freezer is very cold.'] };
+  const WHY_EXPLAIN = { 'Leo pulled on his boots and opened his umbrella.': 'It was raining. The umbrella and the boots are clues.', 'Everyone sang a song to Zoe, and she opened her presents.': 'It was Zoe\'s birthday. The song and the presents are clues.', 'Nora\'s eyes kept closing, and she put her head on her pillow.': 'Nora was sleepy. Her eyes closing and her head on her pillow are clues.' };
+  const WHY_NOT = { 'icon:cake': ['The cake', 'is for a birthday, and this story has no birthday in it.'], 'icon:rain': { 'Everyone sang a song to Zoe, and she opened her presents.': 'does not fit a song and presents.', 'Nora\'s eyes kept closing, and she put her head on her pillow.': 'does not fit eyes that keep closing.' },
+    'icon:bed': { 'Leo pulled on his boots and opened his umbrella.': 'does not fit an umbrella and boots.', 'Everyone sang a song to Zoe, and she opened her presents.': 'does not fit a song and presents.' } };
+  const WHICH_WHY = { 'Ben would go to bed': ['The moon up in the night sky is the clue, because Ben goes to bed at night.', 'The dog', 'sat by the door, and that does not tell us Ben will go to bed.'], 'the dog wanted to go outside': ['The dog sitting by the door is a clue that it wants to go outside.', 'The moon', 'is up in the night sky, and that is not about going outside.'],
+    'Kai would build a snowman': ['The falling snow is a clue, because we build a snowman out of snow.', 'The dog', 'brought its leash, and that does not tell us what Kai will build.'], 'Kai and his dad would go for a walk': ['The dog bringing its leash is a clue that it wants to go for a walk.', 'The snow', 'tells us it is cold, and that is not about a walk.'] };
+  const bodyOf = (x) => x.story.replace(/^Listen\. /, '').replace(/ We guessed .+$/, '');
+  const checkOf = (T, x) => { const m = /^Listen\. (.+?) We guessed (.+?)\. (Then .+)$/.exec(x.story); const c = Object.values(T).find((y) => y[0] === m[1]); return { c, right: m[3] === c[2] }; };
+  const reasonTrue = (g, x, c, e) => {
+    if (g === 'p3-next-guess') { const w = N3_WHY[npKeyOf(NP_N3, bodyOf(x))]; return c === NP_N3[npKeyOf(NP_N3, bodyOf(x))].bad && e.name === w[1] && e.why === w[2]; }
+    if (g === 'p4-clue-next') { const k = npKeyOf(NP_C4, bodyOf(x)); return c === NP_C4[k].bad && e.name === C4_WHY[k][1] && e.why === C4_WHY[k][2]; }
+    if (g === 'p3-next-clue') { const k = npKeyOf(NP_N3, bodyOf(x)); const o = Object.keys(N3_CLUE).find((y) => NP_N3_CLUES[y][0] === c); return o && o !== k && NP_N3_CLUES[k][2].includes(o) && e.name === N3_CLUE[o][1] && e.why === (N3_BESIDE[k + ' ' + o] || 'is not in this story.') && !new RegExp('\\b' + N3_CLUE[o][2]).test(x.story.toLowerCase()); }
+    if (g === 'p3-next-feel') { const f = NP_N3_FEELS[x.story.slice(8)]; const o = f[1] === 'sad' ? 'happy' : 'sad'; return c === `face:${o}` && e.name === FACE[o] && e.why === (o === 'happy' ? 'is not a good guess, because Mia dropped her ice cream.' : 'is not a good guess, because Mia\'s mom got her a new ice cream.'); }
+    if (g === 'p4-clue-feel') { const t = x.story.slice(8); const o = c.replace(/^face:/, ''); return o !== NP_C4_FEELS[t][1] && e.name === FACE[o] && e.why === `is not a good guess, because ${t.replace(/^A /, 'a ')}`; }
+    if (g === 'p3-next-check' || g === 'p4-clue-check') { const { c: k, right } = checkOf(g === 'p3-next-check' ? NP_N3_CHECKS : NP_C4_CHECKS, x); return right ? c === 'No' && e.why === `would mean our guess did not happen, but ${k[4]}.` : c === 'Yes' && e.why === `would mean our guess happened, but ${k[5]}.`; }
+    if (g === 'p3-next-good') return x.answer === 'Yes' ? c === 'No' && e.why === `would mean it is not a good guess, but ${N3_FITS[npKeyOf(NP_N3, bodyOf(x))]}.` : c === 'Yes' && e.why === 'would mean it is a good guess, but it does not fit the clues.';
+    if (g === 'p4-clue-why') { const t = x.story.slice(8); const n = WHY_NOT[c]; return NP_C4_WHYS[t][1].includes(c) && e.name === (c === 'icon:cake' ? 'The cake' : c === 'icon:rain' ? 'The rain' : 'The bed') && e.why === (Array.isArray(n) ? n[1] : n[t]); }
+    if (g === 'p4-clue-which') { const w = WHICH_WHY[/We guessed (.+)\.$/.exec(x.story)[1]]; return c === NP_C4_WHICH[/We guessed (.+)\.$/.exec(x.story)[1]][2] && e.name === w[1] && e.why === w[2]; }
+    if (/^p3-act-/.test(g)) { const s = npAct3Of(x); const n = myName(c);
+      if (g === 'p3-act-who') return n !== s.a && e.name === `The ${n}` && e.why === 'is not in this story.';
+      if (g === 'p3-act-first') return n === s.e2 && e.name === THING[n] && e.why === `is what the ${s.a} did after, not first.`;
+      return ![s.e1, s.e2].includes(n) && e.name === THING[n] && e.why === 'is not in this story.'; }
+    if (g === 'p4-retell-word') return c !== x.answer && e.name === c && e.why === { First: 'would mean it came at the start, before the other two.', Next: 'would mean it came in the middle.', Last: 'would mean it came at the end.' }[c];
+    if (/^p4-retell-/.test(g)) { const s = npRetell4Of(x); const n = myName(c);
+      if (g === 'p4-retell-first') return n === s.e2 ? e.name === THING[n] && e.why === `is what the ${s.a} did next, not first.` : n === s.e3 && e.name === THING[n] && e.why === `is what the ${s.a} did last.`;
+      if (g === 'p4-retell-last') return n === s.e1 ? e.name === THING[n] && e.why === `is what the ${s.a} did first.` : n === s.e2 && e.name === THING[n] && e.why === `is what the ${s.a} did next, not last.`;
+      const after = /right after/.test(x.prompt); if (n === (after ? s.e3 : s.e1)) return e.name === THING[n] && e.why === (after ? `is what the ${s.a} did last, not right after.` : `is what the ${s.a} did first, not right before.`);
+      return ![s.e1, s.e2, s.e3].includes(n) && e.name === THING[n] && e.why === 'is not in this story.'; }
+    return false; };
+  const explainTrue = (g, x) => { const e = x.explain;
+    if (g === 'p3-next-guess') return e === N3_WHY[npKeyOf(NP_N3, bodyOf(x))][0];
+    if (g === 'p4-clue-next') return e === C4_WHY[npKeyOf(NP_C4, bodyOf(x))][0];
+    if (g === 'p3-next-clue') return e === N3_CLUE[npKeyOf(NP_N3, bodyOf(x))][0];
+    if (g === 'p3-next-feel') return e === (NP_N3_FEELS[x.story.slice(8)][1] === 'sad' ? 'Mia dropped her ice cream, so we can guess she will feel sad.' : 'Mia\'s mom got her a new ice cream, so we can guess she will feel happy.');
+    if (g === 'p4-clue-feel') { const t = x.story.slice(8); return e === `${t.slice(0, -1)}, so we can guess she felt ${NP_C4_FEELS[t][1]}.`; }
+    if (g === 'p3-next-check' || g === 'p4-clue-check') { const { c, right } = checkOf(g === 'p3-next-check' ? NP_N3_CHECKS : NP_C4_CHECKS, x); return e === (right ? `Yes. We guessed ${c[1]}, and ${c[4]}.` : `No. We guessed ${c[1]}, but ${c[5]}, and that is okay.`); }
+    if (g === 'p3-next-good') { const w = N3_WHY[npKeyOf(NP_N3, bodyOf(x))]; return e === (x.answer === 'Yes' ? `Yes. ${w[0]}` : `No. ${w[1]} ${w[2]}`); }
+    if (g === 'p4-clue-why') return e === WHY_EXPLAIN[x.story.slice(8)];
+    if (g === 'p4-clue-which') return e === WHICH_WHY[/We guessed (.+)\.$/.exec(x.story)[1]][0];
+    if (/^p3-act-/.test(g)) { const s = npAct3Of(x); const Dd = (e2) => Object.keys(NP_A3_DOES).find((k) => NP_A3_DOES[k] === e2);
+      if (g === 'p3-act-who') return e === `The ${s.a} is in this story, so you can pretend to be the ${s.a}.`;
+      if (g === 'p3-act-then') return e === `After it ${Dd(s.e1)}, the ${s.a} ${Dd(s.e2)}.`;
+      if (g === 'p3-act-prop') { const p = myName(x.answer); return e === `${THING[p]} could help, because the ${s.a} ${Dd(p)} in the story.`; }
+      return e === `First the ${s.a} ${Dd(s.e1)}, and then it ${Dd(s.e2)}.`; }
+    if (/^p4-retell-/.test(g)) { const s = npRetell4Of(x); return e === `First the ${s.a} ${s.d[0]}, next it ${s.d[1]}, and last it ${s.d[2]}.`; }
+    return false; };
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.name + ' ' + e.why)));
+  const missingReasons = BANKS.filter((g) => !/order$/.test(g)).flatMap((g) => gen(g, 400).filter((x) => x.choices.some((c) => c !== x.answer && !(x.whyNot || {})[c])).map(() => g));
+  const falseExplains = BANKS.flatMap((g) => gen(g, 400).filter((x) => !explainTrue(g, x)).map((x) => g + ': ' + x.explain));
+  const qh = gen('p3-next-guess', 400).find((x) => npKeyOf(NP_N3, bodyOf(x)) === 'hot'); const reasonPlant = !reasonTrue('p3-next-guess', qh, 'icon:coat', { name: 'The fan', why: N3_WHY.cold[2] });
+  const qr = gen('p4-retell-first', 40)[0]; const explainPlant = !explainTrue('p4-retell-first', { ...qr, explain: qr.explain.replace(/^First the (\w+) (.+?), next it (.+?), and last it (.+?)\.$/, 'First the $1 $4, next it $3, and last it $2.') });
+  ok('every reason and every explanation pass NP\'s twenty banks give is the one the test\'s own tables give for its story and its choice, and every wrong choice of a choice question has its reason (seeds 1 to 400; the cold story\'s reason for the fan beside the hot story, and an explanation with the first and last things swapped, planted, each caught)', falseReasons.length === 0 && missingReasons.length === 0 && falseExplains.length === 0 && reasonPlant && explainPlant, [...falseReasons.slice(0, 3), ...falseExplains.slice(0, 3), ...missingReasons.slice(0, 3)].join(' | '));
+  // 3. Every kind of question the twenty banks ask is modeled by a line of its lesson that asks it or works it. Plant: each kind's model
+  //    line taken out, caught.
+  const KIND_LINES = { 'p3-next-guess': /What do you think will happen next\?/, 'p3-next-feel': /How do you think Mia will feel\? Sad is a good guess/, 'p3-next-clue': /Which one was a clue\? The clouds were the clue/, 'p3-next-check': /Was our guess right\? Yes, we guessed it would rain, and it did!/, 'p3-next-good': /Is this a good guess now\? Yes!/,
+    'p4-clue-next': /What will happen next\? Rain is a good guess/, 'p4-clue-why': /Why\? It was raining!/, 'p4-clue-feel': /how do you think she felt\? Happy is a good guess!/, 'p4-clue-check': /Was our guess right\? No, and that is okay\./, 'p4-clue-which': /If we guessed Ben would go to bed, which one was a clue\? The moon was the clue/,
+    'p3-act-who': /Who is in this story\? The frog!/, 'p3-act-first': /What did the frog do first\? It ate an apple\./, 'p3-act-then': /What did the frog do after it ate the apple\? It played the guitar\./, 'p3-act-prop': /Which thing could help you act out the bear's story, a hat or a book\? A hat/, 'p3-act-order': /We can tap the pictures in order, first the book, and then the guitar\./,
+    'p4-retell-first': /What did the fox do first\? It ate an apple/, 'p4-retell-last': /Last, the fox flew a kite, and that is the end!/, 'p4-retell-near': /What did the fox do right after it ate the apple\? It read a book\./, 'p4-retell-order': /We can tap the pictures in order too/, 'p4-retell-word': /When did the owl put on a hat, first, next or last\? Last!/ };
+  const linesOf = (m, drop) => m.lesson.script.map((l) => l.say).filter((s) => !(drop && drop.test(s)));
+  const unmodeled = BANKS.filter((g) => !linesOf(lessonOf(g)).some((s) => KIND_LINES[g].test(s)));
+  const caught = BANKS.filter((g) => !linesOf(lessonOf(g), KIND_LINES[g]).some((s) => KIND_LINES[g].test(s)));
+  ok('every kind of question pass NP\'s twenty banks ask is modeled by a line of its lesson that asks it or works it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + ')', BANKS.length === 20 && unmodeled.length === 0 && caught.length === 20, unmodeled.join(', '));
+  // 4. The code's tables are the test's, every story, check, feeling, reason, friend and thing is asked or shown at seeds 1 to 400, and
+  //    each lesson opens after the lesson its ideas build on, with its reason. Plant: a table without the hat, caught.
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const storiesAre = (C, T, ask) => same(Object.keys(C), Object.keys(T)) && Object.keys(T).every((k) => same([].concat(C[k].told), T[k].told) && (ask ? C[k].ask : 'What will happen next?') === T[k].ask && C[k].good === T[k].good && C[k].bad === T[k].bad);
+  const checksAre = (C, T) => same(Object.fromEntries(Object.entries(C).map(([k, c]) => [k, [c.told, c.guessed, c.right, c.wrong, c.rightSaid, c.wrongSaid]])), T);
+  const tablesOk = (C) => storiesAre(C.NEXT3_STORIES, NP_N3, true) && same(Object.fromEntries(Object.entries(C.NEXT3_CLUES).map(([k, c]) => [k, [c.clue, c.guessed, c.with]])), NP_N3_CLUES) && checksAre(C.NEXT3_CHECKS, NP_N3_CHECKS)
+    && same(Object.fromEntries(C.NEXT3_FEELS.map((f) => [f.told, [f.who, f.feel]])), NP_N3_FEELS) && storiesAre(C.CLUE4_STORIES, NP_C4, false) && checksAre(C.CLUE4_CHECKS, NP_C4_CHECKS)
+    && same(C.CLUE4_WHICH_TOLD, NP_C4_WHICH_TOLD) && same(Object.fromEntries(Object.values(C.CLUE4_WHICH).map((w) => [w.guessed, [w.story, w.clue, w.not]])), NP_C4_WHICH)
+    && same(Object.fromEntries(C.CLUE4_WHYS.map((w) => [w.told, [w.answer, Object.keys(w.others)]])), NP_C4_WHYS) && same(Object.fromEntries(C.CLUE4_FEELS.map((f) => [f.told, [f.who, f.feel]])), NP_C4_FEELS)
+    && same(C.ACT3_ANIMALS, NP_A3_ANIMALS) && same(Object.fromEntries(Object.entries(C.ACT3_DOES).map(([k, v]) => [v, k])), NP_A3_DOES) && same(C.ACT3_PROPS, NP_A3_PROPS)
+    && same(C.RETELL4_ANIMALS, NP_R4_ANIMALS) && same(Object.fromEntries(Object.entries(C.RETELL4_DOES).map(([k, v]) => [v[0], [k, v[1]]])), NP_R4_DOES) && same(C.RETELL4_WORDS, NP_R4_WORDS);
+  const tablePlant = !tablesOk({ ...L, ACT3_PROPS: NP_A3_PROPS.filter((t) => t !== 'hat') });
+  const seen = new Set(); for (const g of BANKS) for (const x of gen(g, 400)) { for (const c of x.choices) seen.add(String(c)); seen.add(String(x.answer)); if (x.visual) seen.add(x.visual.kind + ':' + x.visual.name); seen.add(x.story); }
+  const toldAll = [...Object.values(NP_N3), ...Object.values(NP_C4)].flatMap((s) => s.told).concat(Object.values(NP_N3_CHECKS).map((c) => c[0]), Object.values(NP_C4_CHECKS).map((c) => c[0]), ...Object.values(NP_C4_WHICH_TOLD), Object.keys(NP_C4_WHYS), Object.keys(NP_N3_FEELS), Object.keys(NP_C4_FEELS));
+  const storiesSeen = toldAll.filter((t) => ![...seen].some((y) => y.includes(t)));
+  const wantSeen = [...new Set([...Object.values(NP_N3), ...Object.values(NP_C4)].flatMap((s) => [s.good, s.bad]).concat(Object.values(NP_N3_CLUES).map((c) => c[0]), Object.values(NP_C4_WHICH).flatMap((w) => [w[1], w[2]]), Object.values(NP_C4_WHYS).flatMap((w) => [w[0], ...w[1]]))),
+    'face:happy', 'face:sad', 'face:mad', 'face:scared', ...NP_A3_ANIMALS.map((x) => 'pic:' + x), ...Object.values(NP_A3_DOES).map((x) => 'icon:' + x), ...Object.values(NP_R4_DOES).map((x) => 'icon:' + x[0]), ...NP_R4_WORDS, 'Yes', 'No'];
+  const opens = [['what-happens-next', ['listen-to-the-story']], ['act-it-out', ['listen-to-the-story']], ['story-clues', ['story-questions']], ['tell-it-again', ['story-questions']]].every(([id, req]) => { const m = L.getModule(id); return same(m.requires, req) && typeof m.requiresWhy === 'string' && m.requiresWhy.length > 40; });
+  ok('the code\'s tables for pass NP\'s four lessons are the test\'s own, every story in each of its orders, every guess-checking story, feeling and reason is told, and every guess, clue, face, friend, thing and word is asked or shown at seeds 1 to 400, and each lesson opens after the lesson its ideas build on, with its reason (a table without the hat, planted, caught)', tablesOk(L) && tablePlant && storiesSeen.length === 0 && wantSeen.every((w) => seen.has(w)) && opens, JSON.stringify({ missing: wantSeen.filter((w) => !seen.has(w)), storiesSeen }));
+}
+// Pass NP's banks scored blind, alone at seeds 1 to 2,000 and in rounds as built (1,500 first rounds, later rounds, triple doses and
+// Quick Reviews each): always the same button or the same choice, a picture by the order the story says it (pre-K 4's which one was a
+// clue, whose two choices the story both tells), a yes or no by what it names or shows alone and its Yes share, and an order question
+// tapped from the top left. Bounds: two choices under 56 percent (chance 50), three under 42 (chance 33), Yes between 40 and 60; an
+// order question under 20 percent (chance 1 in 12 for two of four, 1 in 24 for three of four). Since the lead's own blind read (pass NP)
+// a prediction picture is the good guess after one story and the wrong one after its mirror: with one story to a pair, a child who
+// always tapped the rain was right two times in three. What the friend did first is said first in its story, by design: the story's
+// order is the answer.
+{ const genN = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const worst = (R, g, f) => Math.max(f(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length).map(f));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const firstBtn = (qs) => qs.filter((q) => String(q.choices[0]) === String(q.answer)).length / qs.length;
+  const oneChoice = (qs) => { const all = [...new Set(qs.flatMap((q) => q.choices.map(String)))]; return Math.max(...all.map((w) => qs.reduce((n, q) => n + (q.choices.includes(w) ? (q.answer === w ? 1 : 0) : 1 / q.choices.length), 0) / qs.length)); };
+  const byKey = (key) => (qs) => { const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || { Yes: 0, No: 0 }; t[k][q.answer] += 1; } return Object.values(t).reduce((n, v) => n + Math.max(v.Yes, v.No), 0) / qs.length; };
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const sayAt = (q, c) => q.story.toLowerCase().indexOf(myName(c));
+  const saidFirst = (qs) => qs.filter((q) => { const at = q.choices.map((c) => sayAt(q, c)).map((i) => (i < 0 ? Infinity : i)); const min = Math.min(...at); return min < Infinity && at.filter((v) => v === min).length === 1 && q.choices[at.indexOf(min)] === q.answer; }).length / qs.length;
+  const orderTop = (qs) => qs.filter((q) => q.choices.slice(0, q.pick).join(' | ') === q.answer).length / qs.length;
+  const R3 = ofModule('what-happens-next', 1500); const R4 = ofModule('story-clues', 1500); const RA = ofModule('act-it-out', 1500); const RR = ofModule('tell-it-again', 1500);
+  const two = Math.max(...[[R3, 'p3-next-guess'], [R3, 'p3-next-feel'], [R3, 'p3-next-clue'], [R4, 'p4-clue-next'], [R4, 'p4-clue-why'], [R4, 'p4-clue-which'], [RA, 'p3-act-who'], [RA, 'p3-act-first'], [RA, 'p3-act-then'], [RA, 'p3-act-prop']].flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice)]));
+  const three = Math.max(...[[R4, 'p4-clue-feel'], [RR, 'p4-retell-first'], [RR, 'p4-retell-last'], [RR, 'p4-retell-near'], [RR, 'p4-retell-word']].flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice)]));
+  const order = worst(R4, 'p4-clue-which', saidFirst);
+  const taps = Math.max(worst(RA, 'p3-act-order', orderTop), worst(RR, 'p4-retell-order', orderTop));
+  const guessedOf = (q) => /We guessed (.+?)\./.exec(q.story)[1];
+  const ynShown = Math.max(worst(R3, 'p3-next-check', byKey(guessedOf)), worst(R4, 'p4-clue-check', byKey(guessedOf)), worst(R3, 'p3-next-good', byKey((q) => q.visual.name)), worst(R3, 'p3-next-good', byKey((q) => q.story)));
+  const yn = [[R3, 'p3-next-check'], [R3, 'p3-next-good'], [R4, 'p4-clue-check']];
+  const shares = yn.flatMap(([R, g]) => [yesShare(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length).map(yesShare)]); const yesLo = Math.min(...shares); const yesHi = Math.max(...shares);
+  // Plants: a which bank that always tells its clue first, read by the picture said first, and a good-guess bank whose pictures keep one
+  // role each (the rain always a good guess, the sun never), read by the picture shown, each caught.
+  const clueFirst = genN('p4-clue-which', 400).map((q) => { const e = NP_C4_WHICH[guessedOf(q)]; const t = NP_C4_WHICH_TOLD[e[0]]; const pick = t.find((s) => s.toLowerCase().indexOf(myName(e[1])) < s.toLowerCase().indexOf(myName(e[2]))) || `Kai's dog brought him its leash. Snow was falling.`;
+    return { ...q, story: `Listen. ${pick} We guessed ${guessedOf(q)}.` }; });
+  const oneRole = genN('p3-next-good', 400).map((q) => ({ ...q, visual: { kind: 'icon', name: q.answer === 'Yes' ? 'rain' : 'sun' } }));
+  const plants = saidFirst(clueFirst) >= 0.56 && byKey((q) => q.visual.name)(oneRole) >= 0.6;
+  ok(`pass NP's twenty banks scored blind, alone and in rounds as built, stay under their bounds (two choices by the first button or one choice at most ${pct(two)}%, three ${pct(three)}%; pre-K 4's clue by the order the story says it ${pct(order)}%; an order question tapped from the top left ${pct(taps)}%; a yes or no by its guess, the picture it shows or its story alone ${pct(ynShown)}%, Yes ${pct(yesLo)} to ${pct(yesHi)}%; a clue told first and pictures with one role each, planted, caught)`,
+    two < 0.56 && three < 0.42 && order < 0.56 && taps < 0.2 && ynShown < 0.6 && yesLo >= 0.4 && yesHi <= 0.6 && plants, JSON.stringify({ two, three, order, taps, ynShown, yesLo, yesHi })); }
+// Pass NP's story banks read by a child who heard only the story or only the question (seeds 1 to 2,000). By design the story alone
+// answers pre-K 3's which one was a clue (the story's own clue, beside another story's, which it never tells), who is in an act-it-out
+// story, which thing could help act it out and what came after (each the one its story names, beside one it never names), each over
+// 90 percent, and it rules out the thing Tell it again's right-after and right-before question names nowhere, leaving two of three; the
+// question alone answers nothing. Every other kind is held near chance by both. The question-only read takes, for each question, the
+// choice most often right for that same question across the bank, leaving the question itself out; the story-only read taps, among the
+// choices the story names, one at random.
+{ const genN = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const syn = { cloud: 'clouds', drop: 'water' };
+  const named = (text, c) => { const x = String(c); const n = /^(?:pic|icon):/.test(x) ? myName(x) : /^face:/.test(x) ? x.slice(5) : null; return n !== null && (new RegExp('\\b' + n + '\\b', 'i').test(text) || (syn[n] && new RegExp('\\b' + syn[n] + '\\b', 'i').test(text))); };
+  const storyOnly = (qs) => qs.reduce((n, q) => { const c = q.choices.filter((x) => named(q.story, x)); const pool = c.length ? c : q.choices; return n + (pool.includes(q.answer) ? 1 / pool.length : 0); }, 0) / qs.length;
+  const questionOnly = (qs) => { const t = {}; for (const q of qs) { t[q.prompt] = t[q.prompt] || {}; t[q.prompt][q.answer] = (t[q.prompt][q.answer] || 0) + 1; }
+    return qs.reduce((n, q) => { const score = (c) => (t[q.prompt][c] || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const TB = ['p3-next-guess', 'p3-next-feel', 'p3-next-clue', 'p4-clue-next', 'p4-clue-why', 'p4-clue-feel', 'p4-clue-which', 'p3-act-who', 'p3-act-first', 'p3-act-then', 'p3-act-prop', 'p4-retell-first', 'p4-retell-last', 'p4-retell-near', 'p4-retell-word'];
+  const S = Object.fromEntries(TB.map((g) => [g, storyOnly(genN(g, 2000))])); const Q = Object.fromEntries(TB.map((g) => [g, questionOnly(genN(g, 2000))]));
+  const DESIGN_S = ['p3-next-clue', 'p3-act-who', 'p3-act-then', 'p3-act-prop']; const THREE = ['p4-clue-feel', 'p4-retell-first', 'p4-retell-last', 'p4-retell-near', 'p4-retell-word'];
+  const byDesign = DESIGN_S.every((g) => S[g] > 0.9) && Math.abs(S['p4-retell-near'] - 0.5) < 0.02;
+  const near = TB.every((g) => (DESIGN_S.includes(g) || g === 'p4-retell-near' || S[g] < (THREE.includes(g) ? 0.42 : 0.56)) && Q[g] < (THREE.includes(g) ? 0.42 : 0.56));
+  const pct = (v) => Math.round(v * 1000) / 10; const rest = TB.filter((g) => !DESIGN_S.includes(g) && g !== 'p4-retell-near');
+  ok(`pass NP's story banks read by a child who heard only the story or only the question: by design the story alone answers pre-K 3's which one was a clue, who is in an act-it-out story, which thing could help act it out and what came after, each over 90 percent, and leaves two of three for Tell it again's right after and right before (${pct(S['p4-retell-near'])}%); every other kind near chance (story only at most ${pct(Math.max(...rest.map((g) => S[g])))}%, question only at most ${pct(Math.max(...TB.map((g) => Q[g])))}%)`,
+    byDesign && near, JSON.stringify({ S, Q })); }
+// Hold a book and Which way we read (pass NP's second wave): their ten banks worked out from what each question says and shows by the
+// test's own tables (NP_BOOK3*, NP_WAY4_*), each near miss caught by the guard it names and no other: with that guard taken out of its
+// derivation's own text it gets an answer at every seed from 1 to 400, and with it in, none.
+{ const D = PREK_DERIVE; const W2 = ['hold-a-book', 'which-way-we-read-pk'].flatMap((id) => L.getModule(id).generators);
+  const third = (c) => (x) => ({ ...x, choices: [...x.choices, c] });
+  const NEAR = [
+    ['p3-book-front', 'three', third('icon:book~down')], ['p3-book-up', 'three', third('icon:book~back')], ['p3-book-start', 'three', third('icon:book~cover')],
+    ['p3-book-isfront', 'other', (x) => ({ ...x, visual: { kind: 'icon', name: 'page~start' } })], ['p3-book-isstart', 'other', (x) => ({ ...x, visual: { kind: 'icon', name: 'book~cover' } })],
+    ['p4-way-up', 'other', (x) => ({ ...x, visual: { kind: 'icon', name: 'book~back' } })],
+    ['p4-way-word', 'three', (x) => ({ ...x, choices: [...x.choices, `print:${x.visual.text.split(' ')[1]}`] })],
+    ['p4-way-line', 'three', third('print:Mom sees Dad.')],
+    ['p4-way-next', 'three', (x) => ({ ...x, choices: [...x.choices, `print:${x.visual.a.text.split(' ')[0]}`] })],
+    ['p4-way-arrow', 'three', third('icon:book~cover')],
+  ];
+  const GUARDS = {
+    'p3-book-front three': ['npBookPickOf', '\n  if (!nmSame(q, w)) return null;'], 'p3-book-up three': ['npBookPickOf', '\n  if (!nmSame(q, w)) return null;'], 'p3-book-start three': ['npBookPickOf', '\n  if (!nmSame(q, w)) return null;'],
+    'p3-book-isfront other': ['npBookIsOf', '\n  if (!Object.keys(T).includes(v.name)) return null;'], 'p3-book-isstart other': ['npBookIsOf', '\n  if (!Object.keys(T).includes(v.name)) return null;'], 'p4-way-up other': ['npBookIsOf', '\n  if (!Object.keys(T).includes(v.name)) return null;'],
+    'p4-way-word three': ['npWayWordOf', '\n  if (!nmSame(q, [`print:${s.a}`, `print:${s.b}`])) return null;'],
+    'p4-way-line three': ['npWayLineFirstOf', '\n  if (!nmSame(q, two.map((x) => `print:${x.text}`))) return null;'],
+    'p4-way-next three': ['npWayNextOf', '\n  if (!nmSame(q, [`print:${two[1].a}`, `print:${two[1].b}`])) return null;'],
+    'p4-way-arrow three': ['npWayArrowOf', '\n  if (!nmSame(q, w)) return null;'],
+  };
+  const HELPERS = { npBookPickOf, npBookIsOf, npWayWordOf, npWayLineFirstOf, npWayNextOf, npWayArrowOf };
+  const without = (g, [where, from]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join('');
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  // Plant: a near miss a second guard also catches (a third choice beside a question the bank never asks) fails its proof.
+  const plantCaught = !!prove('p3-book-front', 'three', (x) => ({ ...third('icon:book~down')(x), prompt: 'Which one is a book?' }));
+  ok('Hold a book\'s and Which way we read\'s ten banks are worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    W2.length === 10 && W2.every((g) => typeof D[g] === 'function') && NEAR.length === W2.length && NEAR.every(([g]) => W2.includes(g)) && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What the two book lessons' banks may and may not do, read over seeds 1 to 400 by the test's own tables.
+{ const B3 = L.getModule('hold-a-book'); const W4 = L.getModule('which-way-we-read-pk');
+  const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const BANKS = [...B3.generators, ...W4.generators]; const lessonOf = (g) => (/^p3-/.test(g) ? B3 : W4);
+  const lineText = (m) => m.lesson.script.map((l) => l.say).join(' ');
+  // 1. Every picture a bank shows (a choice, or the one picture of a yes or no) is drawn by a line of its lesson, and every name and doing
+  //    word Which way we read prints is said by its lines. Plant: the lines without Kai, caught.
+  const drawnIn = (m) => { const out = new Set(); const walk = (v) => { if (!v) return; if (v.kind === 'pair') { walk(v.a); walk(v.b); } else if (v.kind === 'row') (v.items || []).forEach(walk); else if (v.kind === 'pic' || v.kind === 'icon') out.add(v.kind + ':' + v.name); };
+    m.lesson.script.forEach((l) => walk(l.show)); return out; };
+  const notDrawn = BANKS.flatMap((g) => { const d = drawnIn(lessonOf(g)); return gen(g, 400).flatMap((x) => [...x.choices, ...(x.visual && x.visual.kind === 'icon' ? [`icon:${x.visual.name}`] : [])].filter((c) => /^(?:pic|icon):/.test(String(c)) && !d.has(String(c))).map((c) => g + ' ' + c)); });
+  const unsaid = (text) => [...NP_WAY4_NAMES, ...NP_WAY4_DOES].filter((w) => !new RegExp('\\b' + w + '\\b').test(text));
+  const printedOnly = W4.generators.flatMap((g) => gen(g, 400).flatMap((x) => [x.visual, ...(x.visual && x.visual.kind === 'pair' ? [x.visual.a, x.visual.b] : [])].filter((v) => v && v.kind === 'print').flatMap((v) => v.text.replace(/\.$/, '').split(' ')).filter((w) => !new RegExp('\\b' + w + '\\b').test(lineText(W4)))));
+  ok('every picture Hold a book\'s and Which way we read\'s banks show is drawn by a line of its lesson, and every name and doing word Which way we read prints is said by its lines (the lines without Kai, planted, caught)', notDrawn.length === 0 && unsaid(lineText(W4)).length === 0 && printedOnly.length === 0 && unsaid(lineText(W4).replace(/Kai/g, 'Leo')).length === 1, JSON.stringify({ notDrawn: [...new Set(notDrawn)].slice(0, 5), unsaid: unsaid(lineText(W4)), printedOnly: [...new Set(printedOnly)] }));
+  // 2. Every reason and explanation is the one the test's tables give: the other side of a book or a page, what a picture has, where a
+  //    book's sun is, where a word or a line sits, and which way an arrow points. Plants: the front's reason beside a question about the
+  //    back, and an explanation that names the last word first, each caught.
+  const B3_WHY = { 'icon:book~cover': ['The front of the book', 'has the book\'s name and a picture on it.', 'The book that is right side up', 'has its sun at the top.'], 'icon:book~back': ['The back of the book', 'has no name and no picture on it.'], 'icon:book~down': ['The upside-down book', 'has its sun at the bottom.'], 'icon:page~start': ['The page with its dot at the top', 'shows where we start.'], 'icon:page~end': ['The page with its dot at the bottom', 'shows where we stop.'] };
+  const B3_EXPLAIN = { 'Which one is the front of the book?': 'The front has the book\'s name and a picture on it.', 'Which one is the back of the book?': 'The back of this book has no name and no picture on it.', 'Which book is right side up?': 'This book is right side up, with its sun at the top.', 'Which book is upside down?': 'This book is upside down, with its sun at the bottom.', 'Where do we start reading?': 'We start at the top of the page, by the first word.', 'Where do we stop reading?': 'We stop at the bottom of the page, after the last word.' };
+  const HAS = { 'book~cover': 'it has the book\'s name and a picture', 'book~back': 'it has no name and no picture', 'page~start': 'this dot is by the first word, at the top', 'page~end': 'this dot is after the last word, at the bottom' };
+  // A page's dot said shorter in the reason after a wrong tap, which is at most 18 words.
+  const NEAR = { 'page~start': 'this dot is by the first word', 'page~end': 'this dot is after the last word' };
+  const SUN = { 'book~cover': 'top', 'book~down': 'bottom' };
+  const reasonTrue = (g, x, c, e) => {
+    if (['p3-book-front', 'p3-book-up', 'p3-book-start'].includes(g)) { const w = B3_WHY[c]; const up = x.prompt === 'Which book is upside down?'; return c === NP_BOOK3[x.prompt][1] && !!w && e.name === (up && c === 'icon:book~cover' ? w[2] : w[0]) && e.why === (up && c === 'icon:book~cover' ? w[3] : w[1]); }
+    if (g === 'p3-book-isfront' || g === 'p3-book-isstart') { const a = /(front|back|start|stop)/.exec(x.prompt)[1]; const has = (g === 'p3-book-isstart' ? NEAR : HAS)[x.visual.name]; const verb = g === 'p3-book-isfront' ? `this is${x.answer === 'Yes' ? ' not' : ''} the ${a}` : `we${x.answer === 'Yes' ? ' do not' : ''} ${a} here`;
+      return c === (x.answer === 'Yes' ? 'No' : 'Yes') && e.why === `would mean ${verb}, but ${has}.`; }
+    if (g === 'p4-way-up') { const a = /(right side up|upside down)/.exec(x.prompt)[1]; return c === (x.answer === 'Yes' ? 'No' : 'Yes') && e.why === `would mean it is${x.answer === 'Yes' ? ' not' : ''} ${a}, but its sun is at the ${SUN[x.visual.name]}.`; }
+    if (g === 'p4-way-word') { const s = npWayLineOf(x.visual.text); const first = /first/.test(x.prompt); return c === `print:${first ? s.b : s.a}` && e.name === (first ? s.b : s.a) && e.why === (first ? 'is at the end of the line, so we read it last.' : 'is at the start of the line, so we read it first.'); }
+    if (g === 'p4-way-line') { const first = /first/.test(x.prompt); return c === `print:${first ? x.visual.b.text : x.visual.a.text}` && (first ? e.name === 'The bottom line' && e.why === 'comes after the top one, so we read it last.' : e.name === 'The top line' && e.why === 'comes first, before the line under it.'); }
+    if (g === 'p4-way-next') { const s = npWayLineOf(x.visual.b.text); return c === `print:${s.b}` && e.name === s.b && e.why === 'is at the end of the next line, so we read it last.'; }
+    if (g === 'p4-way-arrow') return c === NP_WAY4_ARROWS[x.prompt][1] && (c === 'icon:arrow~down' ? e.name === 'The arrow that points down' && e.why === 'shows the way to the next line.' : e.name === 'The arrow that points along' && e.why === 'shows the way we read along a line.');
+    return false; };
+  const explainTrue = (g, x) => { const e = x.explain;
+    if (['p3-book-front', 'p3-book-up', 'p3-book-start'].includes(g)) return e === B3_EXPLAIN[x.prompt];
+    if (g === 'p3-book-isfront') { const side = NP_BOOK3_FRONT[x.visual.name]; return e === `${x.answer}. This is the ${side}, because ${HAS[x.visual.name]}.`; }
+    if (g === 'p3-book-isstart') { const end = NP_BOOK3_START[x.visual.name]; return e === `${x.answer}. We ${end} here, because ${HAS[x.visual.name]}.`; }
+    if (g === 'p4-way-up') return e === `${x.answer}. Its sun is at the ${SUN[x.visual.name]}, so it is ${NP_WAY4_IS[x.visual.name]}.`;
+    if (g === 'p4-way-word') { const s = npWayLineOf(x.visual.text); return e === (/first/.test(x.prompt) ? `We read ${s.a} first, because it is at the start of the line.` : `We read ${s.b} last, because it is at the end of the line.`); }
+    if (g === 'p4-way-line') return e === (/first/.test(x.prompt) ? 'We read the top line first.' : 'We read the bottom line last, after the top one.');
+    if (g === 'p4-way-next') return e === `Next comes ${npWayLineOf(x.visual.b.text).a}, at the start of the next line.`;
+    if (g === 'p4-way-arrow') return e === (x.answer === 'icon:arrow' ? 'We read along a line this way, from the start to the end.' : 'This arrow points down, to the next line.');
+    return false; };
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.name + ' ' + e.why)));
+  const missingReasons = BANKS.flatMap((g) => gen(g, 400).filter((x) => x.choices.some((c) => c !== x.answer && !(x.whyNot || {})[c])).map(() => g));
+  const falseExplains = BANKS.flatMap((g) => gen(g, 400).filter((x) => !explainTrue(g, x)).map((x) => g + ': ' + x.explain));
+  const qb = gen('p3-book-front', 400).find((x) => x.prompt === 'Which one is the back of the book?'); const reasonPlant = !reasonTrue('p3-book-front', qb, 'icon:book~cover', { name: 'The back of the book', why: 'has no name and no picture on it.' });
+  const qw = gen('p4-way-word', 400).find((x) => /first/.test(x.prompt)); const explainPlant = !explainTrue('p4-way-word', { ...qw, explain: `We read ${npWayLineOf(qw.visual.text).b} first, because it is at the start of the line.` });
+  ok('every reason and every explanation Hold a book\'s and Which way we read\'s banks give is the one the test\'s own tables give, and every wrong choice has its reason (seeds 1 to 400; the back\'s reason beside the front, and an explanation that reads the last word first, planted, each caught)', falseReasons.length === 0 && missingReasons.length === 0 && falseExplains.length === 0 && reasonPlant && explainPlant, [...falseReasons.slice(0, 3), ...falseExplains.slice(0, 3), ...missingReasons.slice(0, 3)].join(' | '));
+  // 3. Every kind each bank asks is modeled by a line of its lesson. Plant: each kind's model line taken out, caught.
+  const KIND_LINES = { 'p3-book-front': /Which one is the front of the book\?/, 'p3-book-up': /Which book is right side up\?/, 'p3-book-start': /Where do we start reading on this page\?/, 'p3-book-isfront': /Is this the front of the book\? Yes!/, 'p3-book-isstart': /Is this where we start\? No,/,
+    'p4-way-up': /Is this book right side up\? No!/, 'p4-way-word': /Which word do we read first\? Mom/, 'p4-way-line': /Which line do we read first\? The top one/, 'p4-way-next': /which word comes next\? Sam, at the start of the next line!/, 'p4-way-arrow': /Which arrow shows the way we read along a line\? This one!/ };
+  const linesOf = (m, drop) => m.lesson.script.map((l) => l.say).filter((s) => !(drop && drop.test(s)));
+  const unmodeled = BANKS.filter((g) => !linesOf(lessonOf(g)).some((s) => KIND_LINES[g].test(s)));
+  const caught = BANKS.filter((g) => !linesOf(lessonOf(g), KIND_LINES[g]).some((s) => KIND_LINES[g].test(s)));
+  ok('every kind of question Hold a book\'s and Which way we read\'s banks ask is modeled by a line of its lesson that asks it or works it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + ')', BANKS.length === 10 && unmodeled.length === 0 && caught.length === 10, unmodeled.join(', '));
+  // 4. The code's tables are the test's, every question either way is asked at seeds 1 to 400, every name begins a line and ends one, and
+  //    each lesson opens after the lesson its ideas build on, with its reason. Plant: a table with a doing word the lines never say, caught.
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const tablesOk = (C) => same(Object.fromEntries(Object.values(C.BOOK3_ASKS).map((a) => [a.prompt, [a.right, a.wrong]])), NP_BOOK3) && same(C.WAY4_NAMES, NP_WAY4_NAMES) && same(C.WAY4_DOES, NP_WAY4_DOES);
+  const tablePlant = !tablesOk({ ...L, WAY4_DOES: [...NP_WAY4_DOES, 'hugs'] });
+  const prompts = new Set(BANKS.flatMap((g) => gen(g, 400).map((x) => x.prompt)));
+  const wantPrompts = [...Object.keys(NP_BOOK3), ...Object.keys(NP_WAY4_ARROWS), 'Is this the front of the book?', 'Is this the back of the book?', 'Is this where we start reading?', 'Is this where we stop reading?', 'Is this book right side up?', 'Is this book upside down?', 'Which word do we read first?', 'Which word do we read last?', 'Which line do we read first?', 'Which line do we read last?', 'Which word do we read next?'];
+  const shown = new Set(['p3-book-isfront', 'p3-book-isstart', 'p4-way-up'].flatMap((g) => gen(g, 400).map((x) => x.visual.name)));
+  const ends = { first: new Set(), last: new Set() }; for (const x of gen('p4-way-word', 400)) { const s = npWayLineOf(x.visual.text); ends.first.add(s.a); ends.last.add(s.b); }
+  const opens = [['hold-a-book', ['pictures-and-words']], ['which-way-we-read-pk', ['spaces-between-words']]].every(([id, req]) => { const m = L.getModule(id); return same(m.requires, req) && typeof m.requiresWhy === 'string' && m.requiresWhy.length > 40; });
+  ok('the code\'s tables for the two book lessons are the test\'s own, every question either way is asked and every picture a yes or no shows is shown at seeds 1 to 400, every name begins a line and ends one, and each lesson opens after the lesson its ideas build on, with its reason (a table with a doing word the lines never say, planted, caught)', tablesOk(L) && tablePlant && wantPrompts.every((p) => prompts.has(p)) && ['book~cover', 'book~back', 'page~start', 'page~end', 'book~down'].every((n) => shown.has(n)) && NP_WAY4_NAMES.every((n) => ends.first.has(n) && ends.last.has(n)) && opens,
+    JSON.stringify({ missing: wantPrompts.filter((p) => !prompts.has(p)), shown: [...shown] }));
+}
+// The two book lessons' banks scored blind, alone at seeds 1 to 2,000 and in rounds as built (1,500 first rounds, later rounds, triple
+// doses and Quick Reviews each): always the same button or the same choice, and a yes or no by the picture it shows or the question alone,
+// with its Yes share. Every bank asks its question either way, so each picture is the answer to one question and the wrong choice in the
+// other: the question alone tells which side to look for, as Pictures and words' "Tap the words" and "Tap the picture" do, and the
+// pictures tell which one has it.
+{ const genN = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const worst = (R, g, f) => Math.max(f(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length).map(f));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const firstBtn = (qs) => qs.filter((q) => String(q.choices[0]) === String(q.answer)).length / qs.length;
+  const oneChoice = (qs) => { const all = [...new Set(qs.flatMap((q) => q.choices.map(String)))]; return Math.max(...all.map((w) => qs.reduce((n, q) => n + (q.choices.includes(w) ? (q.answer === w ? 1 : 0) : 1 / q.choices.length), 0) / qs.length)); };
+  const byKey = (key) => (qs) => { const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || { Yes: 0, No: 0 }; t[k][q.answer] += 1; } return Object.values(t).reduce((n, v) => n + Math.max(v.Yes, v.No), 0) / qs.length; };
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const RB = ofModule('hold-a-book', 1500); const RW = ofModule('which-way-we-read-pk', 1500);
+  const CH = [[RB, 'p3-book-front'], [RB, 'p3-book-up'], [RB, 'p3-book-start'], [RW, 'p4-way-word'], [RW, 'p4-way-line'], [RW, 'p4-way-next'], [RW, 'p4-way-arrow']];
+  const YN = [[RB, 'p3-book-isfront'], [RB, 'p3-book-isstart'], [RW, 'p4-way-up']];
+  const two = Math.max(...CH.flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice)]));
+  const yn = Math.max(...YN.flatMap(([R, g]) => [worst(R, g, byKey((q) => q.visual.name)), worst(R, g, byKey((q) => q.prompt)), worst(R, g, firstBtn)]));
+  const shares = YN.flatMap(([R, g]) => [yesShare(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length).map(yesShare)]); const yesLo = Math.min(...shares); const yesHi = Math.max(...shares);
+  // Plant: a front bank that asks only for the front, read by always tapping the front, caught.
+  const plant = oneChoice(genN('p3-book-front', 400).map((q) => ({ ...q, prompt: 'Which one is the front of the book?', answer: 'icon:book~cover' }))) >= 0.56;
+  ok(`the two book lessons' banks scored blind, alone and in rounds as built, stay under their bounds (two choices by the first button or one choice at most ${pct(two)}%; a yes or no by its picture, its question or its first button alone at most ${pct(yn)}%, Yes ${pct(yesLo)} to ${pct(yesHi)}%; a front bank that asks only for the front, planted, caught)`,
+    two < 0.56 && yn < 0.6 && yesLo >= 0.4 && yesHi <= 0.6 && plant, JSON.stringify({ two, yn, yesLo, yesHi })); }
+// What round one's code read found the pass NP blocks did not hold (pass NP): Hold a book's five banks each keyed on the word they ask,
+// so a round asks a word once while it can (its banks had none, so every round asked front or back twice); each of the six new looks named
+// by what it shows and never by a word its questions ask for; the line banks' names in their three fixed pairs, the passages a few
+// hundred; What happens next?'s clue beside a clue of the other kind, never the cloud beside the snow; and More Info's rows, which light
+// by their place, never given an empty reason or an empty other right answer. Each held with its near miss, planted, caught.
+{ const BOOK_BANKS = ['p3-book-front', 'p3-book-up', 'p3-book-start', 'p3-book-isfront', 'p3-book-isstart'];
+  const keyed = (qs) => qs.every((x) => Array.isArray(x.aboutWords) && x.aboutWords.length > 0 && x.aboutWords.every((w) => typeof w === 'string' && w));
+  const bookQs = BOOK_BANKS.flatMap((g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1)));
+  const keysSeen = new Set(bookQs.flatMap((x) => x.aboutWords || []));
+  const keysOk = keyed(bookQs) && ['front', 'back', 'up', 'down', 'start', 'stop'].every((k) => keysSeen.has(k)) && !keyed(bookQs.map((x, i) => (i === 0 ? { ...x, aboutWords: undefined } : x)));
+  const ASKED = { 'book~cover': ['front', 'right side up'], 'book~back': ['back'], 'book~down': ['upside'], 'page~start': ['start'], 'page~end': ['stop', 'end'], 'arrow~down': ['next line', 'along'] };
+  const namesOk = (T) => Object.entries(ASKED).every(([look, words]) => typeof T[look] === 'string' && T[look] && !words.some((w) => T[look].includes(w)));
+  const looksOk = namesOk(L.LOOK_NAMES) && Object.keys(ASKED).every((look) => L.describeChoice(`icon:${look}`) === `the ${L.LOOK_NAMES[look]}`)
+    && !namesOk({ ...L.LOOK_NAMES, 'book~cover': 'front of a book' }) && !namesOk(Object.fromEntries(Object.entries(L.LOOK_NAMES).filter(([k]) => k !== 'book~down')));
+  const PAIRS = [['Mom', 'Dad'], ['Ben', 'Ava'], ['Sam', 'Kai']];
+  const linesOf = (x) => (x.visual && x.visual.kind === 'pair' ? [x.visual.a.text, x.visual.b.text] : x.visual && x.visual.kind === 'print' ? [x.visual.text] : []);
+  const paired = (t) => { const w = /^([A-Z][a-z]+) [a-z]+ ([A-Z][a-z]+)\.$/.exec(t); return !!w && PAIRS.some((p) => p.includes(w[1]) && p.includes(w[2]) && w[1] !== w[2]); };
+  const wayQs = ['p4-way-word', 'p4-way-line', 'p4-way-next'].flatMap((g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1)));
+  const passages = new Set(['p4-way-line', 'p4-way-next'].flatMap((g) => Array.from({ length: 4000 }, (_, i) => linesOf(L.generateQuestion(g, i + 1)).join(' / '))));
+  const pairsOk = (qs) => qs.every((x) => { const ls = linesOf(x); return ls.length > 0 && ls.every(paired); });
+  const wayOk = pairsOk(wayQs) && passages.size > 50 && passages.size <= 500 && !pairsOk([...wayQs, { visual: { kind: 'print', text: 'Mom sees Ben.' } }]);
+  const WEATHER = ['icon:cloud', 'icon:snow']; const SKY = ['icon:moon', 'icon:sun'];
+  const kinds = (qs) => qs.every((x) => x.choices.length === 2 && x.choices.filter((c) => WEATHER.includes(c)).length === 1 && x.choices.filter((c) => SKY.includes(c)).length === 1);
+  const clueQs = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p3-next-clue', i + 1));
+  const clueOk = kinds(clueQs) && !kinds([...clueQs, { ...clueQs[0], choices: ['icon:cloud', 'icon:snow'] }]);
+  const banks = [...new Set(L.MODULES.flatMap((m) => m.generators))];
+  const emptyIn = (x) => Object.values(x.whyNot || {}).some((e) => !e || !String(e.why || '').trim()) || (x.alsoRight || []).some((a) => typeof a !== 'string' || !a.trim());
+  const empties = banks.flatMap((g) => Array.from({ length: 6 }, (_, i) => { const x = L.generateQuestion(g, i + 1); return x && x.type === 'choice' && emptyIn(x) ? `${g} seed ${i + 1}` : []; }).flat());
+  const emptyPlant = emptyIn({ whyNot: {}, alsoRight: ['', 'x'] });
+  ok(`round one's code read, held (pass NP): Hold a book's banks keyed on the word they ask (all six seen), the six new looks named by what they show and not by a word their questions ask for (as describeChoice says them), the line banks' names in their three pairs (${passages.size} two-line passages), What happens next?'s clue beside a clue of the other kind, and no empty reason or other right answer for More Info's rows in ${banks.length} banks; each near miss planted, caught`,
+    keysOk && looksOk && wayOk && clueOk && empties.length === 0 && emptyPlant, JSON.stringify({ keysOk, looksOk, wayOk, clueOk, empties: empties.slice(0, 5) })); }
+// The lines' printed sentences (pass NP, round two's lesson read: three lines printed "Ben hugs Ava." while the voice said "Ben helps
+// Ava."): every sentence a line of Which way we read prints is two of the bank's names and one of its doing words, and a line that says
+// "it says, X" prints X. The lines with the old word printed, planted, fail it.
+{ const m = L.getModule('which-way-we-read-pk');
+  const prints = (show) => (!show ? [] : show.kind === 'print' ? [show.text] : [show.a, show.b, ...(show.items || [])].flatMap((x) => prints(x)));
+  const fine = (t) => { const w = /^([A-Z][a-z]+) ([a-z]+) ([A-Z][a-z]+)\.$/.exec(t); return !!w && NP_WAY4_NAMES.includes(w[1]) && NP_WAY4_DOES.includes(w[2]) && NP_WAY4_NAMES.includes(w[3]) && w[1] !== w[3]; };
+  const linesOk = (lines) => lines.every((l) => { const shown = prints(l.show); const said = [...l.say.matchAll(/it says, ([A-Z][a-z]+ [a-z]+ [A-Z][a-z]+)\./g)].map((x) => x[1] + '.'); return shown.every(fine) && said.every((t) => shown.includes(t)); });
+  const lines = m.lesson.script; const printed = lines.flatMap((l) => prints(l.show));
+  const planted = lines.map((l) => (l.show && JSON.stringify(l.show).includes('Ben helps Ava.') ? { ...l, show: JSON.parse(JSON.stringify(l.show).replace(/Ben helps Ava\./g, 'Ben hugs Ava.')) } : l));
+  ok(`every sentence Which way we read's lines print is two of its names and one of its doing words, and a line that says "it says" prints what it says (${printed.length} printed; the old "Ben hugs Ava.", planted, caught)`, printed.length > 2 && linesOk(lines) && planted.some((l, i) => l !== lines[i]) && !linesOk(planted)); }
+// The cover's sun and hill on its own picture (pass NP, round one's story and picture read): the sun is the cue both book lessons name
+// ("Its sun is at the bottom"), and on the cover's pale picture (#EAF4FB) with no edge it read 1.64 to 1, the hill 2.46, in both themes,
+// since neither color has a dark variant. Each now wears an edge that reads 3 to 1 or more on that picture. The cover as built, planted,
+// fails it.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const lum = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
+  const ratio = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const coverOf = (src) => { const at = src.indexOf("  'book~cover': "); return at < 0 ? '' : src.slice(at, src.indexOf('\n', at)); };
+  const partsOk = (line) => { const panel = (/<rect x="38" y="33" width="36" height="47" rx="3" fill="(#[0-9A-F]{6})"/.exec(line) || [])[1];
+    const parts = [/<circle cx="63" cy="45"[^>]*\/>/, /<path d="M38 80 V70[^>]*\/>/].map((re) => (re.exec(line) || [''])[0]);
+    return !!panel && parts.every((x) => { const edge = (/stroke="(#[0-9A-F]{6})"/.exec(x) || [])[1]; const width = Number((/strokeWidth="([\d.]+)"/.exec(x) || [])[1] || 0); return !!edge && width >= 1.5 && ratio(edge, panel) >= 3; }); };
+  const cover = coverOf(ui); const asBuilt = cover.replace(' stroke="#94741A" strokeWidth="2"', '').replace(' stroke="#245A3C" strokeWidth="2" strokeLinejoin="round"', '');
+  const thin = cover.replace('stroke="#94741A" strokeWidth="2"', 'stroke="#94741A" strokeWidth="0"');
+  ok('the book cover\'s sun and hill, the cue both book lessons name, are edged at 3 to 1 or more on the cover\'s own picture, at least 1.5 wide, in both themes (pass NP; the cover as built, with no edge, and an edge of no width, planted, each caught)', partsOk(cover) && asBuilt !== cover && !partsOk(asBuilt) && thin !== cover && !partsOk(thin)); }
+// The apple and the ball, both red and round, are never on one row in Act it out or Tell it again, and no story does both (pass NP,
+// round one's screen read: they shared a row in about one two-picture question in nine and in most of the order questions, so a
+// child unsure of the apple's leaf could swap an order for a reason that is not the order). Seeds 1 to 2,000 of each of the ten
+// banks; a row with both, planted, is caught.
+{ const banks = ['p3-act-who', 'p3-act-first', 'p3-act-then', 'p3-act-prop', 'p3-act-order', 'p4-retell-first', 'p4-retell-last', 'p4-retell-near', 'p4-retell-order', 'p4-retell-word'];
+  const both = (row) => row.map(String).includes('icon:apple') && row.map(String).includes('icon:ball');
+  const told = (story) => /\bapple\b/.test(story || '') && /\bball\b/.test(story || '');
+  const bad = banks.flatMap((g) => Array.from({ length: 2000 }, (_, i) => { const q = L.generateQuestion(g, i + 1); return both(q.choices || []) || told(q.story) ? [`${g} seed ${i + 1}`] : []; }).flat());
+  ok(`the apple and the ball are never on one row in Act it out or Tell it again, and no story does both (ten banks, seeds 1 to 2,000; a row with both, planted, caught)`, bad.length === 0 && both(['icon:ball', 'icon:hat', 'icon:apple']) && told('Listen. The fox ate an apple, then played with a ball, then read a book.'), bad.slice(0, 5)); }
+// A retried order question whose story begins "Listen." is told without that word, since "Let's listen again." has just said it (pass
+// NP, round one's screen read: "Let's listen again. Listen. The bear put on a hat..."). Every order question with a story, seeds 1 to
+// 20 of each bank; the line as it was, planted, is caught.
+{ const twice = (w) => /listen again\.\s+Listen\b/.test(w);
+  const orders = Object.keys(L.GENERATORS).flatMap((g) => Array.from({ length: 20 }, (_, i) => { let q = null; try { q = L.generateQuestion(g, i + 1); } catch (e) { q = null; } return q && q.type === 'order' && q.pick && q.story ? [[g, i + 1, q]] : []; }).flat());
+  const listens = orders.filter(([, , q]) => /^Listen\. /.test(q.story));
+  const bad = orders.filter(([, , q]) => twice(L.preReaderWrongWords(q, q.choices[0]))).map(([g, i]) => `${g} seed ${i}`);
+  const asWas = (q) => `Let's listen again. ${[q.story, q.prompt].filter(Boolean).join(' ')}`;
+  ok(`a retried order question whose story begins "Listen." does not say "Listen." again after "Let's listen again." (${orders.length} order questions with a story, ${listens.length} of them beginning "Listen."; the line as it was, planted, caught)`, listens.length > 40 && bad.length === 0 && twice(asWas(listens[0][2])), bad.slice(0, 5)); }
 // The five consonant blends the onset lessons say (pass NB, BLEND_PARTS): one piece each, made by the app from its own two sounds: the
 // first part's sound where the blend starts and the second's where it ends, measured by the bands the rules above measure each sound by
 // (a hiss high, fff flat and spread, t's and p's bursts high and low, lll and rrr voiced and low, rrr's third resonance low), quick
@@ -4546,7 +5192,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box', 'net', 'jellyfish', 'zipper', 'goat', 'guitar', 'watermelon', 'hat', 'house', 'window', 'cup', 'queen', 'quilt', 'van', 'volcano', 'yo-yo', 'yarn', 'apple', 'ant', 'elephant', 'elf', 'igloo', 'insect', 'octopus', 'otter'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'page', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box', 'net', 'jellyfish', 'zipper', 'goat', 'guitar', 'watermelon', 'hat', 'house', 'window', 'cup', 'queen', 'quilt', 'van', 'volcano', 'yo-yo', 'yarn', 'apple', 'ant', 'elephant', 'elf', 'igloo', 'insect', 'octopus', 'otter'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD; worried and embarrassed since pass MN
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
@@ -4924,7 +5570,10 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           // Since pass NM a story's feel question tells the face it did not ask by the story's moment, Happy is how the cat felt when the duck
           // found the ball (round one's lesson read: the faces' signs are the feelings lesson's words, which no line of Listen to the story
           // says); it names no sign, so it cannot give the face another, and the pass NM block derives its words from the story.
-          const taleFeel = genId === 'p3-tale-feel' && /^is how the [a-z]+ felt when the [a-z]+ (?:found the [a-z]+|was lost)\.$/.test(e.why);
+          // Since pass NP's round one lesson read What happens next?'s and Story clues' feel questions do the same, "Sad is not a good guess,
+          // because Mia's mom got her a new ice cream.", since neither lesson's lines say a face's sign.
+          const taleFeel = (genId === 'p3-tale-feel' && /^is how the [a-z]+ felt when the [a-z]+ (?:found the [a-z]+|was lost)\.$/.test(e.why))
+            || (/^p(?:3-next|4-clue)-feel$/.test(genId) && /^is not a good guess, because (?:Mia|Ava|a tear)[^.]* [a-z]+\.$/.test(e.why));
           if (face) { if (!wnHas(e.name, face[1])) off('name is not its own feeling'); if (!e.why.startsWith(WN_FACE[face[1]]) && !taleFeel) off('why gives the face another sign'); }
           for (const m of e.why.matchAll(/\b(?:a|the) (happy|sad|mad|scared|worried|embarrassed) face has ([^,.]+)/g)) if (m[2] !== WN_SIGN[m[1]]) off(`why gives a ${m[1]} face another sign`);
           // The face shown is the question's own picture where it has one (the calm rows say I feel sad, so the answer cannot
@@ -6427,6 +7076,13 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
 // ---- 7. Courses, subjects, and the per-learner course switch ----
 {
   ok('every module belongs to a course with a subject', L.MODULES.every((m) => L.getCourse(m.courseId) && typeof L.getCourse(m.courseId).subject === 'string'));
+  // A module is found by its id everywhere (getModule, a plan row's moduleIds, requires, a story and its coloring page), so no two
+  // modules share one (pass NP: pre-K 4's new Which way we read was first given kindergarten's id, 'which-way-we-read', and every
+  // lookup found kindergarten's lesson; the wave's story writer caught it, since its story would have replaced kindergarten's).
+  // The near miss, the modules with the clash put back, must fail it.
+  const idsUnique = (mods) => new Set(mods.map((m) => m.id)).size === mods.length;
+  const withClash = L.MODULES.map((m) => (m.id === 'which-way-we-read-pk' ? { ...m, id: 'which-way-we-read' } : m));
+  ok(`every module's id is its own, across every course (${L.MODULES.length} modules), and the pass NP clash put back fails it`, idsUnique(L.MODULES) && L.MODULES.some((m) => m.id === 'which-way-we-read-pk') && !idsUnique(withClash));
   ok('coverage rule: every module has at least 5 question types, except writing which is one piece per round', L.MODULES.every((m) => m.generators.length >= 5 || (L.getCourse(m.courseId) || {}).educatorMarked));
   ok('all courses enabled by default', JSON.stringify(L.enabledCourseIds([])) === JSON.stringify(L.COURSES.map((c) => c.id)));
   const off = L.makeCoursesEnabledEvent([], '2026-09-03T10:00:00.000Z');
@@ -8575,7 +9231,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
         && d('strong').rate < pr && d('strong').pitch > pp && d('whisper').rate < pr && vol('whisper') < vol('inside') && vol('inside') < 1 && d('kind').rate < pr && vol('kind') < 1 && d('outside').pitch > pp && d('outside').rate < pr && vol('outside') === 1 && Object.keys(T).filter((k) => k !== 'happy').every((k) => d(k).rate <= pr); };
     const directions = ways(L.VOICE_MANNERS) && !ways({ ...L.VOICE_MANNERS, high: { ...L.VOICE_MANNERS.high, device: { ...L.VOICE_MANNERS.high.device, pitch: pp } } }) && !ways({ ...L.VOICE_MANNERS, high: { ...L.VOICE_MANNERS.high, device: { ...L.VOICE_MANNERS.high.device, rate: 0.9 } } })
       && !ways({ ...L.VOICE_MANNERS, outside: { ...L.VOICE_MANNERS.outside, device: { ...L.VOICE_MANNERS.outside.device, rate: pr } } });   // drawn out, as a call is (round two's code read)
-    const screens = directions && ui.includes('const pieces = speechPieces(text, { ...(opts.voices ? { voices: opts.voices } : {}), ...(once ? { once: true } : {}) });') && ui.includes('speak(text, { ...(pause === undefined ? {} : { pause }), ...(voices ? { voices } : {}) })') && ui.includes('const currentLessonVoices = mod && readAloud ? (readAloudScript(mod)[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || {}).voices || null : null;') && ui.includes('{ together: true, voices: currentLessonVoices,') && ui.includes("preReaderWrongWords(q, String(given), wrongPicks), q.voices ? { voices: q.voices } : {})") && ui.includes('const MANNER_SHAPES = Object.fromEntries(Object.entries(VOICE_MANNERS).map(([k, v]) => [`said-${k}`, v.device]));') && ui.includes("speak(questionText, q && q.voices ? { voices: q.voices } : {})") && ui.includes('<SpeakButton mini text={questionText} voices={q && q.voices ? q.voices : null}') && ui.includes("if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {})") && ui.includes('...(opts.voices ? { voices: opts.voices } : {}), ...(onceAt(k) ? { once: true } : {}) }));');
+    // Since pass NP the button's, the question's and the answer's calls also hand on the read-along (onPlace, followReading), the voices
+    // handed on as before (the answer's words from answerReadParts, the same words; the pass NP block below proves them the same).
+    const screens = directions && ui.includes('const pieces = speechPieces(text, { ...(opts.voices ? { voices: opts.voices } : {}), ...(once ? { once: true } : {}) });') && ui.includes('speak(text, { ...(pause === undefined ? {} : { pause }), ...(voices ? { voices } : {}), ...(follow ? { onPlace: follow } : {}) })') && ui.includes('const currentLessonVoices = mod && readAloud ? (readAloudScript(mod)[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || {}).voices || null : null;') && ui.includes('{ together: true, voices: currentLessonVoices,') && ui.includes("const said = readAlongLine(answerReadParts(q, wasCorrect, String(given), wrongPicks)); speak(said, { ...(q.voices ? { voices: q.voices } : {}), onPlace: followReading('after', said) });") && ui.includes('const MANNER_SHAPES = Object.fromEntries(Object.entries(VOICE_MANNERS).map(([k, v]) => [`said-${k}`, v.device]));') && ui.includes("speak(questionText, { ...(q && q.voices ? { voices: q.voices } : {}), onPlace: followReading('question', questionText) })") && ui.includes('<SpeakButton mini text={questionText} voices={q && q.voices ? q.voices : null}') && ui.includes("if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {})") && ui.includes('...(opts.voices ? { voices: opts.voices } : {}), ...(onceAt(k) ? { once: true } : {}) }));');
     ok('a sentence a line or a question names is said in its manner, a strong word a piece of its own and a turn after it when asked, each manner goes its way beside the plain voice, the screens hand the voices on, and a sentence or a manner the table does not name is said as before (pass MV; ten near misses)', right && near && screens, `right ${right} near ${near} screens ${screens}`); }
   // With no device voice (the claude.ai preview, a phone with none), a question asked by ear prints how its sentence is said (pass MV,
   // round one's screen check: p3-tone-highlow printed "Listen. I see a dog." word for word whether the answer was high or low, so a
@@ -9532,7 +10190,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 224)   // 224 since pass NM's Listen to the story, Pictures and words and Questions about a story; 221 since pass NL's Almost the same and More small letters; 219 since pass NK's second wave, Small letters and End marks; 217 since pass NK's A, E and I, O and U, Any size, any turn and Rectangles; 213 since pass NI's Q, V and Y and Write your name; 211 since pass NF's Hear it in a word and Look and write; 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 230)   // 230 since pass NP's second wave, Hold a book and Which way we read; 228 since pass NP's What happens next?, Act it out, Story clues and Tell it again; 224 since pass NM's Listen to the story, Pictures and words and Questions about a story; 221 since pass NL's Almost the same and More small letters; 219 since pass NK's second wave, Small letters and End marks; 217 since pass NK's A, E and I, O and U, Any size, any turn and Rectangles; 213 since pass NI's Q, V and Y and Write your name; 211 since pass NF's Hear it in a word and Look and write; 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
@@ -11074,7 +11732,8 @@ const moreRightProblems = (L) => { const r = {};
 // story's reading turns it off wherever it ends (its stop, its end and the quiet watch); and no sentence being read wears readLit, which
 // stays on the say-along's syllables and a Wonder choice being named. Near misses: a light theme at 0.5 (3.0 to 1 on the paper), the old
 // green on a lesson sentence, a story whose stop leaves the words faint, a More Info row that is never faint, a faint that fades, and
-// (since the read of pass NO) a page printed mid-read with its faint words still faint.
+// (since the read of pass NO) a page printed mid-read with its faint words still faint. Since pass NP RichText's faint is faintLook, readAhead's
+// own unless a caller names a tint the words sit on (ground), when it is worked out for it (readAheadOn; the pass NP block below holds it).
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
   const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
   const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
@@ -11086,7 +11745,8 @@ const moreRightProblems = (L) => { const r = {};
     for (const t of ['light', 'dark']) { const ink = token(src, t, 'ink'); for (const g of ['paper', 'surface', 'bg']) { const bg = token(src, t, g); if (!ink || !bg) return 0; worst = Math.min(worst, ratio(ink.map((v, i) => alpha[t] * v + (1 - alpha[t]) * bg[i]), bg)); } }
     return worst; };
   const wears = (src) => /<span data-read-lit=\{litSentence === i \? '' : undefined\} data-read-ahead=\{litSentence >= 0 && i > litSentence \? '' : undefined\} style=\{litSentence >= 0 && i > litSentence \? readAhead\(\) : \{\}\}>/.test(src)
-    && /<span data-read-lit=\{j === lit \? '' : undefined\} data-read-ahead=\{j > lit \? '' : undefined\} style=\{j > lit \? readAhead\(\) : \{\}\}>/.test(src) && src.includes("const faint = (i) => ahead || (litLine !== null && i > litLine);")
+    && /<span data-read-lit=\{j === lit \? '' : undefined\} data-read-ahead=\{j > lit \? '' : undefined\} style=\{j > lit \? faintLook : \{\}\}>/.test(src) && src.includes("const faint = (i) => ahead || (litLine !== null && i > litLine);")
+    && src.includes('const faintLook = ground ? readAheadOn(ground, color || C.ink) : readAhead();') && src.includes('const dim = faint(i) ? faintLook : null;')
     && src.includes('lit={readingAt === i ? readingSentence : null} ahead={aloud && i > readingAt} />') && src.includes('lit={litAt(k)} ahead={!!lit && k > lit.i} />') && src.includes('ahead={!!lit && rightAt > lit.i} />') && src.includes('lit={litAt(moreAt + k)} ahead={!!lit && moreAt + k > lit.i} />')
     && (src.match(/setReadingAt\(-1\); setAloud\(false\);/g) || []).length === 3 && src.includes('setAloud(true);   // before the voice starts')
     && !src.split('\n').some((l) => l.includes('data-read-lit') && l.includes('readLit()')) && /const readAhead = \(\) => \(\{ opacity: [^}]*\}\);/.test(src) && !/const readAhead = \(\) => \(\{[^}]*(?:transition|background|boxShadow|color:)/.test(src)
@@ -11100,6 +11760,151 @@ const moreRightProblems = (L) => { const r = {};
   const w = worstFaint(ui);
   ok(`the read-along's faint, ahead of the voice, reads ${w.toFixed(2)} to 1 at worst on the paper, a card and the page in both themes, worn by the lesson line, the story and every More Info description only ahead of the voice, turned off wherever a story's reading ends, printed at full ink, never a box, a fill or a fade, and no sentence being read wears the old green (pass NO, Mikey's answer to Q110; six near misses caught)`,
     w >= 4.5 && wears(ui) && pale !== ui && worstFaint(pale) < 4.5 && green !== ui && !wears(green) && stuck !== ui && !wears(stuck) && unfaded !== ui && !wears(unfaded) && fading !== ui && !wears(fading) && printed !== ui && !wears(printed), JSON.stringify({ worst: w, pale: worstFaint(pale), wears: wears(ui) })); }
+
+// The read-along where the voice read words on the screen with no look yet (pass NP, Mikey's answer to Q110, "Q110 - B"): a question's own
+// words, the words after an answer, a pre-reader's Wonder question and voice cards, a reader's Wonder question and voices page, and the
+// whole book read in a row. Four checks. (1) The map from what the voice says to what a screen prints (readAlongMap and its parts, in
+// logic), over every read-aloud bank's questions, every answer's words and every Wonder card and voices page: the parts say exactly the
+// words the screens said before (what the voice says is unchanged), nothing is faint at rest, a part the voice has not begun is all faint,
+// a sentence turns full as the voice begins it and stays so, the one being read just before the first faint one, and a part printed in
+// other words than it is said is one block; near misses: a map whose next sentence is not faint, one that never fades, and one that fades
+// a block sentence by sentence, each caught. (2) The faint's strength on each ground (readAheadOn, run in node:vm with each theme's colors
+// from the code): readAhead's own where that reads 4.5 to 1, else the weakest stronger one that does, on the question card, the page, the
+// paper, the green strip, the clay strip, the closing card's gold and the dark panel; near miss, a faint that ignores its ground, caught.
+// (3) speak()'s onPlace (node:vm, a stand-in voice on a fake clock): told each sentence in turn, never a piece's number, and null once the
+// line is said, and nothing for a line a newer one replaced; near misses, no null at the end and a piece's number, caught. (4) The
+// screen code: each place wears the faint only ahead of the voice and carries the marks, the faint is turned off wherever each reading
+// ends (its end, a stop, a newer reading or a hush through the ticket, the book's end and stop), nothing is faint with no voice, and a
+// Wonder choice's green and the say-along's syllables are as they were; near misses planted one by one, each caught: a place whose next
+// sentence is not faint, faints left after the voice stops (four ways), a Wonder choice that lost its green, a faint that fades, a faint
+// with no voice. And a guard the pass found it needed: no state hides a function its own component calls.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const lg = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const vm = await import('node:vm');
+  // (1) The map. A map's rule, read on its own output for one reading of parts.
+  const n = (t) => L.sentenceSpans(t).length;
+  const mapHolds = (map, parts) => {
+    const line = L.readAlongLine(parts); const said = L.sentenceSpans(line); if (!said.length) return true;
+    if (map(parts, null).some((m) => m.reached !== Infinity || m.lit !== -1)) return false;   // nothing faint at rest
+    const starts = []; let at = 0; for (const p of parts) { starts.push(p.said ? at : -1); if (p.said) at += p.said.length + 1; }
+    const prev = parts.map(() => 0);
+    for (let s = 0; s < said.length; s++) { const m = map(parts, s);
+      for (let k = 0; k < parts.length; k++) { const p = parts[k];
+        if (!p.said || !p.shows) { if (m[k].reached !== Infinity) return false; continue; }   // never faint: not said, or not printed
+        const whole = p.shows !== p.said; const count = whole ? 1 : n(p.said);
+        if (m[k].whole !== whole || m[k].reached < prev[k] || m[k].reached > count) return false;   // one block; never back; never past its end
+        if (m[k].lit >= 0 && m[k].lit !== m[k].reached - 1) return false;   // the one being read just before the first faint one
+        if (starts[k] >= said[s].to && m[k].reached !== 0) return false;   // a part the voice has not begun is all faint
+        prev[k] = m[k].reached; } }
+    const last = map(parts, said.length - 1); return parts.every((p, k) => !p.said || !p.shows || last[k].reached === (p.shows !== p.said ? 1 : n(p.said))); };
+  const aheadByOne = (parts, s) => L.readAlongMap(parts, s).map((m) => (m.reached === Infinity || m.whole ? m : { ...m, reached: m.reached + 1 }));
+  const neverFaint = (parts, s) => L.readAlongMap(parts, s).map((m) => (m.reached === Infinity ? m : { ...m, reached: m.whole ? 1 : 99, lit: -1 }));
+  const blockBySentence = (parts, s) => L.readAlongMap(parts.map((p) => ({ ...p, shows: p.shows ? p.said : p.shows })), s);
+  const RA_BANKS = [...new Set(L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules.flatMap((m) => m.generators)))];
+  const lines = []; const unsaid = []; let questions = 0;
+  for (const g of RA_BANKS) for (let seed = 1; seed <= 12; seed++) { let q; try { q = L.generateQuestion(g, seed); } catch (e) { continue; } if (!q) continue; questions += 1;
+    const asked = L.questionReadParts(q); lines.push(asked); if (L.readAlongLine(asked) !== [q.story, q.prompt].filter(Boolean).join(' ')) unsaid.push(`${g}:${seed} question`);
+    const right = L.answerReadParts(q, true, String(q.answer), []); lines.push(right); if (L.readAlongLine(right) !== 'Correct. ' + q.explain) unsaid.push(`${g}:${seed} right`);
+    for (const c of (q.type === 'choice' ? q.choices || [] : [])) { if (String(c) === String(q.answer)) continue; const wrong = L.answerReadParts(q, false, String(c), [String(c)], true); lines.push(wrong); if (L.readAlongLine(wrong) !== L.preReaderWrongWords(q, String(c), [String(c)])) unsaid.push(`${g}:${seed} wrong ${c}`); } }
+  const endMark = (t) => (/[.!?]$/.test(t) ? t : `${t}.`);
+  for (const w of L.WONDER) { lines.push([{ said: w.prompt, shows: w.prompt }]); const vp = L.wonderVoicesParts(w); lines.push(vp);
+    if (L.readAlongLine(vp) !== w.perspectives.map((p) => `${L.wonderVoiceSpoken(p.voice)}: ${p.says}`).join(' ') + ' ' + w.closing) unsaid.push(`${w.id} voices`);
+    for (const c of L.wonderPreReaderCards(w, 3)) { lines.push(L.wonderCardParts(c)); if (L.wonderCardSpoken(c) !== (c.closing ? `${endMark(c.title)} ${c.closing}` : `${L.wonderVoiceSpoken(c.voice)}: ${c.says}`)) unsaid.push(`${w.id} card`); } }
+  const broken = lines.filter((parts) => !mapHolds(L.readAlongMap, parts));
+  const caught = (map) => lines.some((parts) => !mapHolds(map, parts));
+  const blocks = lines.filter((parts) => parts.some((p) => p.said && p.shows && p.shows !== p.said)).length;
+  ok(`the read-along's map says, for ${lines.length} readings (${questions} read-aloud questions over ${RA_BANKS.length} banks, every answer's words and every Wonder question, card and voices page), the very words the screens said before, nothing faint at rest, every part not begun faint, each sentence full as the voice begins it and the one being read just before the first faint one, and ${blocks} readings' parts printed in other words one block (pass NP; a next sentence not faint, a map that never fades and a block faded sentence by sentence, caught)`,
+    questions > 10000 && unsaid.length === 0 && broken.length === 0 && blocks > 1000 && caught(aheadByOne) && caught(neverFaint) && caught(blockBySentence), JSON.stringify({ unsaid: unsaid.slice(0, 5), broken: broken.slice(0, 2), blocks }));
+  // (2) The faint's strength on each ground, readAheadOn run in node:vm with each theme's colors from the code.
+  const rgbOf = (c) => { const t = String(c).trim(); const m = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/.exec(t); return /^#[0-9A-Fa-f]{6}$/.test(t) ? [1, 3, 5].map((i) => parseInt(t.slice(i, i + 2), 16)) : m ? m.slice(1, 4).map(Number) : null; };
+  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
+  const reads = (ink, ground, a) => { const k = rgbOf(ink); const g = rgbOf(ground); const f = k.map((v, i) => a * v + (1 - a) * g[i]); const [x, y] = [lum(f), lum(g)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  const strengths = (src) => { const themes = src.slice(src.indexOf('const THEMES = {'), src.indexOf('// The palette every screen reads while it draws.')); const fn = src.slice(src.indexOf('const readAhead = () =>'), src.indexOf('// Style objects shared across screens copy colors'));
+    const out = [];
+    for (const mode of ['light', 'dark']) { const box = {}; vm.createContext(box);
+      try { vm.runInContext(`${themes}\nconst C = { ...THEMES.${mode} };\n${fn}\nglobalThis.r = [['the question card', C.surface, C.ink], ['the page', C.bg, C.ink], ['the story paper', C.paper, C.ink], ['the green strip', C.greenSoft, C.ink], ['Correct on the green strip', C.greenSoft, C.green], ['the clay strip', C.claySoft, C.clayInk], ['the closing card', C.goldSoft, C.ink], ['the closing title', C.goldSoft, C.mode === 'dark' ? '#E9C46A' : C.green], ['the panel', C.panel, C.ink]].map(([name, g, k]) => ({ name, g, k, a: readAheadOn(g, k).opacity, base: readAhead().opacity }));`, box); } catch (e) { return null; }
+      for (const x of box.r) out.push({ mode, ...x, ratio: reads(x.k, x.g, x.a), weaker: x.a > x.base ? reads(x.k, x.g, Math.round(x.a * 100 - 1) / 100) : null }); }
+    return out; };
+  const strong = (list) => !!list && list.length === 18 && list.every((x) => x.ratio >= 4.5 && x.a >= x.base && x.a <= 1 && (x.weaker === null || x.weaker < 4.5));
+  const st = strengths(ui); const blind = ui.replace('let a = base; while (a < 1 && !reads(a))', 'let a = base; while (false && a < 1 && !reads(a))');
+  const at = (mode, name) => (st || []).find((x) => x.mode === mode && x.name === name) || {};
+  ok(`the read-along's faint is worked out for each ground from the themes' own colors, 4.5 to 1 or better and no stronger than it must be: ${(st || []).map((x) => `${x.mode} ${x.name} ${x.a} (${x.ratio.toFixed(2)})`).join(', ')} (pass NP; a faint that ignores its ground, caught)`,
+    strong(st) && at('dark', 'the green strip').a === 0.6 && at('dark', 'the closing card').a === 0.57 && at('light', 'the clay strip').a === 0.97 && at('dark', 'the clay strip').a === 0.88 && at('light', 'the question card').a === 0.66 && at('dark', 'the question card').a === 0.55 && blind !== ui && !strong(strengths(blind)), JSON.stringify(st));
+  // (3) speak()'s onPlace in node:vm: the app's own speech code, a stand-in voice that says each piece in 100 ms on a fake clock.
+  const cutOf = (t, a, b) => { const i = t.indexOf(a); const j = i < 0 ? -1 : t.indexOf(b, i); return i < 0 || j < 0 ? '' : t.slice(i, j); };
+  const placesOf = (src) => { let now = 0; let seq = 0; const timers = []; const later = (fn, ms, every = 0) => { const id = ++seq; timers.push({ id, at: now + Math.max(0, Number(ms) || 0), fn, every }); return id; }; const clear = (id) => { const i = timers.findIndex((t) => t.id === id); if (i >= 0) timers.splice(i, 1); };
+    let queue = []; let lastCancel = -100;
+    const startNext = () => { const u = queue[0]; if (!u || u.__s) return; u.__s = true; later(() => { if (queue[0] !== u) return; if (u.onstart) u.onstart({}); later(() => { if (queue[0] !== u) return; queue.shift(); if (u.onend) u.onend({}); startNext(); }, 100); }, 5); };
+    const ss = { get speaking() { return queue.length > 0; }, get pending() { return queue.length > 1; }, getVoices() { return []; }, cancel() { lastCancel = now; const old = queue; queue = []; for (const u of old) later(() => { if (u.onerror) u.onerror({}); }, 1); }, speak(u) { if (now - lastCancel < 4) return; queue.push(u); if (queue.length === 1) startNext(); } };
+    const Utterance = function SpeechSynthesisUtterance(t) { this.text = t; };
+    const ctx = vm.createContext({ window: { speechSynthesis: ss, Audio: function Audio() {}, addEventListener() {}, SpeechSynthesisUtterance: Utterance }, console, setTimeout: (f, ms) => later(f, ms), clearTimeout: clear, setInterval: (f, ms) => later(f, ms, ms), clearInterval: clear, Date: { now: () => now }, Math, JSON, Promise, Uint8Array, DataView, ArrayBuffer, Float64Array, Float32Array, Int16Array, SENTENCE_BREAK: L.SENTENCE_BREAK, URL: { createObjectURL: () => 'blob:1' }, Blob: function Blob() {}, SpeechSynthesisUtterance: Utterance });
+    const log = [];
+    try { vm.runInContext(`${cutOf(lg, '// ---------- The sounds a lesson says (pass MO', 'export function whyNotNamesAnswer').replace(/^export /gm, '')}\n${cutOf(src, "// Read text aloud with the browser's built-in voice.", '// One button for every read-aloud spot.')}\nglobalThis.__speak = speak;`, ctx); } catch (e) { return ['threw ' + e.message]; }
+    const tell = (tag) => (s) => { const v = `${tag}${s === null ? 'end' : s}`; if (log[log.length - 1] !== v) log.push(v); };
+    ctx.__speak('Ball, bed and bear all start with buh. Here are 8 balls. How many are there now?', { onPlace: tell('a') });
+    later(() => { ctx.__speak('One. Two.', { onPlace: tell('b') }); ctx.__speak('Three.', { onPlace: tell('c') }); }, 3000);
+    while (timers.length) { timers.sort((x, y) => x.at - y.at || x.id - y.id); const t = timers[0]; if (t.at > 9000) break; now = t.at; if (t.every) t.at += t.every; else timers.shift(); try { t.fn(); } catch (e) { log.push('threw ' + e.message); } }
+    return log; };
+  const placeLog = placesOf(ui).join(' '); const WANT = 'a0 a1 a2 aend b0 c0 cend';
+  const noEnd = ui.replace('onDone: () => { if (opts.onPlace) opts.onPlace(null); if (opts.onDone) opts.onDone(); }', 'onDone: () => { if (opts.onDone) opts.onDone(); }');
+  const byPiece = ui.replace('onPiece: (k) => opts.onPlace(pieces[k].sentence || 0)', 'onPiece: (k) => opts.onPlace(k)');
+  ok(`speak() tells the read-along each sentence the voice begins, in order, never a piece's number, then null once the line is said, and nothing more for a line a newer one replaced (pass NP; heard: ${placeLog}; no null at the end and a piece's number, planted, caught)`,
+    placeLog === WANT && noEnd !== ui && placesOf(noEnd).join(' ') !== WANT && byPiece !== ui && placesOf(byPiece).join(' ') !== WANT, placeLog);
+  // (4) The screen code.
+  const PLACES = {
+    walker: ['if (!look) return nodes;', 'return runs.map((r) => (r.j >= 0 && r.j >= look.reached ? <span key={`ra-${key++}`} data-read-ahead="" style={look.faint}>{r.nodes}</span>', ': r.j >= 0 && r.j === look.lit ? <span key={`ra-${key++}`} data-read-lit="">{r.nodes}</span> : <React.Fragment key={`ra-${key++}`}>{r.nodes}</React.Fragment>));',
+      'function readAlongOver(el, look) { return look && React.isValidElement(el) ? React.cloneElement(el, {}, readAlongWords(el.props.children, look)) : el; }', 'function lookFor(m, ground, ink = C.ink) { return m && m.reached !== Infinity ? { ...m, faint: readAheadOn(ground, ink) } : null; }',
+      'const base = readAhead().opacity;', '  return { opacity: a };\n}', 'const spans = look.whole ? [{ from: 0, to: textOf(nodes).length }] : sentenceSpans(textOf(nodes));'],
+    question: ['const questionText = readAlongLine(questionReadParts(q));', "speak(questionText, { ...(q && q.voices ? { voices: q.voices } : {}), onPlace: followReading('question', questionText) })", "follow={followReading('question', questionText)} />",
+      "const askedAt = readAlongMap(questionReadParts(q, shownQ), readingIn('question', questionText));", "data-read-lit={askedAt[0].whole && askedAt[0].lit === 0 ? '' : undefined}", 'lit={!askedAt[0].whole && askedAt[0].lit >= 0 ? askedAt[0].lit : null} ahead={askedAt[0].reached === 0} />',
+      '{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}'],
+    after: ["const said = readAlongLine(answerReadParts(q, wasCorrect, String(given), wrongPicks)); speak(said, { ...(q.voices ? { voices: q.voices } : {}), onPlace: followReading('after', said) });", "const afterAt = readAlongMap(afterParts, readingIn('after', readAlongLine(afterParts)));",
+      'readAloud ? lookFor(afterAt[0], wasCorrect ? C.greenSoft : C.claySoft, wasCorrect ? C.green : C.clayInk) : null)}', 'ground={wasCorrect ? C.greenSoft : C.claySoft} {...explainLook} />', 'litLine: explainedAt.lit >= 0 ? lineOfSentence(explained, explainedAt.lit) : null, ahead: explainedAt.reached === 0 }'],
+    wonder: ['asked(i === 0 ? s || 0 : null); }, () => { setWonderLit(-1); asked(null); }); };', 'const stop = readWonderAloud();', 'onClick={() => readWonderAloud()}', "{readAlongOver(<p style={{ fontSize: 22, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>, askedLook)}",
+      "{readAlongOver(<p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>, askedLook)}", "follow={followReading('wonder', wonder.prompt)} />"],
+    cards: ["const cardSaid = wonderCardSpoken(v); const cardAt = readAlongMap(wonderCardParts(v), readingIn('card', cardSaid));", "{'\\u201C'}{lastTwoTogether(wholeHyphens(v.says), v.says)}{'\\u201D'}</p>, lookFor(cardAt[1], C.surface))}", 'reading={{ title: cardAt[0], line: cardAt[1] }} />',
+      "speak(spokenCard, { onPlace: followReading('card', spokenCard) })", "speak(cardSaid, { onPlace: followReading('card', cardSaid) })", 'lookFor(reading && reading.title, C.goldSoft, titleInk))}', 'lookFor(reading && reading.line, C.goldSoft))}'],
+    voices: ["const voicesParts = wonderVoicesParts(wonder); const allText = readAlongLine(voicesParts);", "const voicesAt = readAlongMap(voicesParts, readingIn('voices', allText));", "follow={followReading('voices', allText)} />", "{'\\u201C'}{wholeHyphens(p.says)}{'\\u201D'}</p>, lookFor(voicesAt[2 * k + 1], C.surface))}", 'reading={{ title: null, line: voicesAt[voicesAt.length - 1] }} />'],
+    book: ['onPlace={followBook} />', 'follow={bookFollow(i)} />', 'follow={bookFollow(chapters.length)} />', 'follow={bookFollow(chapters.length + (cs ? 1 : 0))} />', "const bookFollow = (k) => (!bookAt || k < bookAt.story ? null : k > bookAt.story ? { at: -1, s: 0 } : { at: bookAt.at, s: bookAt.s });",
+      'if (onPlace) onPlace({ story: owner[i], at: i - firsts[owner[i]], s: s || 0 }); }', 'setAt(owner[i]); setPar(i - firsts[owner[i]] - 1);',
+      'document.querySelector(par < 0 ? `[data-book-story="${at}"]` : `[data-book-of="${at}"] [data-story-par="${par}"]`)', 'data-book-of={i}', 'data-book-of={chapters.length}', 'data-book-of={chapters.length + (cs ? 1 : 0)}', 'const readingAt = follow ? follow.at - 1 : voiceAt; const readingSentence = follow ? follow.s : voiceSentence; const aloud = follow ? true : voiceOn;',
+      'const titleLook = follow ? lookFor({ reached: follow.at < 0 ? 0 : 1, lit: follow.at === 0 ? 0 : -1, whole: true }, C.paper) : null;'],
+    // Turned off wherever a reading ends: its end (speak's null, the book's), a stop (the button's), a newer reading or a hush (the ticket),
+    // and never on with no voice (canSpeak); the student's idle sign-out and leaving a screen hush the voice, which moves the ticket.
+    ends: ['onDone: () => { if (opts.onPlace) opts.onPlace(null); if (opts.onDone) opts.onDone(); }', 'setReading(false); if (follow) follow(null); return; }', '() => { stopRef.current = null; setAt(-1); setPar(-1); if (onPlace) onPlace(null); }',
+      'const readingIn = (at, words) => (readAlongAt && canSpeak() && readAlongAt.at === at && readAlongAt.words === words && readAlongAt.ticket === speechTicket ? readAlongAt.s : null);', 'const bookAt = bookAlongAt && canSpeak() && bookAlongAt.ticket === speechTicket ? bookAlongAt : null;',
+      'if (readAlongAt && readAlongAt.ticket !== speechTicket) setReadAlongAt(null); if (bookAlongAt && bookAlongAt.ticket !== speechTicket) setBookAlongAt(null);', 'if (s === null) { setReadAlongAt((p) => (p && p.at === at && p.words === words ? null : p)); return; }',
+      'const mine = ++speechTicket; stopSound(); restUntil = 0;', "hushSpeech(); setScreen('welcome');"],
+    // As they were: a Wonder choice's green and grow (Q111 (a)) and the say-along's syllables (his own words), readLit their light.
+    kept: ["const readLit = () => ({ background: '#AAD8C5', color: '#16201B' });", "background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none'",
+      'speakSequence(wonderSpokenParts(wonder), (i, s) => { setWonderLit(i - 1);', "style={sweep && sweep.syllable === k ? { ...readLit(), ...LIT_WORDS, transition: 'none', margin: 0, padding: '0 1px' } : { background: 'transparent', transition: 'none', padding: '0 1px' }}"] };
+  const missing = (src) => Object.entries(PLACES).flatMap(([k, list]) => list.filter((t) => !src.includes(t)).map((t) => `${k}: ${t.slice(0, 60)}`));
+  const fadesIn = (src) => { const i = src.indexOf('function readAheadOn('); return i < 0 || /transition/.test(src.slice(i, src.indexOf('\n}\n', i))); };
+  const screenHolds = (src) => missing(src).length === 0 && !fadesIn(src) && !/data-read-(?:ahead|lit)="" style=\{\{[^}]*transition/.test(src);
+  const PLANTS = {
+    'a place whose next sentence is not faint (the walker)': ['r.j >= 0 && r.j >= look.reached ? <span', 'r.j >= 0 && r.j > look.reached ? <span'],
+    'a place whose next sentence is not faint (the question)': ['{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}', '{shownQ.prompt}</p>, null)}'],
+    'a faint left after the line is said': ['onDone: () => { if (opts.onPlace) opts.onPlace(null); if (opts.onDone) opts.onDone(); }', 'onDone: () => { if (opts.onDone) opts.onDone(); }'],
+    'a faint left after a newer reading or a hush': ['&& readAlongAt.ticket === speechTicket ? readAlongAt.s : null', '? readAlongAt.s : null'],
+    'a faint left after Stop reading': ['setReading(false); if (follow) follow(null); return; }', 'setReading(false); return; }'],
+    'a faint left after the book ends or stops': ['() => { stopRef.current = null; setAt(-1); setPar(-1); if (onPlace) onPlace(null); }', '() => { stopRef.current = null; setAt(-1); setPar(-1); }'],
+    // Since round one's screen read the book's page follows the paragraph being read, as a lone story's does: following only each story's
+    // top, as it first did, is caught.
+    'a book that follows only its stories\' tops': ['document.querySelector(par < 0 ? `[data-book-story="${at}"]` : `[data-book-of="${at}"] [data-story-par="${par}"]`)', 'document.querySelector(`[data-book-story="${at}"]`)'],
+    'a Wonder choice that lost its green': ['background: wonderLit === i ? readLit().background : C.surface', 'background: C.surface'],
+    'a faint that fades': ['  return { opacity: a };\n}', "  return { opacity: a, transition: 'opacity 200ms' };\n}"],
+    'a faint with no voice': ['readAlongAt && canSpeak() && readAlongAt.at === at', 'readAlongAt && readAlongAt.at === at'] };
+  const loose = Object.entries(PLANTS).filter(([, [from, to]]) => { const p = ui.replace(from, to); return p === ui || screenHolds(p); }).map(([k]) => k);
+  ok(`each place the voice reads wears the faint only ahead of the voice, worked out for its ground, and its marks: a question and Hear it again, the card after an answer, a pre-reader's Wonder question and cards, a reader's Wonder question and voices page, and the whole book, its page following the paragraph being read; the faint turned off wherever each reading ends and with no voice; a Wonder choice's green and grow and the say-along's syllables as they were; no faint fades (pass NP; ${Object.keys(PLANTS).length} near misses planted one by one, each caught)`,
+    screenHolds(ui) && loose.length === 0, JSON.stringify({ missing: missing(ui), fades: fadesIn(ui), loose }));
+  // A state never hides a function its own component calls (pass NP: this pass's read-along state was first named readPlace, the name of
+  // the page's scroll place, which the screens' component calls as it leaves the overview, so leaving it threw "readPlace is not a
+  // function"; the click-through found it). Each component's states are read from its own code; near miss: that first name, caught.
+  const hidden = (src) => { const out = []; const starts = [...src.matchAll(/^(?:export default )?(?:async )?function (\w+)\(/gm)].map((m) => ({ name: m[1], at: m.index }));
+    starts.forEach((c, i) => { const body = src.slice(c.at, i + 1 < starts.length ? starts[i + 1].at : src.length);
+      for (const m of body.matchAll(/const \[(\w+), (\w+)\] = useState/g)) if (new RegExp(`(?<![\\w.])${m[1]}\\(`).test(body)) out.push(`${c.name}: ${m[1]}`); });
+    return out; };
+  const firstName = ui.replace(/\breadAlongAt\b/g, 'readPlace');
+  ok('no state hides a function its own component calls (pass NP; the read-along state named readPlace, as first written, planted, caught)', hidden(ui).length === 0 && firstName !== ui && hidden(firstName).length > 0, JSON.stringify(hidden(ui))); }
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

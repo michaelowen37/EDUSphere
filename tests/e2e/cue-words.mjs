@@ -84,23 +84,28 @@ const VOICED_ROOM = ['hear-it-in-a-word', 'look-and-write'];
 // pre-K lines to 1301, the questions read to 755 and 757, the reach to 3225 and 3320 and the story pages to 288; the cue before a pick
 // at dark 320 by 568 reads 21, under pass NL's 24, since a bank's place in the list chooses the seeds each size reads (sampled), and the
 // new banks moved the older ones', while at light 320 by 568 it rose from 7 to 13.
+// Since pass NP (round three's whole read of RULES-AUDIT, which found every floor still pass NM's) the floors are pass NP's counts, read in
+// one whole run alone at 1:52 AM on November 16 after round three's fixes: its six lessons bring the pre-K lines to 1377, the questions
+// read to 800 to 802, the reach to 3410 and 3520 and the story pages to 294; the cue before a pick at 320 by 568 reads 7 in the light theme
+// and 19 in the dark, under pass NM's 13 and 21, since a bank's place in the list chooses the seeds each size reads (sampled) and the
+// thirty new banks moved the older ones', with no word under the cue on any, so those two floors follow the code down, with this reason.
 const FLOORS = {
-  lines: { preK: 1301, rest: 1158 },
+  lines: { preK: 1377, rest: 1158 },
   // Pre-K at 375 by 667 none, a ceiling as well as a floor (round one's code read: a verdict that read no line could not fail).
   // Since round two's code read (pass NF) the states the reach reads in each theme are the counts the code has (they were held only above
   // 1,000; 2,895 in the light theme on round two's copy, 2,896 since round two's fixes), and the held stories read for the put-back are the
   // five lesson stories held at light 320 by 568.
-  reach: { light: 3225, dark: 3320 }, putBacks: 6,
-  cueLines: { preK: { 'light 320 by 568': 54, 'light 375 by 667': 0, 'dark 320 by 568': 54, 'dark 375 by 667': 0 }, rest: { 'light 320 by 568': 92, 'light 375 by 667': 0, 'dark 320 by 568': 106, 'dark 375 by 667': 0 } },
-  screens: { 'light 320 by 568': 755, 'light 375 by 667': 755, 'dark 320 by 568': 757, 'dark 375 by 667': 757 },
+  reach: { light: 3410, dark: 3520 }, putBacks: 6,
+  cueLines: { preK: { 'light 320 by 568': 59, 'light 375 by 667': 0, 'dark 320 by 568': 61, 'dark 375 by 667': 0 }, rest: { 'light 320 by 568': 92, 'light 375 by 667': 0, 'dark 320 by 568': 106, 'dark 375 by 667': 0 } },
+  screens: { 'light 320 by 568': 800, 'light 375 by 667': 801, 'dark 320 by 568': 802, 'dark 375 by 667': 801 },
   // The cue after a first wrong tap at 320 by 568 in the light theme was on 477 questions in one whole run of pass NF's copy and 479 in
   // three, so its floor is the lower.
-  cueScreens: { wrong: { 'light 320 by 568': 564, 'light 375 by 667': 131, 'dark 320 by 568': 565, 'dark 375 by 667': 147 }, right: { 'light 320 by 568': 677, 'light 375 by 667': 334, 'dark 320 by 568': 682, 'dark 375 by 667': 343 } },
+  cueScreens: { wrong: { 'light 320 by 568': 610, 'light 375 by 667': 134, 'dark 320 by 568': 605, 'dark 375 by 667': 158 }, right: { 'light 320 by 568': 724, 'light 375 by 667': 358, 'dark 320 by 568': 723, 'dark 375 by 667': 375 } },
   // Since pass NF: the cue before a pick, the strips that keep room for the cue, the story pages read and those where the cue shows.
-  pick: { 'light 320 by 568': 13, 'light 375 by 667': 0, 'dark 320 by 568': 21, 'dark 375 by 667': 0 },
+  pick: { 'light 320 by 568': 7, 'light 375 by 667': 0, 'dark 320 by 568': 19, 'dark 375 by 667': 0 },
   strips: { 'light 320 by 568': 9, 'light 375 by 667': 0, 'dark 320 by 568': 11, 'dark 375 by 667': 0 },
   // 275 on the merged copy, pass NF's two new lessons' stories with them (273 on the engineer's copy).
-  stories: 288, storyCue: { 'light 320 by 568': 288, 'light 375 by 667': 288, 'dark 320 by 568': 288, 'dark 375 by 667': 288 },
+  stories: 294, storyCue: { 'light 320 by 568': 294, 'light 375 by 667': 294, 'dark 320 by 568': 294, 'dark 375 by 667': 294 },
   // The lines whose last two words are over 18 letters and spaces (A103 (c)).
   longPairs: 5,
 };

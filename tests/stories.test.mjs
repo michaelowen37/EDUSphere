@@ -644,5 +644,20 @@ for (const [, cs, id] of LONG_ENTRIES) {
     pond.words[0].includes('their puppy splashed') && offOf('pond', pond, ledgerRows).length === 0 && offOf('pond', pondDog, ledgerRows).some((x) => /dog said before/.test(x))];
   ok(`no early-years story names a find before the child finds it, in its words, its earlier pictures or its title (MISTAKE-CLASSES C1, pass NF; ${stories.length} stories, ${finds} finds read, since pass NI those said after their sound too, and since round two those said before their one sound; the wagon's old narration, a wagon in S4127, a title naming it, a toy van in S4135's prompt, Mom's "said, Spoon!" before Rahul's find, in his paragraph and the one before, Mom's "Spoon! said Mom." alone the paragraph before and her "said, Spoon!" right before it, and the pond's dog named before "Duh, og, dog!", planted, caught, and the child's own "Wagon!" first, Rahul's "said, Spoon!" right before his find and his "Spoon! said Rahul." the paragraph before passed)`,
     stories.length >= 275 && finds >= 29 && now.length === 0 && plants.every(Boolean), `${now.slice(0, 6).join(' | ')}; plants ${plants}; finds ${finds}`); }
+// Each story and each coloring page is written once (pass NP, round one's code read): a second STORIES['id'] = { ... }, or a key written
+// twice in the STORIES or COLOR_PAGES literal, replaces the first without a word (the pre-K 4 Which way we read was first given
+// kindergarten's id, and its story would have replaced kindergarten's). A source with one story and one coloring page written twice,
+// planted, fails it.
+{ const { readFileSync } = await import('node:fs');
+  const src = readFileSync(new URL('../src/stories.mjs', import.meta.url), 'utf8');
+  const onceEach = (text) => { const lines = text.split('\n'); const storyEnd = lines.indexOf('};'); const pageAt = lines.indexOf('export const COLOR_PAGES = {');
+    const literal = lines.slice(1, storyEnd).map((l) => /^  '([a-z0-9-]+)': \{$/.exec(l)).filter(Boolean).map((m) => m[1]);
+    const assigned = [...text.matchAll(/^STORIES\[(['"])([a-z0-9-]+)\1\] = \{/gm)].map((m) => m[2]);
+    const pages = []; for (let i = pageAt + 1; i < lines.length && lines[i] !== '};'; i++) { const m = /^  '([a-z0-9-]+)': \['D/.exec(lines[i]); if (m) pages.push(m[1]); }
+    const ids = [...literal, ...assigned];
+    return { ids: ids.length, pages: pages.length, ok: new Set(ids).size === ids.length && new Set(pages).size === pages.length && pages.length > 0 }; };
+  const now = onceEach(src); const firstPage = src.split('\n').find((l) => /^  '[a-z0-9-]+': \['D/.test(l));
+  const planted = onceEach(src + "\nSTORIES['count-to-3'] = {\n").ok || onceEach(src.replace(firstPage, firstPage + '\n' + firstPage)).ok;
+  ok(`each story is written once (${now.ids} story ids, ${Object.keys(STORIES).length} stories) and each coloring page once (${now.pages}), a story and a coloring page written twice, planted, each caught`, now.ok && now.ids === Object.keys(STORIES).length && now.pages === Object.keys(COLOR_PAGES).length && !planted, JSON.stringify(now)); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

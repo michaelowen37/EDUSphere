@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-11-14 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 13795 clips, 2,058,599 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 271 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-15 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 14078 clips, 2,089,309 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 277 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -21,7 +21,7 @@ Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to st
 
 | Build | What it holds | Clips | Characters |
 |---|---|---|---|
-| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9236 | 1,042,858 |
+| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9519 | 1,073,568 |
 | 2 | Grade 2 and up | 4559 | 1,015,741 |
 
 ## Emphasis, sounds and descriptions (pass MW)
@@ -76,7 +76,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 9489 | 1,074,511 |
+| Pre-K to grade 2 | 9772 | 1,105,221 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,910 |
@@ -102,9 +102,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 734 |
-| story | 4833 |
-| lesson line | 6844 |
+| story title | 740 |
+| story | 4891 |
+| lesson line | 7063 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -1369,6 +1369,82 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S4185-7: [in a small, quick boy voice, curious] When did they go? [playful] asked Desmond next. Dad said, [in a warm, easy dad voice, warmly] A when question asks about a time. They went one morning, when the sun was up.
 - S4185-8: [warmly] Now Desmond knew every part of the story, and he asked for another one.
 - S4185-9: [slowly, warmly] Listen for who, what, where and when in a story, and ask questions about it too.
+
+### Then what? (S4189, what-happens-next)
+
+- S4189-1: [cheerful] Dad read Sylvie a book on a blanket under the big tree. [playful] Sylvie loved to guess what came next.
+- S4189-2: [in a calm, friendly dad voice, reading aloud] It was night, and the moon was up, [softly] Dad read. [in a calm, friendly dad voice, reading aloud] Ben yawned a big yawn.
+- S4189-3: [in a calm, friendly dad voice, curious] What will Ben do next? [softly] asked Dad. Sylvie loved to play ball, so she said, [in a tiny, bubbly girl voice, sure of herself] He will play ball!
+- S4189-4: [curious] Dad turned the page. [in a calm, friendly dad voice, reading aloud] Ben went to bed, [softly] he read. Sylvie's smile slid away, and she said, [in a tiny, bubbly girl voice, let down] My guess was not right.
+- S4189-5: [pause] [in a calm, friendly dad voice, kindly] That is okay, [softly] said Dad. [in a calm, friendly dad voice, slowly] Clues help us make a good guess. A clue is something the story tells us. The moon and the big yawn were clues that Ben was sleepy.
+- S4189-6: [warmly] Dad read on. [in a calm, friendly dad voice, reading aloud] It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window. [in a calm, friendly dad voice, curious] What will Ava do next? [softly] he asked.
+- S4189-7: [thoughtful] This time Sylvie thought about the story. [in a tiny, bubbly girl voice, working it out] Snow is cold, [softly] she said, [in a tiny, bubbly girl voice, sure of herself] so Ava will put on her warm coat!
+- S4189-8: [in a calm, friendly dad voice, playful] Let's listen and find out, [softly] said Dad. He turned the page.
+- S4189-9: [in a calm, friendly dad voice, reading aloud] Ava put on her warm coat, [softly] he read. Sylvie clapped and said, [in a tiny, bubbly girl voice, delighted] The snow was my clue!
+- S4189-10: [slowly, warmly] Use clues to guess what will happen next, and then listen to find out.
+
+### How to be a bear (S4193, act-it-out)
+
+- S4193-1: [cheerful] Roscoe and Grandma sat on the rug with a book. [in a bright, twinkly grandma voice, reading aloud] The bear put on a hat, [softly] she read, [in a bright, twinkly grandma voice, reading aloud] and then the bear played with a ball.
+- S4193-2: [in a bright, twinkly grandma voice, playful] Let's act it out! [softly] said Grandma. [in a bright, twinkly grandma voice, playful] You can be the bear.
+- S4193-3: [puzzled] Roscoe looked down at his arms, and he saw no fur and no big paws. [in a small, husky boy voice, unsure] I can't be the bear, [softly] he said. [in a small, husky boy voice, unsure] I don't look like one.
+- S4193-4: [pause] [in a bright, twinkly grandma voice, kindly] You don't have to look like one, [softly] said Grandma. [in a bright, twinkly grandma voice, slowly] To act out a story, we pretend. We do what the friends in the story did, in the same order.
+- S4193-5: [thoughtful] Roscoe thought about the story. [in a small, husky boy voice, eager] First the bear put on a hat! [softly] he said.
+- S4193-6: [cheerful] So Grandma got her straw hat from the shelf, and Roscoe took a ball from the toy basket. [in a bright, twinkly grandma voice, gently] Things we use to act are called props, [softly] said Grandma.
+- S4193-7: [playful] Roscoe growled a big bear growl. [carefully] He put on the hat. [happily] Then he tossed the ball to Grandma, and she tossed it back.
+- S4193-8: [in a bright, twinkly grandma voice, delighted] That is just what the bear did! [softly] said Grandma. Roscoe held out the hat to her. [in a small, husky boy voice, playful] Now you be the bear, [softly] he said.
+- S4193-9: [slowly, warmly] To act out a story, pretend to be its friends, and do what they did, in order.
+
+### Why the umbrella? (S4197, story-clues)
+
+- S4197-1: [cheerful] The sun was hot, and Grandpa hung the wash on the clothesline. [warmly] Wendell handed him socks from the basket.
+- S4197-2: [warmly] Grandpa told him a story. [in a slow, rumbly grandpa voice, telling a story] Leo pulled on his boots and opened his umbrella, [softly] he said.
+- S4197-3: [puzzled] Wendell looked up at the bright blue sky. [in a small, piping boy voice, puzzled] Why did Leo do that? [softly] he asked. [in a small, piping boy voice, puzzled] It is sunny!
+- S4197-4: [pause] [in a slow, rumbly grandpa voice, kindly] It is sunny here, [softly] said Grandpa, [in a slow, rumbly grandpa voice, gently] but is it sunny where Leo is? The story does not say, so we use its clues.
+- S4197-5: [thoughtful] Wendell thought hard. [in a small, piping boy voice, slowly] An umbrella and boots are for rain, [softly] he said, [in a small, piping boy voice, delighted] so it was raining in the story!
+- S4197-6: [warmly] Grandpa nodded and went on. [in a slow, rumbly grandpa voice, telling a story] Leo jumped up and down and clapped, [softly] he said. [in a slow, rumbly grandpa voice, curious] How do you think Leo felt?
+- S4197-7: [cheerful] Wendell knew that one. [in a small, piping boy voice, sure of himself] Leo jumped and clapped, so he felt happy! [softly] he said.
+- S4197-8: [in a slow, rumbly grandpa voice, telling a story] Then Leo saw a big puddle, [softly] said Grandpa. [in a slow, rumbly grandpa voice, curious] What will happen next?
+- S4197-9: [playful] Wendell grinned. [in a small, piping boy voice, eager] Leo has his boots on, so he will jump in! [softly] he said.
+- S4197-10: [in a slow, rumbly grandpa voice, playful] Let's listen and find out, [softly] said Grandpa. [in a slow, rumbly grandpa voice, delighted] Splash! Leo jumped right in, [softly] he said. Wendell jumped too, with a sock in each hand.
+- S4197-11: [slowly, warmly] Use clues to guess what will happen next, and to figure out what a story does not say.
+
+### A story for Mom (S4201, tell-it-again)
+
+- S4201-1: [cheerful] At school, Ramona heard a story about a fox. [eager] At home, Mom was folding towels, and Ramona told it to her, the best part first.
+- S4201-2: [in a high, squeaky girl voice, eager] The fox flew a kite! [softly] said Ramona. [in a high, squeaky girl voice, eager] And an apple! And it read a book, and the kite went up!
+- S4201-3: [puzzled] Mom stopped folding. [in a soft, smiling mom voice, puzzled] Did the fox fly an apple? [softly] she asked.
+- S4201-4: [in a high, squeaky girl voice, giggling] No! [softly] said Ramona. [playful] She started with the kite again, but it came out just as mixed up.
+- S4201-5: [pause] Mom set her towel on the stack. [in a soft, smiling mom voice, gently] When we retell a story, [softly] she said, [in a soft, smiling mom voice, slowly] we tell what happened in the order it happened. Start at the beginning, and tell me what the fox did first.
+- S4201-6: [calmly] Ramona thought back to the very start of the story. [in a high, squeaky girl voice, slowly] First, the fox ate an apple, [softly] she said. [in a high, squeaky girl voice, slowly] Next, the fox read a book.
+- S4201-7: [in a soft, smiling mom voice, curious] And how did the story end? [softly] asked Mom. [in a high, squeaky girl voice, delighted] Last, the fox flew a kite! [softly] said Ramona, and she threw both arms up high.
+- S4201-8: [in a soft, smiling mom voice, warmly] Now I know the whole story, [softly] said Mom. Ramona smiled a big smile. [playful] Then she told it again from the beginning, just for fun.
+- S4201-9: [slowly, warmly] To retell a story, tell what happened first, next and last.
+
+### Now I read to you (S4205, hold-a-book)
+
+- S4205-1: [cheerful] After lunch, Grandpa always read Opal a book. [playful] Today Opal wanted to read to him.
+- S4205-2: [cheerful] She climbed onto the sofa beside him and held up her cow book. [in a small, sunny girl voice, surprised] The cow is standing on its head! [softly] said Opal.
+- S4205-3: [puzzled] She tipped her head over to look, but that made her dizzy.
+- S4205-4: [pause] Grandpa chuckled. [in a soft, gravelly grandpa voice, gently] We hold a book right side up, [softly] he said, [in a soft, gravelly grandpa voice, slowly] so its picture is the right way. Turn the book, not your head.
+- S4205-5: [delighted] Opal turned it the other way up, and the cow stood on its feet.
+- S4205-6: [in a soft, gravelly grandpa voice, gently] That is the front, [softly] said Grandpa. [in a soft, gravelly grandpa voice, slowly] It has the book's name and a picture, and we start a book at the front.
+- S4205-7: [cheerful] Opal opened it at the front. [in a small, sunny girl voice, curious] Where do I start? [softly] she asked.
+- S4205-8: [in a soft, gravelly grandpa voice, gently] At the top of the page, by the first word, [softly] said Grandpa. [warmly] Opal knew every word of this story. She put a finger at the top and said, [in a small, sunny girl voice, proud] Cow went to the barn.
+- S4205-9: [carefully] She began every page at the top. [thoughtful] Then she held up her truck book and looked at its picture. [happily] Its wheels were at the bottom, the right way.
+- S4205-10: [slowly, warmly] Hold a book right side up, start at the front, and read from the top of each page.
+
+### The pointing job (S4209, which-way-we-read-pk)
+
+- S4209-1: [cheerful] On Friday nights, Nadine came to babysit Clyde, and she always brought a book. [curious] Tonight it was about a tugboat.
+- S4209-2: [carefully] Clyde held it right side up, so the tugboat on the front was the right way. He opened it at the front and got his finger ready.
+- S4209-3: [in a small, raspy boy voice, eager] You read, and I will point, [softly] said Clyde. [playful] Pointing was his favorite job.
+- S4209-4: [warmly] Nadine began to read the top line. [playful] Clyde pointed at it, and then his finger hopped straight down the page. [in a small, raspy boy voice, proud] I am done! [softly] said Clyde.
+- S4209-5: [pause] [in a bright, friendly babysitter voice, kindly] My voice is still up here, [softly] said Nadine, tapping the top line. [in a bright, friendly babysitter voice, slowly] In English, we read each line from left to right, from its start to its end. Then we go down to the start of the next line.
+- S4209-6: [carefully] This time Clyde slid his finger under each word as Nadine read it, to the very end of the line.
+- S4209-7: [in a small, raspy boy voice, delighted] Now down, and back to the start! [softly] said Clyde. [happily] His finger and her voice went along each line together, top to bottom.
+- S4209-8: [cheerful] Clyde turned the page. [playful] His finger was waiting at the start of the top line.
+- S4209-9: [slowly, warmly] Hold a book right side up, and read each line from its start to its end, top to bottom.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

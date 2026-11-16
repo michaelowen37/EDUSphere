@@ -37,7 +37,7 @@ export const CLOTHING_FAMILIES = [['red', /\b(?:red|cherry-red|cherry|crimson|sc
 const GARMENTS = 't-shirt|shirt|sweater|cardigan|hoodie|sundress|dress|pinafore|jacket|coat|vest|polo|blouse|pajamas|jumpsuit|overalls|onesie|romper|henley|fleece|sweatshirt|bathrobe|robe|parka|raincoat|poncho|jumper|tunic|top';
 const CLOTHING = new RegExp('\\b(?:in|into|wearing|and) (?:an? |her |his )?((?:[a-z]+(?:-[a-z]+)* ){0,3}?)(' + GARMENTS + ')\\b');
 const HAIR_WORDS = /hair|haircut|bob|ponytail|pigtails|afro|curls|pixie|bun|braid|mohawk|puffs|mop|topknot|crew cut|buzz|locs|dreadlocks|twists|cornrows|bald|shaved head/;
-const STYLE = /\b(?:long|short|curly|straight|wavy|bob|ponytail|pigtails|afro|curls|pixie|buns?|braids?|mohawk|puffs|mop|topknot|crew cut|buzz|locs|dreadlocks|twists|cornrows|bangs|spiky|loose|shoulder-length|chin-length|bald)\b/g;
+const STYLE = /\b(?:long|short|curly|straight|wavy|bob|bowl|fade|ponytail|pigtails|afro|curls|pixie|buns?|braids?|mohawk|puffs|mop|topknot|crew cut|buzz|locs|dreadlocks|twists|cornrows|bangs|spiky|loose|shoulder-length|chin-length|bald)\b/g;
 const family = (table, text) => { for (const [name, re] of table) if (re.test(text)) return name; return null; };
 
 // Every person a pre-K story or painting row begins a look for (a person word, then with or who has): its serial, lesson, course (and

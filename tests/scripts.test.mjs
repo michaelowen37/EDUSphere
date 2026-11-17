@@ -1597,5 +1597,84 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const all1 = one.every((r) => k1.has(keyOf(r))) && two.every((r) => !k1.has(keyOf(r))); const all2 = two.every((r) => k2.has(keyOf(r))) && one.every((r) => !k2.has(keyOf(r)));
   ok(`tools/audio-generate.mjs --build 1 makes build 1 alone and --build 2 build 2 alone, by the ledger's build column, a dry run of each naming exactly its build's clips (${k1.size} and ${k2.size}) (pass NJ; run since round one's code read)`,
     /const build = opt\('build'\);/.test(gen) && /if \(build !== null && String\(r\.build\) !== String\(build\)\) continue;/.test(gen) && all1 && all2 && k1.size === one.length && k2.size === two.length, { k1: k1.size, one: one.length, k2: k2.size, two: two.length }); }
+// Three educator lines that had stopped saying what the app does (pass NQ, found by the writer of RULES-AUDIT section 2's rewrite and
+// by its reader): the Wonder Questions page's tip said a reflection comes "After every two practice rounds", though nextWonder counts
+// WONDER_EVERY different lessons worked (Mikey's rule, restated in VISION at his answer to Q86, pass NA); the first-backup nudge said
+// "A forgotten PIN can only be reset with a backup file.", though Forgot my PIN takes the recovery code too; and the setup's state
+// tip sent the educator to "the My Classroom page" for a Change state that only a student's report has. Each line is read from the
+// screens' source and held to what the code does; the old words are planted and caught.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const wonderTip = (src) => { const m = /<p style=\{\{ margin: '0 0 8px' \}\}>(After every [^<]*a reflection question is introduced\.)/.exec(src); return m ? m[1] : ''; };
+  const wonderRight = (src) => L.WONDER_EVERY === 2 && /\btwo different lessons\b/.test(wonderTip(src)) && !/practice rounds/.test(wonderTip(src));
+  const nudge = (src) => { const m = /Make your first backup soon<\/p>\s*<p [^>]*>([^<]*)<\/p>/.exec(src); return m ? m[1] : ''; };
+  const forgot = /To reset your pin, select a backup file or type the recovery code/.test(ui);
+  const nudgeRight = (src) => forgot && /recovery code/.test(nudge(src)) && /backup file/.test(nudge(src)) && !/only be reset/.test(nudge(src));
+  const stateTip = (src) => { const m = /Choosing a state mildly alters the course flow[^<]*(?:<strong>[^<]*<\/strong>)?[^<]*/.exec(src); return m ? m[0] : ''; };
+  const changeStateFrom = (src) => [...src.matchAll(/setScreen\('change-state'\)/g)].length;
+  const stateRight = (src) => /student's report/.test(stateTip(src)) && /Change state/.test(stateTip(src)) && !/My Classroom/.test(stateTip(src)) && changeStateFrom(src) === 1;
+  const oldWonder = ui.replace('After every two different lessons a student works, whether they went well or not, a reflection question is introduced.', 'After every two practice rounds, whether it went well or not, a reflection question is introduced.');
+  const oldNudge = ui.replace('A forgotten PIN can be reset with your recovery code or a backup file, and every backup holds the code.', 'A forgotten PIN can only be reset with a backup file.');
+  const oldState = ui.replace("Choosing a state mildly alters the course flow, and you can change it later from any student's report, under <strong>Change state</strong>.", 'Choosing a state mildly alters the course flow and you can change this later from the <strong>My Classroom</strong> page.');
+  ok('the Wonder Questions page\'s tip says a reflection comes after two different lessons worked, as nextWonder counts them (pass NQ; the old "two practice rounds" planted, caught)', wonderRight(ui) && oldWonder !== ui && !wonderRight(oldWonder), wonderTip(ui));
+  ok('the first-backup nudge names both ways Forgot my PIN resets a PIN, the recovery code and a backup file (pass NQ; the old "only ... with a backup file" planted, caught)', nudgeRight(ui) && oldNudge !== ui && !nudgeRight(oldNudge), nudge(ui));
+  ok('the setup\'s state tip sends the educator to a student\'s report, the one place Change state opens (pass NQ; the old "My Classroom page" planted, caught)', stateRight(ui) && oldState !== ui && !stateRight(oldState), stateTip(ui));
+  // The nudge's last clause, "every backup holds the code" (round one's code read in pass NQ): every backup the screens make goes
+  // through buildBackup, which writes the recovery code it is given first in the file, so each call of it in ui.jsx must hand it the
+  // educator profile's code. Three calls make backups today (the Backup page's file, the automatic backup and the share); one call
+  // with the code taken out is planted and caught.
+  const backupCalls = (src) => [...src.matchAll(/buildBackup\(\{([^}]*)\}/g)].map((m) => m[1]);
+  const everyHolds = (src) => backupCalls(src).length >= 3 && backupCalls(src).every((args) => /\brecovery: educator \? educator\.recovery : null\b/.test(args));
+  const oneWithout = ui.replace('buildBackup({ ...everything, deviceName, recovery: educator ? educator.recovery : null }', 'buildBackup({ ...everything, deviceName }');
+  ok(`every backup the screens make holds the recovery code, as the first-backup nudge says (${backupCalls(ui).length} calls of buildBackup, each handed the educator's code; pass NQ; one call without it planted, caught)`, everyHolds(ui) && oneWithout !== ui && !everyHolds(oneWithout) && /recovery: recovery \|\| null,/.test(readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8')), backupCalls(ui));
+  // The automatic backup's triggers, as the screens' code and comments tell them (pass NQ, F4, after round three's code read): a student's
+  // Exit and an educator's sign-out, each only after a change. The backup when a course is finished (removed in pass L) had left a comment,
+  // two unused lines working out the courses a round finished, and the function they called (courseProgressFinished); and two comments
+  // still named the first sign-in of the day's backup and the kept file (removed 2026-09-20). Each old line is planted back and caught.
+  const LEFTOVERS = [/\bcourseProgressFinished\b/, /backup goes to the downloads folder when this round finished/, /The first sign-in of the day backs up/, /the first sign-in of each day, and when a course is finished/, /keep ONE file up to date/];
+  const leftIn = (src) => LEFTOVERS.filter((re) => re.test(src)).map(String);
+  const onlySignOuts = (src) => { const calls = [...src.matchAll(/\bautoBackup\(([^)]*)\)/g)].map((m) => m[1]).filter((a) => !/^reason\b/.test(a)); return calls.length >= 3 && calls.every((a) => a === "'sign-out'"); };
+  const BACKUP_PLANTS = {
+    'the round\'s course-finish lines': ["    setScreen('result');\n  }\n", "    setScreen('result');\n    // A backup goes to the downloads folder when this round finished a whole course. Per round was too many files.\n    const before = new Set(courseProgressFinished(record.events));\n    const after = courseProgressFinished([...record.events, event]);\n  }\n"],
+    "the sign-in's backup comment": ["      setScreen('overview');\n    } catch (e) { setErrorMsg('Could not load this learner.", "      setScreen('overview');\n      // The first sign-in of the day backs up yesterday's work, in case nobody tapped Exit.\n    } catch (e) { setErrorMsg('Could not load this learner."],
+    "the old comment's triggers": ["// The automatic backup's file, straight to the device's downloads folder without asking (autoBackup): when a student taps Exit and\n", "// Automatic backups go to the device's downloads folder without asking: when a student signs out, on\n// the first sign-in of each day, and when a course is finished. Only the newest file is ever needed;\n"],
+  };
+  const backupPlanted = Object.entries(BACKUP_PLANTS).map(([what, [from, to]]) => [what, ui.split(from).length === 2 ? ui.replace(from, () => to) : null]);
+  ok(`the automatic backup's code and comments name only its two triggers left, a student's Exit and an educator's sign-out: no course-finish lines or courseProgressFinished, and no comment naming the first sign-in of the day's backup (pass NQ, F4; ${backupPlanted.length} old lines planted back, each caught)`,
+    leftIn(ui).length === 0 && onlySignOuts(ui) && backupPlanted.every(([, src]) => !!src && leftIn(src).length > 0), JSON.stringify({ left: leftIn(ui), uncaught: backupPlanted.filter(([, src]) => !src || leftIn(src).length === 0).map(([w]) => w) })); }
+// Every stop of the device's voice sits in a try (pass NQ, round one's code reads): SpeakButton's stop called
+// window.speechSynthesis.cancel() bare, where every other cancel in the screens has a try, so a voice that throws there skipped the
+// rest of the stop and left the button saying Stop reading. Read with TypeScript's own parser (from npm root -g, as the check above
+// loads it): every call of cancel() on the voice, window.speechSynthesis, speechSynthesis or a name a declaration binds to it (ss),
+// sits inside the try block of a try statement in its own function, never in its catch or finally, and never under a try that only
+// wraps the function that calls it later (a timer's callback runs after the try has ended). The bare stop, put back, is caught, and so
+// are three near misses on small sources: a cancel through ss with no try, one in a catch, and one in a timer under an outer try.
+{ const { execSync } = await import('node:child_process'); const { createRequire } = await import('node:module');
+  const ts = createRequire(import.meta.url)(`${execSync('npm root -g').toString().trim()}/typescript`);
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  // Every cancel() of the voice in a source, each with whether a try in its own function guards it.
+  const voiceCancels = (src) => {
+    const sf = ts.createSourceFile('ui.jsx', src, ts.ScriptTarget.Latest, true, ts.ScriptKind.JSX);
+    const VOICE = /^(?:window\.)?speechSynthesis$/; const names = new Set();
+    const bind = (n) => { if (ts.isVariableDeclaration(n) && n.initializer && ts.isIdentifier(n.name) && VOICE.test(n.initializer.getText(sf))) names.add(n.name.text); ts.forEachChild(n, bind); };
+    bind(sf);
+    const isVoice = (e) => VOICE.test(e.getText(sf)) || (ts.isIdentifier(e) && names.has(e.text));
+    const guarded = (node) => { for (let n = node; n.parent; n = n.parent) { if (ts.isTryStatement(n.parent) && n.parent.tryBlock === n) return true; if (ts.isFunctionLike(n.parent)) return false; } return false; };
+    const out = [];
+    const walk = (n) => { if (ts.isCallExpression(n) && ts.isPropertyAccessExpression(n.expression) && n.expression.name.text === 'cancel' && isVoice(n.expression.expression)) out.push({ line: sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1, text: n.getText(sf), guarded: guarded(n) }); ts.forEachChild(n, walk); };
+    walk(sf);
+    return out; };
+  const now = voiceCancels(ui); const bare = now.filter((c) => !c.guarded);
+  const STOP = 'try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never leave the button reading */ } stopSound(); setReading(false);';
+  const oldStop = ui.replace(STOP, 'window.speechSynthesis.cancel(); stopSound(); setReading(false);');
+  const nearMisses = {
+    'a cancel through ss with no try': 'function a() { const ss = window.speechSynthesis; if (ss.speaking) ss.cancel(); }',
+    'a cancel in a catch': 'function b() { try { speak(); } catch (e) { window.speechSynthesis.cancel(); } }',
+    'a cancel in a timer under an outer try': 'function c() { try { setTimeout(() => { window.speechSynthesis.cancel(); }, 0); } catch (e) { /* too early */ } }',
+  };
+  const missed = Object.entries(nearMisses).filter(([, src]) => voiceCancels(src).filter((c) => !c.guarded).length !== 1).map(([name]) => name);
+  ok(`every cancel of the device's voice in src/ui.jsx sits in a try in its own function, SpeakButton's stop among them (${now.length} cancels; pass NQ, round one's code reads; the bare stop put back, caught, and three near misses, a cancel through ss with no try, one in a catch and one in a timer under an outer try, caught)`,
+    now.length >= 8 && bare.length === 0 && ui.includes(STOP) && oldStop !== ui && voiceCancels(oldStop).filter((c) => !c.guarded).length === 1 && missed.length === 0
+      && voiceCancels('function d() { const ss = window.speechSynthesis; try { ss.cancel(); } catch (e) { /* fine */ } }').every((c) => c.guarded),
+    JSON.stringify({ bare, missed, found: now.length })); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

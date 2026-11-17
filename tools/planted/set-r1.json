@@ -1,0 +1,2464 @@
+{
+  "about": "The planted-defect set as round one of pass NQ read it, for scoring round one's reports only (node tools/planted-set.mjs --score <report> --brief <name> --seed 1 --set tools/planted/set-r1.json), in a tree whose source is the one those copies were built from (nq-base, before the merge). Its catch words are round one's fixed ones. Left out: N04, N05, N06 and N08, which round one's readers rightly flagged under other rules, and N09 and N10, made after. Never build a copy from it.",
+  "stub": {},
+  "entries": [
+    {
+      "id": "P01",
+      "kind": "plant",
+      "class": "C13",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "red-and-blue",
+        "aliases": [
+          "Red and blue",
+          "p3-tap-red-blue",
+          "p3-which-colour",
+          "p3-sort-red-blue"
+        ]
+      },
+      "about": "Red and blue (pre-K 3, Very first steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-tap-red-blue, p3-which-colour, p3-sort-red-blue).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'Many fire trucks are red, and so are many apples.', show:",
+              "replace": "{ say: 'Fire trucks are always red, and so are apples.', show:"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "red: 'Many fire trucks are red, and so are many apples.'",
+              "replace": "red: 'Fire trucks are always red, and so are apples.'"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "'Many fire trucks and many apples are red. The sea is often blue,",
+              "replace": "'Fire trucks and apples are always red. The sea is often blue,"
+            }
+          ],
+          "catch": [
+            "always red",
+            "are always red",
+            "not always red",
+            "green apples?",
+            "yellow apples?",
+            "yellow fire trucks?",
+            "apples (can|come|are) (also )?(green|yellow)",
+            "overgenerali",
+            "unhedged",
+            "hedge"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'The sea is often blue, and so are a bluebird\\'s wings.', show:",
+              "replace": "{ say: 'The sea is always blue, and so are a bluebird\\'s wings.', show:"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "blue: 'The sea is often blue, and so are a bluebird\\'s wings.'",
+              "replace": "blue: 'The sea is always blue, and so are a bluebird\\'s wings.'"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "are red. The sea is often blue, and so are a bluebird\\'s wings.', 'To sort",
+              "replace": "are red. The sea is always blue, and so are a bluebird\\'s wings.', 'To sort"
+            }
+          ],
+          "catch": [
+            "always blue",
+            "not always blue",
+            "sea is (often|not always|sometimes)",
+            "gr[ae]y or green",
+            "green or gr[ae]y",
+            "overgenerali",
+            "unhedged",
+            "hedge",
+            "storm"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C13",
+        "pass": "MB",
+        "line": 3125,
+        "words": "A bird has wings, so it can fly"
+      },
+      "defect": "A line the child hears, its More right answers row and its paragraph state an unhedged generic that is false: fire trucks and apples are always red (green and yellow apples are common, and some fire trucks are yellow; wording 2: the sea is always blue, where it is often gray or green). The lesson brief's item 4 (facts are current and sourceable; nothing a lesson teaches contradicts another course: Colors in pre-K 4 asks about green things) and MISTAKE-CLASSES C13 (a wrong or overgeneralized fact; its near miss, \"Many frogs are green\", is hedged).",
+      "fix": "Hedge it as it was: 'Many fire trucks are red, and so are many apples.' (wording 2: 'The sea is often blue ...'), in the line, the More right answers row and the paragraph."
+    },
+    {
+      "id": "P02",
+      "kind": "plant",
+      "class": "C10",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "please-and-thank-you",
+        "aliases": [
+          "Please and thank you",
+          "pk3-magic-word"
+        ]
+      },
+      "about": "Please and thank you (pre-K 3, Very first steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (pk3-magic-word, pk-turn-choice).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['a friend helps you find your shoe', 'Thank you', 'Nothing',",
+              "replace": "['a friend helps you find your shoe', 'Thank you', 'Thanks',"
+            }
+          ],
+          "catch": [
+            "thanks as the wrong",
+            "thanks.{0,25} wrong (answer|choice|word)",
+            "thanks.{0,2} is (a |also )?(polite|kind|right|thanking|fine|correct)",
+            "thank you.{0,4} (against|and|or|beside|versus) .{0,2}thanks",
+            "saying thanks does not",
+            "could fairly",
+            "also right",
+            "also polite",
+            "fairly (call|take|pick)",
+            "both (are )?(right|kind|polite)",
+            "same as thank you"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['someone hands you a cracker', 'Thank you', 'Nothing',",
+              "replace": "['someone hands you a cracker', 'Thank you', 'Thanks',"
+            }
+          ],
+          "catch": [
+            "thanks as the wrong",
+            "thanks.{0,25} wrong (answer|choice|word)",
+            "thanks.{0,2} is (a |also )?(polite|kind|right|thanking|fine|correct)",
+            "thank you.{0,4} (against|and|or|beside|versus) .{0,2}thanks",
+            "saying thanks does not",
+            "could fairly",
+            "also right",
+            "also polite",
+            "fairly (call|take|pick)",
+            "both (are )?(right|kind|polite)",
+            "same as thank you"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C10",
+        "pass": "MS",
+        "line": 4633,
+        "words": "A thirsty child could fairly ask for some more"
+      },
+      "defect": "pk3-magic-word offers Thanks as the wrong choice beside Thank you, when a friend helps you find your shoe (wording 2: when someone hands you a cracker): thanks is a kind way to thank, so a child who taps it is right in every home, and its More Info reason ('Saying thanks does not show your friend you are glad') is false. The lesson brief's item 2 (a wrong choice is never one a child could fairly choose; since pass ML never a thing the question's words also fit in a child's world) and item 11 (a wrong choice is read as a child lives the event).",
+      "fix": "Give the row a wrong choice that is truly not a thank-you, as it was ('Nothing')."
+    },
+    {
+      "id": "P03",
+      "kind": "plant",
+      "class": "C8",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "help-a-friend",
+        "aliases": [
+          "Helping a friend",
+          "p3-help-who",
+          "p3-help-kind",
+          "p3-help-grownup",
+          "p3-help-ball",
+          "p3-help-yesno"
+        ]
+      },
+      "about": "Helping a friend (pre-K 3, Very first steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-help-who, p3-help-kind, p3-help-grownup, p3-help-ball, p3-help-yesno).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'What is a kind thing to do when your friend looks scared?'",
+              "replace": "'What is a kind thing to do when your friend looks scared and wants something soft to hold?'"
+            }
+          ],
+          "catch": [
+            "soft to hold",
+            "something soft",
+            "gives? (the |its )?answer away",
+            "answers? itself",
+            "answer in (the|its) (question|words)",
+            "(question|words) (gives|names|carries|says|points to) (the |its )?answer",
+            "points? (at|to) the (answer|teddy)",
+            "by (its )?meaning",
+            "without knowing what"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'What is a kind thing to say when your friend is crying?'",
+              "replace": "'What is a kind thing to say when your friend is crying, to find out how they feel?'"
+            }
+          ],
+          "catch": [
+            "find out how they feel",
+            "how they feel",
+            "gives? (the |its )?answer away",
+            "answers? itself",
+            "answer in (the|its) (question|words)",
+            "(question|words) (gives|names|carries|says|points to) (the |its )?answer",
+            "by (its )?meaning",
+            "without knowing what"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C8",
+        "pass": "MV",
+        "line": 4802,
+        "words": "Where's prompts gave each answer away by meaning"
+      },
+      "defect": "A p3-help-kind question's own words carry its answer by meaning: 'when your friend looks scared and wants something soft to hold' leads a child to the teddy without knowing what is kind (wording 2: 'to find out how they feel' is what Are you okay? does). The lesson brief's item 13 (a question's own words never give its answer away; the rules test hears a word only the answer repeats, so the brief reads for an answer's meaning carried in other words) and item 2.",
+      "fix": "Ask the moment alone, as it was: 'What is a kind thing to do when your friend looks scared?' (wording 2: '... when your friend is crying?')."
+    },
+    {
+      "id": "P04",
+      "kind": "plant",
+      "class": "C11",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "helpers-all-around",
+        "aliases": [
+          "Helpers all around",
+          "ck-which-helper",
+          "ck-job-tool",
+          "pk-helper-where",
+          "pk-helper-scene"
+        ]
+      },
+      "about": "Helpers all around (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (ck-which-helper, ck-job-tool, pk-helper-where, pk-helper-scene).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Who brings letters and packages to your home?'",
+              "replace": "'Who delivers letters and packages to your home?'"
+            }
+          ],
+          "catch": [
+            "who delivers",
+            "delivers letters",
+            "script never says",
+            "never says (delivers|it|that word)",
+            "not (said|taught) in (the|its) (script|lesson|lines)",
+            "a word (the|its) (script|lesson) never",
+            "untaught"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Who helps you when you are sick?'",
+              "replace": "'Who treats you when you are sick?'"
+            }
+          ],
+          "catch": [
+            "who treats",
+            "treats you",
+            "script never says",
+            "never says (treats|it|that word)",
+            "not (said|taught) in (the|its) (script|lesson|lines)",
+            "a word (the|its) (script|lesson) never",
+            "treat (is|means) (a )?(candy|snack|sweet)",
+            "untaught"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C11",
+        "pass": "NC",
+        "line": 5158,
+        "words": "four question words no line said"
+      },
+      "defect": "ck-which-helper asks with a word the lesson's script never says: 'Who delivers letters and packages to your home?', where every line says a mail carrier brings them (wording 2: 'Who treats you when you are sick?', where the lines say a doctor helps sick people get well, and a young child knows a treat as a snack). The lesson brief's item 2 (every word a bank asks is said in its own lesson's script, not only in a lesson that gates it, and never only in another course) and item 23 (a question's words are read against the lesson's own).",
+      "fix": "Ask in the lesson's own words, as it was: 'Who brings letters and packages to your home?' (wording 2: 'Who helps you when you are sick?'), or teach the word in a line first."
+    },
+    {
+      "id": "P05",
+      "kind": "plant",
+      "class": "C19",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "match-the-vehicles",
+        "aliases": [
+          "Match the vehicles",
+          "pm-same-vehicles",
+          "pm-different-vehicles",
+          "pm-vehicle-where",
+          "pm-tap-vehicle"
+        ]
+      },
+      "about": "Match the vehicles (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (pm-same-vehicles, pm-different-vehicles, pm-vehicle-where, pm-tap-vehicle).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'When you are out with a grown-up and see two cars, look at their color and their shape. Do they match?'",
+              "replace": "{ say: 'When you see two cars go by on your street, look at their color and their shape. Do they match?'"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "'When you are out with a grown-up, two cars match when they have the same color and the same shape.'",
+              "replace": "'When two cars go by on your street, they match when they have the same color and the same shape.'"
+            }
+          ],
+          "catch": [
+            "on your street",
+            "cars go by",
+            "no grown-up",
+            "without a grown-up",
+            "grown-up (is )?(gone|missing|dropped)",
+            "by the (road|street)",
+            "near (the )?(road|street|traffic)",
+            "traffic",
+            "unsafe",
+            "alone"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'When you are out with a grown-up and see two cars, look at their color and their shape. Do they match?'",
+              "replace": "{ say: 'Stand by the road and watch for two cars. Look at their color and their shape. Do they match?'"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "'When you are out with a grown-up, two cars match when they have the same color and the same shape.'",
+              "replace": "'When you stand by the road, two cars match when they have the same color and the same shape.'"
+            }
+          ],
+          "catch": [
+            "stand by the road",
+            "by the road",
+            "to the road",
+            "no grown-up",
+            "without a grown-up",
+            "grown-up (is )?(gone|missing|dropped)",
+            "near (the )?(road|street|traffic)",
+            "traffic",
+            "unsafe",
+            "alone"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C19",
+        "pass": "MS",
+        "line": 4634,
+        "words": "the words sent Hugo out of the library alone"
+      },
+      "defect": "The turn line a pre-reader hears, and its paragraph, send a four-year-old to watch cars go by on the street with no grown-up named (wording 2: to stand by the road and watch for cars), where the line had them out with a grown-up. The lesson brief's item 14 (a lesson's words never send a young child somewhere alone) and the story brief's item 4 (roads, read as a careful parent would); MISTAKE-CLASSES C19.",
+      "fix": "Put the grown-up back: 'When you are out with a grown-up and see two cars, look at their color and their shape. Do they match?', in the line and the paragraph."
+    },
+    {
+      "id": "P06",
+      "kind": "plant",
+      "class": "C12",
+      "harm": 2,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "which-came-first",
+        "aliases": [
+          "Which came first?",
+          "p4-which-came-first"
+        ]
+      },
+      "about": "Which came first? (pre-K 4, First sounds and letters): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-which-came-first).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'Listen again. Quack, then meow. Now the duck came first.', show: { kind: 'pic', name: 'duck' } },",
+              "replace": "{ say: 'Listen again. Quack, then meow. Now the duck came first.', show: { kind: 'pic', name: 'cat' } },"
+            }
+          ],
+          "catch": [
+            "shows the cat",
+            "shows a cat",
+            "the cat alone",
+            "wrong animal",
+            "picture (shows|shown|is) (only )?(the |a )?(cat|wrong)",
+            "name: .?cat",
+            "duck came first.{0,80} cat",
+            "mismatch",
+            "disagree"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C12",
+        "pass": "MK",
+        "line": 3822,
+        "words": "showed Bear alone with its B lit while the voice said"
+      },
+      "defect": "Line 5 says 'Now the duck came first.' over a picture of the cat, so a pre-reader, who sees the picture as the voice speaks, is shown the wrong animal as the one that came first, the very thing the bank asks. The lesson brief's item 3 (pictures show what the line names) and item 10 (every picture on a line, alone as well as in a pair or a row, is named by its line or shows what the line says); the scripts test reads a lone drawn picture by no name, so only a reader sees it.",
+      "fix": "Show the duck: { kind: 'pic', name: 'duck' }."
+    },
+    {
+      "id": "P07",
+      "kind": "plant",
+      "class": "C34",
+      "harm": 2,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "good-friend",
+        "aliases": [
+          "Being a good friend",
+          "p4-kind-words",
+          "p4-help-friend",
+          "p4-when-grownup",
+          "p4-fix-problem",
+          "p4-good-yesno"
+        ]
+      },
+      "about": "Being a good friend (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-kind-words, p4-help-friend, p4-when-grownup, p4-fix-problem, p4-good-yesno).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Sitting beside your friend shows you care how your friend feels.'",
+              "replace": "'When your friend looks sad, you can sit beside your friend.'"
+            }
+          ],
+          "catch": [
+            "hands the question back",
+            "question back",
+            "gives no reason",
+            "with no reason",
+            "without (a|any) reason",
+            "says the question (again|back)",
+            "restates the question",
+            "repeats the question",
+            "circular",
+            "only the (question|answer)"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Helping wipe it up is kind, and it helps your friend feel better.'",
+              "replace": "'When your friend spills milk, you can help wipe it up.'"
+            }
+          ],
+          "catch": [
+            "hands the question back",
+            "question back",
+            "gives no reason",
+            "with no reason",
+            "without (a|any) reason",
+            "says the question (again|back)",
+            "restates the question",
+            "repeats the question",
+            "circular",
+            "only the (question|answer)"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C34",
+        "pass": "MD",
+        "line": 3267,
+        "words": "three explanations that handed the question back"
+      },
+      "defect": "A p4-help-friend explanation hands the question back: after 'What can you do when your friend looks sad?' it says only 'When your friend looks sad, you can sit beside your friend.', the question and its answer with no reason (wording 2: the spilled milk's 'When your friend spills milk, you can help wipe it up.'). The lesson brief's item 3 (explanations give the reason in whole sentences) and item 24 (an explanation gives the lesson's way to the answer, never the answer restated); MISTAKE-CLASSES C34.",
+      "fix": "Give the reason, as it was: 'Sitting beside your friend shows you care how your friend feels.' (wording 2: 'Helping wipe it up is kind, and it helps your friend feel better.')."
+    },
+    {
+      "id": "P08",
+      "kind": "plant",
+      "class": "C14",
+      "harm": 2,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "taking-turns",
+        "aliases": [
+          "Taking turns",
+          "ck-good-choice",
+          "pk-whose-turn",
+          "pk-turn-or-share",
+          "pk-while-waiting"
+        ]
+      },
+      "about": "Taking turns (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (pk-turn-choice, ck-good-choice, pk-whose-turn, pk-turn-or-share, pk-while-waiting).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'Waiting for a turn can feel hard, and that is okay. Take a slow breath",
+              "replace": "{ say: 'Waiting can drive you up the wall, and that is okay. Take a slow breath"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "'Waiting for a turn can feel hard, and that is okay. A slow breath helps you feel calm, counting",
+              "replace": "'Waiting can drive you up the wall, and that is okay. A slow breath helps you feel calm, counting"
+            }
+          ],
+          "catch": [
+            "up the wall",
+            "drive you up",
+            "an idiom",
+            "figure of speech",
+            "idiom",
+            "literal"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'Waiting for a turn can feel hard, and that is okay. Take a slow breath",
+              "replace": "{ say: 'Waiting can drive you bananas, and that is okay. Take a slow breath"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "'Waiting for a turn can feel hard, and that is okay. A slow breath helps you feel calm, counting",
+              "replace": "'Waiting can drive you bananas, and that is okay. A slow breath helps you feel calm, counting"
+            }
+          ],
+          "catch": [
+            "drive you bananas",
+            "you bananas",
+            "an idiom",
+            "figure of speech",
+            "idiom",
+            "literal"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C14",
+        "pass": "NA",
+        "line": 5058,
+        "words": "an idiom a three-year-old may not know"
+      },
+      "defect": "Line 7, which a pre-reader hears, and its paragraph say how waiting feels in an idiom a four-year-old may not know or may hear as said, 'Waiting can drive you up the wall' (wording 2: 'Waiting can drive you bananas', heard as bananas), where the lesson's own words were 'can feel hard'. The lesson brief's item 2 (every word a bank asks is said first) reads the words; MISTAKE-CLASSES C14 (words a young child hears wrongly or was never taught), and the Wonder brief's item 14, which takes such idioms out of early text.",
+      "fix": "Say the feeling plainly, as it was: 'Waiting for a turn can feel hard, and that is okay.'"
+    },
+    {
+      "id": "N01",
+      "kind": "near miss",
+      "class": "C13",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "colours",
+        "aliases": [
+          "Colors",
+          "pc-tap-colour",
+          "pc-name-colour",
+          "pc-same-colour",
+          "pc-different-colour",
+          "pc-colour-of-thing"
+        ]
+      },
+      "about": "Colors (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (pc-tap-colour, pc-name-colour, pc-same-colour, pc-different-colour, pc-colour-of-thing).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'A lemon is yellow, and a pickle is green.', show:",
+              "replace": "{ say: 'A lemon is yellow, and a pickle is green, like many frogs.', show:"
+            },
+            {
+              "file": "src/logic.mjs",
+              "find": "A stop sign is red, and a blueberry is blue. A lemon is yellow, and a pickle is green.'",
+              "replace": "A stop sign is red, and a blueberry is blue. A lemon is yellow, and a pickle is green, like many frogs.'"
+            }
+          ]
+        }
+      ],
+      "trap": [
+        "many frogs",
+        "frogs are green",
+        "not (all|every) frogs?",
+        "overgenerali",
+        "unhedged"
+      ],
+      "origin": {
+        "class": "C13",
+        "pass": "MB",
+        "line": 3125,
+        "words": "A bird has wings, so it can fly",
+        "beside": true
+      },
+      "correct": "Hedged, as MISTAKE-CLASSES C13 names its near miss ('Many frogs are green'): many frogs are green, and the line says no more; Yellow and green in pre-K 3 says the same."
+    },
+    {
+      "id": "N02",
+      "kind": "near miss",
+      "class": "C19",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "circle-and-square",
+        "aliases": [
+          "Circle and square",
+          "p3-tap-shape",
+          "p3-name-shape",
+          "p3-shape-by-corners",
+          "p3-shape-thing",
+          "p3-same-shape-any-size"
+        ]
+      },
+      "about": "Circle and square (pre-K 3, Listen and point): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-tap-shape, p3-name-shape, p3-shape-by-corners, p3-shape-thing, p3-same-shape-any-size).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'Look around the room. Many plates are round like a circle, and some windows are square.'",
+              "replace": "{ say: 'Look around your home with a grown-up. Many plates are round like a circle, and some windows are square.'"
+            }
+          ]
+        }
+      ],
+      "trap": [
+        "without a grown-up",
+        "no grown-up",
+        "look around (your|the) home",
+        "by (him|her|them)self",
+        "alone",
+        "unsafe"
+      ],
+      "origin": {
+        "class": "C19",
+        "pass": "MS",
+        "line": 4634,
+        "words": "the words sent Hugo out of the library alone",
+        "beside": true
+      },
+      "correct": "The child looks around their own home with a grown-up named, as the lesson brief's item 14 asks (a lesson's words never send a young child somewhere alone)."
+    },
+    {
+      "id": "N03",
+      "kind": "near miss",
+      "class": "C34",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "join-in-play",
+        "aliases": [
+          "Can I play too?",
+          "p3-join-how",
+          "p3-join-yesno",
+          "p3-join-not-now",
+          "p3-join-face",
+          "p3-join-turn"
+        ]
+      },
+      "about": "Can I play too? (pre-K 3, Very first steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-join-how, p3-join-yesno, p3-join-not-now, p3-join-face, p3-join-turn).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Asking a friend who plays alone to play with you is a kind way to start playing together.'",
+              "replace": "'Asking a friend who plays alone to play with you is kind, because having nobody to play with can make a friend sad.'"
+            }
+          ]
+        }
+      ],
+      "trap": [
+        "hands the question back",
+        "question back",
+        "restates the question",
+        "repeats the question",
+        "no reason",
+        "circular"
+      ],
+      "origin": {
+        "class": "C34",
+        "pass": "MD",
+        "line": 3267,
+        "words": "three explanations that handed the question back",
+        "beside": true
+      },
+      "correct": "The explanation says the question's moment again and then gives the lesson's own reason, line 11's 'Having nobody to play with can make a friend sad.', so it explains rather than handing the question back (the lesson brief's items 3 and 24)."
+    },
+    {
+      "id": "K01",
+      "kind": "control",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "talk-with-a-friend",
+        "aliases": [
+          "Talking with a friend",
+          "p3-talk-listen",
+          "p3-talk-turn",
+          "p3-talk-hi-bye",
+          "p3-talk-yesno",
+          "p3-talk-room"
+        ]
+      },
+      "about": "Talking with a friend (pre-K 3, Very first steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-talk-listen, p3-talk-turn, p3-talk-hi-bye, p3-talk-yesno, p3-talk-room).",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "K02",
+      "kind": "control",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "play-with-a-plan",
+        "aliases": [
+          "Play with a plan",
+          "p4-play-plan",
+          "p4-play-part",
+          "p4-plan-yesno",
+          "p4-plan-together",
+          "p4-plan-what"
+        ]
+      },
+      "about": "Play with a plan (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-play-plan, p4-play-part, p4-plan-yesno, p4-plan-together, p4-plan-what).",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged.",
+      "known": [
+        {
+          "what": "p4-plan-yesno answers Yes on about 80 percent of its seeds (four Yes rows to one No): a real defect of today's content, not the set's",
+          "seen": "round one of pass NQ: all three lesson reads (two as must fix)",
+          "words": [
+            "leans yes",
+            "yes on \\d",
+            "(80|81|80\\.5) percent",
+            "four yes",
+            "always (taps|tap|says|answers) yes",
+            "always yes",
+            "yes rows",
+            "plan-yesno"
+          ]
+        },
+        {
+          "what": "p4-play-plan's new-idea row gives Listen to your friend's idea, too as More right answers, which answers another question and is said in no line: a real defect of today's content, not the set's",
+          "seen": "round one of pass NQ: two lesson reads (one as must fix)",
+          "words": [
+            "listen to your friend.s idea",
+            "answers another question",
+            "new-idea row",
+            "new idea"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "K03",
+      "kind": "control",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "animal-sounds",
+        "aliases": [
+          "Animal sounds",
+          "p3-animal-sound",
+          "p3-animal-says",
+          "p3-animal-order",
+          "p3-two-at-once"
+        ]
+      },
+      "about": "Animal sounds (pre-K 3, Listen and point): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-animal-sound, p3-animal-says, p3-animal-order, p3-two-at-once).",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "P09",
+      "kind": "plant",
+      "class": "C19",
+      "harm": 3,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4161-S4164",
+        "aliases": [
+          "Pancake letters",
+          "Florence"
+        ]
+      },
+      "about": "\"Pancake letters\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. Big O, he said.',",
+              "replace": "    'Florence stood on a chair by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. Big O, he said.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"small-letters\"].audio = [\"[cheerful] Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];",
+              "replace": "STORIES[\"small-letters\"].audio = [\"[cheerful] Florence stood on a chair by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];"
+            }
+          ],
+          "catch": [
+            "stood on a chair",
+            "by the hot pan",
+            "near the (stove|hot pan)",
+            "beside (a|the) hot",
+            "on a chair by",
+            "burn",
+            "stove",
+            "height",
+            "fall"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. Big O, he said.',",
+              "replace": "    'Florence knelt on the counter by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. Big O, he said.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"small-letters\"].audio = [\"[cheerful] Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];",
+              "replace": "STORIES[\"small-letters\"].audio = [\"[cheerful] Florence knelt on the counter by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];"
+            }
+          ],
+          "catch": [
+            "on the counter",
+            "knelt on",
+            "by the hot pan",
+            "near the (stove|hot pan)",
+            "beside (a|the) hot",
+            "burn",
+            "stove",
+            "height",
+            "fall"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C19",
+        "pass": "MY",
+        "line": 4953,
+        "words": "the boy's fingers beside his mom's work"
+      },
+      "defect": "The first paragraph puts a four-year-old on a chair by the hot pan while Dad cooks (wording 2: kneeling on the counter beside it), a burn and a fall a careful parent would not allow, and its pictures still seat her at the table. The story brief's item 4 (safety, read as a careful parent would, in the words and in the picture descriptions) and item 3 (who is where); MISTAKE-CLASSES C19 (pass MY: the boy's fingers beside his mom's work, now he hands her a board).",
+      "fix": "Keep Florence away from the stove, as the story was: 'Dad made pancakes in the shapes of letters.', in the words and the audio."
+    },
+    {
+      "id": "P10",
+      "kind": "plant",
+      "class": "C19",
+      "harm": 3,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4148-S4151",
+        "aliases": [
+          "The next tank",
+          "Gideon"
+        ]
+      },
+      "about": "\"The next tank\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'It rained all the way to the aquarium. Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.',",
+              "replace": "    'Gideon rode up front beside Mom, and it rained all the way to the aquarium. Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"o-and-u\"].audio = [\"[cheerful] It rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];",
+              "replace": "STORIES[\"o-and-u\"].audio = [\"[cheerful] Gideon rode up front beside Mom, and it rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];"
+            }
+          ],
+          "catch": [
+            "rode up front",
+            "up front",
+            "front seat",
+            "car seat",
+            "back seat",
+            "buckl",
+            "belt",
+            "unsafe"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'It rained all the way to the aquarium. Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.',",
+              "replace": "    'Gideon hopped into Mom\\'s car, and it rained all the way to the aquarium. Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"o-and-u\"].audio = [\"[cheerful] It rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];",
+              "replace": "STORIES[\"o-and-u\"].audio = [\"[cheerful] Gideon hopped into Mom's car, and it rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];"
+            }
+          ],
+          "catch": [
+            "hopped into",
+            "car seat",
+            "back seat",
+            "no one buckles",
+            "not buckled",
+            "buckl",
+            "belt",
+            "unsafe"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C19",
+        "pass": "MO",
+        "line": 4133,
+        "words": "a three-year-old \"hopped in\" to Grandma's car alone"
+      },
+      "defect": "The story's first words put a four-year-old up front beside Mom for the drive (wording 2: he hops into her car, and nobody buckles him into a car seat). The story brief's item 4 (since pass MO: a young child who gets into a car is buckled into a car seat by a grown-up; Texas Transportation Code 545.412(a), and the AAP's harness seat and the back seat under thirteen) and item 17 (a child in a car is buckled into a car seat in the back seat).",
+      "fix": "Take the car out of the words, as the story was ('It rained all the way to the aquarium.'), or have Mom buckle Gideon into his car seat in the back."
+    },
+    {
+      "id": "P11",
+      "kind": "plant",
+      "class": "C13",
+      "harm": 3,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4185-S4188",
+        "aliases": [
+          "Where did they go?",
+          "Desmond"
+        ]
+      },
+      "about": "\"Where did they go?\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'When did they go? asked Desmond next. Dad said, A when question asks about a time. They went one morning, when the sun was up.',",
+              "replace": "    'When did they go? asked Desmond next. Dad said, A when question asks about a time. They went one morning, when the sun was up, since owls sleep all night.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"story-questions\"].audio = [\"[cheerful] Dad told Desmond a story on the couch, while their dog napped on the rug. [in a warm, easy dad voice, telling a story] One morning, when the sun was up, the fox and the owl went out, [softly] he said.\", \"[in a warm, easy dad voice, telling a story] The fox found a kite, and the owl found a book, [softly] said Dad. That was the end.\", \"[curious] Dad had not said where they went, and Desmond wanted to know the place.\", \"[thoughtful] So he asked, [in a small, quick boy voice, hopeful] Who went? [in a warm, easy dad voice, kindly] The fox and the owl, [softly] said Dad. That was not it, so he asked what they found, and Dad said a kite and a book.\", \"[pause] [in a warm, easy dad voice, gently] To know a place, start with where, [softly] said Dad. [in a warm, easy dad voice, slowly] A who question asks about someone, and a what question can ask about a thing. A where question asks about a place.\", \"[in a small, quick boy voice, eager] Where did the fox and the owl go? [softly] asked Desmond. [in a warm, easy dad voice, delighted] To the lake! [softly] said Dad.\", \"[in a small, quick boy voice, curious] When did they go? [playful] asked Desmond next. Dad said, [in a warm, easy dad voice, warmly] A when question asks about a time. They went one morning, when the sun was up.\", \"[warmly] Now Desmond knew every part of the story, and he asked for another one.\", \"[slowly, warmly] Listen for who, what, where and when in a story, and ask questions about it too.\"];",
+              "replace": "STORIES[\"story-questions\"].audio = [\"[cheerful] Dad told Desmond a story on the couch, while their dog napped on the rug. [in a warm, easy dad voice, telling a story] One morning, when the sun was up, the fox and the owl went out, [softly] he said.\", \"[in a warm, easy dad voice, telling a story] The fox found a kite, and the owl found a book, [softly] said Dad. That was the end.\", \"[curious] Dad had not said where they went, and Desmond wanted to know the place.\", \"[thoughtful] So he asked, [in a small, quick boy voice, hopeful] Who went? [in a warm, easy dad voice, kindly] The fox and the owl, [softly] said Dad. That was not it, so he asked what they found, and Dad said a kite and a book.\", \"[pause] [in a warm, easy dad voice, gently] To know a place, start with where, [softly] said Dad. [in a warm, easy dad voice, slowly] A who question asks about someone, and a what question can ask about a thing. A where question asks about a place.\", \"[in a small, quick boy voice, eager] Where did the fox and the owl go? [softly] asked Desmond. [in a warm, easy dad voice, delighted] To the lake! [softly] said Dad.\", \"[in a small, quick boy voice, curious] When did they go? [playful] asked Desmond next. Dad said, [in a warm, easy dad voice, warmly] A when question asks about a time. They went one morning, when the sun was up, since owls sleep all night.\", \"[warmly] Now Desmond knew every part of the story, and he asked for another one.\", \"[slowly, warmly] Listen for who, what, where and when in a story, and ask questions about it too.\"];"
+            }
+          ],
+          "catch": [
+            "owls sleep all night",
+            "owls sleep",
+            "sleep all night",
+            "owls are (mostly |most )?(nocturnal|awake|active)",
+            "most owls",
+            "nocturnal",
+            "false",
+            "untaught"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'When did they go? asked Desmond next. Dad said, A when question asks about a time. They went one morning, when the sun was up.',",
+              "replace": "    'When did they go? asked Desmond next. Dad said, A when question asks about a time. They went one morning, when the sun was up, and owls always play in the day.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"story-questions\"].audio = [\"[cheerful] Dad told Desmond a story on the couch, while their dog napped on the rug. [in a warm, easy dad voice, telling a story] One morning, when the sun was up, the fox and the owl went out, [softly] he said.\", \"[in a warm, easy dad voice, telling a story] The fox found a kite, and the owl found a book, [softly] said Dad. That was the end.\", \"[curious] Dad had not said where they went, and Desmond wanted to know the place.\", \"[thoughtful] So he asked, [in a small, quick boy voice, hopeful] Who went? [in a warm, easy dad voice, kindly] The fox and the owl, [softly] said Dad. That was not it, so he asked what they found, and Dad said a kite and a book.\", \"[pause] [in a warm, easy dad voice, gently] To know a place, start with where, [softly] said Dad. [in a warm, easy dad voice, slowly] A who question asks about someone, and a what question can ask about a thing. A where question asks about a place.\", \"[in a small, quick boy voice, eager] Where did the fox and the owl go? [softly] asked Desmond. [in a warm, easy dad voice, delighted] To the lake! [softly] said Dad.\", \"[in a small, quick boy voice, curious] When did they go? [playful] asked Desmond next. Dad said, [in a warm, easy dad voice, warmly] A when question asks about a time. They went one morning, when the sun was up.\", \"[warmly] Now Desmond knew every part of the story, and he asked for another one.\", \"[slowly, warmly] Listen for who, what, where and when in a story, and ask questions about it too.\"];",
+              "replace": "STORIES[\"story-questions\"].audio = [\"[cheerful] Dad told Desmond a story on the couch, while their dog napped on the rug. [in a warm, easy dad voice, telling a story] One morning, when the sun was up, the fox and the owl went out, [softly] he said.\", \"[in a warm, easy dad voice, telling a story] The fox found a kite, and the owl found a book, [softly] said Dad. That was the end.\", \"[curious] Dad had not said where they went, and Desmond wanted to know the place.\", \"[thoughtful] So he asked, [in a small, quick boy voice, hopeful] Who went? [in a warm, easy dad voice, kindly] The fox and the owl, [softly] said Dad. That was not it, so he asked what they found, and Dad said a kite and a book.\", \"[pause] [in a warm, easy dad voice, gently] To know a place, start with where, [softly] said Dad. [in a warm, easy dad voice, slowly] A who question asks about someone, and a what question can ask about a thing. A where question asks about a place.\", \"[in a small, quick boy voice, eager] Where did the fox and the owl go? [softly] asked Desmond. [in a warm, easy dad voice, delighted] To the lake! [softly] said Dad.\", \"[in a small, quick boy voice, curious] When did they go? [playful] asked Desmond next. Dad said, [in a warm, easy dad voice, warmly] A when question asks about a time. They went one morning, when the sun was up, and owls always play in the day.\", \"[warmly] Now Desmond knew every part of the story, and he asked for another one.\", \"[slowly, warmly] Listen for who, what, where and when in a story, and ask questions about it too.\"];"
+            }
+          ],
+          "catch": [
+            "owls always play",
+            "play in the day",
+            "owls always",
+            "owls are (mostly |most )?(nocturnal|awake|active)",
+            "most owls",
+            "nocturnal",
+            "false",
+            "untaught"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C13",
+        "pass": "ML",
+        "line": 3876,
+        "words": "Texas Parks and Wildlife calls the box turtle a dry-land turtle"
+      },
+      "defect": "Dad tells a general fact about animals that is false: owls sleep all night (wording 2: owls always play in the day), where most owls are active at night and sleep by day (Cornell Lab of Ornithology; a few, such as the burrowing owl, are about by day). The story brief's item 2 (facts: only the facts the lesson teaches, a general fact said by a grown-up) and the lesson brief's item 4 (facts are current and sourceable); MISTAKE-CLASSES C13.",
+      "fix": "Drop the reason, as the story was: 'They went one morning, when the sun was up.'"
+    },
+    {
+      "id": "P12",
+      "kind": "plant",
+      "class": "C1",
+      "harm": 2,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4189-S4192",
+        "aliases": [
+          "Then what?",
+          "Sylvie"
+        ]
+      },
+      "about": "\"Then what?\" (pre-K 3, Listen and point), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'This time Sylvie thought about the story. Snow is cold, she said, so Ava will put on her warm coat!',",
+              "replace": "    'This time Sylvie thought about Ava\\'s warm coat. Snow is cold, she said, so Ava will put on her warm coat!',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"what-happens-next\"].audio = [\"[cheerful] Dad read Sylvie a book on a blanket under the big tree. [playful] Sylvie loved to guess what came next.\", \"[in a calm, friendly dad voice, reading aloud] It was night, and the moon was up, [softly] Dad read. [in a calm, friendly dad voice, reading aloud] Ben yawned a big yawn.\", \"[in a calm, friendly dad voice, curious] What will Ben do next? [softly] asked Dad. Sylvie loved to play ball, so she said, [in a tiny, bubbly girl voice, sure of herself] He will play ball!\", \"[curious] Dad turned the page. [in a calm, friendly dad voice, reading aloud] Ben went to bed, [softly] he read. Sylvie's smile slid away, and she said, [in a tiny, bubbly girl voice, let down] My guess was not right.\", \"[pause] [in a calm, friendly dad voice, kindly] That is okay, [softly] said Dad. [in a calm, friendly dad voice, slowly] Clues help us make a good guess. A clue is something the story tells us. The moon and the big yawn were clues that Ben was sleepy.\", \"[warmly] Dad read on. [in a calm, friendly dad voice, reading aloud] It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window. [in a calm, friendly dad voice, curious] What will Ava do next? [softly] he asked.\", \"[thoughtful] This time Sylvie thought about the story. [in a tiny, bubbly girl voice, working it out] Snow is cold, [softly] she said, [in a tiny, bubbly girl voice, sure of herself] so Ava will put on her warm coat!\", \"[in a calm, friendly dad voice, playful] Let's listen and find out, [softly] said Dad. He turned the page.\", \"[in a calm, friendly dad voice, reading aloud] Ava put on her warm coat, [softly] he read. Sylvie clapped and said, [in a tiny, bubbly girl voice, delighted] The snow was my clue!\", \"[slowly, warmly] Use clues to guess what will happen next, and then listen to find out.\"];",
+              "replace": "STORIES[\"what-happens-next\"].audio = [\"[cheerful] Dad read Sylvie a book on a blanket under the big tree. [playful] Sylvie loved to guess what came next.\", \"[in a calm, friendly dad voice, reading aloud] It was night, and the moon was up, [softly] Dad read. [in a calm, friendly dad voice, reading aloud] Ben yawned a big yawn.\", \"[in a calm, friendly dad voice, curious] What will Ben do next? [softly] asked Dad. Sylvie loved to play ball, so she said, [in a tiny, bubbly girl voice, sure of herself] He will play ball!\", \"[curious] Dad turned the page. [in a calm, friendly dad voice, reading aloud] Ben went to bed, [softly] he read. Sylvie's smile slid away, and she said, [in a tiny, bubbly girl voice, let down] My guess was not right.\", \"[pause] [in a calm, friendly dad voice, kindly] That is okay, [softly] said Dad. [in a calm, friendly dad voice, slowly] Clues help us make a good guess. A clue is something the story tells us. The moon and the big yawn were clues that Ben was sleepy.\", \"[warmly] Dad read on. [in a calm, friendly dad voice, reading aloud] It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window. [in a calm, friendly dad voice, curious] What will Ava do next? [softly] he asked.\", \"[thoughtful] This time Sylvie thought about Ava's warm coat. [in a tiny, bubbly girl voice, working it out] Snow is cold, [softly] she said, [in a tiny, bubbly girl voice, sure of herself] so Ava will put on her warm coat!\", \"[in a calm, friendly dad voice, playful] Let's listen and find out, [softly] said Dad. He turned the page.\", \"[in a calm, friendly dad voice, reading aloud] Ava put on her warm coat, [softly] he read. Sylvie clapped and said, [in a tiny, bubbly girl voice, delighted] The snow was my clue!\", \"[slowly, warmly] Use clues to guess what will happen next, and then listen to find out.\"];"
+            }
+          ],
+          "catch": [
+            "warm coat",
+            "before (she|sylvie|the child) (finds|guesses|says|thinks)",
+            "gives? (it|the answer|the guess) away",
+            "names the (coat|answer|guess)",
+            "narrator (names|gives|says|hands)",
+            "too early"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Dad read on. It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window. What will Ava do next? he asked.',",
+              "replace": "    'Dad read on. It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window. Will Ava put on her coat? he asked.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"what-happens-next\"].audio = [\"[cheerful] Dad read Sylvie a book on a blanket under the big tree. [playful] Sylvie loved to guess what came next.\", \"[in a calm, friendly dad voice, reading aloud] It was night, and the moon was up, [softly] Dad read. [in a calm, friendly dad voice, reading aloud] Ben yawned a big yawn.\", \"[in a calm, friendly dad voice, curious] What will Ben do next? [softly] asked Dad. Sylvie loved to play ball, so she said, [in a tiny, bubbly girl voice, sure of herself] He will play ball!\", \"[curious] Dad turned the page. [in a calm, friendly dad voice, reading aloud] Ben went to bed, [softly] he read. Sylvie's smile slid away, and she said, [in a tiny, bubbly girl voice, let down] My guess was not right.\", \"[pause] [in a calm, friendly dad voice, kindly] That is okay, [softly] said Dad. [in a calm, friendly dad voice, slowly] Clues help us make a good guess. A clue is something the story tells us. The moon and the big yawn were clues that Ben was sleepy.\", \"[warmly] Dad read on. [in a calm, friendly dad voice, reading aloud] It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window. [in a calm, friendly dad voice, curious] What will Ava do next? [softly] he asked.\", \"[thoughtful] This time Sylvie thought about the story. [in a tiny, bubbly girl voice, working it out] Snow is cold, [softly] she said, [in a tiny, bubbly girl voice, sure of herself] so Ava will put on her warm coat!\", \"[in a calm, friendly dad voice, playful] Let's listen and find out, [softly] said Dad. He turned the page.\", \"[in a calm, friendly dad voice, reading aloud] Ava put on her warm coat, [softly] he read. Sylvie clapped and said, [in a tiny, bubbly girl voice, delighted] The snow was my clue!\", \"[slowly, warmly] Use clues to guess what will happen next, and then listen to find out.\"];",
+              "replace": "STORIES[\"what-happens-next\"].audio = [\"[cheerful] Dad read Sylvie a book on a blanket under the big tree. [playful] Sylvie loved to guess what came next.\", \"[in a calm, friendly dad voice, reading aloud] It was night, and the moon was up, [softly] Dad read. [in a calm, friendly dad voice, reading aloud] Ben yawned a big yawn.\", \"[in a calm, friendly dad voice, curious] What will Ben do next? [softly] asked Dad. Sylvie loved to play ball, so she said, [in a tiny, bubbly girl voice, sure of herself] He will play ball!\", \"[curious] Dad turned the page. [in a calm, friendly dad voice, reading aloud] Ben went to bed, [softly] he read. Sylvie's smile slid away, and she said, [in a tiny, bubbly girl voice, let down] My guess was not right.\", \"[pause] [in a calm, friendly dad voice, kindly] That is okay, [softly] said Dad. [in a calm, friendly dad voice, slowly] Clues help us make a good guess. A clue is something the story tells us. The moon and the big yawn were clues that Ben was sleepy.\", \"[warmly] Dad read on. [in a calm, friendly dad voice, reading aloud] It was very cold, and snow was falling. Ava wanted to play outside, and her cat sat in the window. [in a calm, friendly dad voice, curious] Will Ava put on her coat? [softly] he asked.\", \"[thoughtful] This time Sylvie thought about the story. [in a tiny, bubbly girl voice, working it out] Snow is cold, [softly] she said, [in a tiny, bubbly girl voice, sure of herself] so Ava will put on her warm coat!\", \"[in a calm, friendly dad voice, playful] Let's listen and find out, [softly] said Dad. He turned the page.\", \"[in a calm, friendly dad voice, reading aloud] Ava put on her warm coat, [softly] he read. Sylvie clapped and said, [in a tiny, bubbly girl voice, delighted] The snow was my clue!\", \"[slowly, warmly] Use clues to guess what will happen next, and then listen to find out.\"];"
+            }
+          ],
+          "catch": [
+            "put on her coat",
+            "yes or no",
+            "names the (coat|answer|guess)",
+            "gives? (it|the answer|the guess) away",
+            "before (she|sylvie|the child) (finds|guesses|says|thinks)",
+            "too early"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C1",
+        "pass": "MF",
+        "line": 3366,
+        "words": "The story check found Two Plates telling which plate had more before Ana counted"
+      },
+      "defect": "The answer Sylvie is about to find is said before she finds it: the narrator has her think about Ava's warm coat before she guesses that Ava will put on her warm coat (wording 2: Dad asks 'Will Ava put on her coat?', naming the guess for her). The story brief's item 1 (the narrator never gives the answer before the child finds it, pass MF), item 16 (the narrator never says a word before the child finds it) and item 22 (a line that names the find early names it whoever says it).",
+      "fix": "Let Sylvie find it, as the story was: 'This time Sylvie thought about the story.' (wording 2: 'What will Ava do next? he asked.')."
+    },
+    {
+      "id": "P13",
+      "kind": "plant",
+      "class": "C2",
+      "harm": 2,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4201-S4204",
+        "aliases": [
+          "A story for Mom",
+          "Ramona"
+        ]
+      },
+      "about": "\"A story for Mom\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'To retell a story, tell what happened first, next and last.',",
+              "replace": "    'To retell a story, tell what happened first, next and last. You can start with the best part.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"tell-it-again\"].audio = [\"[cheerful] At school, Ramona heard a story about a fox. [eager] At home, Mom was folding towels, and Ramona told it to her, the best part first.\", \"[in a high, squeaky girl voice, eager] The fox flew a kite! [softly] said Ramona. [in a high, squeaky girl voice, eager] And an apple! And it read a book, and the kite went up!\", \"[puzzled] Mom stopped folding. [in a soft, smiling mom voice, puzzled] Did the fox fly an apple? [softly] she asked.\", \"[in a high, squeaky girl voice, giggling] No! [softly] said Ramona. [playful] She started with the kite again, but it came out just as mixed up.\", \"[pause] Mom set her towel on the stack. [in a soft, smiling mom voice, gently] When we retell a story, [softly] she said, [in a soft, smiling mom voice, slowly] we tell what happened in the order it happened. Start at the beginning, and tell me what the fox did first.\", \"[calmly] Ramona thought back to the very start of the story. [in a high, squeaky girl voice, slowly] First, the fox ate an apple, [softly] she said. [in a high, squeaky girl voice, slowly] Next, the fox read a book.\", \"[in a soft, smiling mom voice, curious] And how did the story end? [softly] asked Mom. [in a high, squeaky girl voice, delighted] Last, the fox flew a kite! [softly] said Ramona, and she threw both arms up high.\", \"[in a soft, smiling mom voice, warmly] Now I know the whole story, [softly] said Mom. Ramona smiled a big smile. [playful] Then she told it again from the beginning, just for fun.\", \"[slowly, warmly] To retell a story, tell what happened first, next and last.\"];",
+              "replace": "STORIES[\"tell-it-again\"].audio = [\"[cheerful] At school, Ramona heard a story about a fox. [eager] At home, Mom was folding towels, and Ramona told it to her, the best part first.\", \"[in a high, squeaky girl voice, eager] The fox flew a kite! [softly] said Ramona. [in a high, squeaky girl voice, eager] And an apple! And it read a book, and the kite went up!\", \"[puzzled] Mom stopped folding. [in a soft, smiling mom voice, puzzled] Did the fox fly an apple? [softly] she asked.\", \"[in a high, squeaky girl voice, giggling] No! [softly] said Ramona. [playful] She started with the kite again, but it came out just as mixed up.\", \"[pause] Mom set her towel on the stack. [in a soft, smiling mom voice, gently] When we retell a story, [softly] she said, [in a soft, smiling mom voice, slowly] we tell what happened in the order it happened. Start at the beginning, and tell me what the fox did first.\", \"[calmly] Ramona thought back to the very start of the story. [in a high, squeaky girl voice, slowly] First, the fox ate an apple, [softly] she said. [in a high, squeaky girl voice, slowly] Next, the fox read a book.\", \"[in a soft, smiling mom voice, curious] And how did the story end? [softly] asked Mom. [in a high, squeaky girl voice, delighted] Last, the fox flew a kite! [softly] said Ramona, and she threw both arms up high.\", \"[in a soft, smiling mom voice, warmly] Now I know the whole story, [softly] said Mom. Ramona smiled a big smile. [playful] Then she told it again from the beginning, just for fun.\", \"[slowly, warmly] To retell a story, tell what happened first, next and last. You can start with the best part.\"];"
+            }
+          ],
+          "catch": [
+            "start with the best part",
+            "best part",
+            "converse",
+            "contradicts? the (turn|lesson|story|script)",
+            "mixed up",
+            "moral"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'To retell a story, tell what happened first, next and last.',",
+              "replace": "    'The best part can come first. To retell a story, tell what happened first, next and last.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"tell-it-again\"].audio = [\"[cheerful] At school, Ramona heard a story about a fox. [eager] At home, Mom was folding towels, and Ramona told it to her, the best part first.\", \"[in a high, squeaky girl voice, eager] The fox flew a kite! [softly] said Ramona. [in a high, squeaky girl voice, eager] And an apple! And it read a book, and the kite went up!\", \"[puzzled] Mom stopped folding. [in a soft, smiling mom voice, puzzled] Did the fox fly an apple? [softly] she asked.\", \"[in a high, squeaky girl voice, giggling] No! [softly] said Ramona. [playful] She started with the kite again, but it came out just as mixed up.\", \"[pause] Mom set her towel on the stack. [in a soft, smiling mom voice, gently] When we retell a story, [softly] she said, [in a soft, smiling mom voice, slowly] we tell what happened in the order it happened. Start at the beginning, and tell me what the fox did first.\", \"[calmly] Ramona thought back to the very start of the story. [in a high, squeaky girl voice, slowly] First, the fox ate an apple, [softly] she said. [in a high, squeaky girl voice, slowly] Next, the fox read a book.\", \"[in a soft, smiling mom voice, curious] And how did the story end? [softly] asked Mom. [in a high, squeaky girl voice, delighted] Last, the fox flew a kite! [softly] said Ramona, and she threw both arms up high.\", \"[in a soft, smiling mom voice, warmly] Now I know the whole story, [softly] said Mom. Ramona smiled a big smile. [playful] Then she told it again from the beginning, just for fun.\", \"[slowly, warmly] To retell a story, tell what happened first, next and last.\"];",
+              "replace": "STORIES[\"tell-it-again\"].audio = [\"[cheerful] At school, Ramona heard a story about a fox. [eager] At home, Mom was folding towels, and Ramona told it to her, the best part first.\", \"[in a high, squeaky girl voice, eager] The fox flew a kite! [softly] said Ramona. [in a high, squeaky girl voice, eager] And an apple! And it read a book, and the kite went up!\", \"[puzzled] Mom stopped folding. [in a soft, smiling mom voice, puzzled] Did the fox fly an apple? [softly] she asked.\", \"[in a high, squeaky girl voice, giggling] No! [softly] said Ramona. [playful] She started with the kite again, but it came out just as mixed up.\", \"[pause] Mom set her towel on the stack. [in a soft, smiling mom voice, gently] When we retell a story, [softly] she said, [in a soft, smiling mom voice, slowly] we tell what happened in the order it happened. Start at the beginning, and tell me what the fox did first.\", \"[calmly] Ramona thought back to the very start of the story. [in a high, squeaky girl voice, slowly] First, the fox ate an apple, [softly] she said. [in a high, squeaky girl voice, slowly] Next, the fox read a book.\", \"[in a soft, smiling mom voice, curious] And how did the story end? [softly] asked Mom. [in a high, squeaky girl voice, delighted] Last, the fox flew a kite! [softly] said Ramona, and she threw both arms up high.\", \"[in a soft, smiling mom voice, warmly] Now I know the whole story, [softly] said Mom. Ramona smiled a big smile. [playful] Then she told it again from the beginning, just for fun.\", \"[slowly, warmly] The best part can come first. To retell a story, tell what happened first, next and last.\"];"
+            }
+          ],
+          "catch": [
+            "best part can come first",
+            "best part",
+            "converse",
+            "contradicts? the (turn|lesson|story|script)",
+            "mixed up",
+            "moral"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C2",
+        "pass": "NA",
+        "line": 5058,
+        "words": "the moral that said the converse of the turn"
+      },
+      "defect": "The moral's added sentence says what the story's turn proved wrong: Ramona started with the best part and her story came out mixed up, and the moral now tells the child it can start with the best part. The story brief's item 1 (a short moral that restates the key idea, and the story teaches the idea in what happens) and item 16 (a moral says the story's own turn, never its converse); the stories test passes it, since one of its sentences still echoes the script.",
+      "fix": "Keep the moral to the lesson's own line: 'To retell a story, tell what happened first, next and last.'"
+    },
+    {
+      "id": "P14",
+      "kind": "plant",
+      "class": "C5",
+      "harm": 2,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4177-S4180",
+        "aliases": [
+          "Who found the hat?",
+          "Tabitha"
+        ]
+      },
+      "about": "\"Who found the hat?\" (pre-K 3, Listen and point), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "docs/ART-REQUESTS.md",
+              "find": "| S4177 | listen-to-the-story | A grandma brushing a small girl's long hair on a sofa, the girl wiggling her bare toes (check: one sofa; the girl sitting on it with her bare feet out in front of her, looking down at her wiggling toes and not at her grandma; the grandma sitting behind her, brushing the girl's long hair with one wooden hairbrush, her mouth open as she tells a story; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting on a sofa with her bare feet stretched out in front of her, wiggling her toes and looking down at them with a playful face, and her grandma, with red hair streaked with silver pinned up on top of her head and light skin with freckles, in a violet blouse, sitting behind her on the sofa and brushing the girl's long hair with a wooden hairbrush, her mouth open as she tells a story, the room's only other things the sofa and a plain wall, cheerful and warm. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |",
+              "replace": "| S4177 | listen-to-the-story | A grandma brushing a small girl's long hair on a sofa, the girl wiggling her bare toes (check: one sofa; the girl sitting on it with her bare feet out in front of her, looking down at her wiggling toes and not at her grandma; the grandma sitting behind her, brushing the girl's long hair with one wooden hairbrush, her mouth open as she tells a story; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting on a sofa with her bare feet stretched out in front of her, wiggling her toes and looking down at them with a playful face, and her grandma, with short auburn hair and light skin with freckles, in a violet blouse, sitting behind her on the sofa and brushing the girl's long hair with a wooden hairbrush, her mouth open as she tells a story, the room's only other things the sofa and a plain wall, cheerful and warm. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |"
+            },
+            {
+              "file": "docs/ART-REQUESTS.md",
+              "find": "| S4178 | listen-to-the-story | The girl holding up one finger with a sure face as she answers, her grandma stopping the brush to listen (check: the girl with one finger up and a sure, pleased face, her mouth open as she answers; the grandma behind her with the wooden hairbrush held still in one hand, her face kind and patient, not laughing and not frowning; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting on a sofa and holding up one finger with a sure, pleased face, her mouth open as she gives an answer, and her grandma, with red hair streaked with silver pinned up on top of her head and light skin with freckles, in a violet blouse, sitting behind her with a wooden hairbrush held still in one hand, listening with a kind, patient face, the room's only other things the sofa and a plain wall, gentle and warm. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |",
+              "replace": "| S4178 | listen-to-the-story | The girl holding up one finger with a sure face as she answers, her grandma stopping the brush to listen (check: the girl with one finger up and a sure, pleased face, her mouth open as she answers; the grandma behind her with the wooden hairbrush held still in one hand, her face kind and patient, not laughing and not frowning; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting on a sofa and holding up one finger with a sure, pleased face, her mouth open as she gives an answer, and her grandma, with short auburn hair and light skin with freckles, in a violet blouse, sitting behind her with a wooden hairbrush held still in one hand, listening with a kind, patient face, the room's only other things the sofa and a plain wall, gentle and warm. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |"
+            },
+            {
+              "file": "docs/ART-REQUESTS.md",
+              "find": "| S4179 | listen-to-the-story | The girl sitting very still with her toes still, listening to her grandma tell the story again, the brush lying on the sofa (check: the girl sitting still with her hands in her lap and her bare feet still, her eyes on her grandma; the grandma beside her with one hand raised as she tells a story; one wooden hairbrush lying on the sofa between them, in nobody's hand; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting very still on a sofa with her hands in her lap and her bare feet still, turned to look up at her grandma, her eyes wide as she listens, and her grandma, with red hair streaked with silver pinned up on top of her head and light skin with freckles, in a violet blouse, sitting beside her and telling a story with one hand raised, a wooden hairbrush lying on the sofa between them, the room's only other things the sofa and a plain wall, calm and cozy. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |",
+              "replace": "| S4179 | listen-to-the-story | The girl sitting very still with her toes still, listening to her grandma tell the story again, the brush lying on the sofa (check: the girl sitting still with her hands in her lap and her bare feet still, her eyes on her grandma; the grandma beside her with one hand raised as she tells a story; one wooden hairbrush lying on the sofa between them, in nobody's hand; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting very still on a sofa with her hands in her lap and her bare feet still, turned to look up at her grandma, her eyes wide as she listens, and her grandma, with short auburn hair and light skin with freckles, in a violet blouse, sitting beside her and telling a story with one hand raised, a wooden hairbrush lying on the sofa between them, the room's only other things the sofa and a plain wall, calm and cozy. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |"
+            },
+            {
+              "file": "docs/ART-REQUESTS.md",
+              "find": "| S4180 | listen-to-the-story | The girl laughing and wiggling her toes again, her grandma laughing with her, the brush on the sofa beside them (check: the girl laughing with her bare feet up and her toes spread; the grandma beside her, laughing too; one wooden hairbrush lying on the sofa beside them, in nobody's hand; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting on a sofa and laughing with her bare feet up and her toes wiggling, and her grandma, with red hair streaked with silver pinned up on top of her head and light skin with freckles, in a violet blouse, sitting beside her and laughing with her, a wooden hairbrush lying on the sofa beside them, the room's only other things the sofa and a plain wall, joyful and bright. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |",
+              "replace": "| S4180 | listen-to-the-story | The girl laughing and wiggling her toes again, her grandma laughing with her, the brush on the sofa beside them (check: the girl laughing with her bare feet up and her toes spread; the grandma beside her, laughing too; one wooden hairbrush lying on the sofa beside them, in nobody's hand; a plain wall; no letters anywhere) | A small girl with long straight red hair down her back and light skin with freckles, in a chocolate-brown dress, sitting on a sofa and laughing with her bare feet up and her toes wiggling, and her grandma, with short auburn hair and light skin with freckles, in a violet blouse, sitting beside her and laughing with her, a wooden hairbrush lying on the sofa beside them, the room's only other things the sofa and a plain wall, joyful and bright. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |"
+            }
+          ],
+          "catch": [
+            "short auburn hair",
+            "auburn",
+            "Georgette.s (mark|look|hair)",
+            "core cast",
+            "like Georgette",
+            "reads as Georgette"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C5",
+        "pass": "MY",
+        "line": 4953,
+        "words": "Bruno's mom wearing Georgette's mark, short auburn hair"
+      },
+      "defect": "Every row paints the story's one-off grandma with short auburn hair, Georgette's own mark (docs/CHARACTERS.md: short auburn hair, a red coat), so a grandmother with a book in the early years reads as the core cast's grandparent of faith. The story brief's item 10 (since pass MQ's round two the looks are read against the core cast's sheets too) and the picture brief's items 6 and 12; MISTAKE-CLASSES C5 (pass MY: Bruno's mom wearing Georgette's mark).",
+      "fix": "Give the grandma a look of her own that no core character wears, as the rows had: red hair streaked with silver pinned up on top of her head."
+    },
+    {
+      "id": "P15",
+      "kind": "plant",
+      "class": "C12",
+      "harm": 2,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4197-S4200",
+        "aliases": [
+          "Why the umbrella?",
+          "Wendell"
+        ]
+      },
+      "about": "\"Why the umbrella?\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "  more: [{ serial: 'S4198', after: 2, alt: 'The boy pointing up at the bright blue sky with a puzzled face, his grandpa looking down at him' }, { serial: 'S4199', after: 4, alt: 'The boy holding up one finger with a bright face as he tells what the story did not say, his grandpa nodding' }, { serial: 'S4200', after: 9, alt: 'The boy jumping on the grass with a big laugh and a sock in each hand, his grandpa laughing' }],",
+              "replace": "  more: [{ serial: 'S4198', after: 2, alt: 'The boy pointing up at the bright blue sky with a puzzled face, his grandpa looking down at him' }, { serial: 'S4199', after: 4, alt: 'The boy holding up one finger with a bright face as he tells what the story did not say, his grandpa nodding' }, { serial: 'S4200', after: 9, alt: 'The boy jumping into a puddle with a big splash and a sock in each hand, his grandpa laughing' }],"
+            },
+            {
+              "file": "docs/ART-REQUESTS.md",
+              "find": "| S4200 | story-clues | The boy jumping on the grass with a big laugh and a sock in each hand, his grandpa laughing (check: the boy in the middle of a small jump, his two feet just off the grass, laughing; one sock in each of his two hands, two socks in all; one laundry basket on the grass; the grandpa beside the clothesline, laughing; one shirt and one towel hanging on the line; a bright blue sky and dry grass; no letters anywhere) | A small boy with wispy blond hair and light skin with rosy cheeks, in a lavender t-shirt, in the middle of a small jump with his two feet just off the dry grass, laughing, one sock held in each hand, a woven laundry basket on the grass beside him, and his grandpa, with thick white hair, a trim white beard and light skin with rosy cheeks, in a white linen shirt, standing beside a clothesline and laughing with him, one plain shirt and one plain towel hanging on the line, the yard's only other things the grass and a bright blue sky, joyful and bright. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist backyard background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |",
+              "replace": "| S4200 | story-clues | The boy jumping into a puddle with a big splash and a sock in each hand, his grandpa laughing (check: the boy landing in one big puddle on the grass with a splash, laughing; one sock in each of his two hands, two socks in all; one laundry basket on the grass; the grandpa beside the clothesline, laughing; one shirt and one towel hanging on the line; a bright blue sky and dry grass; no letters anywhere) | A small boy with wispy blond hair and light skin with rosy cheeks, in a lavender t-shirt, jumping into one big puddle on the grass with a big splash, laughing, one sock held in each hand, a woven laundry basket on the grass beside him, and his grandpa, with thick white hair, a trim white beard and light skin with rosy cheeks, in a white linen shirt, standing beside a clothesline and laughing with him, one plain shirt and one plain towel hanging on the line, the yard's only other things the grass and a bright blue sky, joyful and bright. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist backyard background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |"
+            }
+          ],
+          "catch": [
+            "into a puddle",
+            "big splash",
+            "dry grass",
+            "words (say|put|have|place)",
+            "never place",
+            "puddle",
+            "splash",
+            "sunny",
+            "contradict"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C12",
+        "pass": "MY",
+        "line": 4953,
+        "words": "S4045 painting a count and a toy dinosaur the words never place"
+      },
+      "defect": "S4200, the picture after paragraph 9, now paints Wendell landing in a big puddle with a splash, where the words have him jump on the dry grass of a sunny yard: the puddle and the splash are Leo's, in Grandpa's story ('It is sunny here'), and the row still asks for dry grass and a bright blue sky. The story brief's item 5 (a picture never contradicts the words) and the picture brief's item 6 (nothing the words never place is drawn).",
+      "fix": "Paint what the words say, as the row and the alt were: the boy in a small jump on the dry grass, a sock in each hand."
+    },
+    {
+      "id": "P16",
+      "kind": "plant",
+      "class": "C14",
+      "harm": 2,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4143-S4147",
+        "aliases": [
+          "Knock, knock",
+          "Daphne",
+          "Evie",
+          "Abby",
+          "igloo"
+        ]
+      },
+      "about": "\"Knock, knock\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Daphne and Grandpa built an igloo out of pillows. Grandpa crawled inside to guard the door.',",
+              "replace": "    'Evie and Grandpa built an igloo out of pillows. Grandpa crawled inside to guard the door.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Knock, knock, said Daphne. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',",
+              "replace": "    'Knock, knock, said Evie. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Daphne held up her toy elephant and said its name fast. Elephant! Is it the letter I? she asked.',",
+              "replace": "    'Evie held up her toy elephant and said its name fast. Elephant! Is it the letter I? she asked.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Daphne said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',",
+              "replace": "    'Evie said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Next, Daphne fetched an apple from the kitchen. The letter A says the sound at the start of ant, said Grandpa.',",
+              "replace": "    'Next, Evie fetched an apple from the kitchen. The letter A says the sound at the start of ant, said Grandpa.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Apple, said Daphne slowly. Apple starts like ant, so it is the letter A! she said, and in it went.',",
+              "replace": "    'Apple, said Evie slowly. Apple starts like ant, so it is the letter A! she said, and in it went.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'And our igloo? asked Grandpa. Daphne said it slowly. Igloo starts like insect, so it is the letter I! she said, and crawled inside.',",
+              "replace": "    'And our igloo? asked Grandpa. Evie said it slowly. Igloo starts like insect, so it is the letter I! she said, and crawled inside.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Daphne said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];",
+              "replace": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Evie and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Evie. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Evie held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Evie said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Evie fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Evie slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Evie said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];"
+            }
+          ],
+          "catch": [
+            "heard as letters",
+            "as letters",
+            "letter names",
+            "like (the )?letters",
+            "sounds? like (a|the) letter",
+            "E and V",
+            "E-V"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Daphne and Grandpa built an igloo out of pillows. Grandpa crawled inside to guard the door.',",
+              "replace": "    'Abby and Grandpa built an igloo out of pillows. Grandpa crawled inside to guard the door.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Knock, knock, said Daphne. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',",
+              "replace": "    'Knock, knock, said Abby. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Daphne held up her toy elephant and said its name fast. Elephant! Is it the letter I? she asked.',",
+              "replace": "    'Abby held up her toy elephant and said its name fast. Elephant! Is it the letter I? she asked.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Daphne said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',",
+              "replace": "    'Abby said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Next, Daphne fetched an apple from the kitchen. The letter A says the sound at the start of ant, said Grandpa.',",
+              "replace": "    'Next, Abby fetched an apple from the kitchen. The letter A says the sound at the start of ant, said Grandpa.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'Apple, said Daphne slowly. Apple starts like ant, so it is the letter A! she said, and in it went.',",
+              "replace": "    'Apple, said Abby slowly. Apple starts like ant, so it is the letter A! she said, and in it went.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "    'And our igloo? asked Grandpa. Daphne said it slowly. Igloo starts like insect, so it is the letter I! she said, and crawled inside.',",
+              "replace": "    'And our igloo? asked Grandpa. Abby said it slowly. Igloo starts like insect, so it is the letter I! she said, and crawled inside.',"
+            },
+            {
+              "file": "src/stories.mjs",
+              "find": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Daphne said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];",
+              "replace": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Abby and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Abby. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Abby held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Abby said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Abby fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Abby slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Abby said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];"
+            }
+          ],
+          "catch": [
+            "heard as letters",
+            "as letters",
+            "letter names",
+            "like (the )?letters",
+            "sounds? like (a|the) letter",
+            "A and B",
+            "A-B"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C14",
+        "pass": "ML",
+        "line": 3879,
+        "words": "Bea became Lucy (a voice says Bea as bee"
+      },
+      "defect": "The story's child is named Evie, which a voice says as the letter names E and V (wording 2: Abby, heard as A and B), in a story whose very question is which letter a word starts with, E among them (A in wording 2), in a course that teaches the letters by name. The story brief's item 8 (a one-off child's name is never one a voice says like a word the course teaches: Bea, heard as bee and as B, became Lucy); the stories test reads only seven such names (Bea, Dee, Jay, Kay, Elle, Vee, Zee).",
+      "fix": "A name no voice says as letters, as the story had: Daphne."
+    },
+    {
+      "id": "P30",
+      "kind": "plant",
+      "class": "C18",
+      "harm": 2,
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4173-S4176",
+        "aliases": [
+          "Tap a key",
+          "Shawn"
+        ]
+      },
+      "about": "\"Tap a key\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "docs/ART-REQUESTS.md",
+              "find": "| S4176 | more-small-letters | The boy tapping a key with one finger and a big smile, the laptop's plain lid toward us, his grandma smiling beside him (check: one open laptop on one table, seen from behind, only its plain silver lid in view, the lid smooth and bare; the boy behind it with one arm reaching down to the laptop and a big, proud smile; the grandma beside him, smiling at him; no keys and no screen in view; no letters anywhere) | A small boy with thick brown hair brushed to one side and medium brown skin, in a bright pink polo, sitting at a wooden table behind an open laptop, the laptop seen from behind so that only its plain silver lid shows, smooth and bare, the boy reaching one arm down to the laptop to tap it with one finger, with a big, proud smile, and his grandma, with shoulder-length wavy silver hair and medium brown skin, in a lemon-yellow tunic, sitting beside him and smiling at him, the room's only other things the table, two chairs and a plain wall, joyful and bright. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |",
+              "replace": "| S4176 | more-small-letters | The boy tapping a key with one finger and a big smile, the laptop's plain lid toward us, his grandma smiling beside him (check: one open laptop on one table, seen from behind, only its plain silver lid in view, the lid smooth and bare; the boy behind it with one arm reaching down to the laptop and a big, proud smile; the grandma beside him, smiling at him; no keys and no screen in view; no letters anywhere) | A small boy with thick brown hair brushed to one side and medium brown skin, in a bright pink polo, sitting at a wooden table with an open laptop turned toward us, its keyboard and its bright screen in full view, the boy tapping a key with one finger, with a big, proud smile, and his grandma, with shoulder-length wavy silver hair and medium brown skin, in a lemon-yellow tunic, sitting beside him and smiling at him, the room's only other things the table, two chairs and a plain wall, joyful and bright. Style: Clean 3D vector illustration, vibrant and engaging color palette, minimalist cozy living room background, balanced lighting. Professional educational graphic style, clear focal point, uncluttered layout, character-focused, dreamy lighting. | text, words, letters, labels, numbers, logos, watermark, signature, blurry, extra fingers, extra limbs, deformed hands, photorealistic skin | Needed |"
+            }
+          ],
+          "catch": [
+            "bright screen",
+            "keyboard and",
+            "screen in full view",
+            "turned toward us",
+            "invites? (lettering|letters|writing)",
+            "letters? (on|in) the (keys|screen)",
+            "no keys",
+            "plain lid",
+            "garbled",
+            "lettering"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C18",
+        "pass": "MG",
+        "line": 3481,
+        "words": "CS474 still invited writing"
+      },
+      "defect": "S4176's prompt, the one the image model is given (folded into docs/LEONARDO-PROMPTS-EARLY.csv), turns the laptop toward us with its keyboard and its bright screen in full view, where the row's own check, its scene and the story's alt keep only the plain lid in view, with no keys, no screen and no letters anywhere: an image model letters keys and screens, so the picture would show made-up letter shapes in a lesson about the small letters' shapes. The picture brief's item 3 (nothing needs letters or writing, keyboards and screens among them; a screen is written as what its only marks are, since it invites the writing the folded wordless sentence forbids, pass MG: CS474) and its item on reading the folded prompt, not only the row.",
+      "fix": "Keep the laptop seen from behind, as the row was: 'behind an open laptop, the laptop seen from behind so that only its plain silver lid shows, smooth and bare, the boy reaching one arm down to the laptop to tap it with one finger'."
+    },
+    {
+      "id": "K04",
+      "kind": "control",
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4193-S4196",
+        "aliases": [
+          "How to be a bear",
+          "Roscoe"
+        ]
+      },
+      "about": "\"How to be a bear\" (pre-K 3, Listen and point), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "K05",
+      "kind": "control",
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4205-S4208",
+        "aliases": [
+          "Now I read to you",
+          "Opal"
+        ]
+      },
+      "about": "\"Now I read to you\" (pre-K 3, Listen and point), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged.",
+      "known": [
+        {
+          "what": "the truck book Opal holds up comes from nowhere in the words, and the cow book is never put down: a real defect of today's content, not the set's",
+          "seen": "round one of pass NQ: both story reads (one as must fix)",
+          "words": [
+            "truck book",
+            "from nowhere",
+            "came from somewhere",
+            "never put down",
+            "cow book"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "K06",
+      "kind": "control",
+      "brief": "story",
+      "item": {
+        "type": "story",
+        "id": "S4209-S4212",
+        "aliases": [
+          "The pointing job",
+          "Clyde",
+          "Nadine"
+        ]
+      },
+      "about": "\"The pointing job\" (pre-K 4, First sounds and letters), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "P23",
+      "kind": "plant",
+      "class": "C24",
+      "harm": 2,
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "MoreInfoSheet",
+        "file": "src/ui.jsx",
+        "start": "function MoreInfoSheet(",
+        "aliases": [
+          "More Info sheet",
+          "More Info"
+        ]
+      },
+      "about": "MoreInfoSheet (src/ui.jsx): the More Info pop-up after an answer, its reasons, its More right answers and its read-aloud speaker.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/ui.jsx",
+              "find": "  useEffect(() => () => { const stop = stopRef.current; stopRef.current = null; if (stop) stop(); }, []);   // closing the sheet stops the voice\n",
+              "replace": ""
+            }
+          ],
+          "catch": [
+            "keeps reading",
+            "keeps? (reading|talking|speaking)",
+            "goes on (reading|talking)",
+            "never stops (reading|the voice|talking)",
+            "after it closes",
+            "when (it|the sheet) closes",
+            "talks? on",
+            "unmount",
+            "clean ?up",
+            "stopRef"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C24",
+        "pass": "MO",
+        "line": 4166,
+        "words": "the Wonder's voice cards went on talking when a child left them"
+      },
+      "defect": "The sheet starts its reading (speakSequence, held in stopRef) and nothing stops it when the sheet closes: Got it, the dimmed page and Escape close the sheet and leave the voice reading the reasons on over the question, with no speaker left to stop it (leaving the round, by the device's back or the X, is hushed by the round's own hush, so the sheet's own ways out are the ones that miss). The code brief (pass MO: every way a child leaves a screen stops its words and sounds; since its round four each way out is tried, after the Wonder's voice cards talked on) and MISTAKE-CLASSES C24's line for pass MO (the Wonder's voice cards left by the device's back, a way out round three's hush had missed).",
+      "fix": "Stop the reading on unmount: useEffect(() => () => { const stop = stopRef.current; stopRef.current = null; if (stop) stop(); }, []);"
+    },
+    {
+      "id": "P24",
+      "kind": "plant",
+      "class": "C26",
+      "harm": 2,
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "makeCheckpointEvent",
+        "file": "src/logic.mjs",
+        "start": "export function makeCheckpointEvent(",
+        "aliases": [
+          "checkpoint_completed",
+          "checkpoint event"
+        ]
+      },
+      "about": "makeCheckpointEvent (src/logic.mjs): the event a finished checkpoint adds to the log.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "    results: results.map((r, i) => ({ ...r, moduleId: checkpoint.core[i].fromModuleId })),\n    correct: results.filter((r) => r.correct).length,\n    total: results.length,\n  };",
+              "replace": "    results: results.map((r, i) => ({ ...r, moduleId: checkpoint.core[i].fromModuleId })),\n    correct: results.filter((r) => r.correct).length,\n    total: results.length,\n    held: results.every((r) => r.correct),\n  };"
+            }
+          ],
+          "catch": [
+            "stores a verdict",
+            "stores a judgment",
+            "held: results",
+            "a verdict",
+            "a judgment",
+            "worked out from",
+            "verdict",
+            "judgment",
+            "derive",
+            "nothing reads"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C26",
+        "pass": "MB",
+        "line": 3140,
+        "words": "The elective count stored a verdict made as the story opened"
+      },
+      "defect": "The event stores a verdict, held (every answer right), made when the checkpoint ends, beside the facts it is worked out from; a later change to what counts as held never reaches the events already stored, and the log stops being the single source the reports derive from. The code brief (an event records what happened, never a judgment about it: a count that rests on a rule is worked out from the log, pass MB) and CLAUDE.md's rule 1 (the event log is the single source of truth; mastery, status and every report number are computed from events).",
+      "fix": "Store the facts only (results, correct, total) and work held out where it is read."
+    },
+    {
+      "id": "P25",
+      "kind": "plant",
+      "class": "C34",
+      "harm": 1,
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "weeklyNote",
+        "file": "src/logic.mjs",
+        "start": "export function weeklyNote(",
+        "aliases": [
+          "weekly note"
+        ]
+      },
+      "about": "weeklyNote (src/logic.mjs): the plain-English note of a student's week for the educator.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "played === 1 ? 'a game' : `${played} games`",
+              "replace": "`${played} games`"
+            }
+          ],
+          "catch": [
+            "1 games",
+            "played 1 games",
+            "one games",
+            "no singular",
+            "broken English",
+            "singular",
+            "plural",
+            "grammar"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C34",
+        "pass": "MH",
+        "line": 3553,
+        "words": "The older kinds' sentences read as broken English"
+      },
+      "defect": "A week with one game break composes 'Sam played 1 games.', broken English in the note an educator reads and prints, where the coloring line beside it says 'a picture' for one. The code brief (a sentence the code composes from parts is read whole, the way a person sees it, pass MH) and the house style's complete, correct sentences (CLAUDE.md, docs/DESIGN.md); MISTAKE-CLASSES C34.",
+      "fix": "Say one game as one: played === 1 ? 'a game' : `${played} games`."
+    },
+    {
+      "id": "P26",
+      "kind": "plant",
+      "class": "C13",
+      "harm": 3,
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "EXPLANATIONS",
+        "file": "src/logic.mjs",
+        "start": "export const EXPLANATIONS = [",
+        "aliases": [
+          "report definitions",
+          "Key Words"
+        ]
+      },
+      "about": "EXPLANATIONS (src/logic.mjs): the plain-language definitions the educator's report prints beside its numbers.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "Mastery, the star, takes a second pass on a different day, because",
+              "replace": "Mastery, the star, takes a second pass later the same day, because"
+            }
+          ],
+          "catch": [
+            "later the same day",
+            "same day",
+            "different day",
+            "two (different )?days",
+            "second pass",
+            "masterAgain",
+            "false",
+            "untrue",
+            "contradict"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "Everyone starts at 1. Mastering a module adds 2 and a flawless round adds another.",
+              "replace": "Everyone starts at 1. Mastering a module adds 3 and a flawless round adds another."
+            }
+          ],
+          "catch": [
+            "adds 3",
+            "adds 2",
+            "wrong number",
+            "score \\+= 2",
+            "computeConfidence",
+            "false",
+            "untrue",
+            "contradict"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C13",
+        "pass": "NJ",
+        "line": 5654,
+        "words": "What's new told every educator nothing was lost at an idle sign-out, where a half-done practice round is"
+      },
+      "defect": "A definition the educator reads says what the code does not do: that the star takes a second pass later the same day, where the app asks for a pass on two different days (Mastery v2: masterAgain, deriveProgress; wording 2: that the memory-check questions from earlier modules count against the mastery of the current one, where a pass and the star read only the round's own questions, isMasteredAttempt reading coreCorrect, so an educator is told a child's mastery is at risk from questions that never touch it). The report is trusted because its definitions are shown beside numbers recomputed from the log (CLAUDE.md's Vision; EXPLANATIONS holds the definitions, edited there); MISTAKE-CLASSES C13 (pass NJ: What's new said nothing is lost).",
+      "fix": "Say what the code does: 'a second pass on a different day' (wording 2: 'These old questions do not count against their mastery of the current module.')."
+    },
+    {
+      "id": "P27",
+      "kind": "plant",
+      "class": "C26",
+      "harm": 2,
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "SpeakButton",
+        "file": "src/ui.jsx",
+        "start": "function SpeakButton(",
+        "aliases": [
+          "speak button",
+          "Read it to me"
+        ]
+      },
+      "about": "SpeakButton (src/ui.jsx): the speaker button that reads a text aloud and stops it, in its full, corner and mini forms.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/ui.jsx",
+              "find": "useEffect(() => { if (!reading) return undefined; const t = setInterval(() => { if (!voiceTalking()) setReading(false); }, 300); return () => clearInterval(t); }, [reading]);",
+              "replace": "useEffect(() => { if (!reading) return undefined; const t = setInterval(() => { if (!voiceTalking()) setReading(false); }, 300); return () => clearInterval(t); }, []);"
+            }
+          ],
+          "catch": [
+            "runs once",
+            "never notices",
+            "never turns back",
+            "reading ended",
+            "voice ends",
+            "empty dependency",
+            "dependency list",
+            "at mount",
+            "un-?reads",
+            "\\[\\]\\)",
+            "dependenc",
+            "stale"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C26",
+        "pass": "ME",
+        "line": 3312,
+        "words": "the test hook's effect missing moduleId"
+      },
+      "defect": "The effect that watches the voice reads reading but lists no dependencies, so it runs once, while reading is still false, and never starts its watch: once a reading ends on its own the button keeps saying Stop reading and the gold of a reading button, and the next press only stops what has already stopped. The code brief (since pass MI: state an interval writes back is read from the latest state, never from the render that started it) and MISTAKE-CLASSES C26 (stale closure; pass ME: the test hook's effect missing moduleId).",
+      "fix": "Key the effect to what it reads: }, [reading]);"
+    },
+    {
+      "id": "P28",
+      "kind": "plant",
+      "class": "C25",
+      "harm": 2,
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "CourseChoiceRow",
+        "file": "src/ui.jsx",
+        "start": "function CourseChoiceRow(",
+        "aliases": [
+          "course choice row",
+          "needs a touch screen"
+        ]
+      },
+      "about": "CourseChoiceRow (src/ui.jsx): one course in the report's checklists, its checkbox, Preview and Save, and the touch-screen note.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/ui.jsx",
+              "find": "const touch = courseNeedsTouch(course.id);",
+              "replace": "const touch = !!(course.modules[0] && course.modules[0].needsTouch);"
+            }
+          ],
+          "catch": [
+            "first lesson",
+            "first module",
+            "modules\\[0\\]",
+            "first lesson alone",
+            "decided (in|on|by) the screen",
+            "not (in|from) logic",
+            "use courseNeedsTouch",
+            "no (warning|red i)",
+            "never shows",
+            "courseNeedsTouch",
+            "needsTouch"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C25",
+        "pass": "MC",
+        "line": 3193,
+        "words": "The Let's Play filter in ui.jsx kept only the kinds older lists had"
+      },
+      "defect": "Whether a course needs a touch screen is decided in the screen, by whether a lesson's title says trace or tracing, where logic's courseNeedsTouch reads each lesson's needsTouch: the four courses whose finger lessons draw, connect dots or write lose their warning (First steps, Very first steps, Numbers to 120, and Shapes, measuring and graphs), so an educator can assign one to a child with no touch screen. CLAUDE.md (a module that needs a finger on glass sets needsTouch; courseNeedsTouch shows the educator a warning before assigning; logic.mjs holds the rules, ui.jsx draws) and the code brief's pass MC rule (a list is decided in logic.mjs and only drawn by the screen); MISTAKE-CLASSES C25.",
+      "fix": "Ask logic: const touch = courseNeedsTouch(course.id);"
+    },
+    {
+      "id": "P29",
+      "kind": "plant",
+      "class": "C26",
+      "harm": 3,
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "makeWonderEvent",
+        "file": "src/logic.mjs",
+        "start": "export function makeWonderEvent(",
+        "aliases": [
+          "wonder_answered",
+          "Wonder event"
+        ]
+      },
+      "about": "makeWonderEvent (src/logic.mjs): the one record a Wonder answer leaves in the log.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "export function makeWonderEvent(wonderId, moduleId, at, seconds, wordCount) {\n  return { type: 'wonder_answered', at, wonderId, moduleId, seconds, wordCount };",
+              "replace": "export function makeWonderEvent(wonderId, moduleId, at, seconds, wordCount, answer = null) {\n  return { type: 'wonder_answered', at, wonderId, moduleId, seconds, wordCount, answer };"
+            },
+            {
+              "file": "src/ui.jsx",
+              "find": "await addEvent(makeWonderEvent(wonder.id, moduleId, new Date().toISOString(), seconds, words));",
+              "replace": "await addEvent(makeWonderEvent(wonder.id, moduleId, new Date().toISOString(), seconds, words, wonder.answerMode === 'pick' ? wonderPick : wonderText.trim()));"
+            }
+          ],
+          "catch": [
+            "typed answer",
+            "child.s (typed )?(words|answer)",
+            "typed (answer|words|reflection)",
+            "answer = null",
+            "stores? (the )?(text|words|answer)",
+            "free text",
+            "never saves?",
+            "privacy",
+            "compliance"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "export function makeWonderEvent(wonderId, moduleId, at, seconds, wordCount) {\n  return { type: 'wonder_answered', at, wonderId, moduleId, seconds, wordCount };",
+              "replace": "export function makeWonderEvent(wonderId, moduleId, at, seconds, wordCount, firstWords = '') {\n  return { type: 'wonder_answered', at, wonderId, moduleId, seconds, wordCount, firstWords };"
+            },
+            {
+              "file": "src/ui.jsx",
+              "find": "await addEvent(makeWonderEvent(wonder.id, moduleId, new Date().toISOString(), seconds, words));",
+              "replace": "await addEvent(makeWonderEvent(wonder.id, moduleId, new Date().toISOString(), seconds, words, wonderText.trim().split(/\\s+/).slice(0, 3).join(' ')));"
+            }
+          ],
+          "catch": [
+            "first three words",
+            "first words",
+            "child.s words",
+            "stores? (the )?(text|words)",
+            "free text",
+            "firstWords",
+            "never saves?",
+            "privacy",
+            "compliance"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C26",
+        "pass": "MH",
+        "line": 3694,
+        "words": "failed tracings stored with a pre-reader's missed picks (privacy)"
+      },
+      "defect": "The Wonder event keeps the child's own answer: which option a child picked on a pick question (wording 2: the first three words a child wrote), which the page passes in from the readers' Wonder screen, and the event goes into every backup and merge, though a Wonder question has no right answer and asks about feelings, family and faith: CLAUDE.md (Wonder screens never save a child's words, compliance; makeWonderEvent stores only id, time, seconds, word count), the Compliance section (no free text from children), its own comment ('The only thing stored about a reflection: which one, when, how long, roughly how much') and the code brief (a stored answer keeps only what its question needs, pass MH). The rules test's own check reads strings over three words in an event it makes with no answer, so neither wording trips it.",
+      "fix": "Store only id, time, seconds and word count, and pass nothing else from the screen."
+    },
+    {
+      "id": "K10",
+      "kind": "control",
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "describeMoment",
+        "file": "src/logic.mjs",
+        "start": "export function describeMoment(",
+        "aliases": [
+          "describe moment"
+        ]
+      },
+      "about": "describeMoment (src/logic.mjs): a backup's saved time in plain words, in the device's own time zone.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "K11",
+      "kind": "control",
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "StoryCover",
+        "file": "src/ui.jsx",
+        "start": "function StoryCover(",
+        "aliases": [
+          "story cover",
+          "cover shelf"
+        ]
+      },
+      "about": "StoryCover (src/ui.jsx): one story's cover on the cover shelf, its first picture, the gold book sign and its title.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "K12",
+      "kind": "control",
+      "brief": "code",
+      "item": {
+        "type": "function",
+        "id": "nextWonder",
+        "file": "src/logic.mjs",
+        "start": "export function nextWonder(",
+        "aliases": [
+          "next wonder"
+        ]
+      },
+      "about": "nextWonder (src/logic.mjs): which Wonder question a student meets next, and when one is due.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "P17",
+      "kind": "plant",
+      "class": "C19",
+      "harm": 3,
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-rainy-day",
+        "aliases": [
+          "rainy day",
+          "weather chart"
+        ]
+      },
+      "about": "An early Wonder question (ups and downs): a rainy day; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'I keep a weather chart. On it, the rain always moved on, and sunny days came back!'",
+              "replace": "says: 'I keep a weather chart. When the rain stops, I look right up at the sun to see how bright it is!'"
+            }
+          ],
+          "catch": [
+            "up at the sun",
+            "look(s|ing|ed)? (right |straight )?(up )?(at|into) the sun",
+            "toward the sun",
+            "at the sun",
+            "eyes",
+            "unsafe",
+            "stare"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'I keep a weather chart. On it, the rain always moved on, and sunny days came back!'",
+              "replace": "says: 'I keep a weather chart. On sunny days, I stare up at the sun for a whole minute to see how bright it gets!'"
+            }
+          ],
+          "catch": [
+            "stare up at the sun",
+            "up at the sun",
+            "whole minute",
+            "look(s|ing|ed)? (right |straight )?(up )?(at|into) the sun",
+            "at the sun",
+            "eyes",
+            "unsafe",
+            "stare"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C19",
+        "pass": "MG",
+        "line": 3442,
+        "words": "a look at the sky now means the sun is in view"
+      },
+      "defect": "Frederick's short voice, all a pre-reader hears of him, has him look right up at the sun to see how bright it is (wording 2: stare at it for a whole minute), which a young child will copy and which can hurt the eyes. The Wonder brief's item 5: a short voice that sends a child to look at the sky never points toward the sun (pass MG); MISTAKE-CLASSES C19, an unsafe scene for a young child.",
+      "fix": "Point away from the sun, as the line was: 'I keep a weather chart. On it, the rain always moved on, and sunny days came back!'"
+    },
+    {
+      "id": "P18",
+      "kind": "plant",
+      "class": "C20",
+      "harm": 2,
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-moon-follows-me",
+        "aliases": [
+          "moon follows",
+          "following you"
+        ]
+      },
+      "about": "An early Wonder question (world): the moon that seems to follow you; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'I was sure the moon followed our car. But it followed my cousin\\'s car too, the other way! Can one moon go two ways?'",
+              "replace": "says: 'Sent just for you? I doubt it. The moon followed my cousin\\'s car too, the other way! Can one moon go two ways?'"
+            }
+          ],
+          "catch": [
+            "I doubt it",
+            "sent just for you",
+            "right after Georgette",
+            "lands? on (Georgette|her|the faith|the grandparent)",
+            "Georgette.s (line|faith|short voice|voice)",
+            "faith",
+            "doubt",
+            "neutral"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'I was sure the moon followed our car. But it followed my cousin\\'s car too, the other way! Can one moon go two ways?'",
+              "replace": "says: 'I am not so sure about that. The moon followed my cousin\\'s car too, the other way! Can one moon go two ways?'"
+            }
+          ],
+          "catch": [
+            "not so sure about that",
+            "right after Georgette",
+            "lands? on (Georgette|her|the faith|the grandparent)",
+            "Georgette.s (line|faith|short voice|voice)",
+            "faith",
+            "doubt",
+            "neutral"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C20",
+        "pass": "MH",
+        "line": 3697,
+        "words": "five Mike lines whose doubt landed on Georgette's line before them"
+      },
+      "defect": "Mike's short voice opens on doubt (wording 1: 'Sent just for you? I doubt it.'; wording 2: 'I am not so sure about that.') right after Georgette's 'I once thought God sent the moon just for me', and the four voices are heard one after another, so his doubt lands on her faith. The Wonder brief's item 9 (a voice's doubt never lands on the line before it) and item 3 (neutral on religion: no voice argues another down).",
+      "fix": "Aim Mike's doubt at his own idea, as the line was: 'I was sure the moon followed our car. But it followed my cousin's car too ...'"
+    },
+    {
+      "id": "P19",
+      "kind": "plant",
+      "class": "C20",
+      "harm": 2,
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-kite-would-not-fly",
+        "aliases": [
+          "kite would not fly",
+          "kite"
+        ]
+      },
+      "about": "An early Wonder question (failure): a kite that would not fly; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'Dad and I stood with the wind at our backs. A kite needs moving air to lift it. With little wind, we walked backward!'",
+              "replace": "says: 'Feel the wind first, that is the right answer. Dad and I stood with the wind at our backs, and up went the kite!'"
+            }
+          ],
+          "catch": [
+            "that is the right answer",
+            "the right answer",
+            "declares? (a |one |the )?(right|correct)",
+            "one (option|choice) (is )?(the )?(right|correct)",
+            "item 1"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'Dad and I stood with the wind at our backs. A kite needs moving air to lift it. With little wind, we walked backward!'",
+              "replace": "says: 'The right choice is to feel the wind first. A kite needs moving air to lift it. With little wind, we walked backward!'"
+            }
+          ],
+          "catch": [
+            "the right choice is",
+            "right choice",
+            "declares? (a |one |the )?(right|correct)",
+            "one (option|choice) (is )?(the )?(right|correct)",
+            "item 1"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C20",
+        "pass": "MA",
+        "line": 3064,
+        "words": "w-big-or-small's scientist declared a right answer"
+      },
+      "defect": "Frederick's short voice declares one of the three options the right answer (wording 2: the right choice) in a question with no right answer, telling the child which choice to pick. The Wonder brief's item 1: the theme is held with no answer declared right; item 9: each voice speaks from its own experience.",
+      "fix": "Let the voice tell what Frederick and his dad did, naming no option right, as it was: 'Dad and I stood with the wind at our backs. A kite needs moving air to lift it. With little wind, we walked backward!'"
+    },
+    {
+      "id": "P20",
+      "kind": "plant",
+      "class": "C13",
+      "harm": 3,
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-party-too-loud",
+        "aliases": [
+          "party too loud",
+          "birthday party"
+        ]
+      },
+      "about": "An early Wonder question (feelings): a birthday party that feels like too much; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "Her mom passed us one piece of cake and two forks, and we shared it.",
+              "replace": "Her mom passed us one piece of cake and three forks, one for each of us, and we shared it."
+            }
+          ],
+          "catch": [
+            "three forks",
+            "one for each of us",
+            "two of us",
+            "only two",
+            "count (is|was|could) (wrong|not)",
+            "could not happen",
+            "miscount",
+            "forks"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "Her mom passed us one piece of cake and two forks, and we shared it.",
+              "replace": "Her mom passed us one piece of cake and two forks, and the three of us shared it."
+            }
+          ],
+          "catch": [
+            "three of us",
+            "the three of us",
+            "two of us",
+            "only two",
+            "count (is|was|could) (wrong|not)",
+            "could not happen",
+            "miscount"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C13",
+        "pass": "NI",
+        "line": 5576,
+        "words": "a count that could not happen"
+      },
+      "defect": "Chloe's long voice gives a count that cannot happen: two children are under the table, Chloe and the girl who crawled in, and her mom passes three forks, one for each of us (wording 2: the three of us shared it). The Wonder brief's item 19 counts every person a voice names against the number it gives (pass NI: Chloe's four of us made five); a false fact, MISTAKE-CLASSES C13.",
+      "fix": "Two forks, and 'we shared it', as the line was."
+    },
+    {
+      "id": "P21",
+      "kind": "plant",
+      "class": "C14",
+      "harm": 2,
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-ice-cream-fell",
+        "aliases": [
+          "ice cream fell",
+          "ice cream"
+        ]
+      },
+      "about": "An early Wonder question (ups and downs): ice cream that fell off its cone; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'Once, Mom and I watched ants march to my fallen scoop by a bench. My sad ice cream was an ant party!'",
+              "replace": "says: 'My scoop fell, and I was down in the dumps. Then Mom and I watched ants march to it. An ant party!'"
+            }
+          ],
+          "catch": [
+            "down in the dumps",
+            "an idiom",
+            "figure of speech",
+            "idiom",
+            "literal"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'Once, Mom and I watched ants march to my fallen scoop by a bench. My sad ice cream was an ant party!'",
+              "replace": "says: 'My scoop fell, and my heart sank to my toes. Then Mom and I watched ants march to it. An ant party!'"
+            }
+          ],
+          "catch": [
+            "heart sank",
+            "sank to my toes",
+            "an idiom",
+            "figure of speech",
+            "idiom",
+            "literal"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C14",
+        "pass": "NA",
+        "line": 5058,
+        "words": "an idiom a three-year-old may not know"
+      },
+      "defect": "Chloe's short voice, which a pre-reader hears, says how she felt in an idiom a three-year-old may not know (down in the dumps; wording 2: my heart sank to my toes, which a young child can hear as a heart that moved). The Wonder brief's item 14 takes such idioms out of early questions ('plans fall through', 'feel low'), and item 13 reads a voice's words against what a three-year-old knows.",
+      "fix": "Say the feeling plainly, in the lessons' own words ('and I felt sad'), or keep the line as it was."
+    },
+    {
+      "id": "P22",
+      "kind": "plant",
+      "class": "C20",
+      "harm": 3,
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-someone-grabbed-my-toy",
+        "aliases": [
+          "grabbed your toy",
+          "grabbed my toy",
+          "someone grabbed"
+        ]
+      },
+      "about": "An early Wonder question (feelings): someone grabbed your toy; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'A calm, strong voice can sound braver than yelling. I practiced mine with a stuffed bunny.'",
+              "replace": "says: 'When someone grabs my things, I draw them on paper and scribble them out, hard. Then my mad is all gone!'"
+            }
+          ],
+          "catch": [
+            "scribble them out",
+            "draw them on paper",
+            "all gone",
+            "vent",
+            "scribbl",
+            "Drake",
+            "rumina",
+            "aggress"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "says: 'A calm, strong voice can sound braver than yelling. I practiced mine with a stuffed bunny.'",
+              "replace": "says: 'When someone grabs my toy, I draw a mad picture of them and scribble on it hard, till my mad is used up.'"
+            }
+          ],
+          "catch": [
+            "mad picture",
+            "scribble on it",
+            "used up",
+            "vent",
+            "scribbl",
+            "Drake",
+            "rumina",
+            "aggress"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C20",
+        "pass": "NA",
+        "line": 5058,
+        "words": "a voice that modeled venting"
+      },
+      "defect": "Chloe's short voice models venting: she draws the child who grabbed her toy and scribbles them out, hard, until her mad is gone (wording 2: a mad picture of them, scribbled on until the mad is used up). The Wonder brief's item 4 (calming the body and absorbing distraction, never venting a feeling out, pass IX) and item 13 (drawing what upset you is venting, which Drake and Winner found worse than drawing something new); her own long voice still teaches the calm, strong voice.",
+      "fix": "Keep Chloe's calming way, as the line was: 'A calm, strong voice can sound braver than yelling. I practiced mine with a stuffed bunny.'"
+    },
+    {
+      "id": "N07",
+      "kind": "near miss",
+      "class": "C13",
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-two-pages-at-once",
+        "aliases": [
+          "two pages at once",
+          "two pages"
+        ]
+      },
+      "about": "An early Wonder question (failure): two pages turned at once; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "My grandmother had a storybook that was older than she was, and she read it to all of us.",
+              "replace": "My grandmother had a storybook that was older than she was, and she read it to the three of us, my brother, my cousin and me."
+            }
+          ]
+        }
+      ],
+      "trap": [
+        "three of us",
+        "miscount",
+        "count (is|was) wrong",
+        "only two",
+        "how many"
+      ],
+      "origin": {
+        "class": "C13",
+        "pass": "NI",
+        "line": 5576,
+        "words": "a count that could not happen",
+        "beside": true
+      },
+      "correct": "The count is right: her brother, her cousin and the speaker herself make three, the count the Wonder brief's item 19 reads every person against."
+    },
+    {
+      "id": "K07",
+      "kind": "control",
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-new-way-home",
+        "aliases": [
+          "new way home"
+        ]
+      },
+      "about": "An early Wonder question (ups and downs): a new way home; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged: pass NP wrote it, and its Wonder reads passed it."
+    },
+    {
+      "id": "K08",
+      "kind": "control",
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-same-story-again",
+        "aliases": [
+          "same story again"
+        ]
+      },
+      "about": "An early Wonder question (feelings): asking for the same story again; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    },
+    {
+      "id": "K09",
+      "kind": "control",
+      "brief": "wonder",
+      "item": {
+        "type": "wonder",
+        "id": "w-early-did-it-myself",
+        "aliases": [
+          "did it myself",
+          "all by yourself"
+        ]
+      },
+      "about": "An early Wonder question (feelings): doing something hard all by yourself; its options, its four short and four long voices, and its closing.",
+      "variants": [
+        {
+          "edits": []
+        }
+      ],
+      "correct": "Unchanged."
+    }
+  ]
+}

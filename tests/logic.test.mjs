@@ -11770,7 +11770,9 @@ const moreRightProblems = (L) => { const r = {};
 // other words than it is said is one block; near misses: a map whose next sentence is not faint, one that never fades, and one that fades
 // a block sentence by sentence, each caught. (2) The faint's strength on each ground (readAheadOn, run in node:vm with each theme's colors
 // from the code): readAhead's own where that reads 4.5 to 1, else the weakest stronger one that does, on the question card, the page, the
-// paper, the green strip, the clay strip, the closing card's gold and the dark panel; near miss, a faint that ignores its ground, caught.
+// paper, the green strip, the closing card's gold and the dark panel; near miss, a faint that ignores its ground, caught. Until pass NQ it
+// measured the clay strip too (0.97 in the light theme, 0.88 in the dark); since Mikey's answer to Q112 ("Q112 - C") the reason after a
+// wrong tap wears no faint, and the block after this one holds it at full ink.
 // (3) speak()'s onPlace (node:vm, a stand-in voice on a fake clock): told each sentence in turn, never a piece's number, and null once the
 // line is said, and nothing for a line a newer one replaced; near misses, no null at the end and a piece's number, caught. (4) The
 // screen code: each place wears the faint only ahead of the voice and carries the marks, the faint is turned off wherever each reading
@@ -11821,14 +11823,15 @@ const moreRightProblems = (L) => { const r = {};
   const strengths = (src) => { const themes = src.slice(src.indexOf('const THEMES = {'), src.indexOf('// The palette every screen reads while it draws.')); const fn = src.slice(src.indexOf('const readAhead = () =>'), src.indexOf('// Style objects shared across screens copy colors'));
     const out = [];
     for (const mode of ['light', 'dark']) { const box = {}; vm.createContext(box);
-      try { vm.runInContext(`${themes}\nconst C = { ...THEMES.${mode} };\n${fn}\nglobalThis.r = [['the question card', C.surface, C.ink], ['the page', C.bg, C.ink], ['the story paper', C.paper, C.ink], ['the green strip', C.greenSoft, C.ink], ['Correct on the green strip', C.greenSoft, C.green], ['the clay strip', C.claySoft, C.clayInk], ['the closing card', C.goldSoft, C.ink], ['the closing title', C.goldSoft, C.mode === 'dark' ? '#E9C46A' : C.green], ['the panel', C.panel, C.ink]].map(([name, g, k]) => ({ name, g, k, a: readAheadOn(g, k).opacity, base: readAhead().opacity }));`, box); } catch (e) { return null; }
+      try { vm.runInContext(`${themes}\nconst C = { ...THEMES.${mode} };\n${fn}\nglobalThis.r = [['the question card', C.surface, C.ink], ['the page', C.bg, C.ink], ['the story paper', C.paper, C.ink], ['the green strip', C.greenSoft, C.ink], ['Correct on the green strip', C.greenSoft, C.green], ['the closing card', C.goldSoft, C.ink], ['the closing title', C.goldSoft, C.mode === 'dark' ? '#E9C46A' : C.green], ['the panel', C.panel, C.ink]].map(([name, g, k]) => ({ name, g, k, a: readAheadOn(g, k).opacity, base: readAhead().opacity }));`, box); } catch (e) { return null; }
       for (const x of box.r) out.push({ mode, ...x, ratio: reads(x.k, x.g, x.a), weaker: x.a > x.base ? reads(x.k, x.g, Math.round(x.a * 100 - 1) / 100) : null }); }
     return out; };
-  const strong = (list) => !!list && list.length === 18 && list.every((x) => x.ratio >= 4.5 && x.a >= x.base && x.a <= 1 && (x.weaker === null || x.weaker < 4.5));
+  // 16 grounds read: eight in each theme (18 until pass NQ, when the clay strip left the list: Q112 (c)).
+  const strong = (list) => !!list && list.length === 16 && list.every((x) => x.ratio >= 4.5 && x.a >= x.base && x.a <= 1 && (x.weaker === null || x.weaker < 4.5));
   const st = strengths(ui); const blind = ui.replace('let a = base; while (a < 1 && !reads(a))', 'let a = base; while (false && a < 1 && !reads(a))');
   const at = (mode, name) => (st || []).find((x) => x.mode === mode && x.name === name) || {};
   ok(`the read-along's faint is worked out for each ground from the themes' own colors, 4.5 to 1 or better and no stronger than it must be: ${(st || []).map((x) => `${x.mode} ${x.name} ${x.a} (${x.ratio.toFixed(2)})`).join(', ')} (pass NP; a faint that ignores its ground, caught)`,
-    strong(st) && at('dark', 'the green strip').a === 0.6 && at('dark', 'the closing card').a === 0.57 && at('light', 'the clay strip').a === 0.97 && at('dark', 'the clay strip').a === 0.88 && at('light', 'the question card').a === 0.66 && at('dark', 'the question card').a === 0.55 && blind !== ui && !strong(strengths(blind)), JSON.stringify(st));
+    strong(st) && at('dark', 'the green strip').a === 0.6 && at('dark', 'the closing card').a === 0.57 && at('light', 'the question card').a === 0.66 && at('dark', 'the question card').a === 0.55 && blind !== ui && !strong(strengths(blind)), JSON.stringify(st));
   // (3) speak()'s onPlace in node:vm: the app's own speech code, a stand-in voice that says each piece in 100 ms on a fake clock.
   const cutOf = (t, a, b) => { const i = t.indexOf(a); const j = i < 0 ? -1 : t.indexOf(b, i); return i < 0 || j < 0 ? '' : t.slice(i, j); };
   const placesOf = (src) => { let now = 0; let seq = 0; const timers = []; const later = (fn, ms, every = 0) => { const id = ++seq; timers.push({ id, at: now + Math.max(0, Number(ms) || 0), fn, every }); return id; }; const clear = (id) => { const i = timers.findIndex((t) => t.id === id); if (i >= 0) timers.splice(i, 1); };
@@ -11858,7 +11861,9 @@ const moreRightProblems = (L) => { const r = {};
       "const askedAt = readAlongMap(questionReadParts(q, shownQ), readingIn('question', questionText));", "data-read-lit={askedAt[0].whole && askedAt[0].lit === 0 ? '' : undefined}", 'lit={!askedAt[0].whole && askedAt[0].lit >= 0 ? askedAt[0].lit : null} ahead={askedAt[0].reached === 0} />',
       '{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}'],
     after: ["const said = readAlongLine(answerReadParts(q, wasCorrect, String(given), wrongPicks)); speak(said, { ...(q.voices ? { voices: q.voices } : {}), onPlace: followReading('after', said) });", "const afterAt = readAlongMap(afterParts, readingIn('after', readAlongLine(afterParts)));",
-      'readAloud ? lookFor(afterAt[0], wasCorrect ? C.greenSoft : C.claySoft, wasCorrect ? C.green : C.clayInk) : null)}', 'ground={wasCorrect ? C.greenSoft : C.claySoft} {...explainLook} />', 'litLine: explainedAt.lit >= 0 ? lineOfSentence(explained, explainedAt.lit) : null, ahead: explainedAt.reached === 0 }'],
+      // Since pass NQ (Mikey's answer to Q112, "Q112 - C") only Correct, on the green strip, reads along; the reason after a wrong tap is held at full ink by the block after this one.
+      'readAloud && wasCorrect ? lookFor(afterAt[0], C.greenSoft, C.green) : null)}', 'const afterParts = checked && wasCorrect ? answerReadParts(q, wasCorrect, String(given), wrongPicks, canSpeak() || !!grownCard) : [];',
+      'ground={wasCorrect ? C.greenSoft : C.claySoft} {...explainLook} />', 'litLine: explainedAt.lit >= 0 ? lineOfSentence(explained, explainedAt.lit) : null, ahead: explainedAt.reached === 0 }'],
     wonder: ['asked(i === 0 ? s || 0 : null); }, () => { setWonderLit(-1); asked(null); }); };', 'const stop = readWonderAloud();', 'onClick={() => readWonderAloud()}', "{readAlongOver(<p style={{ fontSize: 22, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>, askedLook)}",
       "{readAlongOver(<p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>, askedLook)}", "follow={followReading('wonder', wonder.prompt)} />"],
     cards: ["const cardSaid = wonderCardSpoken(v); const cardAt = readAlongMap(wonderCardParts(v), readingIn('card', cardSaid));", "{'\\u201C'}{lastTwoTogether(wholeHyphens(v.says), v.says)}{'\\u201D'}</p>, lookFor(cardAt[1], C.surface))}", 'reading={{ title: cardAt[0], line: cardAt[1] }} />',
@@ -11906,5 +11911,690 @@ const moreRightProblems = (L) => { const r = {};
   const firstName = ui.replace(/\breadAlongAt\b/g, 'readPlace');
   ok('no state hides a function its own component calls (pass NP; the read-along state named readPlace, as first written, planted, caught)', hidden(ui).length === 0 && firstName !== ui && hidden(firstName).length > 0, JSON.stringify(hidden(ui))); }
 
+// The reason after a wrong tap stays at full ink while it is read (pass NQ, Mikey's answer to Q112, "Q112 - C"): on its clay strip the
+// faint could fall only to 0.97 in the light theme (0.88 in the dark) and still read 4.5 to 1, which nobody could see, so the reason wears
+// no read-along look at all: no faint, no data-read-ahead and no data-read-lit mark, as at rest, while "Correct" on the green strip keeps
+// its faint. Read from the screen code as the block above reads its marks: the look the card's first paragraph is given (the second
+// argument of its readAlongOver) is run in node:vm with a live place and a stand-in lookFor, after a wrong tap and after a right answer,
+// in a read-aloud course and in one that is not: null after a wrong tap, the green strip's look after a right answer, null with no voice.
+// And no call asks a faint for the clay strip (lookFor or readAheadOn given C.claySoft). The near miss is pass NP's look, put back.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const vm = await import('node:vm');
+  const CARD = '{readAlongOver(<p data-cue-room=""';
+  // The look expression, cut from the card's own line: what follows its paragraph's closing tag, up to readAlongOver's closing.
+  const lookOf = (src) => { const at = src.indexOf(CARD); if (at < 0 || src.indexOf(CARD, at + 1) >= 0) return null; const line = src.slice(at, src.indexOf('\n', at)); const k = line.lastIndexOf('</p>, '); const end = line.lastIndexOf(')}'); return k < 0 || end < k ? null : line.slice(k + 6, end); };
+  const drawn = (expr, wasCorrect, readAloud) => { try { return vm.runInNewContext(expr, { wasCorrect, readAloud, afterAt: [{ reached: 0, lit: -1, whole: false }, { reached: 0, lit: -1, whole: false }], C: { greenSoft: 'greenSoft', claySoft: 'claySoft', green: 'green', clayInk: 'clayInk' }, lookFor: (m, ground, ink) => (m && m.reached !== Infinity ? { ...m, ground, ink } : null) }); } catch (e) { return 'threw'; } };
+  const fullInk = (src) => { const e = lookOf(src); if (!e) return false; const right = drawn(e, true, true);
+    return drawn(e, false, true) === null && drawn(e, false, false) === null && drawn(e, true, false) === null && !!right && right.ground === 'greenSoft' && right.ink === 'green'; };
+  const claySought = (src) => src.split('\n').filter((l) => /\b(?:lookFor|readAheadOn)\([^;]*C\.claySoft/.test(l)).length;
+  const NP_LOOK = 'readAloud ? lookFor(afterAt[0], wasCorrect ? C.greenSoft : C.claySoft, wasCorrect ? C.green : C.clayInk) : null)}';
+  const npLook = ui.replace('readAloud && wasCorrect ? lookFor(afterAt[0], C.greenSoft, C.green) : null)}', NP_LOOK);
+  ok(`the reason after a wrong tap wears no read-along look on its clay strip (no faint, no marks, full ink while the voice reads it, as at rest), Correct on the green strip keeps its faint, and nothing asks a faint for the clay strip (pass NQ, Mikey's answer to Q112, "Q112 - C"; pass NP's look, put back, caught)`,
+    fullInk(ui) && claySought(ui) === 0 && npLook !== ui && !fullInk(npLook) && claySought(npLook) > 0, JSON.stringify({ look: lookOf(ui), wrong: drawn(lookOf(ui) || 'null', false, true), right: drawn(lookOf(ui) || 'null', true, true), claySought: claySought(ui) })); }
+
+// Pass NQ, round one's code reads (two blocks): the weekly note with Since you last looked, and the confidence score's definitions.
+// The weekly note tells an educator the student's own week (pass NQ, round one's code reads, three readers on three models). An
+// educator prints it for each student. Until pass NQ its Next up was the first unmastered lesson of every course in the app, sorted by
+// course id, so a kindergartner given only Counting, one round practiced, read "Next up: Farms feed us.", and "Every assigned module is
+// mastered." could never be said truthfully; it read the raw log, so a reset in the middle of the week still counted the rounds before
+// it, and changesSince (Since you last looked) did the same; it matched Still practicing by title, so of the two lessons named More and
+// fewer, mastering one hid the other; and a week of one question read "answered 1 questions". Each case below runs on the note as it
+// is and on the note's own source with that old code put back, run in node:vm on the module's own exports (no second copy of logic is
+// loaded), and each old code is caught by its case. No case has a week of one game: the games line is not this block's.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+  // A function's source, from its export line to its closing brace at the line's start; and that source run as a function.
+  const fnSource = (name) => { const a = lsrc.indexOf(`\nexport function ${name}(`); const b = a < 0 ? -1 : lsrc.indexOf('\n}\n', a + 1); return a < 0 || b < 0 ? '' : lsrc.slice(a + '\nexport '.length, b + 2); };
+  const asFn = (src) => vm.runInNewContext(`(${src})`, { ...L });
+  const NOTE = fnSource('weeklyNote'); const SINCE = fnSource('changesSince'); const NEXT = fnSource('nextUpModule');
+  const plant = (src, from, to) => (src.split(from).length === 2 ? src.replace(from, () => to) : null);
+  // nextUpModule without its moved-past filter (pass NQ, F4), called in the note's own source in place of the module's.
+  const OLD_NEXT = plant(NEXT, ' && !(progress.perModule[m.id] || {}).movedPast', '');
+  const OLD = {
+    'the unfiltered rows': plant(NOTE, 'const upNext = nextUpModule(rep, events);', 'const upNext = rows.find((m) => !m.mastered && !practicing.includes(m.id)) || null;'),
+    'the raw log': plant(NOTE, 'const recent = activeEvents(events || []).filter(', 'const recent = (events || []).filter('),
+    'the lessons matched by title': plant(NOTE, 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0);', 'const practicing = touched.filter((id) => !rows.some((m) => m.title === byId.get(id).title && m.mastered) && byId.get(id).attempts > 0);'),
+    'one question as "questions"': plant(NOTE, "asked === 1 ? ' question' : ' questions'", "' questions'"),
+    'every assigned module mastered when nothing is still practicing': plant(NOTE, 'else if (assigned.length && assigned.every((m) => m.mastered))', 'else if (!practicing.length)'),
+    'a lesson the student was moved past as next': OLD_NEXT && plant(NOTE, 'const upNext = nextUpModule(rep, events);', `const upNext = (${OLD_NEXT})(rep, events);`),
+  };
+  const OLD_SINCE = plant(SINCE, 'const recent = activeEvents(events || []).filter(', 'const recent = (events || []).filter(');
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const now = new Date(NOW).toISOString();
+  const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
+  const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, at, right, n = full(id)) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: n }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: n });
+  const K = L.getCourse('counting-k').modules.map((m) => m.id); const title = (id) => L.getModule(id).title;
+  // The lessons listed under a head of the note (Still practicing:, Sam mastered:), each by its title: the bold words a line opens with,
+  // since a title two printed lessons share has its course after it (pass NQ, F2; F2's block on a shared title, below, holds that).
+  const listed = (text, head) => { const block = text.split('\n\n').find((b) => b.startsWith(head)); return block ? [...block.matchAll(/^• \*\*(.+?)\*\*/gm)].map((m) => m[1]) : []; };
+  const rowOf = (events) => L.classView([{ id: 's', label: 'Sam', events }], now)[0];
+  // One course assigned, another sorted ahead of it: Next up is the lesson the student opens next in Counting, the class row's own.
+  const onlyCounting = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd(K[0], ago(2), full(K[0]))];
+  const caseAhead = (note) => { const text = note('Sam', onlyCounting, now);
+    return L.COURSES.some((c) => c.id.localeCompare('counting-k') < 0 && c.modules.length > 0) && text.includes(`Next up: **${title(K[1])}**.`) && rowOf(onlyCounting).next === title(K[1]); };
+  // Every lesson of the assigned course mastered (two passes on different days, weeks ago): the note says so, and names no Next up.
+  const allMastered = [L.makeCoursesEnabledEvent(['counting-k'], ago(40)), ...K.map((id, i) => rnd(id, ago(30, i / 10), full(id))), ...K.map((id, i) => rnd(id, ago(29, i / 10), full(id)))];
+  const caseMastered = (note) => { const text = note('Sam', allMastered, now);
+    return L.buildReport('Sam', allMastered).modules.filter((m) => m.courseId === 'counting-k').every((m) => m.mastered) && text.includes('Every assigned module is mastered.') && !text.includes('Next up') && rowOf(allMastered).next === null; };
+  // Every lesson passed once and none mastered, nothing practiced this week: nothing is open and unpassed, so no Next up, and the note
+  // never says every assigned module is mastered.
+  const allPassed = [L.makeCoursesEnabledEvent(['counting-k'], ago(40)), ...K.map((id, i) => rnd(id, ago(30, i / 10), full(id)))];
+  const casePassed = (note) => { const text = note('Sam', allPassed, now);
+    return L.buildReport('Sam', allPassed).modules.filter((m) => m.courseId === 'counting-k').every((m) => m.passed && !m.mastered) && !text.includes('Every assigned module is mastered.') && !text.includes('Next up') && rowOf(allPassed).next === null; };
+  // A reset in the middle of the week: two failed rounds of Count to 10 and a picture before it, a passed round of Count to 5 and two
+  // pictures after it. The note counts only what came after, as the report does, and Since you last looked does the same.
+  const reset = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd(K[1], ago(5), 2), rnd(K[1], ago(4), 3), L.makeColoredEvent('house', ago(4, 1)), L.makeResetEvent(ago(3)),
+    rnd(K[0], ago(2), full(K[0])), L.makeColoredEvent('star', ago(2, 1)), L.makeColoredEvent('ball', ago(1))];
+  const caseReset = (note) => { const text = note('Sam', reset, now); const rep = L.buildReport('Sam', reset);
+    return rep.totalAttempts === 1 && rep.coloringBreaks === 2 && text.includes(`answered ${full(K[0])} questions and got ${full(K[0])} right.`) && text.includes('Sam colored 2 pictures.')
+      && JSON.stringify(listed(text, 'Still practicing:')) === JSON.stringify([title(K[0])]); };
+  const caseResetSince = (since) => { const s = since(reset, ago(6)); return s.attempts === 1 && s.questions === full(K[0]) && s.colored === 2; };
+  // Two lessons with one title (More and fewer, in pre-K 3 and in pre-K 4): the pre-K 3 one mastered this week, the pre-K 4 one
+  // practiced and missed. Both are listed, each under its own head.
+  const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5';
+  const twoOfOne = [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P3, ago(10), full(P3)), rnd(P3, ago(3), full(P3)), rnd(P4, ago(2), 1)];
+  const caseTitles = (note) => { const text = note('Sam', twoOfOne, now); const pm = L.deriveProgress(twoOfOne).perModule;
+    return !!L.getModule(P3) && !!L.getModule(P4) && title(P3) === title(P4) && pm[P3].mastered && !pm[P4].mastered && listed(text, 'Sam mastered:').includes(title(P3)) && listed(text, 'Still practicing:').includes(title(P4)); };
+  // A week of one question says "1 question"; more say "questions".
+  const oneQuestion = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd(K[0], ago(2), 1, 1)];
+  const caseOne = (note) => note('Sam', oneQuestion, now).includes('This week Sam answered 1 question and got 1 right.') && note('Sam', onlyCounting, now).includes(`answered ${full(K[0])} questions and got`);
+  // Moved past (pass NQ, F4, after round three's code read): Count to 10 missed twice, a loop back to Count to 5, two more misses, and
+  // the educator moved Sam past it, all before this week. The child's overview marks it "You moved on from this one for now" (its
+  // moved-past ids) and opens Tracing numbers after it, so Next up is Tracing numbers on the note and on the row, not Count to 10.
+  const movedPast = [L.makeCoursesEnabledEvent(['counting-k'], ago(40)), rnd(K[0], ago(30), full(K[0])), rnd(K[0], ago(29), full(K[0])), rnd(K[1], ago(20), 1), rnd(K[1], ago(19), 1),
+    L.makeLoopBackEvent(K[1], K[0], ago(19, 1)), rnd(K[1], ago(18), 1), rnd(K[1], ago(17), 1), L.makeMovedForwardEvent(K[1], ago(16))];
+  const caseMoved = (note) => { const text = note('Sam', movedPast, now); const st = new Map(L.moduleStatuses(L.deriveProgress(movedPast), ['counting-k']).map((x) => [x.id, x.status]));
+    return L.movedPastIds(movedPast).includes(K[1]) && st.get(K[1]) === 'available' && st.get(K[2]) === 'available' && text.includes(`Next up: **${title(K[2])}**.`) && rowOf(movedPast).next === title(K[2]); };
+  const CASES = [['one course assigned and another sorted ahead of it', caseAhead, 'the unfiltered rows'], ['every assigned module mastered', caseMastered, 'the unfiltered rows'],
+    ['every assigned lesson passed once and none mastered', casePassed, 'every assigned module mastered when nothing is still practicing'], ['a reset in the middle of the week', caseReset, 'the raw log'],
+    ['two lessons with one title, one mastered', caseTitles, 'the lessons matched by title'], ['a week of one question', caseOne, 'one question as "questions"'],
+    ['a lesson the educator moved the student past', caseMoved, 'a lesson the student was moved past as next']];
+  const failsNow = CASES.filter(([, c]) => !c(L.weeklyNote)).map(([name]) => name);
+  const missed = CASES.filter(([, c, old]) => !OLD[old] || c(asFn(OLD[old]))).map(([name, , old]) => `${name} (${old})`);
+  ok(`the weekly note's Next up is the class row's own lesson from the assigned courses, never one the student was moved past, it says every assigned module is mastered only when each is, it counts the log since the latest reset, it lists lessons by id with their titles, and one question is "1 question" (pass NQ, round one's code reads and F4; seven cases, each old code put back in the note's own source and caught: ${Object.keys(OLD).join('; ')})`,
+    NOTE.startsWith('function weeklyNote(') && failsNow.length === 0 && missed.length === 0 && asFn(NOTE)('Sam', reset, now) === L.weeklyNote('Sam', reset, now), JSON.stringify({ failsNow, missed }));
+  ok("Since you last looked counts the rounds, questions and pictures since the latest reset, as the report does (pass NQ, beside the weekly note; the raw log put back in changesSince's own source, caught)",
+    SINCE.startsWith('function changesSince(') && caseResetSince(L.changesSince) && !!OLD_SINCE && !caseResetSince(asFn(OLD_SINCE)), JSON.stringify(L.changesSince(reset, ago(6)))); }
+// The confidence score's definitions say what computeConfidence does (pass NQ, round one's code reads). The educator reads EXPLANATIONS
+// on the report as its Key Words, and every report carries CONFIDENCE_RULES in its definitions. Until pass NQ they said mastering a
+// module adds 2, where the code adds 2 with its first pass (isMasteredAttempt), before the star; that any question missed when it comes
+// back costs a point, where the code takes it only when half or more of those answers were wrong; that answers much faster or slower are
+// watched, where only a latest round under 60 percent of the usual time is called out; and that the report notes "guessing?", where only
+// Who Needs Help reads it. Each number and condition is read from the sentences and the code is run at it and just past it, on logs of
+// one kindergarten lesson; each old wording, and a wrong number in the new words, is planted in a copy of the definitions and caught.
+{ const E = Object.fromEntries(L.EXPLANATIONS.map((x) => [x.term, x.plain])); const RULES = L.CONFIDENCE_RULES;
+  const WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, half: 0.5 };
+  const num = (w) => (Object.prototype.hasOwnProperty.call(WORDS, w) ? WORDS[w] : /^\d+$/.test(String(w)) ? Number(w) : NaN);
+  // Each run of the code is kept by its arguments, since every planted copy of the words asks the same numbers again.
+  const memo = (f) => { const seen = new Map(); return (...args) => { const key = JSON.stringify(args); if (!seen.has(key)) seen.set(key, f(...args)); return seen.get(key); }; };
+  const ID = 'count-to-5'; const OTHER = 'count-to-10'; const N = L.moduleRules(ID).questions; const T = (i) => `2026-10-${String(1 + Math.floor(i / 24)).padStart(2, '0')}T${String(i % 24).padStart(2, '0')}:00:00.000Z`;
+  // A round from right/wrong flags, its answers at ms each; a memory check of the lesson inside another lesson's round; a checkpoint
+  // and a practice review that ask it.
+  const round = (id, i, flags, ms = 9000) => ({ type: 'attempt_completed', at: T(i), startedAt: T(i), moduleId: id, seed: i, core: flags.map((c) => ({ correct: !!c, timeMs: ms })), review: null, coreCorrect: flags.filter(Boolean).length, coreTotal: flags.length });
+  const back = (i, correct) => ({ ...round(OTHER, i, Array(L.moduleRules(OTHER).questions).fill(1)), review: { moduleId: ID, correct } });
+  const checkpoint = (i, correct) => ({ type: 'checkpoint_completed', at: T(i), startedAt: T(i), atCount: 4, results: [{ moduleId: ID, correct }], correct: correct ? 1 : 0, total: 1 });
+  const practiceReview = (i, correct) => ({ type: 'light_review_completed', at: T(i), startedAt: T(i), moduleId: ID, stage: 'first', outcome: correct ? 'clear' : 'fail', results: [{ correct }] });
+  const score = (events) => L.computeConfidence(ID, events).score;
+  const pass1 = round(ID, 1, [0, ...Array(N - 1).fill(1)]);   // passed, not flawless, a run of N - 1
+  const fail1 = round(ID, 1, [1, 0, 0, 0, 0].slice(0, N));
+  // The code, run at the numbers the words say and just past them.
+  const startAt = memo((n) => score([fail1]) === n && score([]) === null);
+  const passAdds = memo((n) => score([pass1]) - score([fail1]) === n && L.deriveProgress([pass1]).perModule[ID].passed && !L.deriveProgress([pass1]).perModule[ID].mastered);
+  // A flawless latest round against the same two rounds the other way round, so only which round was flawless differs.
+  const flawlessAdds = memo((n) => score([round(ID, 1, [...Array(N - 1).fill(1), 0]), round(ID, 2, Array(N).fill(1))]) - score([round(ID, 1, Array(N).fill(1)), round(ID, 2, [...Array(N - 1).fill(1), 0])]) === n);
+  // A run of exactly k right at the end: a flawless latest round after a round whose last k - N answers are right. A long run that a
+  // wrong last answer broke earns nothing (the module's latest answers, not any run).
+  const runOf = (k) => score([round(ID, 1, Array.from({ length: N }, (_, j) => j >= N - (k - N))), round(ID, 2, Array(N).fill(1))]);
+  const streakAt = memo((k) => k > N && k < 2 * N && runOf(k) === runOf(k - 1) + 1 && runOf(k - 1) === runOf(N)
+    && L.computeConfidence(ID, [round(ID, 1, Array(N).fill(1)), round(ID, 2, Array(N).fill(1)), round(ID, 3, [...Array(N - 1).fill(1), 0])]).streak === 0);
+  const backs = (rights, total) => Array.from({ length: total }, (_, j) => back(10 + j, j < rights));
+  const strongAt = memo((minBack, percent) => score([pass1, ...backs(minBack, minBack)]) === score([pass1]) + 1 && score([pass1, ...backs(minBack - 1, minBack - 1)]) === score([pass1])
+    && score([pass1, ...backs(4, 5)]) === score([pass1]) + (80 >= percent ? 1 : 0) && score([pass1, ...backs(3, 4)]) === score([pass1]) + (75 >= percent ? 1 : 0));
+  // Half: one miss of one, one of two, a miss in a checkpoint and a miss in a practice review each take the point; one of three does not.
+  const weakAt = memo((share) => share === 0.5 && score([pass1, back(10, false)]) === score([pass1]) - 1 && score([pass1, back(10, true), back(11, false)]) === score([pass1]) - 1
+    && score([pass1, back(10, true), back(11, true), back(12, false)]) === score([pass1]) && score([pass1, checkpoint(10, false)]) === score([pass1]) - 1 && score([pass1, practiceReview(10, false)]) === score([pass1]) - 1);
+  const boundsAt = memo((low, high) => score([fail1, back(10, false)]) === low && score([round(ID, 1, [0, 0, ...Array(N - 2).fill(1)]), round(ID, 2, Array(N).fill(1)), ...backs(2, 2)]) === high);
+  // Who Needs Help on a log whose latest round has two wrong answers, at the times given (the others at nine seconds).
+  const guessingNamed = (wrongMs) => { const latest = round(ID, 2, [0, 0, ...Array(N - 2).fill(1)]); const ev = [L.makeCoursesEnabledEvent(['counting-k'], T(0)), pass1, { ...latest, core: latest.core.map((r, j) => (j < wrongMs.length ? { ...r, timeMs: wrongMs[j] } : r)) }];
+    return L.classView([{ id: 's', label: 'Sam', events: ev }], T(40))[0].reasons.some((x) => /signs of guessing/.test(x)); };
+  const guessAt = memo((wrong, seconds) => wrong === 2 && guessingNamed([seconds * 1000 - 1, seconds * 1000 - 1]) && !guessingNamed([seconds * 1000 - 1, seconds * 1000]) && !guessingNamed([seconds * 1000, seconds * 1000]));
+  // View progress for this module (moduleStory) on a latest round at the given time per answer, the student's other lesson at ten seconds.
+  const storyAt = (latestMs) => L.moduleStory('Sam', [round(OTHER, 1, Array(L.moduleRules(OTHER).questions).fill(1), 10000), round(ID, 2, Array(N).fill(1), latestMs)], ID);
+  const fastAt = memo((percent) => /noticeably quicker/.test(storyAt(10000 * (percent - 1) / 100)) && !/noticeably quicker/.test(storyAt(10000 * (percent + 1) / 100)) && !/slow/i.test(storyAt(30000)) && !/noticeably quicker/.test(storyAt(30000)));
+  // The pass mark every scored lesson of a grade has (a writing module is marked by the teacher and has no score), or null.
+  const band = memo((grade) => { const ids = L.MODULES.filter((m) => L.getCourse(m.courseId).grade === grade && !L.isWritingModule(m.id)).map((m) => L.moduleRules(m.id)); return ids.length && ids.every((r) => r.toMaster === ids[0].toMaster && r.questions === ids[0].questions) ? `${ids[0].toMaster} of ${ids[0].questions}` : null; });
+  const bandsRead = (m) => ['PK3', 'PK4', 'K', '1', '2', '3', '4', '5'].every((g) => band(g) === `${m[2]} of ${m[3]}`) && ['6', '7', '8'].every((g) => band(g) === `${m[4]} of ${m[5]}`) && ['9', '10', '11', '12', 'C'].every((g) => band(g) === `${m[6]} of ${m[7]}`);
+  // What the words say, each read and the code run at it; a list of what does not hold.
+  const problems = (ex, rules) => { const out = []; const conf = ex['Confidence, scored 1 to 5'] || ''; const down = ex['What holds a confidence score down'] || ''; const time = ex['Typical answering time'] || ''; const r = rules.join('\n');
+    const a = /Everyone starts at (\w+)\. Passing a module adds (\w+), even before its star, and a flawless latest round adds (\w+) more\./.exec(conf);
+    if (!a || !startAt(num(a[1])) || !passAdds(num(a[2])) || !flawlessAdds(num(a[3]))) out.push('Key Words: the start, a pass before its star, the flawless latest round');
+    const b = /It comes either from (\w+) correct answers in a row, the module's latest (\w+), or from continuing to reliably answer its questions correctly as they reappear over time: at least (\w+) back, and (\d+) percent or more of them right\./.exec(conf);
+    if (!b || num(b[1]) !== num(b[2]) || !streakAt(num(b[1])) || !strongAt(num(b[3]), Number(b[4]))) out.push('Key Words: the last point');
+    if (!/without passing it\./.test(down)) out.push('Key Words: what holds a score down without a pass');
+    const c = /If (\w+) or more wrong answers in the latest round come in under (\w+) seconds each, Who needs help says there are signs of guessing in that module\./.exec(down);
+    if (!c || !guessAt(num(c[1]), num(c[2]))) out.push('Key Words: guessing');
+    const d = /Getting (\w+) or more of the module's questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point,/.exec(down);
+    if (!d || !weakAt(num(d[1]))) out.push('Key Words: the point taken when questions come back');
+    const e = /then watch for a latest round much faster than usual: under (\d+) percent of the time per question they usually take in their other modules\. When that happens, View progress for this module says so\. A slower round is not called out\./.exec(time);
+    if (!e || !fastAt(Number(e[1]))) out.push('Key Words: the typical answering time');
+    const f = /^Confidence starts at (\d+) for any module that has been practiced\.$/m.exec(r);
+    if (!f || !startAt(Number(f[1]))) out.push('rules: the start');
+    const g = /^\+(\d+) once the module has been passed, its pass mark met in one set \((\d+) or more of (\d+) through grade 5, (\d+) of (\d+) in grades 6 to 8, (\d+) of (\d+) from grade 9\), even before its star, which takes a second pass on another day\.$/m.exec(r);
+    if (!g || !passAdds(Number(g[1])) || !bandsRead(g)) out.push('rules: a pass before its star, and the pass marks');
+    const h = /^\+(\d+) if the most recent practice set was perfect\.$/m.exec(r);
+    if (!h || !flawlessAdds(Number(h[1]))) out.push('rules: the flawless latest set');
+    const i = /^\+1 if the last (\d+) or more core answers in this module were all correct, OR at least (\d+) review questions from this module have been asked and (\d+)% or more were correct\.$/m.exec(r);
+    if (!i || !streakAt(Number(i[1])) || !strongAt(Number(i[2]), Number(i[3]))) out.push('rules: the last point');
+    const j = /^-1 if questions from this module have come back \(in memory checks, checkpoints and practice reviews, all counted together\) and (\w+) or more of those answers were wrong\.$/m.exec(r);
+    if (!j || !weakAt(num(j[1]))) out.push('rules: the point taken when questions come back');
+    const k = /^The score stays between (\d+) and (\d+)\. Who needs help names a module under signs of guessing when (\d+) or more answers in its latest set were wrong in under (\d+) seconds each\.$/m.exec(r);
+    if (!k || !boundsAt(Number(k[1]), Number(k[2])) || !guessAt(Number(k[3]), Number(k[4]))) out.push('rules: the bounds and guessing');
+    return out; };
+  // The old words, and a wrong number in the new ones, each planted in a copy of the definitions; each must be caught.
+  const swap = (term, re, to) => { const ex = { ...E }; const was = ex[term]; ex[term] = String(was).replace(re, to); return ex[term] === was ? null : ex; };
+  const swapRule = (re, to) => { const out = RULES.map((x) => x.replace(re, to)); return out.join('\n') === RULES.join('\n') ? null : out; };
+  const PLANTS = {
+    'the old start and pass ("Mastering a module adds 2 and a flawless round adds another.")': [swap('Confidence, scored 1 to 5', /Passing a module adds \w+, even before its star, and a flawless latest round adds \w+ more\./, 'Mastering a module adds 2 and a flawless round adds another.'), RULES],
+    'a wrong number for a pass': [swap('Confidence, scored 1 to 5', /(Passing a module adds )(\w+)/, (m, w, n) => w + (num(n) + 1)), RULES],
+    'the old last point ("eight correct answers in a row or ... as it reappears over time")': [swap('Confidence, scored 1 to 5', /It comes either from \w+ correct answers in a row, the module's latest \w+, or from continuing to reliably answer its questions correctly as they reappear over time: at least \w+ back, and \d+ percent or more of them right\./, 'It comes either from eight correct answers in a row or from continuing to reliably answer material correctly as it reappears over time.'), RULES],
+    'the old "without mastering it"': [swap('What holds a confidence score down', /without passing it\./, 'without mastering it.'), RULES],
+    'the old guessing note on the report': [swap('What holds a confidence score down', /If \w+ or more wrong answers in the latest round come in under \w+ seconds each, Who needs help says there are signs of guessing in that module\./, 'If two or more wrong answers come back in under four seconds, the progress report adds a note that says "guessing?"'), RULES],
+    'the old point for any miss': [swap('What holds a confidence score down', /Getting \w+ or more of the module's questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point,/, 'Missing a question from the module when it comes back, in a memory check or a checkpoint, also costs a point,'), RULES],
+    'a share other than half': [swap('What holds a confidence score down', /Getting half or more/, 'Getting most or more'), RULES],
+    'the old "significantly faster or slower"': [swap('Typical answering time', /then watch for a latest round much faster than usual: under \d+ percent of the time per question they usually take in their other modules\. When that happens, View progress for this module says so\. A slower round is not called out\./, 'then watch for answers that arrive significantly faster or slower.'), RULES],
+    'the old "+2 if the module is mastered"': [E, swapRule(/^\+\d+ once the module has been passed, .*$/, '+2 if the module is mastered (4 or more of 5 correct in one set).')],
+    'the rules without the point taken when questions come back': [E, RULES.filter((x) => !/^-1 /.test(x))],
+    'the old highest score and "Guessing?" shown': [E, swapRule(/^The score stays between .*$/, 'The highest score is 5. "Guessing?" is shown when 2 or more answers in the latest set were wrong in under 4 seconds.')],
+  };
+  const now = problems(E, RULES);
+  const uncaught = Object.entries(PLANTS).filter(([, [ex, rules]]) => !ex || !rules || problems(ex, rules).length === 0).map(([name]) => name);
+  ok(`the confidence score's Key Words and CONFIDENCE_RULES say what computeConfidence does, every number and condition read from the sentences and the code run at it and just past it: a pass adds 2 before its star, a flawless latest round 1, eight in a row or two back at 80 percent the last point, half or more wrong when questions come back costs a point, guessing named on Who needs help, a latest round under 60 percent of the usual called out and a slower one not (pass NQ, round one's code reads; ${Object.keys(PLANTS).length} old wordings and wrong numbers planted, each caught)`,
+    now.length === 0 && uncaught.length === 0 && RULES.length === 6, JSON.stringify({ now, uncaught })); }
+// Pass NQ, engineer F2: what F's code fixes left undone (F's report, its seven items), in five blocks: a lesson's own reset read alike
+// by every reader of a lesson's current progress, Since you last looked's words, View progress for this module's pace, the
+// definitions' Mastered and Retention, and a title two lessons share. In each block the old code or the old words are put back and
+// caught.
+// Since you last looked, in words (pass NQ, F2; F's report, items 1 and 5). sinceLine, in src/ui.jsx, said "1 questions answered" for
+// one question, where the line's stories, pictures and games already said one in the singular; and its list of lessons mastered printed
+// a title two lessons share twice ("mastered More and fewer, More and fewer"). sinceLine is run from ui.jsx's own source on
+// changesSince's counts; its old words are put back in that source and caught, and so is changesSince's old list of bare titles.
+{ const vm = await import('node:vm');
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+  const a = ui.indexOf('\nfunction sinceLine(since) {'); const b = a < 0 ? -1 : ui.indexOf('\n}\n', a + 1); const LINE = a < 0 || b < 0 ? '' : ui.slice(a + 1, b + 2);
+  const c = lsrc.indexOf('\nexport function changesSince('); const d = c < 0 ? -1 : lsrc.indexOf('\n}\n', c + 1); const SINCE = c < 0 || d < 0 ? '' : lsrc.slice(c + '\nexport '.length, d + 2);
+  const asLine = (src) => vm.runInNewContext(`(${src})`, {}); const asSince = (src) => vm.runInNewContext(`(${src})`, { ...L });
+  const swap = (src, from, to) => (src.split(from).length === 2 ? src.replace(from, () => to) : null);
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const ago = (d) => new Date(NOW - d * DAY).toISOString();
+  const rnd = (id, at, right, n = L.moduleRules(id).questions) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: n }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: n });
+  // One question since the last look, then five.
+  const oneQ = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd('count-to-5', ago(2), 1, 1)]; const fiveQ = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd('count-to-5', ago(2), 3)];
+  const words = (line, since, ev) => line(since(ev, ago(6)));
+  const singular = (line, since) => words(line, since, oneQ) === '1 question answered' && words(line, since, fiveQ) === '5 questions answered';
+  // Both More and fewer lessons mastered since the last look (two passes on different days each), then only one of them.
+  const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5'; const both = ['very-first-steps-pk3', 'first-steps-pk'];
+  const mastered = (ids) => [L.makeCoursesEnabledEvent(both, ago(40)), ...ids.map((id) => rnd(id, ago(5), L.moduleRules(id).questions)), ...ids.map((id) => rnd(id, ago(4), L.moduleRules(id).questions))];
+  const withCourse = (id) => `${L.getModule(id).title} in ${L.courseLabel(L.getCourse(L.getModule(id).courseId))}`;
+  const inOrder = L.MODULES.map((m) => m.id).filter((id) => id === P3 || id === P4);   // the list keeps the app's order of lessons
+  const twins = (line, since) => L.getModule(P3).title === L.getModule(P4).title && words(line, since, mastered([P3, P4])).startsWith(`mastered ${inOrder.map(withCourse).join(', ')}; `)
+    && words(line, since, mastered([P3])).startsWith(`mastered ${L.getModule(P3).title}; `);
+  const OLD_LINE = swap(LINE, "since.questions === 1 ? ' question answered' : ' questions answered'", "' questions answered'");
+  const OLD_SINCE = swap(SINCE, 'const mastered = masteredIds.map((id) => (twin(id) ? `${getModule(id).title} in ${courseLabel(getCourse(getModule(id).courseId))}` : getModule(id).title));',
+    'const mastered = Object.entries(per).filter(([, p]) => p.mastered && p.masteredAt && new Date(p.masteredAt).getTime() >= since).map(([id]) => (getModule(id) || {}).title).filter(Boolean);');
+  const line = LINE ? asLine(LINE) : null; const since = SINCE ? asSince(SINCE) : null;
+  ok('Since you last looked says "1 question answered" for one question and "5 questions answered" for five (pass NQ, F2; sinceLine run from ui.jsx\'s own source on changesSince\'s counts, its old words put back and caught)',
+    !!line && !!since && singular(line, since) && !!OLD_LINE && !singular(asLine(OLD_LINE), since), JSON.stringify({ one: line && since ? words(line, since, oneQ) : null }));
+  ok("Since you last looked names a lesson's course beside its title only when another lesson in its list has the same title (pass NQ, F2; changesSince's old list of bare titles put back, caught)",
+    !!line && !!since && twins(line, since) && !!OLD_SINCE && !twins(line, asSince(OLD_SINCE)), JSON.stringify({ both: line && since ? words(line, since, mastered([P3, P4])) : null })); }
+// A lesson's own reset (pass NQ, F2). An educator can reset one lesson ("Reset progress for this module"), and its row then shows 0
+// attempts. Until pass NQ the confidence score still read that lesson's rounds and returning questions from before the reset, so the
+// row kept its score and Who Needs Help its "signs of guessing"; so did the misses in a row (failedStreak) and the loop back they
+// decide, the refresher, the row's quick check, the rounds Practice so far counts, the stuck-without-a-pass sentence (the Action Item,
+// the Practice Reviews card and the weekly note), a grade's completion, and the writing waiting for a mark (a mark given after the reset
+// passed the lesson again). Each case is a log holding a lesson's history before its own reset (A) beside the same log without that
+// history (B): every reader must say the same of the lesson on both. Each reader's old line is put back in its own source, run in
+// node:vm on the module's exports (no second copy of logic is loaded), and caught; the lesson reset is read in one place; and Practice
+// so far counts its rounds passed among its own rounds, as the reset's fix to its rounds made plain it must. The readers are every
+// reader of a lesson's current progress (pass NQ, F4, after round three's code read): until F4 Who Needs Help's rounds per module and
+// the weekly note's Still practicing still counted a lesson's rounds from before its own reset, so one row read "Practice so far: 2
+// rounds, 2 passed." beside "about 4.0 rounds per module", and the note listed a lesson its row showed as not started; every case's
+// reset was older than the week, and the Who Needs Help reader kept only the words naming the lesson, so no case saw it. A case of
+// a lesson's rounds inside the week before its reset is here now, and a reader of the row's practice line and rounds per module
+// together. Left as the student's history, on purpose, and so not read here: the questions answered this week (the weekly note is
+// read without that first paragraph) and since the last look, the days since practice, the loop backs Who Needs Help counts, the
+// learner's own summary, nextWonder and the choice of questions.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const lines = lsrc.split('\n');
+  // A top-level declaration's source by its name (a function or a const, exported or not), read line by line until it compiles whole.
+  const declSource = (name) => { const re = new RegExp(`^(?:export )?(?:function ${name}\\(|const ${name} = )`); const at = lines.findIndex((l) => re.test(l)); if (at < 0) return '';
+    for (let end = at; end < Math.min(lines.length, at + 400); end++) { const text = lines.slice(at, end + 1).join('\n').replace(/^export /, ''); try { new vm.Script(text); return text; } catch (e) { if (!(e instanceof SyntaxError)) throw e; } }
+    return ''; };
+  // The module's exports and the few helpers the readers use that it does not export, in one context; a reader's source run there.
+  const ctx = vm.createContext({ ...L }); vm.runInContext(['median', 'MONTHS_LONG', 'niceDate', 'localDay', 'isBeforeMasteryV2', 'outOf'].map(declSource).join('\n'), ctx);
+  const plant = (name, from, to) => { const src = declSource(name); return src && src.split(from).length === 2 ? vm.runInContext(`(${src.replace(from, () => to)})`, ctx) : null; };
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const now = new Date(NOW).toISOString();
+  const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
+  const full = (id) => L.moduleRules(id).questions;
+  // A round with its right answers first, each answer at ms; a guessing round's last two answers are wrong, at two seconds each.
+  const rnd = (id, at, right, ms = 9000) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: ms })), review: null, coreCorrect: right, coreTotal: full(id) });
+  const guess = (id, at) => { const r = rnd(id, at, full(id) - 2); return { ...r, core: r.core.map((x, k) => (k >= full(id) - 2 ? { correct: false, timeMs: 2000 } : x)) }; };
+  const X = 'count-to-10'; const P = L.prerequisitesOf(X).slice(-1)[0];   // count-to-5, where a loop back from Count to 10 goes
+  const on = L.makeCoursesEnabledEvent(['counting-k'], ago(60)); const pMastered = [rnd(P, ago(50), full(P)), rnd(P, ago(49), full(P))];
+  // Count to 10's history before its reset: mastered, a practice review failed, two failed rounds (the latest with two quick wrong
+  // answers), a loop back to Count to 5, a memory check of it missed inside a round of Count to 5, and a checkpoint that missed it.
+  const xBefore = [L.makeLessonViewedEvent(X, ago(46)), rnd(X, ago(45), full(X)), rnd(X, ago(44), full(X)),
+    { type: 'light_review_completed', at: ago(23), startedAt: ago(23), moduleId: X, stage: 'first', results: [0, 0, 0, 1, 1].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 2, total: 5, outcome: 'fail' },
+    rnd(X, ago(20), 1), guess(X, ago(19)), L.makeLoopBackEvent(X, P, ago(19, 1))];
+  const checkpoint = { type: 'checkpoint_completed', at: ago(17), startedAt: ago(17), atCount: 4, results: [{ moduleId: X, correct: false }], correct: 0, total: 1 };
+  const A1 = [on, ...pMastered, ...xBefore, { ...rnd(P, ago(18), full(P)), review: { moduleId: X, correct: false } }, checkpoint, L.makeModuleResetEvent(X, ago(6))];
+  const B1 = [on, ...pMastered, rnd(P, ago(18), full(P))];
+  const since = [L.makeLessonViewedEvent(X, ago(5)), rnd(X, ago(2), 1)];
+  // Stuck without a pass: two misses, a loop back and two more.
+  const stuckRun = (from) => [rnd(X, ago(from), 1), rnd(X, ago(from - 1), 1), L.makeLoopBackEvent(X, P, ago(from - 1, 1)), rnd(X, ago(from - 2), 1), rnd(X, ago(from - 3), 1)];
+  const X0 = L.MODULES.find((m) => L.prerequisitesOf(m.id).length === 0).id;   // a lesson that needs nothing first
+  // The shortest course a quick check can reach (neither read aloud nor Writing): its other lessons mastered, its last one skipped by
+  // a quick check and then reset.
+  const QC = L.COURSES.filter((c) => !c.readAloud && c.subject !== 'Writing' && c.modules.length >= 2).sort((a, b) => a.modules.length - b.modules.length)[0];
+  const qIds = QC.modules.map((m) => m.id); const QX = qIds[qIds.length - 1]; const qOn = L.makeCoursesEnabledEvent([QC.id], ago(60));
+  const qMastered = [...qIds.slice(0, -1).map((id, i) => rnd(id, ago(40, i), full(id))), ...qIds.slice(0, -1).map((id, i) => rnd(id, ago(39, i), full(id)))];
+  const qCheck = L.makeQuickCheckEvent(QX, Array.from({ length: L.QUICK_CHECK_QUESTIONS }, () => ({ correct: true, timeMs: 9000 })), ago(20));
+  // A writing lesson: a piece handed in before its reset and another after it.
+  const W = L.MODULES.find((m) => L.isWritingModule(m.id)).id; const wOn = L.makeCoursesEnabledEvent([L.getModule(W).courseId], ago(60));
+  const piece1 = L.makeWritingEvent(W, 'p', 'one two three four', [], ago(20), ago(20)); const piece2 = L.makeWritingEvent(W, 'p', 'five six seven eight', [], ago(2), ago(2));
+  const CASES = [
+    { name: 'a lesson reset with nothing since', x: X, A: A1, B: B1 },
+    { name: 'a lesson reset and missed once since', x: X, A: [...A1, ...since], B: [...B1, ...since] },
+    { name: 'a lesson stuck without a pass before its reset and again after it', x: X, A: [on, ...pMastered, ...stuckRun(30), L.makeModuleResetEvent(X, ago(6)), ...stuckRun(5)], B: [on, ...pMastered, ...stuckRun(5)] },
+    { name: 'a lesson that needs nothing first, with a loop back recorded before its reset and four misses after it', x: X0, A: [rnd(X0, ago(30), 1), rnd(X0, ago(29), 1), L.makeLoopBackEvent(X0, P, ago(29, 1)), L.makeModuleResetEvent(X0, ago(6)), ...[5, 4, 3, 2].map((d) => rnd(X0, ago(d), 1))], B: [5, 4, 3, 2].map((d) => rnd(X0, ago(d), 1)) },
+    { name: 'a prerequisite passed again after the last miss and then reset on its own', x: X, A: [on, ...pMastered, rnd(X, ago(20), 1), rnd(X, ago(19), 1), rnd(P, ago(18), full(P)), L.makeModuleResetEvent(P, ago(17))], B: [on, rnd(X, ago(20), 1), rnd(X, ago(19), 1)] },
+    { name: 'a lesson skipped by a quick check and then reset', x: QX, A: [qOn, ...qMastered, qCheck, L.makeQuickPlacedEvent(QX, ago(20)), L.makeModuleResetEvent(QX, ago(6))], B: [qOn, ...qMastered] },
+    { name: 'a piece of writing handed in before its lesson was reset', x: W, A: [wOn, piece1, L.makeModuleResetEvent(W, ago(6)), piece2], B: [wOn, piece2] },
+    { name: 'a piece of writing handed in before its lesson was reset and marked after it', x: W, A: [wOn, piece1, L.makeModuleResetEvent(W, ago(6)), piece2, L.makeWritingMark(W, piece1.at, true, '', ago(1))], B: [wOn, piece2] },
+    // Two missed rounds this week, then the lesson reset on its own, and a round of Count to 5 since on both logs, so the days since
+    // practice (the student's history, on purpose) are the same on both and the row's reasons can be read beside each other.
+    { name: 'a lesson practiced this week and then reset on its own', x: X, A: [on, ...pMastered, rnd(X, ago(4), 1), rnd(X, ago(3), 1), L.makeModuleResetEvent(X, ago(2)), rnd(P, ago(1), full(P))], B: [on, ...pMastered, rnd(P, ago(1), full(P))] },
+  ];
+  // What each reader says of the lesson x on a log, its functions taken from F (the module, or the module with one reader's old code).
+  const bold = (x) => `**${L.titleCase(L.getModule(x).title)}**`;
+  const READ = {
+    'the confidence score': (F, ev, x) => JSON.stringify(F.computeConfidence(x, ev)),
+    "the report's row": (F, ev, x) => JSON.stringify(F.buildReport('Sam', ev).modules.find((m) => m.id === x)),
+    "the row's progress": (F, ev, x) => JSON.stringify(F.deriveProgress(ev).perModule[x]),
+    'the misses in a row': (F, ev, x) => String(F.failedStreak(ev, x)),
+    'the loop back': (F, ev, x) => String(F.loopBackTarget(ev, x)),
+    'the refresher': (F, ev, x) => String(F.refresherIds(ev).includes(x)),
+    'View progress for this module': (F, ev, x) => F.moduleStory('Sam', ev, x),
+    "Who Needs Help's words on the lesson": (F, ev, x) => JSON.stringify(F.classView([{ id: 's', label: 'Sam', events: ev }], now)[0].reasons.filter((r) => r.includes(bold(x)))),
+    'Practice so far': (F, ev) => JSON.stringify(F.practiceLine(F.buildReport('Sam', ev))),
+    // The row's practice line and its rounds per module, read together (F4): the number the rows are sorted by and the reason that says it.
+    "Who Needs Help's practice line and rounds per module": (F, ev) => { const r = F.classView([{ id: 's', label: 'Sam', events: ev }], now)[0]; return JSON.stringify([r.practice, r.effort, r.reasons.filter((t) => t.includes(' rounds per module'))]); },
+    'the stuck sentence': (F, ev, x) => JSON.stringify(F.neverMasteredStuck(ev, x)),
+    'the Action Items': (F, ev) => JSON.stringify(F.actionStuckItems(ev, 'Sam')),
+    // The note but for its first paragraph, the questions answered this week, which are the student's history on purpose (F4).
+    'the weekly note': (F, ev) => F.weeklyNote('Sam', ev, now).split('\n\n').filter((p) => !p.startsWith('This week Sam ')).join('\n\n'),
+    "the grade's completion": (F, ev, x) => String(F.gradeCompleted(ev, L.getCourse(L.getModule(x).courseId).grade, F.enabledCourseIds(ev))),
+    'the writing waiting for a mark': (F, ev) => JSON.stringify(F.pendingWritings(ev).map((w) => w.at)),
+    "the lesson's pieces of writing": (F, ev, x) => JSON.stringify(F.writingsFor(ev, x).map((w) => w.at)),
+  };
+  const differs = (F, c, keys = Object.keys(READ)) => keys.filter((k) => READ[k](F, c.A, c.x) !== READ[k](F, c.B, c.x));
+  const unlike = CASES.map((c) => ({ name: c.name, readers: differs(L, c) })).filter((c) => c.readers.length);
+  // Each reader's old line, put back in its own source, with the reader that calls it: [function, the new code, the old code, reader].
+  const PLANTS = {
+    'the score read every round of the lesson': ['computeConfidence', 'e.moduleId === moduleId && kept(e.at));', 'e.moduleId === moduleId);', 'the confidence score'],
+    'the score read every memory check of the lesson': ['computeConfidence', "e.type === 'attempt_completed' && kept(e.at)).flatMap", "e.type === 'attempt_completed').flatMap", 'the confidence score'],
+    'the score read every checkpoint answer of the lesson': ['computeConfidence', "e.type === 'checkpoint_completed' && kept(e.at))", "e.type === 'checkpoint_completed')", 'the confidence score'],
+    'the score read every practice review of the lesson': ['computeConfidence', 'e.moduleId === moduleId && kept(e.at)).flatMap((e) => e.results || [])', 'e.moduleId === moduleId).flatMap((e) => e.results || [])', 'the confidence score'],
+    'the misses in a row counted across the reset': ['failedStreak', ' && !clearedByLessonReset(resets, moduleId, e.at));', ');', 'the misses in a row'],
+    "the prerequisite's pass read across its own reset": ['loopBackTarget', ' && !clearedByLessonReset(resets, target, e.at)', '', 'the loop back'],
+    'the refresher read a miss from before the reset': ['refresherIds', ' && !clearedByLessonReset(resets, r.moduleId, last.at)', '', 'the refresher'],
+    "the row's quick check read across the reset": ['buildReport', ' && !clearedByLessonReset(resets, m.id, e.at)).map((e) => ({ at: e.at, right:', ').map((e) => ({ at: e.at, right:', "the report's row"],
+    'Practice so far counted the rounds before a reset': ['buildReport', ' && !clearedByLessonReset(resets, e.moduleId, e.at));\n  const modules', ');\n  const modules', 'Practice so far'],
+    'the stuck sentence counted the rounds before the reset': ['neverMasteredStuck', 'e.moduleId === moduleId && kept(e));', 'e.moduleId === moduleId);', 'the stuck sentence'],
+    'the stuck sentence read a loop back from before the reset': ['neverMasteredStuck', ' && kept(e) && String(e.at) > since', ' && String(e.at) > since', 'the stuck sentence'],
+    "the grade's completion read a quick check from before the reset": ['gradeCompleted', ' && !clearedByLessonReset(resets, e.moduleId, e.at)).map', ').map', "the grade's completion"],
+    'a piece handed in before the reset still waited for a mark': ['pendingWritings', ' && !clearedByLessonReset(resets, e.moduleId, e.at) && !marked', ' && !marked', 'the writing waiting for a mark'],
+    "a piece handed in before the reset stayed among the lesson's": ['writingsFor', ' && !clearedByLessonReset(resets, moduleId, e.at)).map', ').map', "the lesson's pieces of writing"],
+    'a mark on a piece handed in before the reset passed the lesson': ['deriveProgress', '      if (clearedByLessonReset(moduleResetAt, e.moduleId, e.submittedAt)) continue;\n', '', "the row's progress"],
+    'the rounds per module counted the rounds before a reset': ['classView', 'const effort = mastered > 0 ? report.totalAttempts / mastered : 0;', 'const effort = mastered > 0 ? attempts.length / mastered : 0;', "Who Needs Help's practice line and rounds per module"],
+    "Still practicing listed a lesson reset after this week's rounds": ['weeklyNote', 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0);', 'const practicing = touched.filter((id) => !byId.get(id).mastered);', 'the weekly note'],
+  };
+  const missed = Object.entries(PLANTS).filter(([, [name, from, to, reader]]) => { const fn = plant(name, from, to); return !fn || CASES.every((c) => differs({ ...L, [name]: fn }, c, [reader]).length === 0); }).map(([what]) => what);
+  // The lesson reset is read in one place: every line of code naming the module reset event sits in its maker or in lessonResetTimes.
+  const readers = (src) => { const ls = src.split('\n'); const out = new Set(); ls.forEach((l, i) => { if (!/['"]module_reset['"]/.test(l) || /^\s*\/\//.test(l)) return; let k = i; while (k >= 0 && !/^(?:export )?function \w+\(/.test(ls[k])) k--; out.add(k >= 0 ? /^(?:export )?function (\w+)\(/.exec(ls[k])[1] : '(top level)'); }); return [...out].sort(); };
+  const oldStory = lsrc.replace('  const resets = lessonResetTimes(active);\n  const kept = (e) => !clearedByLessonReset(resets, moduleId, e.at);\n  const mine', "  const resetAt = active.filter((e) => e.type === 'module_reset' && e.moduleId === moduleId).map((e) => e.at).sort().pop() || '';\n  const kept = (e) => String(e.at) > resetAt;\n  const mine");
+  ok(`a lesson's own reset bounds every reader of a lesson's current progress as it bounds the report's row: the confidence score, the misses in a row and the loop back, the refresher, the row's quick check, Practice so far, View progress for this module, Who Needs Help (its words on the lesson, and its rounds per module beside its practice line), the stuck sentence, the weekly note (its Still practicing among it; the week's questions are the student's history, on purpose), a grade's completion and the writing waiting for a mark say the same of a reset lesson as of one with no history before it (pass NQ, F2 and F4; ${CASES.length} cases, ${Object.keys(PLANTS).length} old lines put back and caught)`,
+    unlike.length === 0 && missed.length === 0, JSON.stringify({ unlike, missed }));
+  ok("the lesson reset is read in one place (lessonResetTimes, with clearedByLessonReset), so no reader reads it its own way (pass NQ, F2; moduleStory's own reading put back, caught)",
+    JSON.stringify(readers(lsrc)) === JSON.stringify(['lessonResetTimes', 'makeModuleResetEvent']) && oldStory !== lsrc && readers(oldStory).includes('moduleStory'), JSON.stringify(readers(lsrc)));
+  // Practice so far counts its rounds passed among the very rounds it counts (pass NQ, F2): until then the rounds passed were the rows'
+  // passes, so a passed round in a course since switched off read as not passed ("2 rounds, 0 passed") and a writing mark counted as a
+  // round passed ("1 round, 2 passed").
+  const CE = 'cause-and-effect-4'; const switchedOff = [L.makeCoursesEnabledEvent(['counting-k', L.getModule(CE).courseId], ago(30)), rnd(CE, ago(20), full(CE)), L.makeCoursesEnabledEvent(['counting-k'], ago(10)), rnd(P, ago(5), 2)];
+  const withMark = [L.makeCoursesEnabledEvent(['counting-k', L.getModule(W).courseId], ago(30)), piece1, L.makeWritingMark(W, piece1.at, true, '', ago(19)), rnd(P, ago(5), full(P))];
+  const practiceSays = (F, ev) => F.practiceLine(F.buildReport('Sam', ev)).line;
+  const countsItsOwn = (F) => practiceSays(F, switchedOff) === 'Practice so far: 2 rounds, 1 passed.' && practiceSays(F, withMark) === 'Practice so far: 1 round, 1 passed.';
+  const oldCount = plant('practiceLine', 'const passedRounds = report.passedRounds;', 'const passedRounds = assigned.reduce((a, m) => a + (m.passes || 0), 0);');
+  ok("Practice so far counts its rounds passed among the rounds it counts: a passed round in a course since switched off counts, and a writing mark is no round (pass NQ, F2; the old count from the rows' passes put back in practiceLine's own source, caught)",
+    countsItsOwn(L) && !!oldCount && !countsItsOwn({ ...L, practiceLine: oldCount }), JSON.stringify({ switchedOff: practiceSays(L, switchedOff), withMark: practiceSays(L, withMark) })); }
+// View progress for this module's pace (pass NQ, F2; F's report, item 3). moduleStory called every round not much faster than usual "a
+// normal pace for them", a round three times slower than usual among them, and a round with no other module to compare it with. The Key
+// Words' Typical answering time call out only a latest round under a share of the usual time per question in their other modules, and
+// say a slower round is not called out, so the story speaks of pace only then: under the share, it says the round was noticeably
+// quicker; at the share, at the usual pace, three times slower, or with nothing to compare with, it says nothing of pace. The share is
+// read from the Key Words; moduleStory's old words are put back in its own source, run in node:vm on the module's exports, and caught.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+  const a = lsrc.indexOf('\nexport function moduleStory('); const b = a < 0 ? -1 : lsrc.indexOf('\n}\n', a + 1); const STORY = a < 0 || b < 0 ? '' : lsrc.slice(a + '\nexport '.length, b + 2);
+  const time = (L.EXPLANATIONS.find((x) => x.term === 'Typical answering time') || {}).plain || '';
+  const m = /watch for a latest round much faster than usual: under (\d+) percent of the time per question they usually take in their other modules\. When that happens, View progress for this module says so\. A slower round is not called out\./.exec(time);
+  const share = m ? Number(m[1]) : NaN;
+  const ID = 'count-to-5'; const OTHER = 'count-to-10'; const T = (i) => `2026-10-0${i}T12:00:00.000Z`;
+  const round = (id, i, ms) => ({ type: 'attempt_completed', at: T(i), startedAt: T(i), moduleId: id, seed: i, core: Array.from({ length: L.moduleRules(id).questions }, () => ({ correct: true, timeMs: ms })), review: null, coreCorrect: L.moduleRules(id).questions, coreTotal: L.moduleRules(id).questions });
+  // The lesson's latest round at ms an answer, beside the student's other lesson at ten seconds (or alone, with nothing to compare).
+  const story = (fn, ms, alone = false) => fn('Sam', [...(alone ? [] : [round(OTHER, 1, 10000)]), round(ID, 2, ms)], ID);
+  const PACE = /seconds per question|\bpace\b|\bslower\b|\bquicker\b|\busual(?:ly)?\b/i;
+  const holds = (fn) => /noticeably quicker than the 10 seconds per question Sam usually takes/.test(story(fn, 10000 * (share - 1) / 100))
+    && [10000 * share / 100, 10000, 30000].every((ms) => !PACE.test(story(fn, ms))) && !PACE.test(story(fn, 30000, true));
+  const OLD = STORY.split("which points to guessing rather than working the questions out.');\n  }").length === 2
+    ? STORY.replace("which points to guessing rather than working the questions out.');\n  }", () => "which points to guessing rather than working the questions out.');\n  } else if (hereSec !== null) {\n    parts.push(`The last round took about ${hereSec} seconds per question which is a normal pace for them.`);\n  }") : null;
+  // moduleStory's own source needs the two helpers the module does not export (niceDate and its month names), for its dated sentences.
+  const ctx = vm.createContext({ ...L }); const lines = lsrc.split('\n');
+  for (const name of ['MONTHS_LONG', 'niceDate']) { const at = lines.findIndex((l) => new RegExp(`^(?:const ${name} = |function ${name}\\()`).test(l)); vm.runInContext(at < 0 ? '' : lines[at], ctx); }
+  ok(`View progress for this module speaks of pace only for a latest round under ${share} percent of the usual time per question, as the Key Words say: at that share, at the usual pace, three times slower, or with no other module to compare with, it says nothing of pace (pass NQ, F2; its old "a normal pace for them" put back in moduleStory's own source, caught)`,
+    share > 0 && share < 100 && !!STORY && holds(L.moduleStory) && !!OLD && !holds(vm.runInContext(`(${OLD})`, ctx)), JSON.stringify({ share, slower: story(L.moduleStory, 30000) })); }
+// The report's definitions of Mastered and Retention say what the code does (pass NQ, F2; F's report, item 4). buildReport's definitions
+// said a module is mastered with "at least 4 of the 5 core questions correct in a single practice set", which is a pass, and the mark
+// differs by grade band; and that memory checks come from earlier mastered modules, where they come from modules passed. That was so
+// before Mastery v2. Each number and condition is read from the two lines and the code is run at it and just past it: deriveProgress
+// for the star (passes on two different days, a writing mark, a placement or quick check with no pass day, a moved-past lesson's
+// fresh-try review, a pass from before Mastery v2), isMasteredAttempt and moduleRules for the pass marks and the share of a longer or
+// shorter set, buildAttempt for where memory checks come from. The old lines, and a wrong number in each part, are planted and caught.
+{ const defs = L.buildReport('Sam', []).definitions; const MASTERED = defs.find((x) => x.startsWith('Mastered:')) || ''; const RETENTION = defs.find((x) => x.startsWith('Retention:')) || '';
+  const WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5 }; const num = (w) => (WORDS[w] !== undefined ? WORDS[w] : /^\d+$/.test(w) ? Number(w) : NaN);
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const ID = 'count-to-5'; const N = L.moduleRules(ID).questions;
+  // A round of n questions with k right, at a local hour of a local day (y, m, d), so "a different day" is the device's own day.
+  const at = (y, mo, d, h = 12) => new Date(y, mo, d, h).toISOString();
+  const round = (id, when, k, n = L.moduleRules(id).questions) => ({ type: 'attempt_completed', at: when, startedAt: when, moduleId: id, seed: 1, core: Array.from({ length: n }, (_, j) => ({ correct: j < k, timeMs: 9000 })), review: null, coreCorrect: k, coreTotal: n });
+  const star = (events, id = ID) => L.deriveProgress(events).perModule[id];
+  // Each run of the code is kept by its arguments, since every planted copy of the words asks the same numbers again.
+  const memo = (f) => { const seen = new Map(); return (...args) => { const key = JSON.stringify(args); if (!seen.has(key)) seen.set(key, f(...args)); return seen.get(key); }; };
+  // Passes on two different days earn the star; two passes on one day, or one pass, do not (all after Mastery v2 began).
+  const daysAt = memo((n) => n === 2 && !star([round(ID, at(2026, 9, 5), N), round(ID, at(2026, 9, 5, 15), N)]).mastered && star([round(ID, at(2026, 9, 5), N), round(ID, at(2026, 9, 6), N)]).mastered && !star([round(ID, at(2026, 9, 5), N)]).mastered);
+  // The pass mark of every scored lesson of a grade (a writing module is marked, never scored), as "k of n", or null when they differ.
+  const band = (grade) => { const rules = L.MODULES.filter((m) => L.getCourse(m.courseId).grade === grade && !L.isWritingModule(m.id)).map((m) => L.moduleRules(m.id)); return rules.length && rules.every((r) => r.toMaster === rules[0].toMaster && r.questions === rules[0].questions) ? `${rules[0].toMaster} of ${rules[0].questions}` : null; };
+  const bandsAt = memo((b) => ['PK3', 'PK4', 'K', '1', '2', '3', '4', '5'].every((g) => band(g) === `${b[0]} of ${b[1]}`) && ['6', '7', '8'].every((g) => band(g) === `${b[2]} of ${b[3]}`) && ['9', '10', '11', '12', 'C'].every((g) => band(g) === `${b[4]} of ${b[5]}`));
+  // "At least the same share": a set three times as long, and a shorter one, pass exactly from the mark's share of it, rounded up.
+  const sizes = new Map(); for (const m of L.MODULES) { if (L.isWritingModule(m.id)) continue; const r = L.moduleRules(m.id); const key = `${r.toMaster}/${r.questions}`; if (!sizes.has(key)) sizes.set(key, m.id); }
+  const shareHolds = memo(() => [...sizes.values()].every((id) => { const r = L.moduleRules(id);
+    return [r.questions * 3, r.questions - 1, r.questions + 1].every((n) => Array.from({ length: n + 1 }, (_, k) => k).every((k) => L.isMasteredAttempt(round(id, at(2026, 9, 5), k, n)) === (k / n >= r.toMaster / r.questions))); }));
+  // A writing lesson: a piece marked as meeting the bar is a pass, and two on different days earn the star; one not meeting it is not.
+  const W = L.MODULES.find((m) => L.isWritingModule(m.id)).id;
+  const marked = (days, meets = true) => days.flatMap((d) => { const p = L.makeWritingEvent(W, 'p', 'one two three', [], at(2026, 9, d), at(2026, 9, d)); return [p, L.makeWritingMark(W, p.at, meets, '', at(2026, 9, d, 15))]; });
+  const writingHolds = memo(() => star(marked([5]), W).passed && !star(marked([5]), W).mastered && star(marked([5, 6]), W).mastered && !star(marked([5], false), W).passed);
+  // A placement or a quick check: passed, with no pass day, so a pass on one more day is not the star and passes on two days are.
+  const placedHolds = memo(() => { const pl = L.makeQuickPlacedEvent(ID, at(2026, 9, 4)); return star([pl]).passed && star([pl]).passDays.length === 0 && !star([pl, round(ID, at(2026, 9, 5), N)]).mastered && star([pl, round(ID, at(2026, 9, 5), N), round(ID, at(2026, 9, 6), N)]).mastered; });
+  // A lesson moved past: a fresh-try practice review of `clear` or more of `of` right earns the star, one fewer does not.
+  const fresh = (k) => [round(ID, at(2026, 9, 1), 0), round(ID, at(2026, 9, 2), 0), L.makeMovedForwardEvent(ID, at(2026, 9, 3)), { type: 'light_review_completed', at: at(2026, 9, 25), startedAt: at(2026, 9, 25), moduleId: ID, stage: 'fresh', results: Array.from({ length: L.LIGHT_REVIEW_QUESTIONS }, (_, j) => ({ correct: j < k, genId: 'g', prompt: 'p' })), correct: k, total: L.LIGHT_REVIEW_QUESTIONS, outcome: L.lightReviewOutcome(k) }];
+  const freshAt = memo((clear, of) => of === L.LIGHT_REVIEW_QUESTIONS && star(fresh(clear)).mastered && !star(fresh(clear - 1)).mastered);
+  // Mastery v2's first day: one pass on the day before it earns the star, one pass on that day does not.
+  const dateAt = memo((month, day, year) => { const mo = MONTHS.indexOf(month); return mo >= 0 && star([round(ID, at(year, mo, day - 1), N)]).mastered && !star([round(ID, at(year, mo, day), N)]).mastered; });
+  // Memory checks come from modules passed: a lesson passed once and not mastered is drawn, and none comes when nothing is passed.
+  const drawn = (passedIds) => new Set(Array.from({ length: 60 }, (_, s) => L.buildAttempt('count-to-10', 1000 + s, passedIds)).flatMap((a) => [a.review, a.review2].filter(Boolean).map((r) => r.moduleId)));
+  const passedOnce = [round(ID, at(2026, 9, 5), N)];
+  const retentionHolds = memo(() => star(passedOnce).passed && !star(passedOnce).mastered && drawn(L.deriveProgress(passedOnce).passedIds).has(ID) && drawn([]).size === 0);
+  const problems = (mastered, retention) => { const out = [];
+    const m = /^Mastered: the star, earned with passes on (\w+) different days\. A pass is one practice set with at least its pass mark \((\d+) or more of (\d+) through grade 5, (\d+) of (\d+) in grades 6 to 8, (\d+) of (\d+) from grade 9, and at least the same share of a longer or shorter set\), or a piece of writing the educator marks as meeting the bar\. A placement or a quick check counts a module as passed but gives it no pass day\. A module the educator moved past can also earn its star with a fresh-try practice review of (\d+) or more of (\d+) right\. A pass made before (\w+) (\d+), (\d{4}), when passes on two days began, earned the star on its own\.$/.exec(mastered);
+    if (!m) return ['Mastered: its words'];
+    if (!daysAt(num(m[1]))) out.push('Mastered: the days');
+    if (!bandsAt(m.slice(2, 8).map(Number)) || !shareHolds()) out.push('Mastered: the pass marks');
+    if (!writingHolds() || !placedHolds()) out.push('Mastered: writing, placement and the quick check');
+    if (!freshAt(Number(m[8]), Number(m[9]))) out.push('Mastered: the fresh-try review');
+    if (!dateAt(m[10], Number(m[11]), Number(m[12]))) out.push('Mastered: the day Mastery v2 began');
+    if (!/^Retention: review questions come from modules passed earlier\. They never affect mastery; they measure whether learning stuck\.$/.test(retention) || !retentionHolds()) out.push('Retention');
+    return out; };
+  const swap = (s, re, to) => { const t = s.replace(re, to); return t === s ? null : t; };
+  const PLANTS = {
+    'the old Mastered line': [`Mastered: at least ${L.CONFIG.MASTERY_MIN_CORRECT} of the ${L.CONFIG.CORE_QUESTIONS_PER_ATTEMPT} core questions correct in a single practice set.`, RETENTION],
+    'passes on three days': [swap(MASTERED, 'passes on two different days', 'passes on three different days'), RETENTION],
+    'a wrong pass mark from grade 6': [swap(MASTERED, /, (\d+) of (\d+) in grades 6 to 8/, (s, k, n) => `, ${Number(k) - 1} of ${n} in grades 6 to 8`), RETENTION],
+    'the share without "at least"': [swap(MASTERED, 'and at least the same share', 'and the same share'), RETENTION],
+    'a wrong fresh-try mark': [swap(MASTERED, /review of (\d+) or more/, (s, k) => `review of ${Number(k) - 1} or more`), RETENTION],
+    'a wrong first day': [swap(MASTERED, /before (\w+) (\d+), /, (s, mo, d) => `before ${mo} ${Number(d) + 1}, `), RETENTION],
+    'the old Retention line': [MASTERED, 'Retention: review questions come from earlier mastered modules. They never affect mastery; they measure whether learning stuck.'],
+  };
+  const now = problems(MASTERED, RETENTION);
+  const uncaught = Object.entries(PLANTS).filter(([, [mastered, retention]]) => !mastered || problems(mastered, retention).length === 0).map(([name]) => name);
+  ok(`the report's definitions say what Mastered and Retention are today: the star with passes on two different days, the pass marks by grade band and the share of a longer or shorter set, a writing mark, no pass day from a placement or a quick check, a moved-past lesson's fresh-try review, the first day of Mastery v2, and memory checks from modules passed, every number read from the words and the code run at it and just past it (pass NQ, F2; ${Object.keys(PLANTS).length} old lines and wrong numbers planted, each caught)`,
+    now.length === 0 && uncaught.length === 0, JSON.stringify({ now, uncaught })); }
+// A title two lessons share, in the weekly note (pass NQ, F2; F's report, item 5). Ten titles belong to two lessons each (More and fewer
+// is a pre-K 3 lesson and a pre-K 4 one), and in a week that named both, the note printed the same title twice. A lesson's title has its
+// course beside it (courseLabel) only when another lesson the note prints has the same title: in its lists, as Next up, and as a
+// practice review's own lesson; a title printed once stands alone. The note's source with its old bare titles put back, and with a
+// course beside every title, is run in node:vm on the module's exports, and each is caught.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+  const a = lsrc.indexOf('\nexport function weeklyNote('); const b = a < 0 ? -1 : lsrc.indexOf('\n}\n', a + 1); const NOTE = a < 0 || b < 0 ? '' : lsrc.slice(a + '\nexport '.length, b + 2);
+  const asFn = (src) => vm.runInNewContext(`(${src})`, { ...L });
+  const swap = (src, from, to) => (src.split(from).length === 2 ? src.replace(from, () => to) : null);
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const now = new Date(NOW).toISOString(); const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
+  const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, at, right) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: full(id) });
+  const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5'; const T = L.getModule(P3).title;
+  const named = (id) => `**${T}** in ${L.courseLabel(L.getCourse(L.getModule(id).courseId))}`;
+  // The note's parts under a head, and its Next up and practice review lines.
+  const block = (text, head) => text.split('\n\n').find((x) => x.startsWith(head)) || '';
+  // Pre-K 3's mastered this week and pre-K 4's practiced: each list names its lesson with its course.
+  const masteredAndPracticing = [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P3, ago(10), full(P3)), rnd(P3, ago(3), full(P3)), rnd(P4, ago(2), 1)];
+  const lists = (note) => { const text = note('Sam', masteredAndPracticing, now); return block(text, 'Sam mastered:') === `Sam mastered:\n• ${named(P3)}` && block(text, 'Still practicing:') === `Still practicing:\n• ${named(P4)}`; };
+  // Only pre-K 4's practiced: its title stands alone.
+  const alone = (note) => { const text = note('Sam', [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P4, ago(2), 1)], now); return block(text, 'Still practicing:') === `Still practicing:\n• **${T}**` && !text.includes(' in Very first steps') && !text.includes(' in First steps'); };
+  // Pre-K 4's lesson is Next up (only its course assigned, every lesson before it in the report's order mastered weeks ago, and the
+  // lesson it needs passed), while pre-K 3's is practiced this week: Still practicing and Next up each name theirs with its course.
+  const fs = L.buildReport('Sam', []).modules.filter((m) => m.courseId === 'first-steps-pk').map((m) => m.id);   // the report's order, Next up's
+  const before = [...new Set([...fs.slice(0, fs.indexOf(P4)), ...L.prerequisitesOf(P4)])];
+  const nextUpLog = [L.makeCoursesEnabledEvent(['first-steps-pk'], ago(40)), ...before.map((id, i) => rnd(id, ago(30, i / 10), full(id))), ...before.map((id, i) => rnd(id, ago(29, i / 10), full(id))), rnd(P3, ago(2), 1)];
+  const nextUp = (note) => { const text = note('Sam', nextUpLog, now); return L.classView([{ id: 's', label: 'Sam', events: nextUpLog }], now)[0].next === T && text.includes(`\n\nNext up: ${named(P4)}.`) && block(text, 'Still practicing:') === `Still practicing:\n• ${named(P3)}`; };
+  // Pre-K 3's lesson mastered weeks ago and given its practice review this week, pre-K 4's practiced: the review's sentence names its
+  // own lesson with its course at its first mention.
+  const review = { type: 'light_review_completed', at: ago(1), startedAt: ago(1), moduleId: P3, stage: 'first', results: [1, 1, 1, 1, 1].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 5, total: 5, outcome: 'clear' };
+  const reviewLog = [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P3, ago(30), full(P3)), rnd(P3, ago(29), full(P3)), rnd(P4, ago(2), 1), review];
+  const reviewed = (note) => { const text = note('Sam', reviewLog, now); const line = text.split('\n\n').find((x) => x.includes('practice review of')) || '';
+    return line.includes(`practice review of **${L.titleCase(T)}** in ${L.courseLabel(L.getCourse(L.getModule(P3).courseId))} `) && block(text, 'Still practicing:') === `Still practicing:\n• ${named(P4)}`; };
+  const CASES = { 'both lessons in its lists': lists, 'one lesson alone': alone, 'one practiced and the other next up': nextUp, "one practiced and the other's practice review": reviewed };
+  const OLD = {
+    'bare titles': swap(NOTE, 'const nameOf = (id) => (twinNamed(id) ? `**${titleOf(id)}** in ${courseOf(id)}` : `**${titleOf(id)}**`);', 'const nameOf = (id) => `**${titleOf(id)}**`;'),
+    'a course beside every title': swap(NOTE, 'const nameOf = (id) => (twinNamed(id) ? `**${titleOf(id)}** in ${courseOf(id)}` : `**${titleOf(id)}**`);', 'const nameOf = (id) => `**${titleOf(id)}** in ${courseOf(id)}`;'),
+    "practice reviews' bare titles": swap(NOTE, "return twinNamed(h.moduleId) && line.includes(own) && !line.includes(given) ?", 'return false ?'),
+  };
+  const failsNow = Object.entries(CASES).filter(([, c]) => !c(L.weeklyNote)).map(([name]) => name);
+  const uncaught = Object.entries(OLD).filter(([, src]) => !src || Object.values(CASES).every((c) => c(asFn(src)))).map(([name]) => name);
+  ok(`the weekly note names a lesson's course beside its title only when another lesson it prints has the same title, in its lists, as Next up and in a practice review's sentence, and a title printed once stands alone (pass NQ, F2; ${Object.keys(CASES).length} cases; the old bare titles, a course beside every title and bare titles in the practice reviews put back, each caught)`,
+    !!NOTE && failsNow.length === 0 && uncaught.length === 0, JSON.stringify({ failsNow, uncaught, lists: L.weeklyNote('Sam', masteredAndPracticing, now) })); }
+// Pass NQ, engineer F3: the five things F2 verified and left, in three blocks: View progress for this module's words, a lesson named in
+// a sentence (a name's capital and a title two lessons share), and the practice review history after a full reset. In each, the old
+// code is put back in the function's own source, run in node:vm on the module's exports, and caught.
+// View progress for this module (moduleStory) says only what is true of the lesson (pass NQ, F3). Until pass NQ it told a lesson passed
+// once "Until 4 out of 5 is reached, the modules after this one stay locked"; told a lesson that no assigned lesson needs that the ones
+// after it stay locked; told a lesson never passed, after two quick wrong answers, that its questions "will be introduced again", where
+// memory checks come only from lessons passed; called a triple dose of 10 of 15 "a pass", where the pass mark scales to 12 of 15 (one
+// rule, isMasteredAttempt); said "1 out of 5 were answered correctly"; told a lesson skipped by a quick check and mastered since that
+// its star was still to be earned; and named a quick check "the placement check". The pass mark it names is read from its words and
+// held to moduleRules, the grade band's (7 of 8 in grade 7). Since pass NQ's F4 (round three's code read) it tells the quick check
+// first, where it told it after the rounds; it no longer says a lesson with no view in the log was read through once; and it names one
+// lesson waiting as "the lesson picture graphs", where "picture graphs stays locked" read as a slip.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const lines = lsrc.split('\n');
+  const declSource = (name) => { const re = new RegExp(`^(?:export )?(?:function ${name}\\(|const ${name} = )`); const at = lines.findIndex((l) => re.test(l)); if (at < 0) return '';
+    for (let end = at; end < Math.min(lines.length, at + 400); end++) { const text = lines.slice(at, end + 1).join('\n').replace(/^export /, ''); try { new vm.Script(text); return text; } catch (e) { if (!(e instanceof SyntaxError)) throw e; } }
+    return ''; };
+  const ctx = vm.createContext({ ...L }); vm.runInContext(['MONTHS_LONG', 'niceDate'].map(declSource).join('\n'), ctx);
+  const STORY = declSource('moduleStory');
+  const plant = (from, to) => (STORY.split(from).length === 2 ? vm.runInContext(`(${STORY.replace(from, () => to)})`, ctx) : null);
+  const at = (mo, d, h = 12) => new Date(2026, mo, d, h).toISOString();
+  const rnd = (id, when, k, n = L.moduleRules(id).questions, wrongMs = 9000) => ({ type: 'attempt_completed', at: when, startedAt: when, moduleId: id, seed: 1, core: Array.from({ length: n }, (_, j) => ({ correct: j < k, timeMs: j < k ? 9000 : wrongMs })), review: null, coreCorrect: k, coreTotal: n });
+  const K = L.getCourse('counting-k'); const on = L.makeCoursesEnabledEvent([K.id], at(9, 1)); const X = 'count-to-10';
+  const G7 = L.COURSES.find((c) => c.grade === '7' && c.modules.length > 1); const g7 = G7.modules[1].id;
+  // The lessons of the assigned courses that wait on a lesson: locked, with it among the prerequisites that gate them.
+  const waitingOn = (ev, id) => { const en = L.enabledCourseIds(ev); const st = new Map(L.moduleStatuses(L.deriveProgress(ev), en).map((x) => [x.id, x.status])); return L.MODULES.filter((m) => en.includes(m.courseId) && st.get(m.id) === 'locked' && L.gatingPrerequisites(m.id, en).includes(id)); };
+  const lastK = K.modules[K.modules.length - 1].id;   // its own course's last lesson: no assigned lesson waits on it
+  const qc = (id, when) => [L.makeQuickCheckEvent(id, Array.from({ length: L.QUICK_CHECK_QUESTIONS }, () => ({ correct: true, timeMs: 9000 })), when), L.makeQuickPlacedEvent(id, when)];
+  const QX = 'fraction-meaning';
+  const CASES = {
+    'a lesson passed once is told nothing is locked by it': (S) => { const t = S('Sam', [on, rnd(X, at(9, 5), L.moduleRules(X).questions)], X); return !/\bUntil\b|stay locked|stays locked/.test(t) && /Passed on /.test(t); },
+    'a lesson not passed names its band\'s mark and how many lessons wait on it': (S) => { const ev = [on, rnd(X, at(9, 5), 1)]; const t = S('Sam', ev, X); const r = L.moduleRules(X); const n = waitingOn(ev, X).length;
+      return n > 1 && t.includes(`Until ${r.toMaster} out of ${r.questions} is reached, the ${n} modules that need this one stay locked`); },
+    'a lesson nothing waits on says no lesson stays locked': (S) => { const ev = [on, rnd(lastK, at(9, 5), 1)]; const t = S('Sam', ev, lastK); const r = L.moduleRules(lastK);
+      return waitingOn(ev, lastK).length === 0 && t.includes(`A round of ${r.toMaster} out of ${r.questions} passes this one`) && !/stays? locked/.test(t); },
+    'a grade 7 lesson names 7 of 8': (S) => { const ev = [L.makeCoursesEnabledEvent([G7.id], at(9, 1)), rnd(g7, at(9, 5), 1)]; const t = S('Sam', ev, g7); const r = L.moduleRules(g7);
+      const m = /(?:Until|A round of) (\d+) out of (\d+)/.exec(t); return r.questions === 8 && !!m && Number(m[1]) === r.toMaster && Number(m[2]) === r.questions; },
+    'a lesson never passed, after two quick wrong answers, is not told its questions come back': (S) => { const t = S('Sam', [on, rnd(X, at(9, 5), 3, 5, 2000)], X); return !/introduced again|reappear/.test(t) && /\bUntil\b/.test(t); },
+    'a round is a pass by isMasteredAttempt, a triple dose at 12 of 15': (S) => { const t10 = S('Sam', [on, rnd(X, at(9, 5), 10, 15)], X); const t12 = S('Sam', [on, rnd(X, at(9, 5), 12, 15)], X);
+      return /10 out of 15 were answered correctly, which is not yet a pass/.test(t10) && /12 out of 15 were answered correctly, which is a pass/.test(t12); },
+    'one right answer "was" answered correctly, two "were"': (S) => /1 out of 5 was answered correctly/.test(S('Sam', [on, rnd(X, at(9, 5), 1)], X)) && /2 out of 5 were answered correctly/.test(S('Sam', [on, rnd(X, at(9, 5), 2)], X)),
+    'a lesson skipped by a quick check and mastered since tells its rounds and its star': (S) => { const ev = [...qc(QX, at(9, 2)), rnd(QX, at(9, 5), 5), rnd(QX, at(9, 6), 5)]; const t = S('Sam', ev, QX);
+      return L.deriveProgress(ev).perModule[QX].mastered && !/still to be earned|not counted as mastered/.test(t) && /passed the quick check on /.test(t) && /earned the star/.test(t); },
+    'a lesson skipped by a quick check with no round since still says so': (S) => /took the quick check on .* so the module was placed past without the lesson\. It is not counted as mastered/.test(S('Sam', qc(QX, at(9, 2)), QX)),
+    'a quick check is never called the placement check': (S) => { const t = S('Sam', [...qc(QX, at(9, 2)), rnd(QX, at(9, 5), 1)], QX); return /passed the quick check on /.test(t) && !/placement check/.test(t); },
+    // Pass NQ, F4 (after round three's code read): the quick check is told first, as it came first, passed or missed, and a lesson with
+    // no view in the log is not said to have been read ("Sam practiced this lesson once."), where one with a view still is.
+    'the quick check is told first, and a lesson with no view is not said to be read': (S) => { const placed = /^Sam passed the quick check on [^.]*, so the module was placed past without the lesson\. /;
+      const noView = S('Sam', [...qc(QX, at(9, 2)), rnd(QX, at(9, 5), 1)], QX); const viewed = S('Sam', [...qc(QX, at(9, 2)), L.makeLessonViewedEvent(QX, at(9, 4)), rnd(QX, at(9, 5), 1), rnd(QX, at(9, 6), 1)], QX);
+      const missed = S('Sam', [L.makeQuickCheckEvent(QX, Array.from({ length: L.QUICK_CHECK_QUESTIONS }, () => ({ correct: false, timeMs: 9000 })), at(9, 2)), L.makeLessonViewedEvent(QX, at(9, 3)), rnd(QX, at(9, 5), 1)], QX);
+      return placed.test(noView) && noView.includes('without the lesson. Sam practiced this lesson once. ') && !/read through/.test(noView) && placed.test(viewed) && viewed.includes('without the lesson. Sam read through this lesson once and practiced it twice. ')
+        && /^Sam first tried the quick check on [^.]*, so the lesson came next\. Sam read through this lesson once and practiced it once\. /.test(missed); },
+    // One lesson waiting is named "the lesson picture graphs" (pass NQ, F4): Coins in kindergarten Counting, every lesson before it passed.
+    'a lesson not passed that one lesson waits on names it as "the lesson"': (S) => { const ids = [...K.modules].sort((a, b) => a.order - b.order).map((m) => m.id); const c = 'coins-k';
+      const ev = [on, ...ids.slice(0, ids.indexOf(c)).map((id, i) => rnd(id, new Date(2026, 9, 2, 8, i).toISOString(), L.moduleRules(id).questions)), rnd(c, at(9, 5), 1)]; const w = waitingOn(ev, c); const r = L.moduleRules(c);
+      return w.length === 1 && S('Sam', ev, c).includes(`Until ${r.toMaster} out of ${r.questions} is reached, the lesson ${L.lessonInSentence(w[0].id, c)} stays locked, and`); },
+  };
+  const OLD = {
+    'the old what comes next': plant("  } else if (p && !p.passed && !p.movedPast) {\n", "  } else {\n    parts.push(`Until ${rules.toMaster} out of ${rules.questions} is reached, the modules after this one stay locked, and every new practice round brings a fresh set of questions.`);\n  } if (false) {\n"),
+    'the old memory check promise for any lesson': plant("  if (p && p.passed && (fastWrong >= 2 || suspiciouslyQuick || (p.mastered && attempts.length >= 3))) {", "  if (fastWrong >= 2 || suspiciouslyQuick || (p && p.mastered && attempts.length >= 3)) {"),
+    'the old pass by the round\'s usual mark': plant('    const passed = isMasteredAttempt(a);', '    const passed = a.coreCorrect >= rules.toMaster;'),
+    'the old "were" for one': plant("    const were = a.coreCorrect === 1 ? 'was' : 'were';", "    const were = 'were';"),
+    'a mark of 4 of 5 for every grade': plant('    const mark = `${rules.toMaster} out of ${rules.questions}`;', '    const mark = `${CONFIG.MASTERY_MIN_CORRECT} out of ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT}`;'),
+    'the old quick check sentence whatever came after': plant('  if (quick && quick.passed && attempts.length === 0) return', '  if (quick && quick.passed) return'),
+    'the placement sentence for a quick check': plant(' && p.passes === 0 && !(quick && quick.passed)) parts.push(', ' && p.passes === 0) parts.push('),
+    'the quick check told after the rounds': plant("  const parts = [[quickNote, practiced].filter(Boolean).join(' ')];", "  const parts = [[practiced, quickNote].filter(Boolean).join(' ')];"),
+    'a lesson with no view read through once': plant('  const practiced = reads ? `${name} read through this lesson ${times(reads)} and', '  const practiced = true ? `${name} read through this lesson ${times(reads || 1)} and'),
+    'one lesson waiting named by its title alone': plant('is reached, the lesson ${lessonInSentence(waiting[0].id, moduleId)} stays locked', 'is reached, ${lessonInSentence(waiting[0].id, moduleId)} stays locked'),
+  };
+  const failsNow = Object.entries(CASES).filter(([, c]) => !c(L.moduleStory)).map(([name]) => name);
+  const uncaught = Object.entries(OLD).filter(([, fn]) => !fn || Object.values(CASES).every((c) => c(fn))).map(([name]) => name);
+  ok(`View progress for this module says only what is true: a lesson passed once is not told lessons stay locked, a lesson not passed is told its band's pass mark and the lessons that wait on it (none named when none wait), only a passed lesson is told its questions come back, a round is a pass by isMasteredAttempt, one right answer "was", a lesson skipped by a quick check and mastered since is told its star, the quick check is told first, a lesson with no view is not said to be read, and one lesson waiting is "the lesson" (pass NQ, F3 and F4; ${Object.keys(CASES).length} cases, ${Object.keys(OLD).length} old codes put back in moduleStory's own source, each caught)`,
+    !!STORY && failsNow.length === 0 && uncaught.length === 0, JSON.stringify({ failsNow, uncaught })); }
+// A lesson named in a sentence (pass NQ, F3). The result screen's Look back button and memory-check line lowercased a whole title, so
+// grade 7's lesson read "Look back at the first texans"; every title lowercased for a sentence is written as lowerTitle writes it, which
+// keeps a name's capital (lessonInSentence for a lesson), and a source check finds any title lowercased otherwise. Grade 7's The first
+// Texans loops back to grade 4's The first Texans, so the result screen, the stuck sentences (the Action Item, the Practice Reviews card
+// and the weekly note) and Who Needs Help named two lessons by one title: now each has its course beside it, as the weekly note tells
+// two lessons of one title apart, and the weekly note does not give the course twice. Who Needs Help's missed-once reason named
+// fundamentalsOf's lesson, which for 202 of 628 lessons with a prerequisite was not the lesson a second miss loops back to, and promised a
+// loop back for a lesson with none: fundamentalsOf is now loopBackTarget's lesson, held for every lesson. Each old code is put back in a
+// copy of its source and caught.
+{ const vm = await import('node:vm');
+  const read = (f) => readFileSync(new URL(f, import.meta.url), 'utf8');
+  const UI = read('../src/ui.jsx'); const LSRC = read('../src/logic.mjs'); const STORIES = read('../src/stories.mjs'); const lines = LSRC.split('\n');
+  const declSource = (name) => { const re = new RegExp(`^(?:export )?(?:function ${name}\\(|const ${name} = )`); const at = lines.findIndex((l) => re.test(l)); if (at < 0) return '';
+    for (let end = at; end < Math.min(lines.length, at + 400); end++) { const text = lines.slice(at, end + 1).join('\n').replace(/^export /, ''); try { new vm.Script(text); return text; } catch (e) { if (!(e instanceof SyntaxError)) throw e; } }
+    return ''; };
+  const ctx = vm.createContext({ ...L }); vm.runInContext(['MONTHS_LONG', 'niceDate', 'describeDay', 'gapWords', 'ofFive', 'outOf', 'countWords', 'stuckTitles'].map(declSource).join('\n'), ctx);
+  const plant = (name, from, to) => { const src = declSource(name); return src && src.split(from).length === 2 ? vm.runInContext(`(${src.replace(from, () => to)})`, ctx) : null; };
+  const swap = (src, from, to) => (src.split(from).length === 2 ? src.replace(from, () => to) : null);
+  // A title lowercased for a sentence by toLowerCase: .title, or a function returning a title, lowercased whole and not compared.
+  const lowered = (src) => [...src.matchAll(/(?:\.title\)?|Title\([^()]*\))\.toLowerCase\(\)(?!\.(?:includes|startsWith|indexOf|localeCompare)\(| *[!=]==)/g)].length;
+  const sourcesClean = (ui) => lowered(ui) === 0 && lowered(LSRC) === 0 && lowered(STORIES) === 0;
+  const screenNames = (ui) => ui.includes('a quick look back at {lessonInSentence(backTo, mod.id)}') && ui.includes('${lessonInSentence(r.moduleId, mod.id) || \'earlier\'}') && ui.includes('>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id)}</Btn>');
+  const OLD_UI = {
+    'the Look back button\'s whole title lowercased': swap(UI, '>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id)}</Btn>', '>Look back at {getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()}</Btn>'),
+    'the memory-check line\'s whole title lowercased': swap(UI, '${lessonInSentence(r.moduleId, mod.id) || \'earlier\'}', "${(getModule(r.moduleId) || { title: 'earlier' }).title.toLowerCase()}"),
+    'the coloring label\'s whole title lowercased': swap(UI, 'lowerTitle(pictureTitle(pic))', 'pictureTitle(pic).toLowerCase()'),
+    'the level label\'s whole title lowercased': swap(UI, 'Walk through ${lowerTitle(lv.title)}', 'Walk through ${lv.title.toLowerCase()}'),
+    'the loop back sentence by its title alone': swap(UI, 'a quick look back at {lessonInSentence(backTo, mod.id)}', 'a quick look back at {lowerTitle(getModule(backTo).title)}'),
+  };
+  const uiHolds = (ui) => sourcesClean(ui) && screenNames(ui);
+  // Lessons whose loop back goes to a lesson of the same title, and the stuck sentences about one of them.
+  const twins = L.MODULES.filter((m) => { const f = L.prerequisitesOf(m.id); return f.length && L.getModule(f[f.length - 1]).title === m.title; }).map((m) => m.id);
+  const Y = twins[0]; const T = L.prerequisitesOf(Y).slice(-1)[0]; const label = (id) => L.courseLabel(L.getCourse(L.getModule(id).courseId));
+  const both = (s) => !!s && s.includes(`*${L.titleCase(L.getModule(Y).title)}* in ${label(Y)}`) && s.includes(`*${L.titleCase(L.getModule(T).title)}* in ${label(T)}`);
+  const at = (mo, d, h = 12) => new Date(2026, mo, d, h).toISOString(); const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, when, k) => ({ type: 'attempt_completed', at: when, startedAt: when, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, j) => ({ correct: j < k, timeMs: 9000 })), review: null, coreCorrect: k, coreTotal: full(id) });
+  const yOn = L.makeCoursesEnabledEvent([L.getModule(Y).courseId], at(8, 1));
+  const ladder = (d) => [rnd(Y, at(9, d), 1), rnd(Y, at(9, d + 1), 1), L.makeLoopBackEvent(Y, T, at(9, d + 1, 13)), rnd(Y, at(9, d + 2), 1), rnd(Y, at(9, d + 3), 1)];
+  const never = [yOn, ...ladder(5)]; const move = L.makeMovedForwardEvent(Y, at(9, 9));
+  const fail = { type: 'light_review_completed', at: at(9, 26), startedAt: at(9, 26), moduleId: Y, stage: 'first', results: [0, 0, 0, 1, 1].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 2, total: 5, outcome: 'fail' };
+  const afterReview = [yOn, rnd(Y, at(9, 2), full(Y)), rnd(Y, at(9, 3), full(Y)), fail, ...ladder(27)]; const movedAfter = [...afterReview, L.makeMovedForwardEvent(Y, at(10, 2))];
+  const sentences = (F) => [F.neverStuckSentence(never, Y, 'Sam', { action: false }), F.neverMovedSentence([...never, move], move, 'Sam'), F.stuckSentence(afterReview, Y, 'Sam', { action: false }), F.lightReviewSentences(movedAfter, 'Sam', 1)[0]];
+  const stuckHolds = (F) => sentences(F).every(both);
+  // The missed-once reason: fundamentalsOf is the lesson two misses loop back to, for every lesson, and none for a lesson with none.
+  const twoMisses = (id) => [rnd(id, at(9, 5), 0), rnd(id, at(9, 6), 0)];
+  const fundamentalsHold = (fo) => L.MODULES.every((m) => { const f = fo(m.id); const back = L.prerequisitesOf(m.id).length ? L.loopBackTarget(twoMisses(m.id), m.id) : null; return (f ? f.id : null) === back; });
+  const reason = (F, id) => F.classView([{ id: 's', label: 'Sam', events: [L.makeCoursesEnabledEvent([L.getModule(id).courseId], at(8, 1)), rnd(id, at(9, 5), 1)] }], at(9, 9))[0].reasons.find((r) => / failed the last round of /.test(r)) || '';
+  const noPre = L.MODULES.find((m) => !L.prerequisitesOf(m.id).length && !L.isWritingModule(m.id)).id;
+  const reasonHolds = (F) => { const r = reason(F, Y); const n = reason(F, noPre); return r.includes(`**${L.titleCase(L.getModule(Y).title)}** in ${label(Y)}`) && r.includes(`the fundamentals, **${L.titleCase(L.getModule(T).title)}** in ${label(T)}`) && !!n && !/route them back/.test(n); };
+  // The weekly note gives a stuck sentence's course once: the lesson stuck this week and the lesson it loops back to practiced.
+  const noteLog = [yOn, ...ladder(5).map((e) => ({ ...e, at: e.at.replace('2026-10-', '2026-11-') })), rnd(T, at(10, 10), 1)];
+  const noteHolds = (note) => { const text = note('Sam', noteLog, at(10, 11)); return text.includes(`in ${label(Y)}`) && !text.includes(`in ${label(Y)} in ${label(Y)}`) && !text.includes(`in ${label(Y)} in`); };
+  // Who Needs Help's stuck and loop back reasons and View progress's loop back sentence (pass NQ, F4, after round three's code read): on
+  // the log of Y missed twice, sent back to T and missed twice more, each of the two lessons has its course beside it; on Count to 10's
+  // log, which loops back to Count to 5, each title stands alone.
+  const X = 'count-to-10'; const P = L.prerequisitesOf(X).slice(-1)[0]; const plain = [L.makeCoursesEnabledEvent(['counting-k'], at(8, 1)), rnd(X, at(9, 5), 1), rnd(X, at(9, 6), 1), L.makeLoopBackEvent(X, P, at(9, 6, 13)), rnd(X, at(9, 7), 1), rnd(X, at(9, 8), 1)];
+  const rowWords = (F, ev) => { const rs = F.classView([{ id: 's', label: 'Sam', events: ev }], at(9, 9))[0].reasons; return [rs.find((r) => / is stuck on /.test(r)) || '', rs.find((r) => / was sent back /.test(r)) || '']; };
+  const rowHolds = (F) => { const [stuckY, loopY] = rowWords(F, never); const [stuckX, loopX] = rowWords(F, plain);
+    return stuckY.includes(`is stuck on **${L.titleCase(L.getModule(Y).title)}** in ${label(Y)} (`) && loopY.endsWith(`, to **${L.titleCase(L.getModule(T).title)}** in ${label(T)}`)
+      && stuckX.includes(`is stuck on **${L.titleCase(L.getModule(X).title)}** (`) && loopX.endsWith(`, to **${L.titleCase(L.getModule(P).title)}**`); };
+  const storyHolds = (F) => F.moduleStory('Sam', never, Y).includes(`was sent back to ${L.lowerTitle(L.getModule(T).title)} in ${label(T)} for a quick check`) && F.moduleStory('Sam', plain, X).includes(`was sent back to ${L.lowerTitle(L.getModule(P).title)} for a quick check`);
+  const OLD_LOGIC = {
+    'a lesson named by its title alone beside one of the same title': [{ lessonInSentence: plant('lessonInSentence', "return other && other.id !== m.id && other.title === m.title ?", 'return false ?') }, (F) => F.lessonInSentence(T, Y) === `${L.lowerTitle(L.getModule(T).title)} in ${label(T)}` && F.lessonInSentence(T) === L.lowerTitle(L.getModule(T).title)],
+    "the stuck sentences' titles alone": [{ stuckSentence: plant('stuckSentence', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))('), neverStuckSentence: plant('neverStuckSentence', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))('), neverMovedSentence: plant('neverMovedSentence', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))('), lightReviewSentences: plant('lightReviewSentences', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))(') }, stuckHolds],
+    'the old fundamentals (the lesson before, else the first required)': [{ fundamentalsOf: plant('fundamentalsOf', '  const pre = prerequisitesOf(moduleId); const target = pre.length ? getModule(pre[pre.length - 1]) : null;', '  const m = getModule(moduleId); if (!m) return null; const course = getCourse(m.courseId);\n  const before = course ? course.modules.filter((x) => x.order < m.order).sort((a, b) => b.order - a.order)[0] : null;\n  const target = before || (m.requires && m.requires.length ? getModule(m.requires[0]) : null);') }, (F) => fundamentalsHold(F.fundamentalsOf)],
+    'the old missed-once reason': [{ classView: plant('classView', "      const named = (x) => (twin ? `**${titleCase(x.title)}** in ${courseLabel(getCourse(getModule(x.id).courseId))}` : `**${titleCase(x.title)}**`);\n      const route = f ? `; a second miss would route them back to the fundamentals, ${named(f)}` : '';", "      const named = (x) => `**${titleCase(x.title)}**`;\n      const route = `; a second miss would route them back to the fundamentals${f ? `, ${named(f)}` : ''}`;") }, reasonHolds],
+    'the weekly note giving the course twice': [{ weeklyNote: plant('weeklyNote', ' && line.includes(own) && !line.includes(given) ?', ' && line.includes(own) ?') }, (F) => noteHolds(F.weeklyNote)],
+    "Who Needs Help's stuck lesson by its title alone": [{ classView: plant('classView', "return f && f.id !== m.id && f.title === m.title ? bold(m) + ' in ' + courseLabel(getCourse(m.courseId)) : bold(m); };", 'return bold(m); };') }, rowHolds],
+    "Who Needs Help's loop back by its title alone": [{ classView: plant('classView', "return from && from.id !== to.id && from.title === to.title ? bold(to) + ' in ' + courseLabel(getCourse(to.courseId)) : bold(to); };", 'return bold(to); };') }, rowHolds],
+    "View progress's loop back by its title alone": [{ moduleStory: plant('moduleStory', 'was sent back to ${back ? lessonInSentence(back.id, moduleId) :', 'was sent back to ${back ? lowerTitle(back.title) :') }, storyHolds],
+  };
+  // A check that cannot run (a function missing, as in a near miss with an old file) fails rather than stopping the test.
+  const safe = (f) => { try { return f(); } catch (e) { return false; } };
+  const holdsNow = { 'the sources': uiHolds(UI), 'a lesson beside one of its title': safe(() => OLD_LOGIC['a lesson named by its title alone beside one of the same title'][1](L)), 'the stuck sentences': safe(() => stuckHolds(L)), 'the fundamentals': safe(() => fundamentalsHold(L.fundamentalsOf)), 'the missed-once reason': safe(() => reasonHolds(L)), 'the weekly note': safe(() => noteHolds(L.weeklyNote)),
+    "Who Needs Help's stuck and loop back reasons": safe(() => rowHolds(L)), "View progress's loop back": safe(() => storyHolds(L)) };
+  const failsNow = Object.entries(holdsNow).filter(([, held]) => !held).map(([name]) => name);
+  const uncaught = [...Object.entries(OLD_UI).filter(([, ui]) => !ui || uiHolds(ui)).map(([name]) => name),
+    ...Object.entries(OLD_LOGIC).filter(([, [over, holds]]) => Object.values(over).some((fn) => !fn) || safe(() => holds({ ...L, ...over }))).map(([name]) => name)];
+  ok(`a lesson named in a sentence keeps a name's capital (no title is lowercased whole for a sentence in ui.jsx, logic.mjs or stories.mjs), two lessons of one title each have their course beside them on the result screen, in the stuck sentences, in View progress's loop back and on Who Needs Help (its missed-once, stuck and loop back reasons), the weekly note gives that course once, and a second miss routes back to the lesson Who Needs Help names, for every lesson (pass NQ, F3 and F4; ${twins.length} lesson${twins.length === 1 ? '' : 's'} looping back to one of its title; ${Object.keys(OLD_UI).length + Object.keys(OLD_LOGIC).length} old codes put back, each caught)`,
+    twins.length >= 1 && failsNow.length === 0 && uncaught.length === 0, JSON.stringify({ failsNow, uncaught, Y, T, sentences: safe(() => sentences(L).map((s) => String(s).slice(0, 120))) })); }
+// The practice review history reads a lesson as the report does, from the latest full reset (pass NQ, F3). lightReviewHistory and
+// neverMovedSentence read a lesson's own events by its id, which left out every full reset (progress_reset names no lesson), so after
+// one a review's history counted its gap from the lesson's star before the reset ("about two months after mastering it" where the star
+// the report shows came three weeks before), and a move forward counted the rounds before the reset among those that did not get it to
+// hold. The history's sentence is held to the card's sentence on the whole log and to the row's star; the old filters are put back in
+// their own sources and caught.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const lines = lsrc.split('\n');
+  const declSource = (name) => { const re = new RegExp(`^(?:export )?(?:function ${name}\\(|const ${name} = )`); const at = lines.findIndex((l) => re.test(l)); if (at < 0) return '';
+    for (let end = at; end < Math.min(lines.length, at + 400); end++) { const text = lines.slice(at, end + 1).join('\n').replace(/^export /, ''); try { new vm.Script(text); return text; } catch (e) { if (!(e instanceof SyntaxError)) throw e; } }
+    return ''; };
+  const ctx = vm.createContext({ ...L }); vm.runInContext(['describeDay', 'countWords', 'stuckTitles'].map(declSource).join('\n'), ctx);
+  const plant = (name, from, to) => { const src = declSource(name); return src && src.split(from).length === 2 ? vm.runInContext(`(${src.replace(from, () => to)})`, ctx) : null; };
+  const at = (mo, d, h = 12) => new Date(2026, mo, d, h).toISOString(); const X = 'count-to-5'; const N = L.moduleRules(X).questions;
+  const rnd = (when, k) => ({ type: 'attempt_completed', at: when, startedAt: when, moduleId: X, seed: 1, core: Array.from({ length: N }, (_, j) => ({ correct: j < k, timeMs: 9000 })), review: null, coreCorrect: k, coreTotal: N });
+  const review = { type: 'light_review_completed', at: at(10, 1), startedAt: at(10, 1), moduleId: X, stage: 'first', results: [1, 1, 1, 1, 1].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 5, total: 5, outcome: 'clear' };
+  // Mastered in September, a full reset, mastered again on October 10 and 11, its review three weeks later.
+  const reviewed = [rnd(at(8, 1), N), rnd(at(8, 2), N), L.makeResetEvent(at(9, 1)), rnd(at(9, 10), N), rnd(at(9, 11), N), review];
+  const historyHolds = (F) => { const h = F.lightReviewHistory(reviewed, 'Sam').find((x) => x.kind === 'clear'); const card = L.lightReviewSentences(reviewed, 'Sam', 1)[0];
+    return !!h && h.text === card && /three weeks after mastering it/.test(h.text) && L.deriveProgress(reviewed).perModule[X].masteredAt === reviewed[4].at; };
+  // Stuck before a full reset (four misses, no lesson to loop back to the first time) and again after it, then moved forward: four rounds.
+  const Z = L.MODULES.find((m) => !L.prerequisitesOf(m.id).length && !L.isWritingModule(m.id)).id; const NZ = L.moduleRules(Z).questions;
+  const miss = (when) => ({ type: 'attempt_completed', at: when, startedAt: when, moduleId: Z, seed: 1, core: Array.from({ length: NZ }, () => ({ correct: false, timeMs: 9000 })), review: null, coreCorrect: 0, coreTotal: NZ });
+  const move = L.makeMovedForwardEvent(Z, at(9, 20));
+  const movedLog = [miss(at(8, 1)), miss(at(8, 2)), miss(at(8, 3)), miss(at(8, 4)), miss(at(8, 5)), L.makeResetEvent(at(9, 1)), miss(at(9, 10)), miss(at(9, 11)), miss(at(9, 12)), miss(at(9, 13)), move];
+  const movedHolds = (F) => { const s = F.neverMovedSentence(movedLog, move, 'Sam'); return /because four rounds did not get it to hold/.test(String(s)); };
+  const OLD = {
+    "the history's own events without the full reset": [{ lightReviewHistory: plant('lightReviewHistory', "events.filter((x) => (x.moduleId === id || x.type === 'progress_reset') && (", 'events.filter((x) => x.moduleId === id && (') }, historyHolds],
+    "the move's own events without the full reset": [{ neverMovedSentence: plant('neverMovedSentence', "(x.moduleId === moveEvent.moduleId || x.type === 'progress_reset') && (", 'x.moduleId === moveEvent.moduleId && (') }, movedHolds],
+  };
+  const failsNow = [['the history', historyHolds], ['the move', movedHolds]].filter(([, h]) => !h(L)).map(([n]) => n);
+  const uncaught = Object.entries(OLD).filter(([, [over, h]]) => Object.values(over).some((fn) => !fn) || h({ ...L, ...over })).map(([n]) => n);
+  ok(`after a full reset the practice review history counts a review's gap from the star the report shows, as the card does, and a move forward counts only the rounds since the reset (pass NQ, F3; the two old filters put back in their own sources, caught)`,
+    failsNow.length === 0 && uncaught.length === 0, JSON.stringify({ failsNow, uncaught, history: (L.lightReviewHistory(reviewed, 'Sam')[0] || {}).text, moved: L.neverMovedSentence(movedLog, move, 'Sam') })); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

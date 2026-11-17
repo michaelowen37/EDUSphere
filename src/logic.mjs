@@ -114,6 +114,15 @@ export function planRowName(entry, entries) {
 }
 // One line for a course anywhere it appears in a list.
 export function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject})`; }
+// A lesson named inside a sentence (pass NQ, F3). In plain terms: its title as lowerTitle writes it, so a name keeps its capital ("the
+// first Texans", where lowercasing the whole title read "the first texans"), with its course beside it (courseLabel) when the lesson it
+// is named beside has the same title, as the weekly note tells two lessons of one title apart. A loop back from The first Texans in
+// grade 7 goes to The first Texans in grade 4, and "a quick look back at the first Texans" read as a look back at the lesson itself.
+export function lessonInSentence(id, besideId = null) {
+  const m = getModule(id); if (!m) return '';
+  const other = besideId ? getModule(besideId) : null;
+  return other && other.id !== m.id && other.title === m.title ? `${lowerTitle(m.title)} in ${courseLabel(getCourse(m.courseId))}` : lowerTitle(m.title);
+}
 
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and
 // holds an ordered list of modules. Modules unlock in order WITHIN a course.
@@ -39510,9 +39519,9 @@ export function choiceHistory(events, q) {
   const counts = {};
   if (!q || !Array.isArray(events)) return counts;
   const active = activeEvents(events);
-  const resetAt = {};
-  for (const e of active) if (e && e.type === 'module_reset') resetAt[e.moduleId] = e.at;
-  const cleared = (moduleId, at) => !!resetAt[moduleId] && String(at) <= String(resetAt[moduleId]);
+  // A lesson's own reset, read as every reader reads it since pass NQ (lessonResetTimes): a memory check by the lesson it asks about.
+  const resetAt = lessonResetTimes(active);
+  const cleared = (moduleId, at) => clearedByLessonReset(resetAt, moduleId, at);
   const keyOf = (x) => { if (x && x.seed !== undefined && x.seed !== null && GENERATORS[x.genId]) { try { return questionKey(generateQuestion(x.genId, x.seed)); } catch (err) { /* an old seed that no longer builds */ } } return null; };
   const mine = keyOf(q);
   for (const e of active) {
@@ -49128,6 +49137,26 @@ export function activeEvents(events) {
   events.forEach((e, i) => { if (e.type === 'progress_reset') start = i + 1; });
   return events.slice(start);
 }
+// A lesson's own reset (pass NQ, engineer F2, after round one's code reads). In plain terms: an educator can reset one lesson
+// ("Reset progress for this module", makeModuleResetEvent), and from then on that lesson starts again while every other lesson keeps
+// its record. lessonResetTimes reads, from the events since the latest full reset (activeEvents), the moment each lesson was last
+// reset on its own; clearedByLessonReset says whether a moment in that lesson's history is at or before its reset, so a reader
+// leaves that moment out. Every reader of a lesson's current progress reads the reset through these two, so none can disagree with
+// the report's row (deriveProgress) about what the reset cleared; Who Needs Help's rounds per module and the weekly note's Still
+// practicing among them since pass NQ's F4. Left as the student's history, on purpose: the questions answered this week and since
+// the last look, the days since practice and whether the student has started, the loop backs Who Needs Help counts, the learner's
+// own summary, nextWonder and the choice of questions. Until pass NQ the confidence score, the stuck and missed-once
+// counts, the refresher, the quick check, the stuck sentence, a grade's completion, the writing waiting for a mark and the rounds
+// in Practice so far still read a lesson's history from before its own reset: a lesson reset to 0 attempts kept a confidence of 3
+// and "signs of guessing" on Who Needs Help.
+export function lessonResetTimes(active) {
+  const at = {};
+  for (const e of active) if (e && e.type === 'module_reset') at[e.moduleId] = e.at;
+  return at;
+}
+export function clearedByLessonReset(resetTimes, moduleId, at) {
+  return !!resetTimes[moduleId] && String(at) <= String(resetTimes[moduleId]);
+}
 
 export function isMasteredAttempt(event) {
   if (event.type === 'writing_marked') return event.meets === true;
@@ -49144,21 +49173,23 @@ export function makeWritingEvent(moduleId, prompt, text, checklist, startedAt, f
 export function makeWritingMark(moduleId, submittedAt, meets, note, at) {
   return { type: 'writing_marked', at, moduleId, submittedAt, meets: meets === true, note: String(note || '') };
 }
+// Since pass NQ (F2) a piece handed in at or before its lesson's own reset is cleared with the rest of that lesson, as the report's
+// row already had it (deriveProgress): it no longer waits for a mark, where a mark given after the reset passed the lesson again.
 export function pendingWritings(events) {
-  const active = activeEvents(events);
+  const active = activeEvents(events); const resets = lessonResetTimes(active);
   const marked = new Set(active.filter((e) => e.type === 'writing_marked').map((e) => `${e.moduleId}|${e.submittedAt}`));
-  return active.filter((e) => e.type === 'writing_submitted' && !marked.has(`${e.moduleId}|${e.at}`));
+  return active.filter((e) => e.type === 'writing_submitted' && !clearedByLessonReset(resets, e.moduleId, e.at) && !marked.has(`${e.moduleId}|${e.at}`));
 }
 export function writingsFor(events, moduleId) {
-  const active = activeEvents(events);
-  return active.filter((e) => e.type === 'writing_submitted' && e.moduleId === moduleId).map((sub) => ({ ...sub, mark: active.find((e) => e.type === 'writing_marked' && e.moduleId === moduleId && e.submittedAt === sub.at) || null }));
+  const active = activeEvents(events); const resets = lessonResetTimes(active);
+  return active.filter((e) => e.type === 'writing_submitted' && e.moduleId === moduleId && !clearedByLessonReset(resets, moduleId, e.at)).map((sub) => ({ ...sub, mark: active.find((e) => e.type === 'writing_marked' && e.moduleId === moduleId && e.submittedAt === sub.at) || null }));
 }
 
 export function deriveProgress(events) {
   const active = activeEvents(events);
-  // When was each module last reset on its own? Anything at or before that is ignored for that module.
-  const moduleResetAt = {};
-  for (const e of active) if (e.type === 'module_reset') moduleResetAt[e.moduleId] = e.at;
+  // When was each module last reset on its own? Anything at or before that is ignored for that module (lessonResetTimes and
+  // clearedByLessonReset since pass NQ, the one reading every reader of a lesson's history shares).
+  const moduleResetAt = lessonResetTimes(active);
   const perModule = {};
   for (const m of MODULES) {
     perModule[m.id] = {
@@ -49171,12 +49202,14 @@ export function deriveProgress(events) {
   }
   const review = { asked: 0, correct: 0 };
   for (const e of active) {
-    if (e.type === 'placed') { for (const id of e.moduleIds || []) { const pm = perModule[id]; if (pm && !(moduleResetAt[id] && String(e.at) <= String(moduleResetAt[id]))) { pm.passed = true; pm.placed = true; } } continue; }
+    if (e.type === 'placed') { for (const id of e.moduleIds || []) { const pm = perModule[id]; if (pm && !clearedByLessonReset(moduleResetAt, id, e.at)) { pm.passed = true; pm.placed = true; } } continue; }
     const p = perModule[e.moduleId];
     if (!p) continue;
-    if (moduleResetAt[e.moduleId] && String(e.at) <= String(moduleResetAt[e.moduleId])) continue; // cleared by a module reset
+    if (clearedByLessonReset(moduleResetAt, e.moduleId, e.at)) continue; // cleared by a module reset
     if (e.type === 'writing_submitted') { p.attempts += 1; p.firstAttemptAt = p.firstAttemptAt || e.at; p.lastAttemptAt = e.at; p.pendingWriting = true; continue; }
     if (e.type === 'writing_marked') {
+      // A mark judges the piece it names, so a piece handed in at or before the lesson's own reset takes its mark with it (pass NQ).
+      if (clearedByLessonReset(moduleResetAt, e.moduleId, e.submittedAt)) continue;
       p.pendingWriting = false;
       if (e.meets) { p.passes += 1; p.passed = true; p.firstPassedAt = p.firstPassedAt || e.at; const day = localDay(e.at); if (!p.passDays.includes(day)) p.passDays.push(day); if (!p.mastered && (isBeforeMasteryV2(e.at) || p.passDays.length >= 2)) { p.mastered = true; p.masteredAt = e.at; } }
       continue;
@@ -49257,12 +49290,15 @@ export function makeCheckpointEvent(checkpoint, results, startedAt, finishedAt) 
     total: results.length,
   };
 }
-// Modules missed in the most recent checkpoint and not passed again since: worth a refresher.
+// Modules missed in the most recent checkpoint and not passed again since: worth a refresher. Since pass NQ (F2) a miss at or before
+// the lesson's own reset is cleared with the rest of that lesson, as its row is: a reset lesson starts over, and the refresher's
+// promise that "the pass and the star are kept" no longer held.
 export function refresherIds(events) {
   const active = activeEvents(events);
   const last = [...active].reverse().find((e) => e.type === 'checkpoint_completed');
   if (!last) return [];
-  const missed = [...new Set((last.results || []).filter((r) => !r.correct).map((r) => r.moduleId))];
+  const resets = lessonResetTimes(active);
+  const missed = [...new Set((last.results || []).filter((r) => !r.correct && !clearedByLessonReset(resets, r.moduleId, last.at)).map((r) => r.moduleId))];
   const passedSince = new Set(active.filter((e) => e.type === 'attempt_completed' && String(e.at) > String(last.at) && isMasteredAttempt(e)).map((e) => e.moduleId));
   return missed.filter((id) => !passedSince.has(id));
 }
@@ -49478,15 +49514,23 @@ const gapWords = (fromIso, toIso) => {
 const ofFive = (n) => ['none', 'one', 'two', 'three', 'four', 'all five'][n] || String(n);
 // The sentences an educator reads, in Mikey's approved wording (pass LE): one per lesson for its latest review, newest
 // first. Titles are wrapped in asterisks so the screen can emphasize them.
+// The two lessons a stuck sentence names, the lesson and the one its loop back went to, as *Title Case* for the screen's emphasis
+// (pass NQ, F3). When the two share a title, each has its course beside it (courseLabel), as the weekly note tells two lessons of one
+// title apart: grade 7's The first Texans loops back to grade 4's, and the sentence named both The First Texans.
+function stuckTitles(id, backId) {
+  const m = getModule(id); const b = backId ? getModule(backId) : null; const twin = !!(m && b && b.id !== m.id && b.title === m.title);
+  const one = (x) => (twin ? `*${titleCase(x.title)}* in ${courseLabel(getCourse(x.courseId))}` : `*${titleCase(x.title)}*`);
+  return { title: m ? one(m) : '', back: b ? one(b) : '' };
+}
 // The stuck sentence by itself, in Mikey's wording (pass LG); `action` adds the line that points at the Move forward
 // button, which the Action Item popup shows and the summary leaves out.
 export function stuckSentence(events, moduleId, name = 'This student', { action = true } = {}) {
   const stuck = lightReviewStuck(events, moduleId);
   if (!stuck) return null;
   const mod = getModule(moduleId); if (!mod) return null;
-  const title = `*${titleCase(mod.title)}*`;
-  const back = getModule(stuck.loopedTo);
-  const backNote = back ? ' and one of those rounds was after looping back to *' + titleCase(back.title) + '*' : '';
+  const back = getModule(stuck.loopedTo); const named = stuckTitles(moduleId, back ? back.id : null);
+  const title = named.title;
+  const backNote = back ? ' and one of those rounds was after looping back to ' + named.back : '';
   const score = ofFive(lightReviewState(events, moduleId).last.correct);
   const act = action ? ` You can still move ${name} forward by clicking below.` : '';
   return `${name} cannot seem to get past ${title}. They scored ${score} out of five on their practice review which prompted us to route them backward. ${name} had ${countWords(stuck.rounds)} rounds at it without a pass${backNote}.${act} The lesson will keep its star and the lesson material will continue to flow through infrequent memory checks.`;
@@ -49494,16 +49538,19 @@ export function stuckSentence(events, moduleId, name = 'This student', { action 
 // A lesson never mastered that a student cannot get past (Mikey, pass LQ): the same ladder as after a review, counted
 // since the last pass on it: two misses, a loop back to the lesson before, two more misses. A lesson with nothing before it
 // to loop back to is stuck after four misses. Until then the app keeps working on it alone.
+// Since pass NQ (F2) its rounds and loop backs are the lesson's since its own reset, as the row's attempts are: "eight rounds at it
+// without a pass" counted the rounds before the reset too.
 export function neverMasteredStuck(events, moduleId, progress = null) {
   const pm = (progress || deriveProgress(events)).perModule[moduleId];
   if (!pm || pm.mastered || pm.movedPast) return null;
-  const active = activeEvents(events);
-  const attempts = active.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId);
+  const active = activeEvents(events); const resets = lessonResetTimes(active);
+  const kept = (e) => !clearedByLessonReset(resets, moduleId, e.at);
+  const attempts = active.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId && kept(e));
   const lastPass = [...attempts].reverse().find((e) => isMasteredAttempt(e));
   const since = lastPass ? String(lastPass.at) : '';
   const misses = attempts.filter((e) => String(e.at) > since && !isMasteredAttempt(e));
   if (!misses.length) return null;
-  const loop = active.filter((e) => e.type === 'looped_back' && e.moduleId === moduleId && String(e.at) > since).pop();
+  const loop = active.filter((e) => e.type === 'looped_back' && e.moduleId === moduleId && kept(e) && String(e.at) > since).pop();
   if (!loop) return !prerequisitesOf(moduleId).length && misses.length >= 2 * LOOP_BACK_AFTER ? { moduleId, rounds: misses.length, loopedTo: null, at: misses[misses.length - 1].at } : null;
   const after = misses.filter((e) => String(e.at) > String(loop.at)).length; const before = misses.length - after;
   if (before < LOOP_BACK_AFTER || after < LOOP_BACK_AFTER) return null;
@@ -49516,18 +49563,21 @@ export function neverMasteredStuckIds(events) {
 export function movedPastIds(events) { const progress = deriveProgress(events); return MODULES.filter((m) => progress.perModule[m.id].movedPast && !progress.perModule[m.id].mastered).map((m) => m.id); }
 export function neverStuckSentence(events, moduleId, name = 'This student', { action = true } = {}) {
   const st = neverMasteredStuck(events, moduleId); if (!st) return null;
-  const mod = getModule(moduleId); const title = `*${titleCase(mod.title)}*`;
-  const back = st.loopedTo ? getModule(st.loopedTo) : null;
-  const backNote = back ? ' and one of those rounds was after looping back to *' + titleCase(back.title) + '*' : '';
+  const back = st.loopedTo ? getModule(st.loopedTo) : null; const named = stuckTitles(moduleId, back ? back.id : null);   // pass NQ, F3: a shared title
+  const title = named.title;
+  const backNote = back ? ' and one of those rounds was after looping back to ' + named.back : '';
   const act = action ? ` You can still move ${name} forward by clicking below.` : '';
   return `${name} cannot seem to master ${title}. They have had ${countWords(st.rounds)} rounds at it without a pass${backNote}.${act} The lesson will stay on ${name}'s list as not yet mastered, and it will come back as a practice review in three weeks for a fresh try.`;
 }
+// Since pass NQ (F3) the lesson's own events are read with every full reset among them (progress_reset has no lesson), as the report
+// reads them, so the stuck state before the move is the one since the latest full reset; and a shared title is told apart (stuckTitles).
 export function neverMovedSentence(events, moveEvent, name = 'This student') {
-  const mod = getModule(moveEvent.moduleId); if (!mod) return null; const title = `*${titleCase(mod.title)}*`;
-  const st = neverMasteredStuck(events.filter((x) => x.moduleId === moveEvent.moduleId && (!x.at || String(x.at) < String(moveEvent.at))), moveEvent.moduleId);
+  const mod = getModule(moveEvent.moduleId); if (!mod) return null;
+  const st = neverMasteredStuck(events.filter((x) => (x.moduleId === moveEvent.moduleId || x.type === 'progress_reset') && (!x.at || String(x.at) < String(moveEvent.at))), moveEvent.moduleId);
   const rounds = st ? countWords(st.rounds) + ' rounds' : 'several rounds';
-  const back = st && st.loopedTo ? getModule(st.loopedTo) : null;
-  const loopNote = back ? ', including a loop back to *' + titleCase(back.title) + '*,' : '';
+  const back = st && st.loopedTo ? getModule(st.loopedTo) : null; const named = stuckTitles(moveEvent.moduleId, back ? back.id : null);
+  const title = named.title;
+  const loopNote = back ? ', including a loop back to ' + named.back + ',' : '';
   return `You moved ${name} forward past ${title} on ${describeDay(moveEvent.at)}, before it was mastered, because ${rounds}${loopNote} did not get it to hold. ${title} stays on ${name}'s list as not yet mastered and comes back as a practice review in three weeks for a fresh try.`;
 }
 // Everything an educator can move a student forward on, both kinds, for the Action Item popup.
@@ -49538,9 +49588,12 @@ export function actionStuckItems(events, name = 'This student') {
 // Every practice review moment with its date, newest first (Mikey, pass LP): each review's sentence as it read that day,
 // each Move Forward, and a lesson stuck right now. Each entry is built from that lesson's own events up to its moment, so a
 // later review never rewrites an earlier entry. The report shows the newest two and keeps the rest under History.
+// Since pass NQ (F3) a lesson's own events up to a moment keep every full reset among them (progress_reset names no lesson), so each
+// entry reads the lesson as the report does, from the latest full reset: after one, a review's gap was counted from the lesson's star
+// before it ("about two months after mastering it" where the star the report shows came three weeks before).
 export function lightReviewHistory(events, name = 'This student') {
   const active = activeEvents(events);
-  const mine = (id, at) => events.filter((x) => x.moduleId === id && (!x.at || String(x.at) <= String(at)));
+  const mine = (id, at) => events.filter((x) => (x.moduleId === id || x.type === 'progress_reset') && (!x.at || String(x.at) <= String(at)));
   const out = [];
   for (const e of active.filter((x) => x.type === 'light_review_completed')) { const s = lightReviewSentences(mine(e.moduleId, e.at), name, 1)[0]; if (s) out.push({ at: e.at, kind: e.outcome, moduleId: e.moduleId, text: s }); }
   for (const e of active.filter((x) => x.type === 'moved_forward')) { const s = lightReviewSentences(mine(e.moduleId, e.at), name, 1)[0] || neverMovedSentence(events, e, name); if (s) out.push({ at: e.at, kind: 'moved', moduleId: e.moduleId, text: s }); }
@@ -49573,9 +49626,9 @@ export function lightReviewSentences(events, name = 'This student', limit = 3, {
     }
     if (st.stage === 'moved') {
       const loop = [...active].filter((x) => x.type === 'looped_back' && x.moduleId === e.moduleId && String(x.at) > String(e.at)).pop();
-      const back = loop ? getModule(loop.toModuleId) : null;
-      const loopNote = back ? ', including a loop back to *' + titleCase(back.title) + '*,' : '';
-      sentences.push(`You moved ${name} forward on ${title} on ${describeDay(st.movedAt)}. Their practice review had come back ${ofFive(e.correct)} out of five, and the rounds that followed${loopNote} did not get it to hold. The lesson keeps its star and the lesson material will continue to flow through infrequent memory checks.`);
+      const back = loop ? getModule(loop.toModuleId) : null; const named = stuckTitles(e.moduleId, back ? back.id : null);   // pass NQ, F3: a shared title
+      const loopNote = back ? ', including a loop back to ' + named.back + ',' : '';
+      sentences.push(`You moved ${name} forward on ${named.title} on ${describeDay(st.movedAt)}. Their practice review had come back ${ofFive(e.correct)} out of five, and the rounds that followed${loopNote} did not get it to hold. The lesson keeps its star and the lesson material will continue to flow through infrequent memory checks.`);
       continue;
     }
     if (stuck) { sentences.push(stuckSentence(events, e.moduleId, name, { action })); continue; }
@@ -50829,9 +50882,12 @@ export function prerequisitesOf(moduleId) {
 // ---------------------------------------------------------------------
 export const LOOP_BACK_AFTER = 2; // failed rounds in a row before we look further back
 
-// The failed rounds on a module since it was last passed, counting back from the latest.
+// The failed rounds on a module since it was last passed, counting back from the latest. Since pass NQ (F2) a round at or before
+// the lesson's own reset is not counted, as the report's row does not count it: Who Needs Help said "2 misses in a row" beside a
+// row of 1 attempt, and one miss after a reset could send the student back to the lesson before.
 export function failedStreak(events, moduleId) {
-  const active = activeEvents(events).filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId);
+  const all = activeEvents(events); const resets = lessonResetTimes(all);
+  const active = all.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId && !clearedByLessonReset(resets, moduleId, e.at));
   let n = 0;
   for (let i = active.length - 1; i >= 0; i--) { if (isMasteredAttempt(active[i])) break; n++; }
   return n;
@@ -50843,11 +50899,12 @@ export function loopBackTarget(events, moduleId) {
   if (failedStreak(events, moduleId) < LOOP_BACK_AFTER) return null;
   const prereqs = prerequisitesOf(moduleId);
   if (prereqs.length === 0) return null;
-  // Do not send them back again if the prerequisite has already been re-passed since the failures began.
-  const active = activeEvents(events);
+  // Do not send them back again if the prerequisite has already been re-passed since the failures began, and not reset on its own
+  // since (pass NQ: a pass its own reset cleared is not a pass, as its row says).
+  const active = activeEvents(events); const resets = lessonResetTimes(active);
   const lastFail = [...active].reverse().find((e) => e.type === 'attempt_completed' && e.moduleId === moduleId);
   const target = prereqs[prereqs.length - 1];
-  const rePassed = active.some((e) => e.type === 'attempt_completed' && e.moduleId === target && isMasteredAttempt(e) && lastFail && String(e.at) > String(lastFail.at));
+  const rePassed = active.some((e) => e.type === 'attempt_completed' && e.moduleId === target && !clearedByLessonReset(resets, target, e.at) && isMasteredAttempt(e) && lastFail && String(e.at) > String(lastFail.at));
   return rePassed ? null : target;
 }
 
@@ -51208,9 +51265,11 @@ export function taughtLine(moduleId, answer) {
 // A grade is complete when every module of every course the student was given in that grade is
 // mastered, placed past, or passed on its quick check. Courses never switched on are not required,
 // so a student who skipped a course through placement still finishes the grade.
+// Since pass NQ (F2) a quick check at or before its lesson's own reset no longer counts, as the row's placed mark does not: a lesson
+// skipped by a quick check and then reset kept its grade complete, and the certificate offered.
 export function gradeCompleted(events, grade, courseIds) {
-  const per = deriveProgress(events).perModule; const active = activeEvents(events);
-  const quickPassed = new Set(active.filter((e) => e.type === 'quick_check' && e.passed).map((e) => e.moduleId));
+  const per = deriveProgress(events).perModule; const active = activeEvents(events); const resets = lessonResetTimes(active);
+  const quickPassed = new Set(active.filter((e) => e.type === 'quick_check' && e.passed && !clearedByLessonReset(resets, e.moduleId, e.at)).map((e) => e.moduleId));
   const courses = COURSES.filter((c) => c.grade === grade && courseIds.includes(c.id) && c.modules.length);
   return courses.length > 0 && courses.every((c) => c.modules.every((m) => { const pm = per[m.id] || {}; return pm.mastered || pm.placed || quickPassed.has(m.id); }));
 }
@@ -51222,12 +51281,21 @@ export function completedGrades(events) { const ids = enabledCourseIds(events); 
 export function setReportSeen(roster, id, at) {
   return { ...roster, students: roster.students.map((s) => (s.id === normalizeStudentId(id) ? { ...s, reportSeenAt: at } : s)) };
 }
+// What moved since the educator last opened this report, for the report's "Since you last looked" line. Since pass NQ (round one's
+// code reads, beside the weekly note) its rounds, questions, pictures and games come from the events since the latest reset
+// (activeEvents, CLAUDE.md's rule 2), as the report below the line counts them: a reset made after the last look had left the
+// rounds before it in the line while the report showed none. Its lessons mastered were already the report's (deriveProgress), and
+// its stories stay storiesRead's, each story's first read, which a reset keeps, as the Story Log and the weekly note do.
 export function changesSince(events, sinceIso) {
   const since = sinceIso ? new Date(sinceIso).getTime() : 0;
-  const recent = (events || []).filter((e) => e.at && new Date(e.at).getTime() >= since);
+  const recent = activeEvents(events || []).filter((e) => e.at && new Date(e.at).getTime() >= since);
   const attempts = recent.filter((e) => e.type === 'attempt_completed');
   const per = deriveProgress(events).perModule;
-  const mastered = Object.entries(per).filter(([, p]) => p.mastered && p.masteredAt && new Date(p.masteredAt).getTime() >= since).map(([id]) => (getModule(id) || {}).title).filter(Boolean);
+  // A title two lessons in the list share has its course beside it, as in the weekly note (pass NQ, F2): both More and fewer
+  // lessons mastered since the last look read "mastered More and fewer, More and fewer".
+  const masteredIds = Object.entries(per).filter(([, p]) => p.mastered && p.masteredAt && new Date(p.masteredAt).getTime() >= since).map(([id]) => id).filter((id) => (getModule(id) || {}).title);
+  const twin = (id) => masteredIds.some((other) => other !== id && getModule(other).title === getModule(id).title);
+  const mastered = masteredIds.map((id) => (twin(id) ? `${getModule(id).title} in ${courseLabel(getCourse(getModule(id).courseId))}` : getModule(id).title));
   return { attempts: attempts.length, questions: attempts.reduce((n, e) => n + ((e.core || []).length), 0), mastered, stories: storiesRead(events).filter((r) => new Date(r.at).getTime() >= since).length, colored: recent.filter((e) => e.type === 'colored').length, played: recent.filter(isGameBreak).length };
 }
 export function setCertificateState(roster, id, grade, state) {
@@ -51241,14 +51309,20 @@ export function enabledCourseIds(events) {
 }
 
 // The confidence score (1–5). It answers "did they pass by understanding, or by luck?"
-// The rules are listed in CONFIDENCE_RULES and printed on every report, so the
-// score is never a black box. Time signals are only used when timings exist.
+// The rules are listed in CONFIDENCE_RULES, which every report carries in its definitions (buildReport), and said in plain words
+// in EXPLANATIONS, the Key Words the report prints, so the score is never a black box. Time signals are only used when timings exist.
+// Since pass NQ (round one's code reads) both say what computeConfidence does: the 2 comes with a module's first pass
+// (isMasteredAttempt), before the star a second pass on another day earns, where they said mastered; the point taken when its
+// questions come back is taken when half or more of those answers were wrong, where EXPLANATIONS said any miss and CONFIDENCE_RULES
+// said nothing; and "guessing?" is named on Who Needs Help, the one place that reads it. The rules test holds every number and
+// condition of both to the code, each old wording planted and caught.
 export const CONFIDENCE_RULES = [
   'Confidence starts at 1 for any module that has been practiced.',
-  `+2 if the module is mastered (${CONFIG.MASTERY_MIN_CORRECT} or more of ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT} correct in one set).`,
+  `+2 once the module has been passed, its pass mark met in one set (${CONFIG.MASTERY_MIN_CORRECT} or more of ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT} through grade 5, 7 of 8 in grades 6 to 8, 8 of 10 from grade 9), even before its star, which takes a second pass on another day.`,
   '+1 if the most recent practice set was perfect.',
   '+1 if the last 8 or more core answers in this module were all correct, OR at least 2 review questions from this module have been asked and 80% or more were correct.',
-  'The highest score is 5. "Guessing?" is shown when 2 or more answers in the latest set were wrong in under 4 seconds.',
+  '-1 if questions from this module have come back (in memory checks, checkpoints and practice reviews, all counted together) and half or more of those answers were wrong.',
+  'The score stays between 1 and 5. Who needs help names a module under signs of guessing when 2 or more answers in its latest set were wrong in under 4 seconds each.',
 ];
 
 function median(numbers) {
@@ -51257,9 +51331,14 @@ function median(numbers) {
   return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
 }
 
+// Since pass NQ (F2) the score reads the lesson's history since its own reset, as the report's row does: its rounds, and its
+// questions when they came back, in another lesson's round, a checkpoint or a practice review, each kept only when it came after
+// the reset. Until then a lesson reset to 0 attempts kept its score and its guessing sign.
 export function computeConfidence(moduleId, events) {
   const active = activeEvents(events);
-  const attempts = active.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId);
+  const resets = lessonResetTimes(active);
+  const kept = (at) => !clearedByLessonReset(resets, moduleId, at);
+  const attempts = active.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId && kept(e.at));
   if (attempts.length === 0) return { score: null, signals: [], streak: 0, medianSec: null, reviewsAsked: 0, reviewsCorrect: 0 };
   const latest = attempts[attempts.length - 1];
   const signals = [];
@@ -51269,15 +51348,16 @@ export function computeConfidence(moduleId, events) {
   const answers = attempts.flatMap((e) => e.core);
   let streak = 0;
   for (let i = answers.length - 1; i >= 0 && answers[i].correct; i--) streak += 1;
-  const reviews = active.filter((e) => e.type === 'attempt_completed').flatMap((e) => [e.review, e.review2].filter((r) => r && r.moduleId === moduleId))
-    .concat(active.filter((e) => e.type === 'checkpoint_completed').flatMap((e) => (e.results || []).filter((r) => r.moduleId === moduleId)))
-    .concat(active.filter((e) => e.type === 'light_review_completed' && e.moduleId === moduleId).flatMap((e) => e.results || []));   // the light review's five count too (pass LF)
+  const reviews = active.filter((e) => e.type === 'attempt_completed' && kept(e.at)).flatMap((e) => [e.review, e.review2].filter((r) => r && r.moduleId === moduleId))
+    .concat(active.filter((e) => e.type === 'checkpoint_completed' && kept(e.at)).flatMap((e) => (e.results || []).filter((r) => r.moduleId === moduleId)))
+    .concat(active.filter((e) => e.type === 'light_review_completed' && e.moduleId === moduleId && kept(e.at)).flatMap((e) => e.results || []));   // the light review's five count too (pass LF)
   const reviewsCorrect = reviews.filter((r) => r.correct).length;
   const retentionStrong = reviews.length >= 2 && reviewsCorrect / reviews.length >= 0.8;
   if (streak >= 8) signals.push(`${streak} correct in a row`);
   if (retentionStrong) signals.push(`review ${reviewsCorrect} of ${reviews.length} correct`);
   if (streak >= 8 || retentionStrong) score += 1;
-  // Missing the material when it comes back, in a memory check or a checkpoint, costs a point.
+  // Missing the material when it comes back costs a point: once its questions have come back at least once (memory checks,
+  // checkpoints and practice reviews, all counted together), when half or more of those answers were wrong.
   const retentionWeak = reviews.length >= 1 && reviewsCorrect / reviews.length <= 0.5;
   if (retentionWeak) { score -= 1; signals.push(`missed ${reviews.length - reviewsCorrect} of ${reviews.length} when it came back`); }
   score = Math.max(1, Math.min(5, score));
@@ -51304,11 +51384,11 @@ export const EXPLANATIONS = [
   },
   {
     term: 'Confidence, scored 1 to 5',
-    plain: 'This is our best estimate of whether or not a student truly understands a module (versus simply having a good day). Everyone starts at 1. Mastering a module adds 2 and a flawless round adds another. The last point, or a perfect confidence score, will always be the hardest to achieve. It comes either from eight correct answers in a row or from continuing to reliably answer material correctly as it reappears over time. Spaced repetition, or the re-introduction of material over increasingly lengthened periods of time, is a highly effective technique when it comes to long-term retention of information.',
+    plain: 'This is our best estimate of whether or not a student truly understands a module (versus simply having a good day). Everyone starts at 1. Passing a module adds 2, even before its star, and a flawless latest round adds 1 more. The last point, or a perfect confidence score, will always be the hardest to achieve. It comes either from eight correct answers in a row, the module\'s latest eight, or from continuing to reliably answer its questions correctly as they reappear over time: at least two back, and 80 percent or more of them right. Spaced repetition, or the re-introduction of material over increasingly lengthened periods of time, is a highly effective technique when it comes to long-term retention of information.',
   },
   {
     term: 'What holds a confidence score down',
-    plain: 'A score stays low when a student has practiced a module one or more times without mastering it. A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row. The goal is to ensure that the information sticks. If two or more wrong answers come back in under four seconds, the progress report adds a note that says "guessing?" This is because answering quickly usually indicates tapping rather than thinking. Missing a question from the module when it comes back, in a memory check or a checkpoint, also costs a point, because the score is meant to say whether it stuck.',
+    plain: 'A score stays low when a student has practiced a module one or more times without passing it. A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row. The goal is to ensure that the information sticks. If two or more wrong answers in the latest round come in under four seconds each, Who needs help says there are signs of guessing in that module. This is because answering quickly usually indicates tapping rather than thinking. Getting half or more of the module\'s questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point, because the score is meant to say whether it stuck.',
   },
   {
     term: 'Answered correctly',
@@ -51316,7 +51396,7 @@ export const EXPLANATIONS = [
   },
   {
     term: 'Typical answering time',
-    plain: 'Every student answers questions at a pace that is unique to them. We use these individualized times to work out what is typical then watch for answers that arrive significantly faster or slower. Alongside the confidence score, this timing tells you a great deal. Quick and correct equals fluency while quick and incorrect might mean guessing.',
+    plain: 'Every student answers questions at a pace that is unique to them. We use these individualized times to work out what is typical, then watch for a latest round much faster than usual: under 60 percent of the time per question they usually take in their other modules. When that happens, View progress for this module says so. A slower round is not called out. Alongside the confidence score, this timing tells you a great deal. Quick and correct equals fluency while quick and incorrect might mean guessing.',
   },
   {
     term: 'Not assigned',
@@ -51404,15 +51484,18 @@ export function moduleStory(learnerName, events, moduleId) {
   const mod = getModule(moduleId);
   if (!mod) return '';
   const active = activeEvents(events);
-  const resetAt = active.filter((e) => e.type === 'module_reset' && e.moduleId === moduleId).map((e) => e.at).sort().pop() || '';
-  const mine = active.filter((e) => e.moduleId === moduleId && String(e.at) > resetAt);
+  // The lesson's own reset, read as the report's row reads it (lessonResetTimes, since pass NQ): only what came after it is this
+  // lesson's story now, and so is the confidence score below, which reads it the same way.
+  const resets = lessonResetTimes(active);
+  const kept = (e) => !clearedByLessonReset(resets, moduleId, e.at);
+  const mine = active.filter((e) => e.moduleId === moduleId && kept(e));
   const reads = mine.filter((e) => e.type === 'lesson_viewed').length;
   const attempts = mine.filter((e) => e.type === 'attempt_completed');
   const name = learnerName;
   const rules = moduleRules(moduleId);
 
-  const placedPast = active.some((e) => e.type === 'placed' && (e.moduleIds || []).includes(moduleId) && String(e.at) > resetAt);
-  const pieces = writingsFor(events, moduleId).filter((w) => String(w.at) > resetAt);
+  const placedPast = active.some((e) => e.type === 'placed' && (e.moduleIds || []).includes(moduleId) && kept(e));
+  const pieces = writingsFor(events, moduleId);   // the pieces since the lesson's own reset (writingsFor reads it since pass NQ)
   if (pieces.length) {
     const marked = pieces.filter((w) => w.mark); const met = marked.filter((w) => w.mark.meets);
     const waiting = pieces.length - marked.length;
@@ -51422,25 +51505,37 @@ export function moduleStory(learnerName, events, moduleId) {
     const sizes = pieces.map((w) => `${w.words} words`).join(', ');
     return `${name} has sent ${pieces.length} ${pieces.length === 1 ? 'piece' : 'pieces'} of writing for ${lowerTitle(mod.title)} (${sizes}). ${metPart}${backPart}${waitPart}. Writing is marked by the educator, not the app, and the pieces themselves are kept in the record so they can be read again.`;
   }
-  const quick = active.filter((e) => e.type === 'quick_check' && e.moduleId === moduleId && String(e.at) > resetAt).pop();
-  if (quick && quick.passed) return `${name} took the quick check on ${lowerTitle(mod.title)} on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}, so the module was placed past without the lesson. It is not counted as mastered; the star is still to be earned, and memory checks will visit it.`;
-  const quickNote = quick ? ` ${name} first tried the quick check on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}${quick.guessed ? ', too fast to count' : ''}, so the lesson came next.` : '';
+  const quick = active.filter((e) => e.type === 'quick_check' && e.moduleId === moduleId && kept(e)).pop();
+  // A quick check passed with no round since: placed past, its star still to earn. Once rounds follow, the story tells them as it tells
+  // any lesson's, the quick check in a sentence of its own (pass NQ, F3): a lesson skipped by a quick check is mastered later by two
+  // passes on different days, and until then this sentence said its star was still to be earned after it was earned.
+  if (quick && quick.passed && attempts.length === 0) return `${name} took the quick check on ${lowerTitle(mod.title)} on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}, so the module was placed past without the lesson. It is not counted as mastered; the star is still to be earned, and memory checks will visit it.`;
+  const quickNote = !quick ? '' : quick.passed ? `${name} passed the quick check on ${niceDate(quick.at)} with ${quick.right} of ${quick.total}, so the module was placed past without the lesson.`
+    : `${name} first tried the quick check on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}${quick.guessed ? ', too fast to count' : ''}, so the lesson came next.`;
   if (attempts.length === 0 && reads === 0 && placedPast) return `The placement check placed past ${lowerTitle(mod.title)}, so it is unlocked without a practice round. It is not counted as mastered; the star still has to be earned, and memory checks will visit it.`;
   if (attempts.length === 0 && reads === 0) return `${name} has not opened ${lowerTitle(mod.title)} yet. There is nothing to report until they do.`;
   if (attempts.length === 0) return `${name} has read the ${lowerTitle(mod.title)} lesson ${reads === 1 ? 'once' : reads + ' times'} but has not practiced it yet. Nothing counts until a practice round is finished.`;
 
   const times = (n) => (n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`);
-  const parts = [`${name} read through this lesson ${times(reads || 1)} and practiced it ${times(attempts.length)}.${quickNote}`];
+  // The quick check is told first, as it came first (it is offered only before any round of its lesson, quickCheckAllowed), and a
+  // lesson with no view in the log is not said to have been read (pass NQ, F4, after round three's code read): until F4 a lesson
+  // skipped by a quick check and practiced since read "Sam read through this lesson once and practiced it twice. Sam passed the quick
+  // check on October 2 ..., so the module was placed past without the lesson.", with no view of the lesson in the log.
+  const practiced = reads ? `${name} read through this lesson ${times(reads)} and practiced it ${times(attempts.length)}.` : `${name} practiced this lesson ${times(attempts.length)}.`;
+  const parts = [[quickNote, practiced].filter(Boolean).join(' ')];
   const loops = mine.filter((e) => e.type === 'looped_back');
-  if (loops.length) { const back = getModule(loops[loops.length - 1].toModuleId); parts.push(`After repeated misses, ${name} was sent back to ${back ? lowerTitle(back.title) : 'the module before'} for a quick check of the groundwork, then brought forward again.`); }
+  if (loops.length) { const back = getModule(loops[loops.length - 1].toModuleId); parts.push(`After repeated misses, ${name} was sent back to ${back ? lessonInSentence(back.id, moduleId) : 'the module before'} for a quick check of the groundwork, then brought forward again.`); }
 
   // Each attempt in order, without turning into a table. A pass is called a pass; the star is
   // mentioned once, below, because mastery takes two passes on different days.
+  // A pass is isMasteredAttempt's, the one rule (pass NQ, F3): its mark scales with the round's length, so a triple dose passes at 12 of
+  // 15 where this line called 10 of 15 a pass by the round's usual 4; and one right answer "was" answered correctly, not "were".
   attempts.forEach((a, i) => {
-    const passed = a.coreCorrect >= rules.toMaster;
+    const passed = isMasteredAttempt(a);
     const which = attempts.length === 1 ? 'the single practice attempt' : i === 0 ? 'the first attempt' : i === attempts.length - 1 ? 'the most recent attempt' : `attempt ${i + 1}`;
-    if (passed) parts.push(`On ${which}, ${a.coreCorrect} out of ${a.coreTotal} were answered correctly, which is a pass.`);
-    else parts.push(`On ${which}, ${a.coreCorrect} out of ${a.coreTotal} were answered correctly, which is not yet a pass, so the module stayed open for more practice.`);
+    const were = a.coreCorrect === 1 ? 'was' : 'were';
+    if (passed) parts.push(`On ${which}, ${a.coreCorrect} out of ${a.coreTotal} ${were} answered correctly, which is a pass.`);
+    else parts.push(`On ${which}, ${a.coreCorrect} out of ${a.coreTotal} ${were} answered correctly, which is not yet a pass, so the module stayed open for more practice.`);
   });
   const storyProgress = deriveProgress(events).perModule[moduleId];
   if (storyProgress && storyProgress.mastered && storyProgress.masteredAt) parts.push(`${storyProgress.passDays.length >= 2 ? 'Two passes on different days' : 'That pass'} earned the star on ${niceDate(storyProgress.masteredAt)}, so the content counts as mastered.`);
@@ -51454,28 +51549,43 @@ export function moduleStory(learnerName, events, moduleId) {
   const hereSec = median(here) !== null ? Math.round(median(here) / 100) / 10 : null;
   const usualSec = median(everywhere) !== null ? Math.round(median(everywhere) / 100) / 10 : null;
   const fastWrong = attempts.flatMap((a) => a.core || []).filter((r) => !r.correct && r.timeMs < 4000).length;
+  // Only a latest round much faster than their usual pace is spoken of (pass NQ, F2), as the Key Words' Typical answering time and
+  // ALGORITHMS' Timing say: under 60 percent of the time per question they usually take in their other modules is called out, and a
+  // slower round is not. Until pass NQ every other round was "a normal pace for them": a round three times slower than usual, and a
+  // round with no other module to compare it with.
   if (hereSec !== null && usualSec !== null && hereSec < usualSec * 0.6) {
     parts.push(`The last round took about ${hereSec} seconds per question, noticeably quicker than the ${usualSec} seconds per question ${name} usually takes.`);
     if (fastWrong >= 2) parts.push('Several of those quick answers were wrong, which points to guessing rather than working the questions out.');
-  } else if (hereSec !== null) {
-    parts.push(`The last round took about ${hereSec} seconds per question which is a normal pace for them.`);
   }
 
-  // What happens next, said plainly.
+  // What happens next, said plainly (pass NQ, F3). Memory checks visit a lesson only once it is passed (buildAttempt draws them from the
+  // lessons passed), so only a passed lesson is told its questions come back. A lesson not yet passed, and not moved past, is told its
+  // own pass mark (moduleRules, the grade band's: 7 of 8 in grade 7) and, only when some lesson of its assigned courses waits on it
+  // (moduleStatuses: locked, with this lesson among the prerequisites that gate it), that those stay locked. Until pass NQ a lesson
+  // passed once heard "Until 4 out of 5 is reached, the modules after this one stay locked", a lesson never passed with two quick wrong
+  // answers heard its questions "will be introduced again", and a lesson no assigned lesson needs heard the ones after it stay locked.
   const progress = deriveProgress(events);
   const p = progress.perModule[moduleId];
   const conf = computeConfidence(moduleId, events);
   const suspiciouslyQuick = hereSec !== null && usualSec !== null && hereSec < usualSec * 0.6;
-  if (fastWrong >= 2 || suspiciouslyQuick || (p && p.mastered && attempts.length >= 3)) {
+  if (p && p.passed && (fastWrong >= 2 || suspiciouslyQuick || (p.mastered && attempts.length >= 3))) {
     parts.push('To be sure this is true mastery, questions from this module will be introduced again at a later time for further evaluation, which also refines the confidence score.');
   } else if (p && p.mastered) {
     parts.push('Questions from this module will reappear again later as a memory check which not only helps to improve retention, it refines the confidence score.');
-  } else {
-    parts.push(`Until ${rules.toMaster} out of ${rules.questions} is reached, the modules after this one stay locked, and every new practice round brings a fresh set of questions.`);
+  } else if (p && !p.passed && !p.movedPast) {
+    const enabled = enabledCourseIds(events); const status = new Map(moduleStatuses(progress, enabled).map((x) => [x.id, x.status]));
+    const waiting = MODULES.filter((m) => enabled.includes(m.courseId) && status.get(m.id) === 'locked' && gatingPrerequisites(m.id, enabled).includes(moduleId));
+    const mark = `${rules.toMaster} out of ${rules.questions}`;
+    // One lesson waiting is "the lesson picture graphs" (pass NQ, F4, after round three's code read): a lowercased plural title read with
+    // its singular verb as a slip ("Until 4 out of 5 is reached, picture graphs stays locked").
+    parts.push(waiting.length === 1 ? `Until ${mark} is reached, the lesson ${lessonInSentence(waiting[0].id, moduleId)} stays locked, and every new practice round brings a fresh set of questions.`
+      : waiting.length ? `Until ${mark} is reached, the ${waiting.length} modules that need this one stay locked, and every new practice round brings a fresh set of questions.`
+      : `A round of ${mark} passes this one, and every new practice round brings a fresh set of questions.`);
   }
   if (conf.score !== null) parts.push(`${name}'s confidence score in ${lowerTitle(mod.title)} currently stands at ${conf.score} out of 5.`);
   if (p && refresherIds(events).includes(moduleId)) parts.push('A question from this module was missed in the last checkpoint, so a quick refresher round is suggested before moving on. The pass and the star are kept either way.');
-  if (p && p.placed && !p.mastered && p.passes === 0) parts.push('The placement check placed past this module earlier, so it was unlocked without a pass. The star still has to be earned.');
+  // Placed past by the placement check; a lesson the quick check placed says so in its own sentence above (pass NQ, F3).
+  if (p && p.placed && !p.mastered && p.passes === 0 && !(quick && quick.passed)) parts.push('The placement check placed past this module earlier, so it was unlocked without a pass. The star still has to be earned.');
   if (p && !p.mastered && p.passed && p.firstPassedAt) parts.push(`Passed on ${new Date(p.firstPassedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. A second pass on a different day is what earns the star, because doing it again after a gap is the real test of whether it stuck.`);
   if (p && p.mastered && p.masteredAt) parts.push(`Mastered on ${new Date(p.masteredAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} after ${attempts.length === 1 ? 'one attempt' : `${attempts.length} attempts`}.`);
   return parts.join(' ');
@@ -51518,36 +51628,79 @@ export function goalPhrase(title) {
   if (SENTENCE_TITLE.test(t)) return `that ${lowerTitle(t)}`;
   return `about ${lowerTitle(t)}`;
 }
+// The lesson a student does next (pass NQ, round one's code reads). In plain terms: the first lesson of an assigned course, in the
+// report's order (course by course, each course's lessons in their own order), that is not mastered and that moduleStatuses calls
+// available: open now and not yet passed, since a lesson passed once waits for its star on another day and the lesson it opened
+// comes next. Who Needs Help's row and the weekly note both say Next up from this one rule, so the two never disagree. Until pass NQ
+// the weekly note took the first unmastered lesson of every course in the app, sorted by course id, so a kindergartner given only
+// Counting read "Next up: Farms feed us." Null when no assigned lesson is open and unpassed. A lesson the educator moved the student
+// past (Move Forward) is not next (pass NQ, F4, after round three's code read): the child's overview says of it "You moved on from
+// this one for now. It will come back later for a fresh try." and opens the lessons waiting on it (moved past counts for their gate),
+// and the fresh try comes back as a practice review. Until F4 a row could say "Sam was moved past Count to 10" beside "Next up: Count
+// to 10".
+export function nextUpModule(report, events) {
+  const enabled = report.enabledCourseIds || [];
+  const progress = deriveProgress(events);
+  const status = new Map(moduleStatuses(progress, enabled).map((x) => [x.id, x.status]));
+  return (report.modules || []).find((m) => enabled.includes(m.courseId) && !m.mastered && !(progress.perModule[m.id] || {}).movedPast && status.get(m.id) === 'available') || null;
+}
 // The weekly note: one plain paragraph about the last seven days, the same on the report and in the
 // class printout. Nothing about the student beyond what the log already holds.
+// Since pass NQ (round one's code reads) it reads the log as the report beside it does. The week's rounds, pictures and games come
+// from the events since the latest reset (activeEvents, CLAUDE.md's rule 2), so a reset in the middle of the week no longer counts
+// the rounds before it; its stories come from storiesRead, each story's first read, which a reset keeps, as the Story Log does
+// (a story is logged as read once, so a read before a reset is never logged again). Lessons are matched by id and printed by
+// title, since ten titles belong to two lessons each (More and fewer is a pre-K 3 lesson and a pre-K 4 one): matched by title,
+// mastering one hid the other from Still practicing. Next up is nextUpModule's lesson unless it is already under Still
+// practicing, and "Every assigned module is mastered." is said only when every lesson of every assigned course is. When two lessons
+// the note names share a title, each has its course beside it (pass NQ, F2), so the two can be told apart.
 export function weeklyNote(shownName, events, now) {
   const rep = buildReport(shownName, events); const week = new Date(now).getTime() - 7 * 24 * 3600 * 1000; const rows = rep.modules || [];
-  const recent = (events || []).filter((e) => e.at && new Date(e.at).getTime() >= week);
+  const recent = activeEvents(events || []).filter((e) => e.at && new Date(e.at).getTime() >= week);
   const attempts = recent.filter((e) => e.type === 'attempt_completed');
   const asked = attempts.reduce((n, e) => n + ((e.core || []).length), 0); const right = attempts.reduce((n, e) => n + (e.core || []).filter((r) => r.correct).length, 0);
-  const touched = [...new Set(attempts.map((e) => (getModule(e.moduleId) || {}).title).filter(Boolean))];
-  const masteredNow = rows.filter((m) => m.mastered && m.masteredAt && new Date(m.masteredAt).getTime() >= week).map((m) => m.title);
+  const byId = new Map(rows.map((m) => [m.id, m]));
+  const touched = [...new Set(attempts.map((e) => e.moduleId).filter((id) => byId.has(id)))];
+  const masteredNow = rows.filter((m) => m.mastered && m.masteredAt && new Date(m.masteredAt).getTime() >= week).map((m) => m.id);
   const colored = recent.filter((e) => e.type === 'colored').length;
   const played = recent.filter(isGameBreak).length;   // pass MB; since pass MQ only the visits that reached Begin (Q63)
   const met = storiesRead(events).filter((r) => new Date(r.at).getTime() >= week).map((r) => STORY_TITLES[r.moduleId] ? { ...STORY_TITLES[r.moduleId], goal: isLongStoryId(r.moduleId) ? ((getCourse(longStoryCourseId(r.moduleId)) || {}).title || '') : ((getModule(r.moduleId) || {}).title || '') } : null).filter(Boolean);
   // Each lesson name sits on its own bold line (pass IT, Mikey): a list run into one sentence read the comma inside One
   // more, one less as two lessons, and the same lessons appeared twice, once as worked on and again as mastered. Now the
-  // week splits into mastered this week, still practicing, and what comes next, and no lesson is named twice.
-  const practicing = touched.filter((t) => !rows.some((m) => m.title === t && m.mastered));
-  const next = rows.find((m) => !m.mastered && !practicing.includes(m.title));
-  const bullets = (xs, cap) => [...xs.slice(0, cap).map((t) => `\n• **${t}**`), xs.length > cap ? `\n• and ${xs.length - cap} more` : ''].join('');
+  // week splits into mastered this week, still practicing, and what comes next, and no lesson is named twice. A lesson practiced this
+  // week is still practicing only while its row has rounds (pass NQ, F4): one reset on its own after this week's rounds shows 0 attempts
+  // on its row, and was listed as still practicing beside it; it can be Next up now, as on the row.
+  const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0);
+  const upNext = nextUpModule(rep, events);
+  const next = upNext && !practicing.includes(upNext.id) ? upNext : null;
+  const assigned = rows.filter((m) => (rep.enabledCourseIds || []).includes(m.courseId));
+  // Practice reviews and Move Forward this week (Mikey, pass LP), so one printed note carries everything.
+  const reviews = lightReviewHistory(events, shownName).filter((h) => h.at && new Date(h.at).getTime() >= week);
+  // A title two lessons share (pass NQ, F2): ten titles belong to two lessons each (More and fewer is a pre-K 3 lesson and a pre-K 4
+  // one), so a week with both printed the same title twice for two lessons. A lesson's title has its course beside it, in the
+  // standard wording (courseLabel), only when another lesson the note prints has the same title: those listed as mastered or still
+  // practicing (as many as are shown), Next up, and each practice review's own lesson. Any other title stands alone, as before.
+  const named = [...masteredNow.slice(0, 8), ...practicing.slice(0, 5), ...(next ? [next.id] : []), ...reviews.map((h) => h.moduleId)];
+  const titleOf = (id) => (getModule(id) || {}).title || '';
+  const twinNamed = (id) => named.some((other) => other !== id && titleOf(other) && titleOf(other) === titleOf(id));
+  const courseOf = (id) => courseLabel(getCourse(getModule(id).courseId));
+  const nameOf = (id) => (twinNamed(id) ? `**${titleOf(id)}** in ${courseOf(id)}` : `**${titleOf(id)}**`);
+  const bullets = (xs, cap) => [...xs.slice(0, cap).map((t) => `\n• ${t}`), xs.length > cap ? `\n• and ${xs.length - cap} more` : ''].join('');
   const parts = [];
-  parts.push(attempts.length ? ['This week ', shownName, ' answered ', String(asked), ' questions and got ', String(right), ' right.'].join('') : ['This week ', shownName, ' did not practice on this device.'].join(''));
-  if (masteredNow.length) parts.push([shownName, ' mastered:', bullets(masteredNow, 8)].join(''));
-  if (practicing.length) parts.push(['Still practicing:', bullets(practicing, 5)].join(''));
+  // One question is "1 question" (pass NQ): a week of one read "answered 1 questions", where the coloring line says "a picture".
+  parts.push(attempts.length ? ['This week ', shownName, ' answered ', String(asked), asked === 1 ? ' question' : ' questions', ' and got ', String(right), ' right.'].join('') : ['This week ', shownName, ' did not practice on this device.'].join(''));
+  if (masteredNow.length) parts.push([shownName, ' mastered:', bullets(masteredNow.map(nameOf), 8)].join(''));
+  if (practicing.length) parts.push(['Still practicing:', bullets(practicing.map(nameOf), 5)].join(''));
   if (colored) parts.push([shownName, ' colored ', colored === 1 ? 'a picture' : `${colored} pictures`, '.'].join(''));
   if (played) parts.push([shownName, ' played ', played === 1 ? 'a game' : `${played} games`, '.'].join(''));
   if (met.length) parts.push([shownName, ' read:', ...met.map((m) => ['\n• **', m.title, '**', m.about ? [', a story about ', m.about].join('') : '', '.', m.goal ? [' Through this story, the goal was to learn ', goalPhrase(m.goal), '.'].join('') : ''].join(''))].join(''));
-  // Practice reviews and Move Forward this week (Mikey, pass LP), so one printed note carries everything.
-  // Each entry is its own plain paragraph with the lesson in bold (the card bolds whole bullets, which suits lesson names only).
-  const reviewLines = lightReviewHistory(events, shownName).filter((h) => h.at && new Date(h.at).getTime() >= week).map((h) => h.text.replace(/\*([^*]+)\*/g, '**$1**'));
+  // Each entry is its own plain paragraph with the lesson in bold (the card bolds whole bullets, which suits lesson names only). A
+  // review's sentence names its own lesson first, so that first name takes the course beside it when its title is shared (above),
+  // unless the sentence already gives it (since pass NQ's F3 a stuck sentence names both lessons of a shared title with their courses).
+  const reviewLines = reviews.map((h) => { const line = h.text.replace(/\*([^*]+)\*/g, '**$1**'); const own = `**${titleCase(titleOf(h.moduleId))}**`; const given = `${own} in ${courseOf(h.moduleId)}`;
+    return twinNamed(h.moduleId) && line.includes(own) && !line.includes(given) ? line.replace(own, () => given) : line; });
   if (reviewLines.length) { parts.push('Practice reviews:'); for (const line of reviewLines) parts.push(line); }
-  if (next) parts.push(`Next up: **${next.title}**.`); else if (!practicing.length) parts.push('Every assigned module is mastered.');
+  if (next) parts.push(`Next up: ${nameOf(next.id)}.`); else if (assigned.length && assigned.every((m) => m.mastered)) parts.push('Every assigned module is mastered.');
   return parts.join('\n\n');
 }
 // Story titles by module, filled by the app at start (stories live in their own file), so the note
@@ -51569,7 +51722,11 @@ export function classView(students, now) {
     const stuck = assigned.filter((m) => !m.mastered && failedStreak(events, m.id) >= 2 && !movedPastNow.includes(m.id));
     const who = label || id;
     const bold = (m) => `**${titleCase(m.title)}**`;
-    if (stuck.length) { score += 3 * stuck.length; reasons.push(`${who} is stuck on ${stuck.map((m) => `${bold(m)} (${failedStreak(events, m.id)} misses in a row, best score ${outOf(m.bestScore)})`).join('; ')}`); }
+    // A stuck lesson whose loop back goes to a lesson of its own title has its course beside it (pass NQ, F4, after round three's code
+    // read), as the loop back reason below names the lesson it went to: grade 7's The first Texans loops back to grade 4's, and the row
+    // read "stuck on **The First Texans**" and "sent back once ..., to **The First Texans**".
+    const stuckName = (m) => { const f = fundamentalsOf(m.id); return f && f.id !== m.id && f.title === m.title ? bold(m) + ' in ' + courseLabel(getCourse(m.courseId)) : bold(m); };
+    if (stuck.length) { score += 3 * stuck.length; reasons.push(`${who} is stuck on ${stuck.map((m) => `${stuckName(m)} (${failedStreak(events, m.id)} misses in a row, best score ${outOf(m.bestScore)})`).join('; ')}`); }
 
     // A mastered lesson a practice review reopened (pass LP): stuck after the app's own work weighs like any stuck lesson;
     // still being worked through weighs like a single miss.
@@ -51581,11 +51738,18 @@ export function classView(students, now) {
     if (movedPastMods.length) { score += 1; reasons.push(`${who} was moved past ${movedPastMods.map(bold).join(' and ')} before mastering it, and it comes back as a practice review for a fresh try`); }
     // One miss is not a crisis, but it is not nothing either: the educator sees it, and sees what a second miss would bring.
     const missedOnce = assigned.filter((m) => !m.passed && !m.mastered && m.attempts > 0 && failedStreak(events, m.id) === 1);
-    if (missedOnce.length) { score += 1; reasons.push(missedOnce.map((m) => { const f = fundamentalsOf(m.id); const back = f ? ', **' + titleCase(f.title) + '**' : ''; const tries = m.attempts === 1 ? 'attempt' : 'attempts'; return `${who} failed the last round of ${bold(m)} (${m.bestScore} right, ${m.attempts} ${tries}); a second miss would route them back to the fundamentals${back}`; }).join('. ')); }
+    // A second miss routes back to fundamentalsOf's lesson, loopBackTarget's own, and a lesson with no prerequisite never loops back, so
+    // then no route is named; when the two lessons share a title, each has its course beside it (pass NQ, F3).
+    if (missedOnce.length) { score += 1; reasons.push(missedOnce.map((m) => { const f = fundamentalsOf(m.id); const twin = !!(f && f.id !== m.id && f.title === m.title);
+      const named = (x) => (twin ? `**${titleCase(x.title)}** in ${courseLabel(getCourse(getModule(x.id).courseId))}` : `**${titleCase(x.title)}**`);
+      const route = f ? `; a second miss would route them back to the fundamentals, ${named(f)}` : '';
+      const tries = m.attempts === 1 ? 'attempt' : 'attempts'; return `${who} failed the last round of ${named(m)} (${m.bestScore} right, ${m.attempts} ${tries})${route}`; }).join('. ')); }
 
     // Loop backs in the last while mean the platform already had to step in.
+    // The lesson a loop back went to has its course beside it when it has the title of the lesson the loop came from (pass NQ, F4).
     const loops = active.filter((e) => e.type === 'looped_back').length;
-    if (loops) { const backTo = [...new Set(active.filter((e) => e.type === 'looped_back').map((e) => getModule(e.toModuleId)).filter(Boolean).map((m) => lowerTitle(m.title)))]; const howOften = loops === 1 ? 'once' : `${loops} times`; score += 2 * loops; reasons.push(`${who} was sent back ${howOften} after repeated misses, to ${backTo.map((t) => `**${titleCase(t)}**`).join(' and ')}`); }
+    const backName = (e) => { const to = getModule(e.toModuleId); const from = getModule(e.moduleId); if (!to) return null; return from && from.id !== to.id && from.title === to.title ? bold(to) + ' in ' + courseLabel(getCourse(to.courseId)) : bold(to); };
+    if (loops) { const backTo = [...new Set(active.filter((e) => e.type === 'looped_back').map(backName).filter(Boolean))]; const howOften = loops === 1 ? 'once' : `${loops} times`; score += 2 * loops; reasons.push(`${who} was sent back ${howOften} after repeated misses, to ${backTo.join(' and ')}`); }
 
     // Guessing flags.
     const guessing = assigned.filter((m) => m.confidence.signals.some((x) => /guessing/.test(x)));
@@ -51605,14 +51769,17 @@ export function classView(students, now) {
     const passedOnce = assigned.filter((m) => m.passed && !m.mastered).length;
     const masteredPhrase = `${mastered} ${mastered === 1 ? 'module' : 'modules'} mastered` + (passedOnce ? ` and ${passedOnce} passed once` : '');
     // Among students who are fine, the one who needed more tries per mastered module comes
-    // first, and the reason says so in words, so "on track" is never a flat list.
-    const effort = mastered > 0 ? attempts.length / mastered : 0;
+    // first, and the reason says so in words, so "on track" is never a flat list. The rounds are Practice so far's own (buildReport's
+    // totalAttempts, counted since each lesson's own reset; pass NQ, F4), so one row never says two round counts: until then the ratio
+    // counted every round, and after a lesson's reset a row read "Practice so far: 2 rounds, 2 passed." beside "about 4.0 rounds per module".
+    const effort = mastered > 0 ? report.totalAttempts / mastered : 0;
     if (score === 0 && mastered > 0) reasons.push(effort >= 2 ? `${who} is on track, but it took about ${effort.toFixed(1)} rounds per module to get there` : `${who} is on track and quick about it: about ${effort.toFixed(1)} rounds per module`);
     // Every row carries the same practice line the report summary shows, so a row never reads as if nothing happened.
     const practice = practiceLine(report);
     const triedText = practice.tried.length ? `Tried but not passed yet: ${practice.tried.map((t) => `**${t.title}** (${t.short})`).join('; ')}.` : '';
     const practiceText = practice.line ? practice.line + (triedText ? `\n${triedText}` : '') : '';
-    const next = assigned.find((m) => !m.mastered && moduleStatuses(deriveProgress(events), report.enabledCourseIds).find((x) => x.id === m.id).status === 'available');
+    // Next up is nextUpModule's (pass NQ), the rule the weekly note uses too, so the row and the note never name different lessons.
+    const next = nextUpModule(report, events);
     // One sentence that squares the good news with the flags: a student who has mastered a lot
     // can still top the list, and the educator should see why without decoding it.
     const flagged = stuck.length + guessing.length + shaky.length + (loops ? 1 : 0);
@@ -51867,19 +52034,20 @@ export function titleCase(text) {
     return w.split('-').map((p, k) => cap(p, k > 0 || (inner && !adverb(i)))).join('-');
   }).join(' ');
 }
-// The module a loop back returns to: the module before it in its course, else its first named prerequisite.
+// The module a loop back returns to: loopBackTarget's own, the last of the lesson's prerequisites, or none when it has none (pass NQ,
+// F3). Until pass NQ this took the module before it in its course, else its first named prerequisite, so for 202 of 628 lessons with a
+// prerequisite Who Needs Help said a second miss would route back to a lesson the loop back does not go to (Tens and ones named
+// Subtracting to 20, where it loops back to Counting by tens), and a lesson with none was promised a loop back that never comes.
 export function fundamentalsOf(moduleId) {
-  const m = getModule(moduleId); if (!m) return null;
-  const course = getCourse(m.courseId);
-  const before = course ? course.modules.filter((x) => x.order < m.order).sort((a, b) => b.order - a.order)[0] : null;
-  const target = before || (m.requires && m.requires.length ? getModule(m.requires[0]) : null);
+  const pre = prerequisitesOf(moduleId); const target = pre.length ? getModule(pre[pre.length - 1]) : null;
   return target ? { id: target.id, title: target.title } : null;
 }
 const outOf = (score) => String(score).replace(' of ', ' out of ');
 export function practiceLine(report) {
   const assigned = report.modules.filter((m) => report.enabledCourseIds.includes(m.courseId));
   if (report.totalAttempts === 0 && !assigned.some((m) => m.quickCheck)) return { line: '', tried: [] };
-  const passedRounds = assigned.reduce((a, m) => a + (m.passes || 0), 0);
+  // The rounds passed are counted from the very rounds the line counts (buildReport's passedRounds, pass NQ).
+  const passedRounds = report.passedRounds;
   const line = report.totalAttempts ? `Practice so far: ${report.totalAttempts} ${report.totalAttempts === 1 ? 'round' : 'rounds'}, ${passedRounds} passed.` : 'No practice rounds yet.';
   const subjectOf = (m) => { const c = getCourse(m.courseId); return c ? c.subject : ''; };
   const tried = assigned.filter((m) => m.attempts > 0 && !m.passed && !m.mastered).map((m) => ({ id: m.id, title: titleCase(m.title), subject: subjectOf(m), detail: `best attempt ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'try' : 'tries'}`, short: `best score ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'attempt' : 'attempts'}` }));
@@ -51901,6 +52069,12 @@ export function buildReport(learnerName, events) {
   const refresh = refresherIds(events);
   const progress = deriveProgress(events);
   const active = activeEvents(events);
+  // Since pass NQ (F2) the quick check on a row and the rounds Practice so far counts are read since each lesson's own reset, as the
+  // row's attempts are (lessonResetTimes); and the rounds passed are counted from those same rounds, so "N rounds, M passed" counts
+  // one set. Until then M was the rows' passes, so a lesson passed twice and reset read "2 rounds, 0 passed", a passed round in a
+  // course since switched off read as not passed, and a writing mark counted as a round passed ("1 round, 2 passed").
+  const resets = lessonResetTimes(active);
+  const rounds = active.filter((e) => e.type === 'attempt_completed' && !clearedByLessonReset(resets, e.moduleId, e.at));
   const modules = [...MODULES].sort((a, b) => a.courseId.localeCompare(b.courseId) || a.order - b.order).map((m) => {
     const p = progress.perModule[m.id];
     return {
@@ -51925,7 +52099,7 @@ export function buildReport(learnerName, events) {
       firstAttemptAt: p.firstAttemptAt,
       lastAttemptAt: p.lastAttemptAt,
       confidence: computeConfidence(m.id, events),
-      quickCheck: active.filter((e) => e.type === 'quick_check' && e.moduleId === m.id).map((e) => ({ at: e.at, right: e.right, total: e.total, passed: e.passed, guessed: e.guessed })).pop() || null,
+      quickCheck: active.filter((e) => e.type === 'quick_check' && e.moduleId === m.id && !clearedByLessonReset(resets, m.id, e.at)).map((e) => ({ at: e.at, right: e.right, total: e.total, passed: e.passed, guessed: e.guessed })).pop() || null,
     };
   });
   return {
@@ -51938,7 +52112,8 @@ export function buildReport(learnerName, events) {
     modulesMastered: progress.masteredIds.length,
     modulesTotal: MODULES.length,
     enabledCourseIds: enabledCourseIds(events), // a setting, not progress: it survives a reset
-    totalAttempts: active.filter((e) => e.type === 'attempt_completed').length,
+    totalAttempts: rounds.length,
+    passedRounds: rounds.filter(isMasteredAttempt).length,   // of those rounds, the ones that met their pass mark (pass NQ)
     reflections: active.filter((e) => e.type === 'wonder_answered').length,
     reflectionsAvailable: FEATURES.reflection ? WONDER.length : 0, // the school's choices (questions turned off, or all off) are applied on screen, where the Wonder state lives
     retention: {
@@ -51947,10 +52122,13 @@ export function buildReport(learnerName, events) {
       percent: progress.review.asked ? Math.round((100 * progress.review.correct) / progress.review.asked) : null,
     },
     modules,
+    // Mastered and Retention say what deriveProgress and buildAttempt do (pass NQ, F2; the rules test reads every number here and runs
+    // the code at it). Until pass NQ they said what a pass was before Mastery v2, when one pass of 4 of 5 earned the star, and that
+    // memory checks come from mastered modules, where they come from modules passed.
     definitions: [
-      `Mastered: at least ${CONFIG.MASTERY_MIN_CORRECT} of the ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT} core questions correct in a single practice set.`,
+      `Mastered: the star, earned with passes on two different days. A pass is one practice set with at least its pass mark (${CONFIG.MASTERY_MIN_CORRECT} or more of ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT} through grade 5, 7 of 8 in grades 6 to 8, 8 of 10 from grade 9, and at least the same share of a longer or shorter set), or a piece of writing the educator marks as meeting the bar. A placement or a quick check counts a module as passed but gives it no pass day. A module the educator moved past can also earn its star with a fresh-try practice review of ${LIGHT_REVIEW_CLEAR} or more of ${LIGHT_REVIEW_QUESTIONS} right. A pass made before ${niceDate(MASTERY_V2_FROM)}, when passes on two days began, earned the star on its own.`,
       'Accuracy: correct core answers divided by all core questions answered, across every attempt.',
-      'Retention: review questions come from earlier mastered modules. They never affect mastery; they measure whether learning stuck.',
+      'Retention: review questions come from modules passed earlier. They never affect mastery; they measure whether learning stuck.',
       'Attempts: completed practice sets. Only events after the most recent reset are counted.',
       'Every number is recomputed from the stored event log each time this report is opened.',
       'Reflections: Wonder questions answered. They are never graded, and the words a child writes are never stored.',

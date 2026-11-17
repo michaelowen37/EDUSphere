@@ -129,9 +129,11 @@ const readAhead = () => ({ opacity: C.mode === 'dark' ? 0.55 : 0.66 });
 // on, and a little stronger only where a tint needs it, worked out here from the theme's own colors (the words' ink and the ground's),
 // one hundredth at a time, so a faint word always reads 4.5 to 1 or better. On the question card, a Wonder card, the story paper and the
 // page readAhead is already enough; in the dark theme the green strip after a right answer needs 0.60 and the closing card's gold
-// 0.57, and the clay words of the line after a wrong tap, which read 4.80 to 1 on their pink strip at full ink in the light theme, can
-// fade only to 0.97 there (0.88 in the dark). ground and ink are plain colors, written #RRGGBB or rgb(r, g, b) as the themes write them;
-// a ground it cannot measure (a gradient) keeps the words at full ink, since a faint nobody measured could fall under 4.5 to 1.
+// 0.57. The clay words of the reason after a wrong tap, which read 4.80 to 1 on their pink strip at full ink in the light theme, could
+// fade only to 0.97 there (0.88 in the dark), a faint nobody could see, so since pass NQ (Mikey's answer to Q112, "Q112 - C") they wear
+// none: the reason stays at full ink while the voice reads it, and nothing asks this for the clay strip. ground and ink are plain colors,
+// written #RRGGBB or rgb(r, g, b) as the themes write them; a ground it cannot measure (a gradient) keeps the words at full ink, since a
+// faint nobody measured could fall under 4.5 to 1.
 function readAheadOn(ground, ink = C.ink) {
   const base = readAhead().opacity;
   const rgb = (h) => { const t = String(h).trim(); const m = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/.exec(t); return /^#[0-9A-Fa-f]{6}$/.test(t) ? [1, 3, 5].map((i) => parseInt(t.slice(i, i + 2), 16)) : m ? m.slice(1, 4).map(Number) : null; };
@@ -3129,7 +3131,10 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false, 
   if (!canSpeak()) {
     return corner || mini ? null : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>;
   }
-  const press = () => { if (reading) { speechTicket += 1; restUntil = 0; window.speechSynthesis.cancel(); stopSound(); setReading(false); if (follow) follow(null); return; } speak(text, { ...(pause === undefined ? {} : { pause }), ...(voices ? { voices } : {}), ...(follow ? { onPlace: follow } : {}) }); setReading(true); if (onSpoke) onSpoke(); };
+  // A tap while it reads stops the voice. The cancel sits in a try, as every other cancel of the voice does (pass NQ, round one's code
+  // reads): a voice that throws there had skipped the rest of the stop, so the button kept saying Stop reading and the words it
+  // reads along stayed faint.
+  const press = () => { if (reading) { speechTicket += 1; restUntil = 0; try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never leave the button reading */ } stopSound(); setReading(false); if (follow) follow(null); return; } speak(text, { ...(pause === undefined ? {} : { pause }), ...(voices ? { voices } : {}), ...(follow ? { onPlace: follow } : {}) }); setReading(true); if (onSpoke) onSpoke(); };
   const shownLabel = reading ? 'Stop reading' : label;
   if (mini) {
     return (
@@ -6409,11 +6414,12 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
     </div>
   );
 }
-// The since-you-last-looked line, built from pieces so the punctuation stays clean.
+// The since-you-last-looked line, built from pieces so the punctuation stays clean. One question is "1 question answered" (pass NQ,
+// F2): the line read "1 questions answered", where its stories, pictures and games already said one in the singular.
 function sinceLine(since) {
   const bits = [];
   if (since.mastered.length) bits.push(['mastered ', since.mastered.slice(0, 3).join(', '), since.mastered.length > 3 ? [' and ', String(since.mastered.length - 3), ' more'].join('') : ''].join(''));
-  if (since.questions) bits.push([String(since.questions), ' questions answered'].join(''));
+  if (since.questions) bits.push([String(since.questions), since.questions === 1 ? ' question answered' : ' questions answered'].join(''));
   if (since.stories) bits.push([String(since.stories), since.stories === 1 ? ' story read' : ' stories read'].join(''));
   if (since.colored) bits.push([String(since.colored), since.colored === 1 ? ' picture colored' : ' pictures colored'].join(''));
   if (since.played) bits.push([String(since.played), since.played === 1 ? ' game played' : ' games played'].join(''));
@@ -12282,16 +12288,12 @@ async function gatherEverything(roster) {
   return { roster, records, wonderReview: await loadWonderReview(), covered: await loadCovered() };
 }
 
-// Some browsers (Chrome, Edge, Chromebooks) let a page keep writing to a file the person
-// chose once. When that is available, the classroom backup rewrites itself after every
-// finished practice round, so the record on disk is never more than one round behind.
-// iPads do not allow it; there, Share and Download are the way. Nothing is sent anywhere.
-// Automatic backups go to the device's downloads folder without asking: when a student signs out, on
-// the first sign-in of each day, and when a course is finished. Only the newest file is ever needed;
-// older ones can be deleted. A browser cannot save a file as it closes, so the sign-out is the last
-// chance, and nothing is lost either way: every step is already in the browser's own storage.
-// Chrome and Edge on a computer can also keep ONE file up to date after every practice round
-// (`backupFile`), so the downloads folder never fills up there.
+// The automatic backup's file, straight to the device's downloads folder without asking (autoBackup): when a student taps Exit and
+// when an educator signs out, each only when something changed since the last backup. Only the newest file is ever needed; older ones
+// can be deleted. A browser cannot save a file as it closes, so the sign-out is the last chance, and nothing is lost either way: every
+// step is already in the browser's own storage. Nothing is sent anywhere. Until pass NQ's F4 (round three's code read) this comment
+// also named the first sign-in of the day's backup and the one file a page kept writing to after every round (both removed on
+// 2026-09-20), and the backup when a course is finished (removed in pass L).
 function plainDownload(name, text) {
   if (typeof document === 'undefined') return false;
   const blob = new Blob([text], { type: 'application/json' });
@@ -12919,7 +12921,6 @@ function EduSphereScreens() {
       const rec = await withStarterCourses(await loadRecord(name));
       setRecord(rec);
       setScreen('overview');
-      // The first sign-in of the day backs up yesterday's work, in case nobody tapped Exit.
     } catch (e) { setErrorMsg('Could not load this learner. Please try again.'); }
     setBusy(false);
   }
@@ -12989,12 +12990,6 @@ function EduSphereScreens() {
       setBackupAt(at); await saveBackupAt(at);
       setAutoBackupNote(`Backup saved to downloads at ${fmtDate(at)}.`);
     } catch (e) { setAutoBackupNote('The automatic backup could not be saved this time.'); }
-  }
-
-  // Courses in which every module is passed, for deciding when a round finished a course.
-  function courseProgressFinished(events) {
-    const pg = deriveProgress(events);
-    return enabledCourseIds(events).filter((id) => { const c = getCourse(id); return c && c.modules.length > 0 && c.modules.every((m) => pg.passedIds.includes(m.id)); });
   }
 
   function startPreview(level) {
@@ -13183,9 +13178,6 @@ function EduSphereScreens() {
     const nextUp = coursesToUnlock([...record.events, event]);
     await addEvents(nextUp.length ? [event, makeCoursesEnabledEvent([...enabledCourseIds([...record.events, event]), ...nextUp], new Date().toISOString())] : [event]);
     setScreen('result');
-    // A backup goes to the downloads folder when this round finished a whole course. Per round was too many files.
-    const before = new Set(courseProgressFinished(record.events));
-    const after = courseProgressFinished([...record.events, event]);
   }
 
 
@@ -13872,7 +13864,8 @@ function EduSphereScreens() {
   })(); }, [screen, roster]);
   // A young learner who was wrong tries again, so the voice must not give the answer away.
   // Since pass NP the words come from answerReadParts in logic ("Correct." and the explanation, or the reason after a wrong tap, the same
-  // words as before), and the card reads along as they are said (followReading).
+  // words as before), and the card reads along as they are said (followReading): after a right answer, since the reason after a wrong tap
+  // stays at full ink while it is said (pass NQ, Mikey's answer to Q112, "Q112 - C"). What the voice says, and when, is as before.
   useEffect(() => { if (screen === 'practice' && readAloud && checked && q) { const said = readAlongLine(answerReadParts(q, wasCorrect, String(given), wrongPicks)); speak(said, { ...(q.voices ? { voices: q.voices } : {}), onPlace: followReading('after', said) }); } }, [checked]);   // an answer's sentence said in its question's manner (pass MV)
 
   // ---------- Screens ----------
@@ -14223,8 +14216,9 @@ function EduSphereScreens() {
                       const locked = i >= unlocked;
                       const resting = !locked && restLeft(pic) > 0;
                       const restFraction = resting ? restLeft(pic) / (restMinutesFor(top) * 60000) : 0;
+                      // The picture's title in its label as lowerTitle writes it (pass NQ, F3): Letter A reads "letter A", not "letter a".
                       return (
-                        <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pictureTitle(pic).toLowerCase()}`}
+                        <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : lowerTitle(pictureTitle(pic))}`}
                           onClick={() => leaveOverviewTo(() => { setColoring(pic); setScreen('coloring'); })} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
                           style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? (C.mode === 'dark' ? 'rgba(217, 230, 220, 0.16)' : 'rgba(255,255,255,0.55)') : C.paperBoard, border: `2px solid ${locked || resting ? (C.mode === 'dark' ? 'rgba(217, 230, 220, 0.35)' : 'rgba(255,255,255,0.7)') : C.mode === 'dark' ? 'rgba(170, 216, 197, 0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
                           {locked ? (
@@ -14858,13 +14852,14 @@ function EduSphereScreens() {
     // while the card is up, so the letter it asks about is never on the screen with the card's words; Ready shows them with the answers.
     const cardHides = !!grownCard && grownCard.hides && cardUp;
     const shownQ = grownCard ? cardQuestion(q, cardUp) : printedQuestion(q, canSpeak());
-    // The read-along (pass NP, Mikey's answer to Q110): where the voice is in the question's setup and question, and in the card after an
-    // answer ("Correct" and the explanation, or the reason after a wrong tap), each mapped from what the voice says to what this screen
-    // prints (readAlongMap over questionReadParts and answerReadParts in logic). A part printed in other words than it is said (a heard
-    // question's frame, a reason that hides a sound) turns full ink as a block when the voice begins it. At rest, and with no voice on
-    // the device (the grown-up's card included), nothing is faint.
+    // The read-along (pass NP, Mikey's answer to Q110): where the voice is in the question's setup and question, and in the card after a
+    // right answer ("Correct" and the explanation), each mapped from what the voice says to what this screen prints (readAlongMap over
+    // questionReadParts and answerReadParts in logic). A part printed in other words than it is said (a heard question's frame) turns full
+    // ink as a block when the voice begins it. At rest, and with no voice on the device (the grown-up's card included), nothing is faint.
+    // The reason after a wrong tap is not mapped since pass NQ (Mikey's answer to Q112, "Q112 - C"): it wears no read-along look, staying at
+    // full ink on its clay strip while the voice reads it, so its place would only be thrown away.
     const askedAt = readAlongMap(questionReadParts(q, shownQ), readingIn('question', questionText));
-    const afterParts = checked ? answerReadParts(q, wasCorrect, String(given), wrongPicks, canSpeak() || !!grownCard) : [];
+    const afterParts = checked && wasCorrect ? answerReadParts(q, wasCorrect, String(given), wrongPicks, canSpeak() || !!grownCard) : [];
     const afterAt = readAlongMap(afterParts, readingIn('after', readAlongLine(afterParts)));
     // The explanation is printed a sentence a line (formatTeachingText), so its place is the line that holds the sentence being read,
     // as More Info's explanation's is (lineOfSentence); on the green strip after a right answer, whose faint is worked out for it.
@@ -15112,8 +15107,12 @@ function EduSphereScreens() {
                   their lines end short of it. The explanation keeps it as one block, its words and its picture together (a spacing bank's
                   explanation shows its sentence as print fitted to its box, PrintWords, and "splash." and "dog." sat under the cue after the
                   right tap). The box keeps its full width and color; only what is in it steps aside. */}
-              {/* While the voice says it (pass NP) the line reads along on its strip, its faint worked out for the green or the clay. */}
-              {readAlongOver(<p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textAlign: 'center', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneLetters(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>, readAloud ? lookFor(afterAt[0], wasCorrect ? C.greenSoft : C.claySoft, wasCorrect ? C.green : C.clayInk) : null)}
+              {/* While the voice says it (pass NP) "Correct" reads along on its green strip, its faint worked out for the green. The reason
+                  after a wrong tap wears no read-along look since pass NQ (Mikey's answer to Q112, "Q112 - C"): no faint, no data-read-ahead
+                  and no data-read-lit mark, at full ink on its clay strip while the voice reads it, the same as at rest. Its clay ink reads
+                  4.80 to 1 on the strip in the light theme, so a faint there could fall only to 0.97 (0.88 in the dark) and still read 4.5
+                  to 1, which nobody could see; it is one to three short sentences, said while the child's eyes go back to the tiles. */}
+              {readAlongOver(<p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textAlign: 'center', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneLetters(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>, readAloud && wasCorrect ? lookFor(afterAt[0], C.greenSoft, C.green) : null)}
               {(wasCorrect || !readAloud) && (
                 <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}>
                   <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} center ground={wasCorrect ? C.greenSoft : C.claySoft} {...explainLook} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted, textAlign: 'center' }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} center /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted, textAlign: 'center' }}>{q.choiceNotes[given]}</p>}</div>
@@ -15394,24 +15393,26 @@ function EduSphereScreens() {
           {mastered && lastEvent.dose > 1 && <p style={{ margin: '10px 0 0', fontSize: 15, color: C.green, fontWeight: 600, textAlign: 'center' }}>You overcame it. {lastEvent.coreTotal} questions on the one that kept getting away, and {lastEvent.coreCorrect} right. That is what practice looks like.</p>}
           <h1 style={{ fontSize: 24, margin: '12px 0 6px', textAlign: 'center' }}>{mastered ? (lastEvent.dose > 1 ? 'You did it!' : masteryState(record.events, mod.id) === 'mastered' ? 'Mastered!' : 'Great job!') : 'Good try!'}</h1>
           <div style={{ margin: '0 0 12px' }}><RichText text={encouragementFor(record.events, mod.id, mastered)} size={17} center lineGap={8} /></div>
+          {/* The lesson a loop back goes to is named by lessonInSentence (pass NQ, F3): its title keeps a name's capital, and when it shares
+              this lesson's title (The first Texans, grade 7, loops back to The first Texans, grade 4) its course is named beside it. The
+              memory-check line and the Look back button below name their lessons the same way. */}
           {(() => {
             const backTo = mastered ? null : loopBackTarget(record.events, mod.id);
             const rules = moduleRules(mod.id);
             if (backTo) {
-              const b = getModule(backTo);
-              return <p style={{ fontSize: 17, margin: '0 0 12px' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. This one has been tricky twice, so let us take a quick look back at {lowerTitle(b.title)}. Getting that solid again usually makes this one click.</p>;
+              return <p style={{ fontSize: 17, margin: '0 0 12px' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. This one has been tricky twice, so let us take a quick look back at {lessonInSentence(backTo, mod.id)}. Getting that solid again usually makes this one click.</p>;
             }
             return <p style={{ fontSize: 17, margin: '0 0 12px', textAlign: 'center' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. {mastered ? `Getting ${rules.toMaster} or more right shows you truly understand it.` : `You need ${rules.toMaster} of ${lastEvent.coreTotal}. Reading the lesson once more, then trying a fresh set of questions, usually does it.`}</p>;
           })()}
           <FractionBar parts={lastEvent.coreTotal} shaded={lastEvent.coreCorrect} color={mastered ? C.gold : C.clay} height={36} />
           {cheer && <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '14px 0 0', textAlign: 'center' }}>{courseFinishedWords(course, stage).result}</p>}
-          {lastEvent.review && <p style={{ color: C.muted, fontSize: 14, margin: '12px 0 0', textAlign: 'center' }}>Memory {lastEvent.review2 ? 'checks' : 'check'} from earlier: {[lastEvent.review, lastEvent.review2].filter(Boolean).map((r) => `${(getModule(r.moduleId) || { title: 'earlier' }).title.toLowerCase()} ${r.correct ? 'correct' : 'missed'}`).join(', ')} (does not affect mastery).</p>}
+          {lastEvent.review && <p style={{ color: C.muted, fontSize: 14, margin: '12px 0 0', textAlign: 'center' }}>Memory {lastEvent.review2 ? 'checks' : 'check'} from earlier: {[lastEvent.review, lastEvent.review2].filter(Boolean).map((r) => `${lessonInSentence(r.moduleId, mod.id) || 'earlier'} ${r.correct ? 'correct' : 'missed'}`).join(', ')} (does not affect mastery).</p>}
         </div>
         <div style={{ display: 'grid', gap: 10 }}>
           {cheer && <Btn full halo onClick={celebrate} disabled={busy} style={{ background: C.gold, borderColor: C.gold, color: C.onGold }}>Celebrate!</Btn>}
           {FEATURES.reflection && !readAloud && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, previewReview()) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, previewReview())); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); }}>Wonder for a minute</WonderButton>}
           {mastered && nextMod && <Btn full onClick={() => openModule(nextMod.id)} disabled={busy}>Next: {titleCase(nextMod.title)}</Btn>}
-          {!mastered && loopBackTarget(record.events, mod.id) && <Btn full onClick={() => loopBack(mod.id, loopBackTarget(record.events, mod.id))} disabled={busy}>Look back at {getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()}</Btn>}
+          {!mastered && loopBackTarget(record.events, mod.id) && <Btn full onClick={() => loopBack(mod.id, loopBackTarget(record.events, mod.id))} disabled={busy}>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id)}</Btn>}
           {!mastered && !loopBackTarget(record.events, mod.id) && <Btn full onClick={() => setScreen('lesson')}>Review the lesson</Btn>}
           {(mastered || !loopBackTarget(record.events, mod.id)) && <Btn full kind="secondary" onClick={startPractice}>{mastered ? 'Practice this again' : 'Try a fresh set of questions'}</Btn>}
           <Btn full kind="secondary" onClick={() => setScreen('overview')}>Back to overview</Btn>
@@ -15886,7 +15887,7 @@ function EduSphereScreens() {
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}><span style={{ position: 'relative', display: 'inline-block' }}>Wonder Questions<span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 8, lineHeight: 0 }}><InfoButton onClick={() => setShowWonderTip(!showWonderTip)} label="How reflection questions work" open={showWonderTip} /></span></span></h1>
         {showWonderTip && (
           <TipText>
-            <p style={{ margin: '0 0 8px' }}>After every two practice rounds, whether it went well or not, a reflection question is introduced. Each question is written toward one of four aims: curiosity about the world, failure as the way learning happens, naming and handling feelings, and the idea that hard days are normal yet, we always get through them.</p>
+            <p style={{ margin: '0 0 8px' }}>After every two different lessons a student works, whether they went well or not, a reflection question is introduced. Each question is written toward one of four aims: curiosity about the world, failure as the way learning happens, naming and handling feelings, and the idea that hard days are normal yet, we always get through them.</p>
             <p style={{ margin: '0 0 8px' }}>These questions rotate. A student never sees the same question more than twice and after a bad practice round, questions about failure and feelings are prioritized. Student answers are never stored and only questions you approve will ever appear.</p>
             <p style={{ margin: '0 0 8px' }}>Note: By never storing student answers, there is no pressure for them to answer a certain way. They are free to answer as themselves then they'll see other perspectives to expand their way of thinking. This also keeps The Wise Human compliant with privacy laws.</p>
             {/* Pass NK (Mikey: "Can move underneath the i tip tool on the top right of the page.  Just create a space below the text that is
@@ -16299,7 +16300,7 @@ function EduSphereScreens() {
             <button type="button" onClick={() => setShowStateTip(!showStateTip)} aria-label="Why we ask for your state"
               style={{ background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 8, verticalAlign: 'middle' }}>i</button>
           </p>
-          {showStateTip && <p style={{ ...tipStyle, textAlign: 'center' }}>Each state publishes its own learning standards. Most use the Common Core; Texas uses its own. Our courses are mapped to both!<br /><br />Choosing a state mildly alters the course flow and you can change this later from the <strong>My Classroom</strong> page.</p>}
+          {showStateTip && <p style={{ ...tipStyle, textAlign: 'center' }}>Each state publishes its own learning standards. Most use the Common Core; Texas uses its own. Our courses are mapped to both!<br /><br />Choosing a state mildly alters the course flow, and you can change it later from any student's report, under <strong>Change state</strong>.</p>}
           <select value={stateDraft} onChange={(e) => setStateDraft(e.target.value)} aria-label="Your state"
             style={{ textAlign: 'center', textAlignLast: 'center', fontFamily: FONT, fontSize: 16, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, background: C.surface , ...pickerLook() }}>
             <option style={{ background: C.surface, color: C.ink }} value="">Choose a state</option>
@@ -16487,7 +16488,7 @@ function EduSphereScreens() {
           <Overlay className="edu-no-print">
             <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
               <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>Make your first backup soon</p>
-              <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>A forgotten PIN can only be reset with a backup file.</p>
+              <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>A forgotten PIN can be reset with your recovery code or a backup file, and every backup holds the code.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Btn full kind="secondary" onClick={() => { setBackupNudgeSeen(true); scrollToTop(true); setTimeout(() => scrollToTop(true), 120); }}>Later</Btn>
                 <Btn full onClick={() => { setBackupNudgeSeen(true); setScreen('backup'); }}>Backup now</Btn>
@@ -16836,7 +16837,8 @@ function EduSphereScreens() {
           <p style={{ margin: '22px 0 6px', fontWeight: 600 }} data-tour="walk">Walk through as a student</p>
           <p style={{ margin: '0 0 10px', fontSize: 15 }}>See exactly what a student sees. Every module is open, every question can be skipped, and nothing is recorded.</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
-            {LEVELS.map((lv) => <button key={lv.id} type="button" aria-label={`Walk through ${lv.title.toLowerCase()}`} onClick={() => startPreview(lv.id)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '10px 16px', borderRadius: 10, background: C.surface, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' }}>{lv.title}</button>)}
+            {/* A title inside a label is written as lowerTitle writes it, which keeps a name's capital (pass NQ, F3). */}
+            {LEVELS.map((lv) => <button key={lv.id} type="button" aria-label={`Walk through ${lowerTitle(lv.title)}`} onClick={() => startPreview(lv.id)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '10px 16px', borderRadius: 10, background: C.surface, border: `2px solid ${C.green}`, color: C.green, cursor: 'pointer' }}>{lv.title}</button>)}
           </div>
         </div>
         {/* In the dark theme each feature card's button is a deeper shade of the card's own color, with white words

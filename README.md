@@ -75,9 +75,11 @@ transcript and the who-needs-help list see them. A young learner gets none: chec
 once every lesson of the child's pre-K to grade 2 courses has its star.
 
 **Confidence, not just correctness.** Each module carries a score from 1 to 5 built
-from mastery, streaks, timing and how the material fares when it comes back. Two
-wrong answers in under four seconds earns a quiet "guessing?" on the report, because
-tapping fast usually means not thinking.
+from passing it, a flawless latest round, a run of correct answers and how its questions
+fare when they come back. Time never changes the score. Two or more wrong answers in the
+latest round, each in under four seconds, name the module under signs of guessing on Who
+Needs Help, because tapping fast usually means not thinking. The report's Key Words give
+the rules in plain words.
 
 **Wonder questions.** After every two different modules worked, whether the rounds
 went well or not, a student spends a minute on an open question with no right answer, then
@@ -135,8 +137,8 @@ and the educator's settings. The educator downloads it, or on an iPad shares it
 straight to their email. Restoring it on any device brings everything back, and a
 restore can only ever add, never remove. File names say which device made them and
 how many students they hold. A backup file also goes to the device's downloads folder
-by itself each time a student finishes a course. A backup made today is kept in
-the test suite and must restore on every future version.
+by itself when a student taps Exit, or when an educator makes changes and signs out.
+A backup made today is kept in the test suite and must restore on every future version.
 
 **Updates.** Because there is no account, an educator gets the newest version simply
 by opening the site. Nothing to install and nothing to send.
@@ -144,10 +146,10 @@ by opening the site. Nothing to install and nothing to send.
 **One device at a time.** A student's live record lives on the device in front of
 them. Signing several devices into one browser account does not share it, because
 browsers sync settings and bookmarks, not a website's stored data. Use one device per
-student, or restore the classroom backup onto a device before using it. Every finished
-course saves a backup file to the device's downloads folder by itself; only the newest one is
-needed, and older ones can be deleted at any time. An educator can also download a backup
-to a folder of their choosing from the Backup page.
+student, or restore the classroom backup onto a device before using it. A backup file
+goes to the downloads folder by itself when a student taps Exit or an educator signs out
+after changes; only the newest one is needed, and older ones can be deleted at any time.
+An educator can also download a backup to a folder of their choosing from the Backup page.
 
 Every number on a report is recomputed from the record of what happened. Nothing is
 stored as a score, so a figure can never disagree with the record. It is the record,

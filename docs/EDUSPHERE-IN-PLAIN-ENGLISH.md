@@ -5,7 +5,7 @@ A learning platform for schools that teaches every student at their own pace, pr
 ## Standout features
 - **Mastery, not seat time.** Students advance only after proving they understand. Academic work fits in a fraction of the day, freeing time for life skills a screen can't teach.
 - **Efficiency you can measure.** Minutes per day and learning gains are recorded, so schools see real numbers.
-- **Confidence score, 1 to 5.** Built from correct answers, streaks, speed against the student's own pace, and later recall. The formula is printed on every report.
+- **Confidence score, 1 to 5.** Built from passing, a flawless latest round, a run of correct answers, and later recall. Time never changes it. Quick wrong answers are named as signs of guessing on Who Needs Help instead. Every report carries the rules in its definitions, and its Key Words say them in plain words.
 - **Learning that sticks.** Mastered skills reappear in later lessons at growing intervals. Slipping shows up before a teacher has to look.
 - **Reports that can't be fudged.** Every action is a permanent record, never edited or deleted. Every number is recomputed from it, with its definition shown. Resets start fresh; history is never rewritten.
 - **"Wonder" time.** Open questions with no right answer, then four views, from Frederick the scientist, Chloe the artist, Georgette the grandparent of faith and Mike the skeptic, none declared right. Goal: curious students who expect to be partly wrong and keep improving. On from the start, and a school can turn off any of them (since pass NJ); neutral on religion and non-belief; a student's words are never stored.

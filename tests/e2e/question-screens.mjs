@@ -1950,15 +1950,18 @@ const ponder = () => page.evaluate(() => {
     sizeFaults.length === 0 && sizeReads === 4 && plantSizes === true, { sizeFaults, plantSizes }); }
 // 20. The read-along, sentence by sentence, where the voice read words on the screen with no look yet (pass NP, Mikey's answer to Q110,
 //     "Q110 - B", after his Vooks clip): a question's own words as it appears and from Hear it again, a heard question's printed question
-//     as one block, the card after an answer (its explanation on the green strip, a reason on the clay strip, and a reason printed in other
-//     words as one block), a pre-reader's Let's Wonder! question and a voice card (Mike's, whose last two words, "plate? Yes!", cross a
+//     as one block, the card after a right answer (Correct and its explanation on the green strip), and since pass NQ (Mikey's answer to
+//     Q112, "Q112 - C") the reason after a wrong tap on the clay strip, a reason and a reason printed in other words alike, held at full ink
+//     with no mark while the voice reads each of its sentences (until pass NQ it read along there, a faint of 0.97 nobody could see, and
+//     the printed reason as one block), a pre-reader's Let's Wonder! question and a voice card (Mike's, whose last two words, "plate? Yes!", cross a
 //     sentence's end) and the closing card on its gold, a reader's Wonder question and voices page from Read it to me, and the whole book
 //     read in a row. In both themes at 375 by 667 and 320 by 568, with a stand-in voice: mid-read the sentence being read and those before it
 //     at full ink with no box, those after it faint, every faint measured with its opacity on its own ground at 4.5 to 1 or better (the
 //     tints' faint worked out for them, readAheadOn), no look fading and no word moved by the look; after the voice stops (its end, the
 //     page's own Stop reading, a tapped answer, leaving the page), nothing faint; a Wonder choice being named keeps its green and its little
 //     grow (Q111 (a)); with no voice on the device nothing is faint. Plants, each caught: a read sentence marked faint, a faint at 0.3, a
-//     faint that fades, a faint mark left behind and a Wonder choice that lost its green.
+//     faint that fades, a faint mark left behind, a Wonder choice that lost its green, and since pass NQ, on the reason after a wrong tap,
+//     a mark with no fade and a fade of 0.97 with no mark, each alone.
 { const RA_MS = 700;   // how long the stand-in voice takes to say one piece
   const openRA = async (theme, w, h, voice = true) => {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, reducedMotion: 'reduce' });
@@ -1992,9 +1995,19 @@ const ponder = () => page.evaluate(() => {
   const linesOf = (pg, sel) => pg.evaluate((s) => [...document.querySelectorAll(s)].map((el) => { const box = el.getBoundingClientRect(); const r = document.createRange(); r.selectNodeContents(el); const rows = new Map();
     for (const b of r.getClientRects()) { if (b.width < 1) continue; const top = Math.round(b.top - box.top); const row = rows.get(top) || [Infinity, -Infinity]; rows.set(top, [Math.min(row[0], b.left - box.left), Math.max(row[1], b.right - box.left)]); }
     return [...rows.entries()].sort((x, y) => x[0] - y[0]).map(([t, [l, rr]]) => `${t}:${Math.round(l)}-${Math.round(rr)}`).join('|'); }), sel);
-  // The look on a tint (the green and clay strips after an answer, the closing card's gold, the book's paper): its faint at readAhead's
-  // strength or stronger, never full, and 4.5 to 1 or better on its ground; otherwise as lookRight.
+  // The look on a tint (the green strip after a right answer, the closing card's gold, the book's paper): its faint at readAhead's
+  // strength or stronger, never full, and 4.5 to 1 or better on its ground; otherwise as lookRight. (The clay strip after a wrong tap
+  // wore it until pass NQ; since Mikey's answer to Q112, "Q112 - C", it wears none, as clayRead below holds.)
   const lookOn = (k) => !!k && !!k.lit && k.lit.bg === 'rgba(0, 0, 0, 0)' && k.lit.shadow === 'none' && k.lit.fade === 1 && k.ahead > 0 && k.opacity !== null && k.opacity >= 0.55 && k.opacity < 1 && k.worst !== null && k.worst >= 4.5 && !k.before;
+  // The clay strip after a wrong tap (pass NQ, Mikey's answer to Q112, "Q112 - C"): the marks inside it, the lowest opacity any of its
+  // words is drawn at (an element's own opacity and its holders', multiplied up to the page), its background and its words. Full ink is
+  // no mark and every word at 1, on the theme's clay strip (claySoft: #F6E4DB in the light theme, #3D2620 in the dark).
+  const CLAY_STRIPS = ['rgb(246, 228, 219)', 'rgb(61, 38, 32)'];
+  const clayRead = (pg) => pg.evaluate(() => { const sc = document.querySelector('[data-feedback]'); if (!sc) return null;
+    const fade = (el) => { let a = 1; let n = el; while (n && n.nodeType === 1) { a *= parseFloat(getComputedStyle(n).opacity); n = n.parentElement; } return a; };
+    const holders = [...sc.querySelectorAll('*')].filter((el) => [...el.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim()));
+    return { marks: sc.querySelectorAll('[data-read-ahead], [data-read-lit]').length, low: holders.length ? Math.round(Math.min(...holders.map(fade)) * 1000) / 1000 : null, bg: getComputedStyle(sc).backgroundColor, words: String(sc.textContent).replace(/ /g, ' ').trim().slice(0, 90) }; });
+  const clayFull = (k, first) => !!k && k.marks === 0 && k.low === 1 && CLAY_STRIPS.includes(k.bg) && k.words.startsWith(first);
   const faults = []; const figures = []; let combos = 0; const plants = {};
   for (const theme of ['light', 'dark']) for (const [w, h] of [[375, 667], [320, 568]]) {
     const { ctx, pg, isScreen } = await openRA(theme, w, h); const at = `${theme} ${w}`; combos += 1;
@@ -2054,18 +2067,39 @@ const ponder = () => page.evaluate(() => {
       else { await look('explanation, its first line', '[data-feedback]', lookOn); const m = await marksIn(pg, '[data-feedback]'); if (m.ahead.length !== 2 || m.ahead.some((t) => /Correct|frame holds/.test(t))) fault('only the explanation\'s later lines are faint', m); }
       if (!(await waitRest(pg, '[data-feedback]'))) fault('the explanation left a word faint after its end', await marksIn(pg, '[data-feedback]'));
     });
-    // e. After a wrong tap: the reason on the clay strip (Talking with a friend: three sentences).
+    // The reason after a wrong tap while the voice reads it (pass NQ, Mikey's answer to Q112, "Q112 - C"): for each of its sentences in
+    // turn, once the stand-in voice has begun it (its words in __raSaid after the taps, matched by enough of them that the tapped choice,
+    // which is said as it is tapped, never matches) and the screen has had a fifth of a second to
+    // follow, no mark inside the clay strip and every word at full opacity, the reason's own words on the theme's clay strip. Plants, put
+    // back, on the first pair, each alone so each bound of clayFull is seen to fail by itself (round one's code read in pass NQ: the one
+    // plant set both, so either bound taken out would still have caught it): a read-ahead mark with no fade, then a fade of 0.97 (pass
+    // NP's light-theme strength) with no mark; both caught.
+    const clayWhileRead = async (name, heard, starts, first) => {
+      for (const s of starts) {
+        const began = await pg.waitForFunction(([n, x]) => window.__raSaid.slice(n).some((t) => String(t).replace(/ /g, ' ').trim().startsWith(x)), [heard, s], { timeout: 15000 }).then(() => true).catch(() => false);
+        if (!began) { fault(`${name}: the voice never began "${s}"`); return; }
+        await pg.waitForTimeout(200); const k = await clayRead(pg); figures.push(`${at} ${name}, "${s}" begun: marks ${k && k.marks}, opacity ${k && k.low}`);
+        if (!clayFull(k, first)) fault(`${name}, while "${s}" is said: no mark and full ink on the clay strip`, k);
+        if (firstCombo && plants.clay === undefined) {
+          await pg.evaluate(() => { const p = document.querySelector('[data-feedback] [data-cue-room]'); if (p) { p.setAttribute('data-read-ahead', ''); p.setAttribute('data-ra-plant', ''); } });
+          const markAlone = !clayFull(await clayRead(pg), first);
+          await pg.evaluate(() => { const p = document.querySelector('[data-ra-plant]'); if (p) { p.removeAttribute('data-read-ahead'); p.style.opacity = '0.97'; } });
+          const fadeAlone = !clayFull(await clayRead(pg), first);
+          await pg.evaluate(() => { const p = document.querySelector('[data-ra-plant]'); if (p) { p.removeAttribute('data-ra-plant'); p.style.opacity = ''; } });
+          plants.clayMark = markAlone; plants.clayFade = fadeAlone; plants.clay = markAlone && fadeAlone; } } };
+    // e. After a wrong tap: the reason on the clay strip (Talking with a friend: three sentences), at full ink while each is said.
     await step('after a wrong tap', async () => {
-      await showQ('p3-talk-room', 7); await pg.locator('button[data-choice="Right in your friend\'s face"]').first().click(); await pg.getByRole('button', { name: 'Check answer', exact: true }).click();
-      if (!(await waitLit(pg, '[data-feedback]', 'Right in your friend\'s face is too close.'))) fault('the reason after a wrong tap marked nothing');
-      else await look('reason, on the clay strip', '[data-feedback]', lookOn);
-      if (!(await waitRest(pg, '[data-feedback]'))) fault('the reason left a word faint after its end', await marksIn(pg, '[data-feedback]'));
+      await showQ('p3-talk-room', 7); const heard = await pg.evaluate(() => window.__raSaid.length);
+      await pg.locator('button[data-choice="Right in your friend\'s face"]').first().click(); await pg.getByRole('button', { name: 'Check answer', exact: true }).click();
+      await clayWhileRead('the reason after a wrong tap', heard, ['Right in your friend\'s face is too close', 'Give your friend some room', 'Have another try'], 'Right in your friend\'s face is too close.');
+      if (!(await waitRest(pg, '[data-feedback]'))) fault('the reason after a wrong tap has a mark after the voice ends', await marksIn(pg, '[data-feedback]'));
     });
-    // f. A reason printed in other words than it is said (Letters and sounds prints "that sound" where the voice says sss): one block.
+    // f. A reason printed in other words than it is said (Letters and sounds prints "that sound" where the voice says sss): until pass NQ
+    //    one block, read along; since Q112 (c) at full ink with no mark while it is said, as every reason after a wrong tap.
     await step('a reason in its own words', async () => {
-      await showQ('p3-ls-letter', 1); await pg.locator('button[data-choice="B"]').first().click(); await pg.getByRole('button', { name: 'Check answer', exact: true }).click();
-      if (!(await waitLit(pg, '[data-feedback]', 'The letter B does not say that sound.'))) fault('the printed reason was never marked as read');
-      else { const m = await marksIn(pg, '[data-feedback]'); if (m.ahead.length || m.lit.join('|') !== 'The letter B does not say that sound. Have another try.') fault('a reason printed in its own words is one block, never faint', m); }
+      await showQ('p3-ls-letter', 1); const heard = await pg.evaluate(() => window.__raSaid.length);
+      await pg.locator('button[data-choice="B"]').first().click(); await pg.getByRole('button', { name: 'Check answer', exact: true }).click();
+      await clayWhileRead('a reason in its own words', heard, ['The letter B does not say', 'Have another try'], 'The letter B does not say that sound. Have another try.');
     });
     // g. A pre-reader's Let's Wonder!: the question sentence by sentence; a choice being named keeps its green and its grow (Q111 (a)).
     await step('the Wonder question', async () => {
@@ -2163,8 +2197,8 @@ const ponder = () => page.evaluate(() => {
     for (const [g, s] of [['g1-add-story', 1], ['pl-tap-letter', 3]]) { await pg.evaluate(([gg, ss]) => window.__eduTest.showQuestion(gg, ss), [g, s]); await isScreen('practice'); await pg.waitForTimeout(1200); if (await anyMarks(pg)) faults.push(`no voice: ${g} has a mark`); }
     await ctx.close(); }
   console.log(`INFO - the read-along's faint, by place (theme, width, place, opacity, worst contrast): ${figures.join('; ')}`);
-  ok(`the read-along sentence by sentence on a question, a heard question's printed frame, the card after an answer, a pre-reader's Wonder question and cards, a reader's Wonder question and voices, and the whole book: mid-read the words ahead faint at 4.5 to 1 or better on their own ground, the rest at full ink with no box, no look fading and no word moved; nothing faint once the voice stops by its end, Stop reading, a tapped answer or leaving, nor with no voice; a named Wonder choice keeps its green and grow; the whole book's page follows the paragraph being read, holds for a reader who scrolled away and follows again once they scroll to the voice (pass NP; ${combos} theme and size pairs; a read sentence marked faint, a faint at 0.3, a fade, a mark left behind and a choice without its green, planted, caught)`,
-    faults.length === 0 && combos === 4 && plants.before === true && plants.pale === true && plants.fade === true && plants.left === true && plants.green === true, { faults: faults.slice(0, 12), plants }); }
+  ok(`the read-along sentence by sentence on a question, a heard question's printed frame, the card after a right answer, a pre-reader's Wonder question and cards, a reader's Wonder question and voices, and the whole book: mid-read the words ahead faint at 4.5 to 1 or better on their own ground, the rest at full ink with no box, no look fading and no word moved; nothing faint once the voice stops by its end, Stop reading, a tapped answer or leaving, nor with no voice; a named Wonder choice keeps its green and grow; the whole book's page follows the paragraph being read, holds for a reader who scrolled away and follows again once they scroll to the voice; and since pass NQ (Mikey's answer to Q112, "Q112 - C") the reason after a wrong tap, a reason and one printed in other words, at full ink with no mark on its clay strip while each of its sentences is said (pass NP; ${combos} theme and size pairs; a read sentence marked faint, a faint at 0.3, a fade, a mark left behind, a choice without its green and a 0.97 faint on the clay strip, planted, caught)`,
+    faults.length === 0 && combos === 4 && plants.before === true && plants.pale === true && plants.fade === true && plants.left === true && plants.green === true && plants.clay === true, { faults: faults.slice(0, 12), plants }); }
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

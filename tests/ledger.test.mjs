@@ -342,25 +342,34 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
 // Gran's coat put back to tangerine; Noemi's dress as round two's fix first wrote it, cranberry, beside First steps' girl with short
 // black hair in a red dress, which this check found; Noemi given that girl's look word for word; Dex given brown hair and a teal
 // t-shirt beside Jasper in his own story; and Dex's dad with no hair written; while P175's Mia and Sam, named, pass.
+// Since pass NQ (Mikey's answer to Q114, "Q114 - A") a look counts its hairstyle, garment and skin too, which sets the founding case apart
+// (Gran's coat beside the grandma's sweater, her hair under a hat beside long loose hair), and with it Noemi's cranberry dress (her long hair
+// and glasses beside the short black pixie cut S1468's girl has worn since pass ND re-picked her) and Dex's teal t-shirt (a mop beside
+// Jasper's mohawk): the Q114 block at the end holds each as no pair. The plants here are each case alike in all four: Gran given the
+// grandma's long loose white hair in a tangerine sweater; Noemi given S1468's look word for word as it stands; Noemi's cranberry dress with
+// S1468's pixie cut; Jasper given brown curls in a green t-shirt beside P175's Sam, whose curly hair is the same hairstyle in another word,
+// in one lesson (two looks written differently, so an echo, not a person met again); Dex's dad with no hair written, as before; and P175's
+// Mia and Sam, named, pass only by their naming (with it taken out, caught), since (a) left P175 no pair outside the looks it repeats.
 { const { personReads, lookPairs: lookPairsWide, coursesBefore } = await import('../tools/look-echoes.mjs'); const lookPairs = (looks) => lookPairsWide(looks, coursesBefore);   // the reading this check was written with (pass NF, A97)
-  const NEW_FROM = { S: 4027, P: 175 }; const ECHO_WAITING = 80;
+  // ECHO_WAITING: 80 until pass NQ, 0 since: Q114 (a) sets every one of the 80 older pairs apart by hairstyle or garment (or both).
+  const NEW_FROM = { S: 4027, P: 175 }; const ECHO_WAITING = 0;
   const MET_AGAIN = { 'P175|girl': ['S176', 'S200'], 'P175|boy': ['S113', 'S200'] };
   const isNew = (serial) => { const m = /^([SP])(\d+)$/.exec(serial); return !!m && +m[2] >= NEW_FROM[m[1]]; };
-  const judge = (text) => { const all = personReads(text); const looks = all.filter((x) => x.read); const lookOf = new Map(looks.map((x) => [x.serial + '|' + x.group, x.look]));
-    const metAgain = (x) => { const older = MET_AGAIN[x.serial + '|' + x.group]; return !!older && older.every((s) => lookOf.get(s + '|' + x.group) === x.look); };
+  const judge = (text, metTable = MET_AGAIN) => { const all = personReads(text); const looks = all.filter((x) => x.read); const lookOf = new Map(looks.map((x) => [x.serial + '|' + x.group, x.look]));
+    const metAgain = (x) => { const older = metTable[x.serial + '|' + x.group]; return !!older && older.every((s) => lookOf.get(s + '|' + x.group) === x.look); };
     const fresh = (x) => isNew(x.serial) && !metAgain(x); const pairs = lookPairs(looks);
     return { looks: looks.length, unread: all.filter((x) => !x.read && isNew(x.serial)), newer: pairs.filter((p) => (fresh(p[0]) || fresh(p[1])) && !(p.same && p.sameLesson)),
       waiting: pairs.filter((p) => !fresh(p[0]) && !fresh(p[1]) && !p.same), named: Object.keys(MET_AGAIN).every((k) => { const [s, g] = k.split('|'); return metAgain({ serial: s, group: g, look: lookOf.get(k) }); }) }; };
   const name = ([a, b]) => a.serial + ' and ' + b.serial + ' (' + a.group + ', ' + a.hair + ' hair, ' + a.clothing + ')';
   const pairOf = (r, x, y) => r.newer.some(([a, b]) => [a.serial, b.serial].includes(x) && [a.serial, b.serial].some((s) => y.test(s)));
   const now = judge(ledger);
-  const plants = [pairOf(judge(ledger.replace('in a long sapphire-blue coat', 'in a long tangerine coat')), 'S4038', /^S402[79]$/),
-    pairOf(judge(ledger.split('in a caramel-brown dress').join('in a cranberry dress')), 'S1468', /^S403[5-8]$/),
-    pairOf(judge(ledger.split('long black hair and green-framed glasses, in a caramel-brown dress').join('short black hair and bangs in a red dress')), 'S1468', /^S403[5-8]$/),
-    pairOf(judge(ledger.split('a mop of reddish-brown hair over his forehead, in a tan t-shirt').join('a mop of brown hair over his forehead, in a teal t-shirt')), 'S4027', /^S40(2[7-9]|30)$/),
+  const plants = [pairOf(judge(ledger.replace('silver hair under a wide-brimmed cream felt hat, in a long sapphire-blue coat', 'long white hair worn loose over her shoulders, in a long tangerine sweater')), 'S4038', /^S402[79]$/),
+    pairOf(judge(ledger.split('long black hair and green-framed glasses, in a caramel-brown dress').join('a short black pixie cut in a red dress')), 'S1468', /^S403[5-8]$/),
+    pairOf(judge(ledger.split('long black hair and green-framed glasses, in a caramel-brown dress').join('a short black pixie cut, in a cranberry dress')), 'S1468', /^S403[5-8]$/),
+    judge(ledger.split('a short dark-brown mohawk and a gap-toothed grin, in a turquoise t-shirt').join('dark-brown curls and a gap-toothed grin, in a green t-shirt')).newer.some((p) => !p.same && p.sameLesson && [p[0].serial, p[1].serial].includes('P175')),
     judge(ledger.split('a short blond man bun and a blond goatee').join('a blond goatee')).unread.length > 0,
-    now.named && now.waiting.some(([a, b]) => a.serial === 'P175' || b.serial === 'P175')];
-  ok(`no person a pre-K row writes from pass MX on looks like another of their kind in the same lesson, course or course before, by hair and clothing color, and every look such a row begins is read (${now.looks} looks read; P175's Mia and Sam named as met again; ${now.waiting.length} older pairs wait as a count that only falls, at most ${ECHO_WAITING}; six near misses)`,
+    now.named && judge(ledger, {}).newer.some(([a, b]) => a.serial === 'P175' || b.serial === 'P175')];
+  ok(`no person a pre-K row writes from pass MX on looks like another of their kind in the same lesson, course or course before, by hair and clothing color, hairstyle, garment and skin since pass NQ (Q114 (a)), and every look such a row begins is read (${now.looks} looks read; P175's Mia and Sam named as met again; ${now.waiting.length} older pairs wait as a count that only falls, at most ${ECHO_WAITING}; six near misses)`,
     now.looks >= 500 && now.unread.length === 0 && now.newer.length === 0 && now.waiting.length <= ECHO_WAITING && plants.every(Boolean),
     `new pairs: ${now.newer.map(name).join('; ')}; unread: ${now.unread.map((x) => x.serial + ' ' + x.why).join('; ')}; waiting ${now.waiting.length}; near misses ${plants}`); }
 // Hair written alike (pass NC, round two's content read): two people of one kind whose hair is the same color family and the same style
@@ -405,17 +414,16 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   const REPICKED_ND = ['S1', 'S104', 'S105', 'S1397', 'S1398', 'S1448', 'S1468', 'S3894', 'S3895', 'S3896', 'S3897', 'S3898', 'S3899', 'S3900', 'S3901', 'S3902', 'S3903', 'S3904', 'S3905', 'S3906',
     'S3907', 'S3908', 'S3909', 'S3910', 'S3911', 'S3912', 'S3913', 'S3914', 'S3915', 'S3916', 'S3917', 'S3918', 'S3919', 'S3920', 'S3921', 'S3922', 'S3939', 'S3940', 'S3941', 'S3942',
     'S4063', 'S4064', 'S4065', 'S4066', 'S4071', 'S4072', 'S4073', 'S4074', 'S4075', 'S4076', 'S4077', 'S4078'];
-  const KEPT_ND = { near: ['S173 S3907', 'S185 S3911', 'S191 S4075', 'S212 S3907', 'S3911 S4047', 'S3915 S4059'], hair: [],
-    look: ['S104 S128', 'S104 S146', 'S116 S3907', 'S116 S3911', 'S134 S3894', 'S1406 S3942', 'S1465 S3907', 'S1468 S3967', 'S149 S3899', 'S155 S3911', 'S158 S3904', 'S170 S3907', 'S179 S3894',
-      'S179 S3907', 'S179 S3911', 'S200 S3911', 'S209 S3903', 'S215 S3907', 'S3886 S3899', 'S3894 S3907', 'S3894 S3963', 'S3899 S3967', 'S3899 S3970', 'S3903 S3955', 'S3903 S3959', 'S3903 S4011',
-      'S3904 S3955', 'S3907 S3935', 'S3911 S3971', 'S3915 S3931', 'S3915 S3983', 'S3919 S4015', 'S95 S3899'] };
+  // KEPT_ND.look: 33 pairs named until pass NQ, none since: Q114 (a) sets every one apart by hairstyle or garment (each is listed, with its
+  // words, in pass NQ's record of what the change did); the near and hair pairs read hair alone and stay as they were.
+  const KEPT_ND = { near: ['S173 S3907', 'S185 S3911', 'S191 S4075', 'S212 S3907', 'S3911 S4047', 'S3915 S4059'], hair: [], look: [] };
   const set = new Set(REPICKED_ND); const key = ([a, b]) => [a.serial, b.serial].sort((x, y) => +x.slice(1) - +y.slice(1)).join(' ');
   const mine = (pairs) => [...new Set(pairs.filter(([a, b]) => set.has(a.serial) || set.has(b.serial)).map(key))];
   const judge = (text) => { const reads = personReads(text).filter((x) => x.read); return { near: mine(hairNearPairs(reads)), hair: mine(hairPairs(reads)), look: mine(lookPairs(reads)) }; };
   const diff = (j) => Object.keys(KEPT_ND).flatMap((k) => [...j[k].filter((p) => !KEPT_ND[k].includes(p)).map((p) => 'new ' + k + ' pair ' + p), ...KEPT_ND[k].filter((p) => !j[k].includes(p)).map((p) => 'gone ' + k + ' pair ' + p)]);
   const now = diff(judge(ledger)); const LOOK = 'a small girl with a short black pixie cut in a red dress';
   const plant = ledger.includes(LOOK) ? diff(judge(ledger.split(LOOK).join('a small girl with a short black side ponytail in a red dress'))) : [];
-  ok(`no row pass ND re-picked is in a pair it was not in before the pass, by one hair word, hair written alike or hair with clothing color (${REPICKED_ND.length} rows; ${KEPT_ND.near.length + KEPT_ND.hair.length + KEPT_ND.look.length} pairs named, each on pass NC's ledger; S1468's round one look, planted, caught)`,
+  ok(`no row pass ND re-picked is in a pair it was not in before the pass, by one hair word, hair written alike or hair with clothing color (with hairstyle, garment and skin since pass NQ, Q114 (a)) (${REPICKED_ND.length} rows; ${KEPT_ND.near.length + KEPT_ND.hair.length + KEPT_ND.look.length} pairs named, each on pass NC's ledger; S1468's round one look, planted, caught)`,
     now.length === 0 && plant.some((d) => d.startsWith('new near pair') && d.includes('S1468')), `now: ${now.slice(0, 6).join('; ')}; plant: ${plant.slice(0, 4).join('; ')}`); }
 // Mike's haircut is his (pass ND, round one's story check; pass MQ re-picked a boy with Mike at four's look): Mike, "a shaved-short
 // haircut and curious brown eyes", is painted in every pre-K course, so no other pre-K boy wears a buzz cut, a crew cut or a
@@ -435,9 +443,14 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
 // counts that only fall (EARMARKS A105): 53 by hair and clothing color, 17 by hair written alike, 35 by one shared hair word. Its plants,
 // each a row appended for a lesson of pass NF and each caught by the wide reading beside the older row it echoes and not by the narrow
 // one: a boy in Hear it in a word with S3963's short straight red hair, in a gray hoodie; a grandma in Look and write with S4111's short
-// gray afro, in a red sweater; and a boy in Hear it in a word with short black locs like S3967's, in a green t-shirt.
+// gray afro, in a red sweater; and a boy in Hear it in a word with short black locs like S3967's, in a green t-shirt. Since pass NQ (Mikey's
+// answer to Q114, "Q114 - A") a look counts its garment too, so the boy's gray hoodie beside S3963's gray knit sweater is no pair (the Q114
+// block at the end holds it), and the first plant gives him S3963's sweater as well, alike in all four.
 { const W = await import('../tools/look-echoes.mjs'); const { personReads } = W;
-  const FROM = { S: 4127, P: 197 }; const WIDE_WAITING = { look: 53, hair: 17, near: 35 }; const MET_AGAIN_WIDE = {};
+  // WIDE_WAITING.look: 53 until pass NQ, 1 since (S209's man, short black hair and a short black beard in a gray sweater, beside S1406's,
+  // short black hair in a gray sweater: a beard is not among what (a) counts): Q114 (a) sets the other 52 apart by hairstyle or garment.
+  // The hair readings read hair alone, and their 17 and 35 stay.
+  const FROM = { S: 4127, P: 197 }; const WIDE_WAITING = { look: 1, hair: 17, near: 35 }; const MET_AGAIN_WIDE = {};
   const isNew = (serial) => { const m = /^([SP])(\d+)$/.exec(serial); return !!m && +m[2] >= FROM[m[1]]; };
   const key = (p) => [p[0].serial, p[1].serial].sort().join(' ') + '|' + p[0].group + '|' + [p[0].look, p[1].look].sort().join(' || ');
   const metAgain = (p) => p.same && [[p[0], p[1]], [p[1], p[0]]].some(([x, y]) => isNew(x.serial) && (MET_AGAIN_WIDE[x.serial + '|' + x.group] || []).includes(y.serial));
@@ -449,11 +462,11 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   const now = judge(ledger);
   const row = (serial, module, person) => `\n| ${serial} | ${module} | A planted row (check: one person) | ${person}, standing in a sunny kitchen, warm and calm. Style: Clean 3D vector illustration. | none | Needed |\n`;
   const caught = (k, text, serial, older) => { const j = judge(text)[k]; const hit = j.newer.find((p) => [p[0].serial, p[1].serial].includes(serial) && [p[0].serial, p[1].serial].includes(older)); return !!hit && !j.narrowKeys.has(key(hit)); };
-  const plants = [caught('look', ledger + row('S4127', 'hear-it-in-a-word', 'A small boy with short straight red hair, in a gray hoodie'), 'S4127', 'S3963'),
+  const plants = [caught('look', ledger + row('S4127', 'hear-it-in-a-word', 'A small boy with short straight red hair, in a gray sweater'), 'S4127', 'S3963'),
     caught('hair', ledger + row('S4131', 'look-and-write', 'A grandma with a short gray afro, in a red sweater'), 'S4131', 'S4111'),
     caught('near', ledger + row('S4128', 'hear-it-in-a-word', 'A small boy with short black locs, in a green t-shirt'), 'S4128', 'S3967')];
   const counts = Object.keys(READINGS).map((k) => `${now[k].waiting.length} ${k}`).join(', ');
-  ok(`no person a pre-K row writes from pass NF on looks like another of their kind in the course of the same subject in the other pre-K grade either, by hair and clothing color, hair written alike or one shared hair word (EARMARKS A97; older pairs only that reading finds wait as counts that only fall, ${counts}, at most ${WIDE_WAITING.look}, ${WIDE_WAITING.hair} and ${WIDE_WAITING.near}; three plants caught beside the rows they echo, which the narrow reading misses)`,
+  ok(`no person a pre-K row writes from pass NF on looks like another of their kind in the course of the same subject in the other pre-K grade either, by hair and clothing color (with hairstyle, garment and skin since pass NQ, Q114 (a)), hair written alike or one shared hair word (EARMARKS A97; older pairs only that reading finds wait as counts that only fall, ${counts}, at most ${WIDE_WAITING.look}, ${WIDE_WAITING.hair} and ${WIDE_WAITING.near}; three plants caught beside the rows they echo, which the narrow reading misses)`,
     Object.keys(READINGS).every((k) => now[k].newer.length === 0 && now[k].waiting.length <= WIDE_WAITING[k]) && plants.every(Boolean),
     `new: ${Object.keys(READINGS).flatMap((k) => now[k].newer.map((p) => k + ' ' + p[0].serial + ' and ' + p[1].serial)).join('; ')}; waiting ${counts}; plants ${plants}`); }
 // Skin in a person's look (Mikey's answer to Q99, pass NJ: "Q99 - A"; EARMARKS A123): every row from pass NI's new serials on that paints a
@@ -482,5 +495,90 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   ok(`every painting in color from pass NI's serials on that paints a person writes skin (${newPeople} rows), every character sheet and Wonder portrait writes its person's skin as docs/CHARACTERS.md gives it (${Object.keys(words).length} people, ${Object.keys(sheetPeople).length} rows), and no coloring page from pass NI's serials on asks for skin; a new painting with no skin, C1 without Mike's words and a new coloring page asked for skin, planted, each caught (Q99 (a), pass NJ; the coloring pages since round two's whole read)`,
     newPeople >= 8 && skinless(rows).length === 0 && Object.keys(words).length === 7 && looksOff(rows).length === 0 && pageSkin(rows).length === 0 && skinless([...rows, plantRow]).includes('S99999') && looksOff(plantSheet).includes('C1') && pageSkin([...rows, plantPage]).includes('D999'),
     `skinless ${skinless(rows).join(',')}; looks off ${looksOff(rows).join(',')}; coloring pages with skin ${pageSkin(rows).join(',')}; words ${JSON.stringify(words)}`); }
+// The look tool counts skin, hairstyle and garment (pass NQ, Mikey's answer to Q114, "Q114 - A": "Count skin, hairstyle and garment too, so
+// two people set apart by any of them no longer count as alike"). Three checks, their near misses on the real rows, each new rule proven
+// failing with its guard taken out of a copy of the tool (the copy is written to a folder of its own and imported, as the rules test does).
+// (1) Skin is read into its family from every form the rows write (light: pale white, fair, light and light tan; tan: tan, olive-toned tan
+// and light brown; brown: medium, warm and deep brown), the cast's toned forms too; every skin a pre-K row writes today has a family, and a
+// skin in words no family names, planted, is caught; and a look that writes its skin before its hair keeps its hair's own color.
+// (2) The founding case's two grandmas (pass MX: S4038's Gran beside S4027's and S4029's grandma): Gran given the grandma's long loose white
+// hair and a tangerine sweater is a pair, alike in everything; in a tangerine coat, alike in all but garment, no pair; with her own hair
+// under her hat, alike in all but hairstyle, no pair; with deep brown skin beside the grandma's fair skin, alike in all but skin, no pair,
+// and a pair again with skins of one family (light tan beside fair) or with one skin unwritten. Jasper given brown curls beside P175's Sam's
+// curly hair is one hairstyle in two words, an echo. A hair pair (pass NC's plant, Emeka's short wavy black hair beside S3987's boy's) and a
+// near hair pair (pass ND's plant, Harriet's chin-length brown bob beside S3997's girl's chin-length curls): with skins of two families none,
+// with skins of one family still one. (3) What (a) set apart, held so it is never silent: the founding case as it was (Gran's tangerine
+// coat), Noemi's cranberry dress beside S1468's girl, Dex's teal t-shirt beside Jasper's, and In it goes' boy's gray hoodie beside S3963's
+// gray sweater are each no pair, and each a pair again with garment and hairstyle taken out of a copy, as before pass NQ.
+{ const W = await import('../tools/look-echoes.mjs');
+  const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs'); const { tmpdir } = await import('node:os'); const { join } = await import('node:path'); const { pathToFileURL } = await import('node:url');
+  const GRAN = 'silver hair under a wide-brimmed cream felt hat, in a long sapphire-blue coat';   // S4038, Gran as she stands since pass MX
+  const GRANDMA = 'long white hair worn loose over her shoulders, in a cozy marigold sweater';   // S4027 and S4029
+  const LOOSE = 'long white hair worn loose over her shoulders'; const JASPER = 'a short dark-brown mohawk and a gap-toothed grin, in a turquoise t-shirt';
+  const row = (serial, module, person) => `\n| ${serial} | ${module} | A planted row (check: one person) | ${person}, standing in a sunny kitchen, warm and calm. Style: Clean 3D vector illustration. | none | Needed |\n`;
+  const swap = (text, from, to) => text.split(from).join(to);
+  const readsOf = (T, text) => T.personReads(text).filter((r) => r.read);
+  // A pair of one group between a row x names and a row y names (serials by pattern).
+  const has = (pairs, x, y, group) => pairs.some((p) => p[0].group === group && ((x.test(p[0].serial) && y.test(p[1].serial)) || (x.test(p[1].serial) && y.test(p[0].serial))));
+  const gran = (T, words, grandma = GRANDMA) => has(T.lookPairs(readsOf(T, swap(swap(ledger, GRAN, words), GRANDMA, grandma)), T.coursesNear), /^S4038$/, /^S402[79]$/, 'woman');
+  const emeka = (T, mine, his) => has(T.hairPairs(readsOf(T, swap(swap(ledger, 'A small boy with short black locs, in a lemon-yellow t-shirt', `A small boy with short wavy black hair${mine}, in a lemon-yellow t-shirt`), 'short wavy black hair, in a white t-shirt', `short wavy black hair${his}, in a white t-shirt`)), T.coursesNear), /^S40(8[7-9]|90)$/, /^S39(8[7-9]|90)$/, 'boy');
+  const harriet = (T, hers) => has(T.hairNearPairs(readsOf(T, swap(swap(ledger, 'a chin-length auburn bob and freckles', 'a chin-length brown bob, freckles and deep brown skin'), 'chin-length curly brown hair, in a gray t-shirt', `chin-length curly brown hair and ${hers} skin, in a gray t-shirt`)), T.coursesNear), /^S41(0[7-9]|10)$/, /^S3997$/, 'girl');
+  const skinOf = (T, words) => { const x = T.personReads(row('S99990', 'which-way-we-read-pk', `A small boy with ${words}, in a red t-shirt`)).find((r) => r.group === 'boy'); return x && x.read ? `${x.hair} ${x.skin}` : 'unread'; };
+  // (1) The skin a form is read as: each form the rows and the cast write, in a planted row, with its family.
+  const FORMS = [['short black hair and pale white skin', 'black light'], ['short black hair and fair skin', 'black light'], ['short black hair and light skin', 'black light'], ['short black hair and light tan skin', 'black light'],
+    ['short black hair and tan skin', 'black tan'], ['short black hair and olive-toned tan skin', 'black tan'], ['short black hair and light brown skin', 'black tan'], ['short black hair and medium brown skin', 'black brown'],
+    ['short black hair and warm brown skin', 'black brown'], ['short black hair and deep brown skin', 'black brown'], ['short black hair and fair skin with a rosy tone', 'black light'], ['short black hair and light skin with a warm golden tone', 'black light'],
+    ['short black hair and light skin with freckles', 'black light'], ['warm brown skin and short black hair', 'black brown']];
+  const formsOff = (T) => FORMS.filter(([words, want]) => skinOf(T, words) !== want).map(([words]) => `${words}: ${skinOf(T, words)}`);
+  const written = W.personReads(ledger).filter((x) => x.read && x.skinWords); const unplaced = (text) => W.personReads(text).filter((x) => x.read && x.skinWords && !x.skin).map((x) => `${x.serial} ${x.skinWords}`);
+  const plantSkin = unplaced(ledger + row('S99991', 'which-way-we-read-pk', 'A small boy with short black hair and sun-kissed skin, in a red t-shirt')).some((s) => s.startsWith('S99991'));
+  // (2) The near misses, each a test of a copy of the tool T that holds when the rule does.
+  const NEAR = {
+    'alike in everything, a pair': (T) => gran(T, `${LOOSE}, in a long tangerine sweater`),
+    'alike in all but garment, no pair': (T) => !gran(T, `${LOOSE}, in a long tangerine coat`),
+    'alike in all but hairstyle, no pair': (T) => !gran(T, 'silver hair under a wide-brimmed cream felt hat, in a long tangerine sweater'),
+    'alike in all but skin, no pair': (T) => !gran(T, `${LOOSE} and deep brown skin, in a long tangerine sweater`, `${LOOSE} and fair skin, in a cozy marigold sweater`),
+    'skins of one family, a pair': (T) => gran(T, `${LOOSE} and light tan skin, in a long tangerine sweater`, `${LOOSE} and fair skin, in a cozy marigold sweater`),
+    'one skin unwritten, a pair': (T) => gran(T, `${LOOSE} and deep brown skin, in a long tangerine sweater`),
+    'one hairstyle in two words, an echo': (T) => has(T.lookEchoes(readsOf(T, swap(ledger, JASPER, 'dark-brown curls and a gap-toothed grin, in a green t-shirt')), T.coursesNear), /^S40(2[7-9]|30)$/, /^P175$/, 'boy'),
+    'a hair pair with skins of two families, none': (T) => !emeka(T, ' and deep brown skin', ' and fair skin'),
+    'a hair pair with skins of one family, still one': (T) => emeka(T, ' and deep brown skin', ' and warm brown skin'),
+    'a near hair pair with skins of two families, none': (T) => !harriet(T, 'fair'),
+    'a near hair pair with skins of one family, still one': (T) => harriet(T, 'warm brown'),
+    'every form read into its family, the hair kept its own': (T) => formsOff(T).length === 0 };
+  // (3) What (a) set apart.
+  const PAST = {
+    'the founding case as it was, Gran in her tangerine coat': (T) => !gran(T, 'silver hair under a wide-brimmed cream felt hat, in a long tangerine coat'),
+    "Noemi's cranberry dress beside S1468's girl": (T) => !has(T.lookPairs(readsOf(T, swap(ledger, 'in a caramel-brown dress', 'in a cranberry dress')), T.coursesNear), /^S403[5-8]$/, /^S1468$/, 'girl'),
+    "Dex's teal t-shirt beside Jasper's": (T) => !T.lookPairs(readsOf(T, swap(ledger, 'a mop of reddish-brown hair over his forehead, in a tan t-shirt', 'a mop of brown hair over his forehead, in a teal t-shirt')), T.coursesNear).some((p) => p.some((x) => /mop of brown hair/.test(x.words)) && p.some((x) => /mohawk/.test(x.words))),
+    "In it goes' boy's gray hoodie beside S3963's": (T) => !has(T.lookPairs(readsOf(T, ledger + row('S4127', 'hear-it-in-a-word', 'A small boy with short straight red hair, in a gray hoodie')), T.coursesNear), /^S4127$/, /^S3963$/, 'boy') };
+  // Each guard, the words it is in the tool and its words taken out, and the near miss that must fail without it.
+  const GUARDS = {
+    'skin in lookPairs': [' && a.garment === b.garment && !skinApart(a, b)) pairs.push', ' && a.garment === b.garment) pairs.push', 'alike in all but skin, no pair'],
+    'garment in lookPairs': [' && a.garment === b.garment && !skinApart', ' && !skinApart', 'alike in all but garment, no pair'],
+    'hairstyle in lookPairs': [' && hairstyleOf(a) === hairstyleOf(b)', '', 'alike in all but hairstyle, no pair'],
+    'a style word in its forms': ['.filter(Boolean).map((w) => NEAR_FORMS[w] || w))].sort()', '.filter(Boolean))].sort()', 'one hairstyle in two words, an echo'],
+    'skin in hairPairs': [' && marks(a) === marks(b) && !skinApart(a, b)) pairs.push', ' && marks(a) === marks(b)) pairs.push', 'a hair pair with skins of two families, none'],
+    'skin in hairNearPairs': [' || skinApart(a, b)) continue;', ') continue;', 'a near hair pair with skins of two families, none'],
+    'a compound skin read before its parts': ["[['light', /\\blight[- ]tan\\b/], ", '[', 'every form read into its family, the hair kept its own'],
+    'the hair read past the skin': [".find((piece) => !/\\bskin\\b/.test(piece)) || ''", '[0]', 'every form read into its family, the hair kept its own'] };
+  const src = readFileSync(new URL('../tools/look-echoes.mjs', import.meta.url), 'utf8'); const logicAt = new URL('../src/logic.mjs', import.meta.url).href;
+  const dir = mkdtempSync(join(tmpdir(), 'edu-looks-')); let copies = 0;
+  // A copy of the tool with words taken out, or null when those words are not in it exactly once (the check then fails).
+  const copyWithout = async (pairsOut) => { let text = src; for (const [from, to] of pairsOut) { if (text.split(from).length !== 2) return null; text = text.replace(from, to); }
+    const f = join(dir, `look-echoes-copy-${++copies}.mjs`); writeFileSync(f, text.replace("from '../src/logic.mjs'", `from '${logicAt}'`)); return import(pathToFileURL(f).href); };
+  const loose = []; let pastBack = false;
+  try {
+    for (const [name, [from, to, nearMiss]] of Object.entries(GUARDS)) { const T = await copyWithout([[from, to]]); if (!T || NEAR[nearMiss](T)) loose.push(name); }
+    const before = await copyWithout([[GUARDS['garment in lookPairs'][0], GUARDS['garment in lookPairs'][1]], [GUARDS['hairstyle in lookPairs'][0], GUARDS['hairstyle in lookPairs'][1]]]);
+    pastBack = !!before && Object.values(PAST).every((f) => !f(before));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+  const missed = Object.entries(NEAR).filter(([, f]) => !f(W)).map(([k]) => k); const pastHeld = Object.entries(PAST).filter(([, f]) => !f(W)).map(([k]) => k);
+  ok(`the look tool reads skin into three families from every form the rows write and the cast's toned forms (${FORMS.length} forms), every skin a pre-K row writes today has one (${written.length} looks), a skin in words no family names, planted, is caught, and a look that writes its skin before its hair keeps its hair's own color (pass NQ, Q114 (a))`,
+    written.length >= 150 && unplaced(ledger).length === 0 && plantSkin && formsOff(W).length === 0, `forms off: ${formsOff(W).join('; ')}; unplaced: ${unplaced(ledger).join('; ')}; planted caught ${plantSkin}`);
+  ok(`two people count as alike only when hair and clothing color, hairstyle and garment all match and their skin does not set them apart, and skin sets apart a hair pair and a near hair pair: ${Object.keys(NEAR).length} near misses on the founding case's grandmas, Jasper and P175's Sam, and the hair plants of pass NC and pass ND, and each of ${Object.keys(GUARDS).length} guards taken out of a copy of the tool fails its own (pass NQ, Mikey's answer to Q114, "Q114 - A")`,
+    missed.length === 0 && loose.length === 0, `near misses not held: ${missed.join('; ')}; guards whose removal no near miss caught: ${loose.join('; ')}`);
+  ok(`what Q114 (a) set apart is held, never silent: the founding case as it was (Gran's tangerine coat beside the grandma's marigold sweater), Noemi's cranberry dress, Dex's teal t-shirt and In it goes' boy's gray hoodie are each no pair, and each a pair again with garment and hairstyle taken out of a copy, as before pass NQ`,
+    pastHeld.length === 0 && pastBack, `paired still: ${pastHeld.join('; ')}; pairs again without garment and hairstyle: ${pastBack}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

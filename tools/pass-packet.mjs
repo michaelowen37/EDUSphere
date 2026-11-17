@@ -100,7 +100,7 @@ export const openEarmark = (line) => { const m = String(line).match(/^\| [AELP]\
 // of pass NK among them, so the list is kept here, in one place, and a packet whose --briefs takes the screen brief prints it with each
 // row's title; the pass packet test holds the list to EARMARKS both ways (every row here open, and every open row whose status waits for
 // the next screen read here).
-export const SCREEN_BRIEF_ROWS = ['A36', 'A106', 'A107', 'A108', 'A109', 'A110', 'A116', 'A117', 'A118', 'A121', 'A134', 'A135', 'A136', 'A137', 'A140', 'A142', 'A144', 'A145', 'A146', 'L18'];   // A145 since pass NN: the uncentered read's blind spots; A146 since pass NP: what the read-along's checks do not yet see
+export const SCREEN_BRIEF_ROWS = ['A36', 'A106', 'A107', 'A108', 'A109', 'A110', 'A116', 'A117', 'A118', 'A121', 'A134', 'A135', 'A136', 'A137', 'A140', 'A142', 'A144', 'A145', 'A146', 'A155', 'L18'];   // A145 since pass NN: the uncentered read's blind spots; A146 since pass NP: what the read-along's checks do not yet see; A155 since pass NQ: the Look back button with a course's whole label
 export const waitsForScreenRead = (line) => { const m = String(line).match(/^\| [AELP]\d+ \|.*\| ([^|]*) \|\s*$/); return !!m && openEarmark(line) && /\bthe next screen read\b/i.test(m[1]); };
 export function screenRowsSection(eaText) {
   const rows = String(eaText).split('\n');

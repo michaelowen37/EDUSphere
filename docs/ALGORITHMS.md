@@ -10,7 +10,14 @@ The only stored truth is a list of events per student: `lesson_viewed`,
 `attempt_completed`, `wonder_answered`, `courses_enabled`, `progress_reset`,
 `module_reset`, `looped_back`. Events are only ever appended. Every number on every
 screen is recomputed from this list each time. A reset is an event too: derivations
-ignore what came before the latest reset, but nothing is deleted.
+ignore what came before the latest reset, but nothing is deleted. A lesson's own reset
+(`module_reset`) starts that lesson again, and since pass NQ every reader of that
+lesson's progress (its row, its confidence, its lines on Who Needs Help, Practice so far
+and its story) leaves out what came at or before it, through one reading
+(lessonResetTimes and clearedByLessonReset), as the report's row always did; the
+student's activity, the Wonder cadence, question choice, the dated practice review
+history, the quick check's one try and an educator's unlock still read the whole record
+since the latest full reset.
 
 ## Questions
 
@@ -66,27 +73,41 @@ little teaches). Two kinds of educator action can still lock one of the ten less
 
 ## Loop-back
 
-After `LOOP_BACK_AFTER` (2) failed rounds in a row on a module, the nearest
-prerequisite (the last its list names) is reopened for a check and the student is offered
-it as the one thing to do. A `looped_back` event records it. Re-passing the prerequisite
-clears the routing. The number 2 is a judgement: one miss is normal, three is too long to
-wait. In pre-K the prerequisite is the lesson the lesson's ideas build on (Q84, pass MZ),
-and a lesson that names none never loops back: after four failed rounds the educator gets
-its Action Item.
+After `LOOP_BACK_AFTER` (2) failed rounds in a row on a module, counted since that
+lesson's own reset (pass NQ), the nearest prerequisite (the last its list names,
+`loopBackTarget`) is reopened for a check and the student is offered it as the one thing
+to do. A `looped_back` event records it. Re-passing the prerequisite clears the routing.
+The number 2 is a judgment: one miss is normal, three is too long to wait. In pre-K the
+prerequisite is the lesson the lesson's ideas build on (Q84, pass MZ), and a lesson that
+names none never loops back: after four failed rounds the educator gets its Action Item.
+Since pass NQ, Who Needs Help's reason after one miss names the same lesson a second miss
+would loop back to (`fundamentalsOf` is `loopBackTarget`'s lesson), and names no route for
+a lesson with none.
 
 ## Confidence, 1 to 5
 
-Starts at 1 once a module has been practiced. Mastered adds 2. Latest round perfect
-adds 1. Either eight correct answers in a row, or at least 80 percent on two or more
-memory checks, adds 1. Capped at 5. Two or more wrong answers under four seconds add a
-"guessing?" note. All four numbers are judgements chosen to be easy to explain.
+The score reads the lesson's history since its own reset (since pass NQ; until then a
+lesson reset to 0 attempts kept its score). Starts at 1 once a module has been
+practiced. A pass adds 2, even before its star (the star is a second pass on another
+day). A perfect latest round adds 1. Either the latest eight answers in its own rounds
+all correct, or 80 percent or more right on two or more of its questions that have come
+back, adds 1. Half or more of those returning answers wrong takes 1 away; memory checks,
+checkpoints and practice reviews are counted together. The score stays between 1 and 5.
+Two or more wrong answers under four seconds each in the latest round name the module,
+when its course is assigned, under signs of guessing on Who Needs Help, and time never
+changes the score. The numbers are judgments chosen to be easy to explain. Until pass NQ
+(round one's code reads) this paragraph said mastered adds 2, gave the point for any
+eight correct answers in a row and for memory checks alone, left out the point taken
+away, and named a "guessing?" note that no screen shows.
 
 ## Timing
 
 Every answer records milliseconds from the question appearing to the answer being
 checked. The report compares the median of the latest round against the student's
 median everywhere else. A latest round under 60 percent of their usual pace is called
-out, and combined with quick wrong answers is read as guessing.
+out, and combined with quick wrong answers is read as guessing; nothing is said of pace
+otherwise. Until pass NQ (round two's fixes) every other round was called a normal pace
+for them, a round three times slower than usual and one with nothing to compare among them.
 
 ## Memory checks and spaced repetition
 
@@ -101,14 +122,22 @@ interval schedule was still to come.
 
 ## Reflections
 
-A reflection is offered after every `WONDER_EVERY` (2) finished rounds, pass or fail,
-since the last one was answered. Each question carries a theme (world, failure,
-feelings, ups-and-downs); the theme met longest ago comes first, and after a failed
-round the failure, feelings and ups-and-downs questions jump the queue. The pool is every question still on (since pass NJ every question starts on and the school can turn any off; until then, every approved question) written for this course or for
-this course's stage (early, growing, teen, grown), so courses share a pool. The one
-answered longest ago comes first, and never-answered ones come before those, so the
-questions rotate rather than repeat. Pre-readers only ever draw questions that carry a
-short spoken two-voice version. No question is offered more than `WONDER_MAX_REPEATS`
+A reflection is offered once `WONDER_EVERY` (2) different modules have been worked since
+the last one was answered, pass or fail: each module counts once however many rounds it
+took, so two rounds of one module are not enough, and a module passed twice to earn its
+star does not count double (Mikey's rule, restated 2026-09-28). Each question carries a
+theme (world, failure, feelings, ups-and-downs). The pool is every question still on (since pass NJ every question starts on and the school can turn any off; until then, every approved question) written for this course or for
+this course's stage (early, growing, teen, grown), so courses share a pool. The order
+(nextWonder): after a rough patch since the last answer, a round not passed or
+`MISS_STREAK` (3) misses in a row inside one, the failure and feelings questions come
+first and the ups-and-downs ones next, ahead of the rest; then, within each of those, the
+question answered fewest times comes first, then the one whose theme was met longest ago
+(a theme never met first), then the one answered longest ago, then one written for this
+course before one its stage shares, and questions tied on all of these keep the order they
+are written in. So the questions rotate rather than repeat. Until pass NQ (round one's code
+reads) this paragraph said a reflection came after every two finished rounds and put the
+theme met longest ago first. Pre-readers only ever draw questions that carry short spoken
+voices (`simple`, four since pass MH). No question is offered more than `WONDER_MAX_REPEATS`
 (2) times to one student; when every question in the pool has reached that, the
 reflection is skipped. A pre-reader's round that finishes a course goes to the course-finished page, which ends at home
 (pass MF), so a reflection due after that round waits for the next finished round; it stays due (Mikey kept it in
@@ -147,22 +176,46 @@ party. courseFinishedBy is the round that earns the last star, as before. course
 earned, complete or mastered (mastered when both happen at once), and celebrationStory picks the story: the course's long
 story for the first, its next long story (MASTERY_STORIES) for the second, or the first again while it has none.
 
-## Placement (designed, not yet built)
+## Placement
 
-An educator supplies a starting level. The check begins there, steps up on success and
-down on struggle, runs per subject, never asks about prerequisites already implied by a
-pass higher up, stops after about a dozen questions, places one notch conservatively,
-and its recommendations are applied immediately so a new student never faces a blank
-screen. It is skippable.
+A young learner (any early-years course still unmastered) is offered no placement check;
+the early-years grade picker explains why and what a child should already be comfortable
+with. A student who came up through the early years, with any early-years lesson mastered,
+is offered none either: each subject that would ask starts at the beginning, the band's
+first grade with nothing placed, its courses switched to that grade (the screens' cameUp
+effect and skipPlacement). Anyone else is offered a check in Math, Reading and Science,
+for each subject with grades in the student's band that is not yet placed or practiced:
+four questions a grade (`PLACEMENT_PROBE`), three right to clear it (`PLACEMENT_TO_CLEAR`).
+It starts at the grade the student was added at, or the band's first, climbs through the
+band while each grade is cleared, and steps down, below the band if need be, while none
+is. The student starts at the lowest grade not cleared, with every module below it placed
+(passed for gating, never mastered). It applies at once, so a new student never faces a
+blank screen, and it is skippable (Start at the beginning). Quick checks then let a
+student skip single modules.
+Corrected in pass NQ: this section said placement was designed and not yet built, that it
+stopped after about a dozen questions and placed one notch conservatively, and it left
+out the student who came up through the early years (found by round three's whole read of
+RULES-AUDIT); the code has been built since and has no notch (RULES-AUDIT section 7's
+placement row, corrected under Q85 in the same pass).
 
 ## The class view
 
 Each student's need score: 3 per module they are stuck on (two or more misses in a row
-with no pass since), 2 per loop back, 2 per module with a guessing flag, 1 per
-mastered module whose confidence is 2 or less, 2 if assigned work has never been
-started, and 1 plus one per week idle (capped at 3 extra) after seven days without
-practice. Five or more is "needs help now", two to four is "keep an eye on". The
-weights are judgements, chosen so a stuck student always outranks an idle one.
+with no pass since, not moved past), 2 per loop back, 2 per module with a guessing flag,
+1 per mastered module whose confidence is 2 or less, 1 per lesson missed in the last
+checkpoint, 3 per lesson stuck after a practice review, 1 for lessons a review reopened,
+1 for lessons moved past, 1 for lessons missed once, 2 if assigned work has never been
+started, and otherwise 1 plus one per week idle (capped at 3 extra) after seven days
+without practice. Five or more is "needs help now", two to four is "keep an eye on". The
+weights are judgments: one stuck lesson (3) counts as much as two weeks idle (1 plus 2),
+and from three weeks idle (4) an idle student ranks above a student stuck on one lesson
+with no loop back (3; with one loop back, 5, needs help now) (corrected in pass NQ, round
+three: this line said a stuck student always outranks an idle one).
+
+A row's Next up and the weekly note's come from one rule, nextUpModule (pass NQ): the first
+lesson of an assigned course, in the report's order, that is not mastered and is open now
+and not yet passed, so the two never name different lessons, and the note leaves its Next
+up out when that lesson is already under Still practicing.
 
 ## Tracing
 

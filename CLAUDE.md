@@ -11,14 +11,14 @@ New chats: read docs/NEW-CHAT.md first, then the pass packet it asks for (node t
 6. `docs/DESIGN.md`: how screens look and how words are written.
 7. `src/curriculum.mjs`: the plan against state standards, and what is still missing.
 8. `docs/RUNBOOK.md`: what to do when something breaks.
-Then `src/logic.mjs`, then `src/ui.jsx`, then the tests. Run the fast tests a change touches after it, and `./check.sh`, which takes about two and a half hours, once a pass's first build is in and again at its end.
+Then `src/logic.mjs`, then `src/ui.jsx`, then the tests. Run the fast tests a change touches after it, and `./check.sh`, which takes about three hours, once a pass's first build is in and again at its end.
 
 Mastery-based learning for schools. Phase 0 = one browser file, no server, no
 accounts, no data leaves the device. Decisions and the phase 1 plan live in
 docs/DECISIONS.md. What to do when something breaks lives in docs/RUNBOOK.md. Step-by-step guides live in .claude/skills/.
 
 ## Commands
-- `./check.sh` — runs everything (rules tests, curriculum coverage, build, render smoke, syntax, the browser tests). Must end with `ALL CHECKS PASSED`. It takes about two and a half hours (167 minutes in pass NK), so start it detached, as part two's Running check.sh line says, once a pass's first build is in and again at its end, run the fast tests a change touches after each change, and paste its last line.
+- `./check.sh` — runs everything (rules tests, curriculum coverage, build, render smoke, syntax, the browser tests). Must end with `ALL CHECKS PASSED`. It takes about three hours (187 minutes in pass NP's final run and 191 in pass NQ's mid-pass run), so start it detached, as part two's Running check.sh line says, once a pass's first build is in and again at its end, run the fast tests a change touches after each change, and paste its last line.
 - `node tests/logic.test.mjs` — rules only; fastest loop while changing logic.
 - `tsc` prints one line `Cannot find module 'react'` — ignore that line only.
 - `./check.sh` step 10 is a real-browser click-through (`tests/e2e/click-through.mjs`, headless Chromium, about nine minutes run alone, 525 seconds in pass NL on a passing run, not counting ./build.sh and node tests/e2e/make-page.mjs, which come first, since the page is made from the build). If step 10 fails, read its FAIL line in /tmp/edu_click_through.log: it names the screen and the tap.
@@ -88,7 +88,7 @@ docs/DECISIONS.md. What to do when something breaks lives in docs/RUNBOOK.md. St
 - Back button (2026-09-20): one guard entry on `window.history` while the app is past the sign-in screen; `popstate` moves up one level (`upScreen` in `ui.jsx`). Never push more than one entry, and never navigate on `popstate` from the sign-in screen.
 - Speech (2026-09-20): `speak()` is ticketed; never call `speechSynthesis.speak()` straight after `cancel()` anywhere else. Keep utterances referenced (`speechAlive`).
 - Student PIN and Wonder switch (2026-09-20): `cleanPin`, `setStudentPin`, `pinMatches`, `setStudentWonder`, `wonderOnFor` in section 7 of `logic.mjs`; the sign-in screen asks for a PIN when the student has one; both result screens check `wonderOnFor`. Classroom order: `classroomOrder` and `setClassroomOrder`.
-- Backups (2026-09-20): `autoBackup(reason)` runs on sign-out, first sign-in of the day and course finish, and saves a file to downloads (plainDownload); keepOneFile, a file handle kept in memory, is gone. Do not add a storage call for a file handle.
+- Backups (2026-09-20): `autoBackup(reason)` runs when a student taps Exit and when an educator signs out, only if something changed, and saves a file to downloads (plainDownload); the first sign-in of the day (2026-09-20) and the course finish (pass L) no longer make one; keepOneFile, a file handle kept in memory, is gone. Do not add a storage call for a file handle.
 
 ## Workflow
 - One-sentence change (wording, a color, a typo): do it, run `./check.sh`, show the output.
@@ -117,7 +117,7 @@ Add its standards to src/curriculum.mjs (every code, with the module ids that co
 - This is the short manual every session and every checker loads: what a coder needs on most tasks, nothing replaced. Through pass ML it grew to 382 dated lines, some silently replaced; in pass MM, at Mikey's word (RULES-AUDIT section 9), the whole file went word for word to docs/CLAUDE-HISTORY.md, held by a hash, and this file kept its first part and 56 of those lines.
 - Before you change a feature, search the history for its name (grep -n "<function or feature>" docs/CLAUDE-HISTORY.md) and read docs/RULES-AUDIT.md's rows for it. In the history a later line can replace an earlier one; RULES-AUDIT says which rule stands.
 - Where a new rule goes, best first (the trust pyramid Mikey shared in pass MM): make the mistake impossible in the code (one source of truth, the logic decides and the screens only draw); else a test or a tool that fails on it, proven failing on a real past mistake and on its near misses; else a row in docs/RULES-AUDIT.md and the brief that reads for it in docs/INDEPENDENT-CHECKS.md. A line here only when a coder needs it on most tasks; the docs sync test keeps this file under 40,000 bytes. A kind of mistake the checks find in two passes gets a check in the pass that finds it the second time.
-- check.sh takes about two and a half hours (149 minutes in pass NI), so start it detached, as the Running check.sh line below says, and wait for it by a background job that notifies when /tmp/check.done appears, never by polling (docs/NEW-CHAT.md, How a pass is delivered); look for it with pgrep -f '^(/bin/)?(ba)?sh \./check\.sh', never with a pattern that is also in your own command line.
+- check.sh takes about three hours (187 minutes in pass NP's final run and 191 in pass NQ's mid-pass run), so start it detached, as the Running check.sh line below says, and wait for it by a background job that notifies when /tmp/check.done appears, never by polling (docs/NEW-CHAT.md, How a pass is delivered); look for it with pgrep -f '^(/bin/)?(ba)?sh \./check\.sh', never with a pattern that is also in your own command line.
 - tools/content-diff.mjs <the last delivered copy> --scope <the pass's course ids> lists what a pass changed, course by course and item by item (tools/content-snapshot.mjs), outside its scope first; the final read starts from it.
 
 ## CLAUDE.md's parts (pass MS; part three since pass NG)

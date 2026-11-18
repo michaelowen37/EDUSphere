@@ -53,8 +53,8 @@ step "1/13 rules tests" /tmp/edu_t.txt;  node --max-old-space-size=4096 tests/lo
 step "2/13 curriculum coverage" /tmp/edu_c.txt; node tests/coverage.test.mjs | grep -E 'FAIL|NOTE|passed' | tee /tmp/edu_c.txt; grep -q " 0 failed" /tmp/edu_c.txt || failed
 step "3/13 spelling and style" /tmp/edu_sp.txt; node tests/spelling.test.mjs | tail -1 | tee /tmp/edu_sp.txt; grep -q " 0 failed" /tmp/edu_sp.txt || failed
 step "3b/13 the rules audit and algorithms match the code" /tmp/edu_ds.txt; node tests/docs-sync.test.mjs | tail -1 | tee /tmp/edu_ds.txt; grep -q " 0 failed" /tmp/edu_ds.txt || failed
-# The pass packet (Q95, Mikey's answer in pass NH: "Q95 - A"): what a new chat's lead reads in place of the whole of RULES-AUDIT,
-# EARMARKS and INDEPENDENT-CHECKS, every copied line held to its file byte for byte and every line of the three files to the packet once.
+# The pass packet (Q95, Mikey's answer in pass NH: "Q95 - A"), since pass NS (Q120, "Q120 - A") a task packet for each agent, read whole,
+# in place of the lead's one packet: every copied line held to its file byte for byte, and a packet made with --all holding every line once.
 step "3c/13 the pass packet copies its rows word for word" /tmp/edu_pp.txt; node tests/pass-packet.test.mjs | tail -1 | tee /tmp/edu_pp.txt; grep -q " 0 failed" /tmp/edu_pp.txt || failed
 # The guard against a fix made by weakening (pass NQ, EARMARKS L20, Mikey's answer to Q113): a floor lowered, a pinned count lowered, a
 # wait or a kept exception added, a limit raised or a step's count of checks fallen since the baseline (tests/fixtures/floor-baseline.json)

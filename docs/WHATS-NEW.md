@@ -9,6 +9,11 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 17, 2026 (the grown-up's card for one more question, and what holds a confidence score down)
+
+- On a phone, tablet or computer with no voice, the four-year-olds' question "What does this print tell us?" in Print tells us something now shows the card for the grown-up, as the letters questions do. While the card is up the picture hides, and you read the question and its three answers aloud; then tap Ready, read the question again with the print showing, and point to each numbered button as you say its answer. Before, the buttons printed their answers, so under Mom's note, which says I love you, the right button printed the note's own words, and a child could match the letters without reading anything.
+- On a student's report, under Key Words - Explained, What holds a confidence score down now says what the score really does: it stays down while the latest round has a mistake in it, and until the lesson's latest eight answers are all correct, unless at least two of its questions have come back and 80 percent or more of them were right. Before, it spoke of scoring lower on consecutive attempts, which the score never compares. On a narrow phone, each key word's name now wraps evenly, so no word is left alone on its last line.
+
 ## November 17, 2026 (words all around us, connections to a story, and every lesson named clearly on your screens)
 
 - Three-year-olds learn that words are all around us, not just in books. In Words all around us, your child finds the words on a stop sign, a milk carton, a cubby's name card and a shop's door, learns what each one tells us, and looks for words with you to ask what they say. In Print tells us something, four-year-olds learn that print is talk written down: a note says the same words every time anyone reads it, even when the writer isn't there. Write down something your child says, and read it back while they point to each word.

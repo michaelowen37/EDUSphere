@@ -2213,7 +2213,8 @@ function HeardChoice({ text }) {
     <span>{text}</span></span>;
 }
 // The grown-up's card (Q91 (a), Mikey's answer in pass NG: "Q91 - A"; grownUpCard in logic.mjs). In plain terms: on a device with no
-// voice, a letters question whose whole words would show the sound or word to say draws this card where its answers go. The grown-up
+// voice, a question on the card's list (the letters questions, and since pass NS, Q122 (a), Print tells us something's "What does this
+// print tell us?") whose whole words would show the sound or word to say, or a word its picture prints, draws this card where its answers go. The grown-up
 // reads the words aloud and taps Ready, which hides the card and shows the answers, so the words and the answers are never on the
 // screen together. A which-sound question lists its sounds in the buttons' order, since its buttons then show only their numbers.
 // Every word is the theme's ink on the soft gold of the app's other notes for grown-ups, so it reads in both themes.
@@ -2241,7 +2242,13 @@ function GrownUpCard({ card, onReady }) {
             stands straight under the card's words ("Listen to these sounds."), since the grown-up reads it aloud before Ready, as Q97 (a)
             has it, and the line on what to do after Ready follows it (round one's code read: above the list, it told a grown-up to say the
             sounds only after Ready). */}
-        <div data-card-sounds="" style={{ marginTop: 6 }}>{card.sounds.map((s, i) => <p key={s} data-cue-room="" style={{ margin: '2px 0 0', fontSize: 18, fontWeight: 600, color: C.ink, paddingRight: 'var(--cue-room, 0px)' }}>{cardWords(`Button ${i + 1}, ${s}.`, `s${i}`)}</p>)}</div>
+        {/* Since pass NS (Q122 (a)) the print card lists answers of several words ("What is inside"): an answer of 22 characters or fewer
+            stays whole on its line, so a narrow phone breaks after "Button 1," and never leaves a last word alone ("inside." stood alone at
+            320 by 568 in the lead's look, on the test page, whose 8-pixel margin leaves the list 204 pixels; on the product, 220 wide, it
+            fits, as round one's screen read measured, but a wider device font can still break it); a one-word sound draws as before. */}
+        <div data-card-sounds="" style={{ marginTop: 6 }}>{card.sounds.map((s, i) => <p key={s} data-cue-room="" style={{ margin: '2px 0 0', fontSize: 18, fontWeight: 600, color: C.ink, paddingRight: 'var(--cue-room, 0px)' }}>{/ /.test(s) && s.length <= 22
+          ? <>{`Button ${i + 1}, `}<span data-whole-answer="" style={{ whiteSpace: 'nowrap' }}>{cardWords(`${s}.`, `s${i}`)}</span></>
+          : cardWords(`Button ${i + 1}, ${s}.`, `s${i}`)}</p>)}</div>
       </>}
       {/* Since round two's reads (pass NG) it says how to bring the list back, the link's name held whole, as tap Ready is ("Show the
           words / again" broke at 320); since pass NH it follows the list and says to say each sound again after Ready, and since its
@@ -15040,8 +15047,8 @@ function EduSphereScreens() {
     // Answers that are all shapes keep 2 pixels above and below there, not 6 (round one's screen read, pass NK: three big shapes on Rectangles'
     // same-shape question ended Check answer at 675 on a 375 by 667 phone in the dark theme, and four on Any size, any turn's at 669).
     const itemAnswers = shortPictures && q.choices.every((c) => /^item:/.test(String(c)));
-    // The grown-up's card (Q91 (a), Mikey's answer in pass NG; grownUpCard in logic.mjs): with no voice, a letters question whose whole
-    // words would print the sound or word to say shows, in the answers' place, a card with those words for the grown-up and a Ready
+    // The grown-up's card (Q91 (a), Mikey's answer in pass NG; grownUpCard in logic.mjs): with no voice, a question on the card's list (the
+    // letters questions, and since pass NS Print tells us something's) whose whole words would print the sound or word to say shows, in the answers' place, a card with those words for the grown-up and a Ready
     // button, until Ready; what prints above the card and, after Ready, above the answers is cardQuestion's, what a device with a voice
     // prints, the same for every seed of its bank but Write it by its sounds' yes or no (first, or at the end), and a which-sound question's
     // buttons show their numbers. The card comes back with Show the words again, never once
@@ -18107,7 +18114,9 @@ function EduSphereScreens() {
                   style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '6px 0', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   {/* The fold's arrow is the screen's: the page prints every fold open, so an arrow that says closed stays off the paper
                       (round three's screen read, pass MS: in the light theme the eight key words' arrows printed at 4.05 to 1 on the tint). */}
-                  <span style={{ fontWeight: 600, fontSize: 15 }}>{x.term}</span><span className="edu-no-print" style={{ color: C.muted }}>{open ? '▴' : '▾'}</span>
+                  {/* A key word's name wraps balanced (round one's screen read, pass NS: at 320 by 568 "What holds a confidence score" left
+                      "down" alone on its second line, in both themes). */}
+                  <span style={{ fontWeight: 600, fontSize: 15, textWrap: 'balance' }}>{x.term}</span><span className="edu-no-print" style={{ color: C.muted }}>{open ? '▴' : '▾'}</span>
                 </button>
                 {/* Each definition is rendered closed too and prints open (round four's screen read, pass MS: on paper the eight key words
                     had printed with none of their definitions, since only an open one was rendered). */}

@@ -2487,7 +2487,9 @@ const PREK_DERIVE = {
       // has a hyphen today and only the browser test reads the words and the sound lines.
       // Since pass NK's round two screen read the card holds a lone small letter too (keepLoneLetters): "Here is the small / w." at 320.
       cardSay: ["{cardWords(keepLoneLetters(card.say), 'say', cardRuns)}", "{cardWords(keepLoneCapitals(card.say), 'say', cardRuns)}"],
-      cardSounds: ['{cardWords(`Button ${i + 1}, ${s}.`, `s${i}`)}', '{withElls(`Button ${i + 1}, ${s}.`, `s${i}`)}'],
+      // Since pass NS (Q122 (a)) an answer of several words stands whole on its line (data-whole-answer), both of its branches through
+      // cardWords (pinned since pass NS's check run found the old pin gone).
+      cardSounds: ["<span data-whole-answer=\"\" style={{ whiteSpace: 'nowrap' }}>{cardWords(`${s}.`, `s${i}`)}</span></>\n          : cardWords(`Button ${i + 1}, ${s}.`, `s${i}`)}", "<span data-whole-answer=\"\" style={{ whiteSpace: 'nowrap' }}>{withElls(`${s}.`, `s${i}`)}</span></>\n          : withElls(`Button ${i + 1}, ${s}.`, `s${i}`)}"],
       // Since the third read's screen read the after line's way back stands on a row of its own (the browser test reads its row).
       cardAfter: ["{againAt < 0 ? cardWords(card.after, 'after') : <>{cardWords(card.after.slice(0, againAt + 1), 'after')}<span data-card-again-line=\"\" style={{ display: 'block' }}>{cardWords(card.after.slice(againAt + 1), 'again')}</span></>}</p>}", '{card.after}</p>}'] };
     const missing = (src) => Object.entries(FIXES).filter(([, [t]]) => src.split(t).length !== 2).map(([k]) => k);
@@ -5450,26 +5452,35 @@ const PREK_DERIVE = {
 // its note's row, I love you under the note, waits for Mikey's answer to Q122 (whether the grown-up's card should cover it), kept out by
 // name in a list of its own and met, so it never stands for a row that is gone. Plants: printedQuestion as it stood, its no-voice returns
 // printing the prompt, and p4-print-which's note rows without their no-voice prompt, each caught.
+// Since pass NS (Mikey's answer to Q122, "Q122 - A") p4-print-tells shows the grown-up's card with no voice, so the list that waited for
+// his answer is gone, and its stop sign's let-off with it: with no voice a bank on the card's list is read as the card shows it, on its
+// two screens, the card up (the card's words and its list of answers, beside the picture only where its kind does not hide it, and no
+// answers) and after Ready (what cardQuestion prints, the picture, and each button's words unless the card numbers it); with a voice, as
+// before. p4-print-tells meets nothing either way. Plant: p4-print-tells with no voice read without its card, as it stood in pass NR, the
+// note's words twice, caught.
 { const vm = await import('node:vm');
   const words = (t) => String(t || '').toLowerCase().replace(/[^a-z' ]+/g, ' ').split(/\s+/).filter(Boolean);
   const drawn = Object.fromEntries(Object.entries(L.DRAWN_WORDS).map(([k, v]) => [k, new Set(v.flatMap(words))]));
   const icons = (v, out = []) => { if (!v) return out; if (v.kind === 'icon') out.push(v.name); else if (v.kind === 'pair') { icons(v.a, out); icons(v.b, out); } else if (v.kind === 'row') (v.items || []).forEach((x) => icons(x, out)); return out; };
-  const LET_OFF = { 'p3-around-tells': ['sign~stop', 'stop'], 'p3-around-which': ['sign~stop', 'stop'], 'p4-print-which': ['sign~stop', 'stop'], 'p3-draw-yesno': ['sign~stop', 'stop'], 'p4-tell-yesno': ['sign~stop', 'stop'], 'p4-print-tells': ['sign~stop', 'stop'] };
-  // Waiting for Mikey's answer to Q122 (round three's screen read of pass NR): with no voice p4-print-tells prints I love you on a button
-  // under the note that prints it, and whether the grown-up's card should cover it is his to say; until he answers, its note's row is kept
-  // out of the no-voice reading by name. Nothing else of p4-print-tells waits, and with a voice it is read whole.
-  const WAITS_Q122 = { 'p4-print-tells': ['note~love'] };
+  const LET_OFF = { 'p3-around-tells': ['sign~stop', 'stop'], 'p3-around-which': ['sign~stop', 'stop'], 'p4-print-which': ['sign~stop', 'stop'], 'p3-draw-yesno': ['sign~stop', 'stop'], 'p4-tell-yesno': ['sign~stop', 'stop'] };
   const printedOf = (q, voice, print = L.printedQuestion) => { const p = print(q, voice); return new Set([...words(p.story), ...words(p.prompt), ...(Array.isArray(q.choices) ? q.choices : []).filter((c) => typeof c === 'string' && !c.includes(':') && L.printedChoice(q, c, voice) === null).flatMap(words)]); };
-  const shared = (g, q, voice = true, print = L.printedQuestion) => { const shown = [...new Set([...icons(q.visual), ...(Array.isArray(q.choices) ? q.choices : []).filter((c) => typeof c === 'string' && c.startsWith('icon:')).map((c) => c.slice(5))])].filter((x) => drawn[x]);
-    if (!shown.length) return [];
-    const printed = printedOf(q, voice, print);
-    return shown.flatMap((d) => [...drawn[d]].filter((w) => printed.has(w)).map((w) => [d, w])); };
+  // Since pass NS: the grown-up's card's two screens with no voice, each its drawings and its printed words, by the card's own fields.
+  const cardScreens = (q) => { const card = L.grownUpCard(q); const up = L.cardQuestion(q, true); const after = L.cardQuestion(q);
+    const buttons = (Array.isArray(q.choices) ? q.choices : []).filter((c) => typeof c === 'string' && !c.includes(':') && !(card.sounds || []).includes(String(c))).flatMap(words);
+    return [{ visual: card.hides ? null : q.visual, choices: [], printed: new Set([...words(card.say), ...(card.sounds || []).flatMap(words), ...words(up.story), ...words(up.prompt)]) },
+      { visual: q.visual, choices: q.choices, printed: new Set([...words(after.story), ...words(after.prompt), ...buttons]) }]; };
+  const shared = (g, q, voice = true, print = L.printedQuestion, card = true) => {
+    const screens = !voice && card && L.GROWN_UP_CARD_BANKS.has(g) && L.grownUpCard(q) ? cardScreens(q) : [{ visual: q.visual, choices: q.choices, printed: printedOf(q, voice, print) }];
+    return screens.flatMap((sc) => { const shown = [...new Set([...icons(sc.visual), ...(Array.isArray(sc.choices) ? sc.choices : []).filter((c) => typeof c === 'string' && c.startsWith('icon:')).map((c) => c.slice(5))])].filter((x) => drawn[x]);
+      return shown.flatMap((d) => [...drawn[d]].filter((w) => sc.printed.has(w)).map((w) => [d, w])); }); };
   const banks = [...new Set(L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules.flatMap((m) => m.generators)))];
-  const met = new Set(); const waited = new Set(); let read = 0; const found = [];
+  const met = new Set(); let read = 0; const found = [];
   for (const g of banks) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s);
     for (const voice of [true, false]) { read += 1;
-      for (const [d, w] of shared(g, q, voice)) { if (LET_OFF[g] && LET_OFF[g][0] === d && LET_OFF[g][1] === w) met.add(g); else if (!voice && WAITS_Q122[g] && WAITS_Q122[g].includes(d)) waited.add(g); else found.push(`${g} seed ${s}${voice ? '' : ' with no voice'}: ${w} (${d})`); } } }
-  const unmet = Object.keys(LET_OFF).filter((g) => !met.has(g)); const unwaited = Object.keys(WAITS_Q122).filter((g) => !waited.has(g));
+      for (const [d, w] of shared(g, q, voice)) { if (LET_OFF[g] && LET_OFF[g][0] === d && LET_OFF[g][1] === w) met.add(g); else found.push(`${g} seed ${s}${voice ? '' : ' with no voice'}: ${w} (${d})`); } } }
+  const unmet = Object.keys(LET_OFF).filter((g) => !met.has(g));
+  // The plant: p4-print-tells with no voice, read without its card, as it stood in pass NR.
+  const noCard = Array.from({ length: 300 }, (_, i) => L.generateQuestion('p4-print-tells', i + 1)).filter((q) => shared('p4-print-tells', q, false, L.printedQuestion, false).some(([d]) => d === 'note~love')).length;
   const asStood = { 'p4-print-tells': (q) => { const { heardChoices, printed, ...rest } = q; return rest; }, 'p4-print-which': (q) => { const { printed, ...rest } = q; return rest; } };
   const plants = Object.entries(asStood).map(([g, f]) => [g, Array.from({ length: 300 }, (_, i) => f(L.generateQuestion(g, i + 1))).filter((q) => shared(g, q).some(([d]) => d === 'note~love')).length]);
   // The no-voice plants: printedQuestion as it stood, from its own source with its no-voice returns printing the prompt again, and the note
@@ -5479,8 +5490,8 @@ const PREK_DERIVE = {
   const oldPrinted = OLD_PQ ? vm.runInNewContext(`(${OLD_PQ})`, { ...L }) : null;
   const noteRows = (f, print) => Array.from({ length: 300 }, (_, i) => f(L.generateQuestion('p4-print-which', i + 1))).filter((q) => shared('p4-print-which', q, false, print).some(([d]) => d === 'note~love')).length;
   const oldPQ = oldPrinted ? noteRows((q) => q, oldPrinted) : 0; const noPrompt = noteRows((q) => { const { unvoicedPrompt, ...rest } = q; return rest; });
-  ok(`no question of a read-aloud course prints a word a drawing on its screen prints, with a voice or with none (${banks.length} banks, ${read.toLocaleString('en-US')} screens at seeds 1 to 300, each seed read with a voice and with none; the stop sign's rows let off by name, each met: ${[...met].join(', ')}; p4-print-tells's note row with no voice waiting for Q122 by name, met; ${plants.map(([g, n]) => `${g} as it stood, planted, the note's words twice on ${n} of 300 screens`).join(', ')}; with no voice, printedQuestion as it stood, planted, the note's words twice on ${oldPQ} of 300 p4-print-which screens, and its note rows without their no-voice prompt on ${noPrompt}; each caught)`,
-    banks.length > 500 && found.length === 0 && unmet.length === 0 && unwaited.length === 0 && plants.every(([, n]) => n > 0) && oldPQ > 0 && noPrompt > 0, [...found.slice(0, 5), ...unmet.map((g) => `${g} let off but never met`), ...unwaited.map((g) => `${g} waits for Q122 but never met`), `old printedQuestion ${oldPQ}, no prompt ${noPrompt}`].join(' | ')); }
+  ok(`no question of a read-aloud course prints a word a drawing on its screen prints, with a voice or with none (${banks.length} banks, ${read.toLocaleString('en-US')} screens at seeds 1 to 300, each seed read with a voice and with none; the stop sign's rows let off by name, each met: ${[...met].join(', ')}; since pass NS, Q122 (a), with no voice a bank on the grown-up's card's list read as its card shows it, before Ready and after it, p4-print-tells meeting nothing, and read without its card, planted, the note's words twice on ${noCard} of 300 screens, caught; ${plants.map(([g, n]) => `${g} as it stood, planted, the note's words twice on ${n} of 300 screens`).join(', ')}; with no voice, printedQuestion as it stood, planted, the note's words twice on ${oldPQ} of 300 p4-print-which screens, and its note rows without their no-voice prompt on ${noPrompt}; each caught)`,
+    banks.length > 500 && found.length === 0 && unmet.length === 0 && noCard > 0 && plants.every(([, n]) => n > 0) && oldPQ > 0 && noPrompt > 0, [...found.slice(0, 5), ...unmet.map((g) => `${g} let off but never met`), `no card ${noCard}`, `old printedQuestion ${oldPQ}, no prompt ${noPrompt}`].join(' | ')); }
 // That is like me! and That reminds me! (pass NR's second wave): their ten banks worked out from what each question says and shows by the
 // test's own tables (NR2_P3*, NR2_P4*), each near miss caught by the guard it names and no other: with that guard taken out of its
 // derivation's own text it gets an answer at every seed from 1 to 400, and with it in, none. The near misses: another story's comment
@@ -12590,6 +12601,12 @@ const moreRightProblems = (L) => { const r = {};
 // alone (the word kind's "B   D" has spaces). Near misses, each caught: a picture card that keeps "This is the letter J.", the word card
 // that keeps its first sentence and so points at letters not yet shown, the word kind's print after Ready without that sentence (lost),
 // and the word card told to read only the question.
+// Since pass NS (Mikey's answer "Q122 - A"): the list is 67, Print tells us something's "What does this print tell us?" joining it, the
+// card's one bank that asks no letters question (GROWN_UP_CARD_OTHER), a hiding kind of its own (heard): its card says the question alone
+// and lists its three answers in the buttons' order, worked out here from the question; nothing prints above the card while it is up; after
+// Ready the question prints as a device with no voice prints it, never the voiced frame "Tap to hear each one."; its buttons hold answers,
+// so its line after the list says to say each button's answer again, where a which-sound card's says its sound. Near misses, each caught:
+// the print card after Ready with the voiced frame, its line after the list saying sound, and the card that does not hide its picture.
 { const WANT = ['p3-ls-letter', 'p3-ls-sound', 'p3-ls-first', 'p3-ls-yesno', 'p3-look-name', 'p4-name-letter', 'p4-name-sound', 'p4-name-first', 'p4-name-yesno',
     'p4-end-letter', 'p4-end-sound', 'p4-end-first', 'p4-end-yesno', 'p4-soe-letter', 'p4-soe-sound', 'p4-soe-first', 'p4-soe-yesno', 'p4-wbs-first',
     'p4-wbs-last', 'p4-wbs-yesno', 'p4-hiw-letter', 'p4-hiw-sound', 'p4-hiw-first', 'p4-hiw-yesno',
@@ -12599,7 +12616,9 @@ const moreRightProblems = (L) => { const r = {};
     'p4-aei-first', 'p4-aei-pic', 'p4-aei-both', 'p4-aei-or', 'p4-aei-yesno', 'p4-ou-first', 'p4-ou-pic', 'p4-ou-name', 'p4-ou-or', 'p4-ou-yesno',
     'p4-sml-tap', 'p4-sml-big', 'p4-sml-find', 'p4-sml-yesno',
     // Since pass NL, Almost the same's and More small letters' four that name a letter each, made as Small letters' are.
-    'p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno'];
+    'p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno',
+    // Since pass NS (Q122 (a)), Print tells us something's what this print tells us.
+    'p4-print-tells'];
   // (Since pass NI, Q, V and Y's three kinds that show their letter join their twins: its yes or no, its which-sound and its picture kind.
   // Since pass NK, A, E and I's and O and U's ten banks join the list, and their two kinds that show their letter hide it: the picture kind
   // as its twins do, and the yes or no, whose card says a word where its twins' say a sound, "Listen to this word. Ant.", a group of its own.
@@ -12607,7 +12626,7 @@ const moreRightProblems = (L) => { const r = {};
   // its card the question alone, "Is this the small x?", which names the letter asked, as Big letters' yes or no's does.)
   const HIDES = { yesno: ['p3-ls-yesno', 'p4-name-yesno', 'p4-end-yesno', 'p4-soe-yesno', 'p4-hiw-yesno', 'p4-qvy-yesno'], wbs: ['p4-wbs-yesno'],
     sound: ['p3-ls-sound', 'p4-name-sound', 'p4-end-sound', 'p4-soe-sound', 'p4-hiw-sound', 'p4-qvy-sound'], name: ['pl-is-letter'], sign: ['p3-ab-in-word'],
-    pic: ['p3-ls-pic', 'p4-name-pic', 'p4-end-pic', 'p4-soe-pic', 'p4-hiw-pic', 'p4-wbs-end', 'p4-qvy-pic', 'p4-aei-pic', 'p4-ou-pic'], word: ['p4-wbs-word'], yesword: ['p4-aei-yesno', 'p4-ou-yesno'], small: ['p4-sml-yesno', 'p4-kpuy-yesno', 'p4-eirt-yesno'] };
+    pic: ['p3-ls-pic', 'p4-name-pic', 'p4-end-pic', 'p4-soe-pic', 'p4-hiw-pic', 'p4-wbs-end', 'p4-qvy-pic', 'p4-aei-pic', 'p4-ou-pic'], word: ['p4-wbs-word'], yesword: ['p4-aei-yesno', 'p4-ou-yesno'], small: ['p4-sml-yesno', 'p4-kpuy-yesno', 'p4-eirt-yesno'], heard: ['p4-print-tells'] };
   // The prints a device with a voice makes over the seeds (one for every bank but these): Write it by its sounds' yes or no, first or at the
   // end, and Start or end of the name's picture kind, starts with or, beside X, ends with.
   const TWO_PRINTS = ['p4-wbs-yesno', 'p4-soe-pic'];
@@ -12615,7 +12634,7 @@ const moreRightProblems = (L) => { const r = {};
   const wordSetup = (q) => (/^(These two letters are for the first sound and the last sound of a word\.) Now listen to these /.exec(q.story) || [])[1] || null;
   const hiding = Object.values(HIDES).flat();
   const lessons = ['letters-and-sounds', 'look-and-write', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds', 'hear-it-in-a-word',
-    'a-and-b', 'big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'q-v-and-y', 'a-e-and-i', 'o-and-u', 'small-letters', 'almost-the-same', 'more-small-letters'];
+    'a-and-b', 'big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'q-v-and-y', 'a-e-and-i', 'o-and-u', 'small-letters', 'almost-the-same', 'more-small-letters', 'print-tells-us'];
   const banks = [...new Set(lessons.flatMap((id) => L.getModule(id).generators))];
   const words = (t) => String(t || '').toLowerCase().match(/[a-z']+/g) || [];
   // Words that only point or join (since pass NI "that", from the picture kinds' "the sound that J says", which after Ready reads "the sound
@@ -12635,10 +12654,12 @@ const moreRightProblems = (L) => { const r = {};
     if (HIDES.pic.includes(g)) { const m = /^This is the letter ([A-Z])\. (Now listen to these (two|three)\. .+)$/.exec(q.story); return m ? m[2] : null; }
     if (HIDES.word.includes(g)) { const m = /^These two letters are for the first sound and the last sound of a word\. (Now listen to these three\. .+)$/.exec(q.story); return m ? m[1] : null; }
     if (HIDES.small.includes(g)) return /^Is this the small [a-z]\?$/.test(q.prompt) ? q.prompt : null;
+    // Since pass NS: the print card says the question alone, its answers listed after it.
+    if (HIDES.heard.includes(g)) return q.prompt === 'What does this print tell us?' ? q.prompt : null;
     return null; };
   const faults = (list, cardOf, besideOf, upOf = (q) => L.cardQuestion(q, true)) => {
     const out = [];
-    if (JSON.stringify([...list].sort()) !== JSON.stringify([...WANT].sort())) out.push('the list is not the 66');
+    if (JSON.stringify([...list].sort()) !== JSON.stringify([...WANT].sort())) out.push('the list is not the 67');
     for (const g of banks) {
       const prints = new Set(); const answers = new Set(); const byPrint = new Map();
       for (let s = 1; s <= 400; s++) {
@@ -12659,14 +12680,18 @@ const moreRightProblems = (L) => { const r = {};
           // then to point to each picture and say its name again, as a which-sound card does for its buttons.
           const pictures = HIDES.pic.includes(g) || HIDES.word.includes(g);
           const how = pictures ? 'Read this aloud, then tap\u00A0Ready.' : HIDES.word.includes(g) ? 'Read this aloud, then tap\u00A0Ready and read the words above the\u00A0letters.' : asks && !q.heardChoices ? 'Read this aloud, then tap\u00A0Ready and read the\u00A0question.' : HIDES.sign.includes(g) ? 'Read this aloud, then tap\u00A0Ready and read the words above the\u00A0sign.' : 'Read this aloud, then tap\u00A0Ready.';
-          const afterLine = q.heardChoices ? `After Ready, ${asks ? 'read the question, then ' : ''}point to each button and say its sound again. To see this list again, tap Show\u00A0the\u00A0words\u00A0again, under Check\u00A0answer.`
+          // Since pass NS a heard card's buttons hold sounds beside a letter shown (the which-sound kinds), or else answers in words (the print card).
+          const holds = HIDES.heard.includes(g) ? 'answer' : 'sound';
+          // Since round one's code read of pass NS the print card's line says to read the question first too: its card said "this print"
+          // while the print was hidden.
+          const afterLine = q.heardChoices ? `After Ready, ${asks || HIDES.heard.includes(g) ? 'read the question, then ' : ''}point to each button and say its ${holds} again. To see this list again, tap Show\u00A0the\u00A0words\u00A0again, under Check\u00A0answer.`
             : pictures ? `After Ready, read ${HIDES.word.includes(g) ? 'the words above the\u00A0letters' : 'the\u00A0question'}, then point to each picture and say its name again. To see the names again, tap Show\u00A0the\u00A0words\u00A0again, under Check\u00A0answer.` : null;
           if (card.asks !== asks || card.how !== how || card.after !== afterLine) out.push(`${g} s${s}: the card's how or after is not what it asks`); }
         if (hiding.includes(g)) {
           const want = expected(q);
           if (!card.hides || card.say !== want) out.push(`${g} s${s}: the hiding card's words are not ${JSON.stringify(want)}`);
           const up = upOf(q); if (up.story || up.prompt) out.push(`${g} s${s}: something prints above a hiding card`);
-          const after = HIDES.sound.includes(g) ? 'Which sound does this letter say?' : (voiced.prompt);
+          const after = HIDES.sound.includes(g) ? 'Which sound does this letter say?' : HIDES.heard.includes(g) ? whole.prompt : (voiced.prompt);
           const afterStory = HIDES.sign.includes(g) ? voiced.story : HIDES.word.includes(g) ? wordSetup(q) : null;
           if (beside.story !== afterStory || beside.prompt !== after) out.push(`${g} s${s}: after Ready the print is not the question alone`);
           // The tiles' order is never on the card: no word of it spells the choices in their order (the sign word, in small letters).
@@ -12709,8 +12734,16 @@ const moreRightProblems = (L) => { const r = {};
     faults(L.GROWN_UP_CARD_BANKS, L.grownUpCard, (q) => L.printedQuestion(q, false)).length > 0,
     faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && { ...c, sounds: null }; }, L.cardQuestion).some((f) => /the sounds/.test(f)),
     // (Since pass NI the bank added is Look and write's real letter, since the picture banks are on the list.)
-    faults(new Set([...L.GROWN_UP_CARD_BANKS, 'p3-look-real']), L.grownUpCard, L.cardQuestion).some((f) => /not the 66/.test(f)),
-    faults(new Set([...L.GROWN_UP_CARD_BANKS].filter((g) => g !== 'p4-wbs-first')), L.grownUpCard, L.cardQuestion).some((f) => /not the 66|off the list/.test(f)),
+    faults(new Set([...L.GROWN_UP_CARD_BANKS, 'p3-look-real']), L.grownUpCard, L.cardQuestion).some((f) => /not the 67/.test(f)),
+    faults(new Set([...L.GROWN_UP_CARD_BANKS].filter((g) => g !== 'p4-wbs-first')), L.grownUpCard, L.cardQuestion).some((f) => /not the 67|off the list/.test(f)),
+    // Since pass NS (Q122 (a)): the print card after Ready with the voiced frame, its line after the list saying sound, and the card that
+    // does not hide its picture.
+    faults(L.GROWN_UP_CARD_BANKS, L.grownUpCard, (q) => (HIDES.heard.includes(q.genId) ? { story: null, prompt: q.printed } : L.cardQuestion(q))).some((f) => /p4-print-tells s\d+: after Ready the print/.test(f)),
+    faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && HIDES.heard.includes(q.genId) ? { ...c, after: c.after.replace('say its answer again', 'say its sound again') } : c; }, L.cardQuestion).some((f) => /p4-print-tells s\d+: the card's how or after/.test(f)),
+    faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && HIDES.heard.includes(q.genId) ? { ...c, hides: false } : c; }, L.cardQuestion).some((f) => /p4-print-tells s\d+: the hiding card's words/.test(f)),
+    // Since round one's code and screen reads of pass NS: the print card's line after its list without "read the question, then", which
+    // left "this print" said with the print hidden and never asked again once it shows.
+    faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && HIDES.heard.includes(q.genId) ? { ...c, after: c.after.replace('read the question, then ', '') } : c; }, L.cardQuestion).some((f) => /p4-print-tells s\d+: the card's how or after/.test(f)),
     // Since pass NH: a yes or no card that keeps "This is the letter S.", a hiding kind that prints its setup above the card, a which-sound
     // question after Ready that asks with "it" (the print Q91 had), and a card that drops its sound.
     faults(L.GROWN_UP_CARD_BANKS, (q) => { const c = L.grownUpCard(q); return c && HIDES.yesno.includes(q.genId) ? { ...c, say: q.story } : c; }, L.cardQuestion).some((f) => /the hiding card's words|names the letter it shows/.test(f)),
@@ -12740,7 +12773,7 @@ const moreRightProblems = (L) => { const r = {};
   // The hiding kinds whose card stops before the question (twelve in pass NH, twenty-two since pass NI, twenty-six since pass NK) ask the grown-up to read it after
   // Ready (every seed is read above).
   const askers = [...L.GROWN_UP_CARD_BANKS].filter((g) => L.grownUpCard(L.generateQuestion(g, 1)).asks).sort();
-  ok(`with no voice, the 66 letters banks show the grown-up's card, its words the whole question and a which-sound card's sounds in the buttons' order, and print beside the answers what a device with a voice prints, naming and leaning no answer; thirty kinds hide their picture or letter while the card is up, each card's words worked out here from its question, nothing printed above it, only the question after Ready (and two kinds' setups) and none of the voice's words lost, and the twenty-six whose card stops before the question telling the grown-up to read it after Ready, the sign word card the words above the sign, and the ten picture cards, since pass NI's round one screen read, after their names to read the question (the two letters' word card, the words above the letters) and point to each picture and say its name again; no other bank of the eighteen lessons has a card (Q91 (a), pass NG; Q96 (a) and Q97 (a), pass NH; Q98 (a) and Q, V and Y, pass NI; A, E and I, O and U and Small letters, pass NK, whose yes or no's card says its whole question, as Big letters' does; twenty near misses caught)`, real.length === 0 && plants.every(Boolean) && L.GROWN_UP_CARD_BANKS.size === 66 && L.GROWN_UP_CARD_HIDES.size === hiding.length && hiding.length === 30 && JSON.stringify(askers) === JSON.stringify(hiding.filter((g) => !HIDES.sign.includes(g) && !HIDES.small.includes(g)).sort()), `${real.slice(0, 6).join(' | ')}; plants ${plants}; askers ${askers.length}`);
+  ok(`with no voice, the 67 banks on the grown-up's card's list (the 66 letters banks and, since pass NS at Mikey's answer to Q122, Print tells us something's what this print tells us) show it, its words the whole question and a which-sound card's sounds in the buttons' order, and print beside the answers what a device with a voice prints, naming and leaning no answer; thirty-one kinds hide their picture or letter while the card is up, each card's words worked out here from its question, nothing printed above it, only the question after Ready (and two kinds' setups) and none of the voice's words lost, and the twenty-six whose card stops before the question telling the grown-up to read it after Ready, the sign word card the words above the sign, and the ten picture cards, since pass NI's round one screen read, after their names to read the question (the two letters' word card, the words above the letters) and point to each picture and say its name again; no other bank of the nineteen lessons has a card (Q91 (a), pass NG; Q96 (a) and Q97 (a), pass NH; Q98 (a) and Q, V and Y, pass NI; A, E and I, O and U and Small letters, pass NK, whose yes or no's card says its whole question, as Big letters' does; since pass NS, Q122 (a), the print card, a hiding kind whose card says its question and lists its answers, its buttons numbered, its line after the list saying to read the question first since round one's code and screen reads; twenty-four near misses caught)`, real.length === 0 && plants.every(Boolean) && L.GROWN_UP_CARD_BANKS.size === 67 && L.GROWN_UP_CARD_HIDES.size === hiding.length && hiding.length === 31 && JSON.stringify(askers) === JSON.stringify(hiding.filter((g) => !HIDES.sign.includes(g) && !HIDES.small.includes(g) && !HIDES.heard.includes(g)).sort()), `${real.slice(0, 6).join(' | ')}; plants ${plants}; askers ${askers.length}`);
 }
 // Every letters bank read (pass NG, round one's code read: a new letters bank joining the card was kept by memory alone). Every bank of
 // every read-aloud course is read at seeds 1 to 60: one that asks a letters question (isLettersQuestion: single letters, sounds the voice
@@ -12753,22 +12786,30 @@ const moreRightProblems = (L) => { const r = {};
 // letter (on neither list since Q96), the waiting list without Hear it in the name's picture bank, a bank on both lists, and a bank named
 // on the waiting list that asks no letters question. Since pass NI (Mikey's answer "Q98 - A") the seven picture banks are on the card's
 // list and the waiting list is empty again; the third near miss is now the card's list without Hear it in the name's picture bank.
+// Since pass NS (Mikey's answer "Q122 - A") the card's list holds one bank that asks no letters question, Print tells us something's what
+// this print tells us, named on GROWN_UP_CARD_OTHER, so every other bank on the card's list is still read as a letters bank, and every
+// bank GROWN_UP_CARD_OTHER names is on the card's list and asks no letters question. Near misses, each caught: the card's list with a bank
+// that asks no letters question and is on no list (Feelings' moment), and GROWN_UP_CARD_OTHER naming a letters bank.
 { const readAloudBanks = [...new Set(L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules.flatMap((m) => m.generators || [])))];
   const lettersBanks = readAloudBanks.filter((g) => { for (let s = 1; s <= 60; s++) { const q = L.generateQuestion(g, s);
     if ((L.isLettersQuestion(q) || L.isLetterPicturesQuestion(q)) && JSON.stringify(L.printedQuestion(q, true)) !== JSON.stringify(L.printedQuestion(q, false))) return true; } return false; });
-  const faults = (card, waiting) => { const out = [];
+  const faults = (card, waiting, other = L.GROWN_UP_CARD_OTHER) => { const out = [];
     for (const g of lettersBanks) if (!card.has(g) && !waiting.has(g)) out.push(`${g}: a letters bank on neither list`);
-    for (const g of card) { if (waiting.has(g)) out.push(`${g}: on both lists`); if (!lettersBanks.includes(g)) out.push(`${g}: on the card's list, not a letters bank`); }
+    for (const g of card) { if (waiting.has(g)) out.push(`${g}: on both lists`); if (!lettersBanks.includes(g) && !other.has(g)) out.push(`${g}: on the card's list, not a letters bank`); }
     for (const g of waiting) if (!lettersBanks.includes(g)) out.push(`${g}: waiting, not a letters bank`);
+    for (const g of other) { if (!card.has(g)) out.push(`${g}: named as the card's other kind, not on its list`); if (lettersBanks.includes(g)) out.push(`${g}: named as the card's other kind, a letters bank`); }
     return out; };
   const real = faults(L.GROWN_UP_CARD_BANKS, L.GROWN_UP_CARD_WAITING);
   const plants = [faults(new Set([...L.GROWN_UP_CARD_BANKS].filter((g) => g !== 'p4-wbs-last')), L.GROWN_UP_CARD_WAITING).some((f) => /p4-wbs-last: a letters bank on neither/.test(f)),
     faults(new Set([...L.GROWN_UP_CARD_BANKS].filter((g) => g !== 'pl-is-letter')), L.GROWN_UP_CARD_WAITING).some((f) => /pl-is-letter: a letters bank on neither/.test(f)),
     faults(new Set([...L.GROWN_UP_CARD_BANKS].filter((g) => g !== 'p4-name-pic')), L.GROWN_UP_CARD_WAITING).some((f) => /p4-name-pic: a letters bank on neither/.test(f)),
     faults(L.GROWN_UP_CARD_BANKS, new Set([...L.GROWN_UP_CARD_WAITING, 'p4-name-letter'])).some((f) => /on both lists/.test(f)),
-    faults(L.GROWN_UP_CARD_BANKS, new Set([...L.GROWN_UP_CARD_WAITING, 'p3-feel-moment'])).some((f) => /p3-feel-moment: waiting, not a letters bank/.test(f))];
-  ok(`every letters bank of a read-aloud course that prints differently with no voice (${lettersBanks.length}, the picture banks beside a letter among them) is on the grown-up's card's list (${L.GROWN_UP_CARD_BANKS.size}) or waits on a question of Mikey's (${L.GROWN_UP_CARD_WAITING.size}; the seven picture banks waited on Q98 until pass NI), never both (pass NG, round one's code read; since pass NH, Q96 (a), and its round one code read; since pass NI, Q98 (a); five near misses caught)`,
-    real.length === 0 && plants.every(Boolean) && lettersBanks.length === 66 /* 66 since pass NL, Almost the same's and More small letters' four each that name a letter; 58 since pass NK's second wave, Small letters' four */ && L.GROWN_UP_CARD_WAITING.size === 0, `${real.slice(0, 6).join(' | ')}; plants ${plants}; ${lettersBanks.length}`); }
+    faults(L.GROWN_UP_CARD_BANKS, new Set([...L.GROWN_UP_CARD_WAITING, 'p3-feel-moment'])).some((f) => /p3-feel-moment: waiting, not a letters bank/.test(f)),
+    // Since pass NS: a bank that asks no letters question put on the card's list and on no other, and the card's other kinds naming a letters bank.
+    faults(new Set([...L.GROWN_UP_CARD_BANKS, 'p3-feel-moment']), L.GROWN_UP_CARD_WAITING).some((f) => /p3-feel-moment: on the card's list, not a letters bank/.test(f)),
+    faults(L.GROWN_UP_CARD_BANKS, L.GROWN_UP_CARD_WAITING, new Set([...L.GROWN_UP_CARD_OTHER, 'p4-name-letter'])).some((f) => /p4-name-letter: named as the card's other kind, a letters bank/.test(f))];
+  ok(`every letters bank of a read-aloud course that prints differently with no voice (${lettersBanks.length}, the picture banks beside a letter among them) is on the grown-up's card's list (${L.GROWN_UP_CARD_BANKS.size}, the ${L.GROWN_UP_CARD_OTHER.size} that asks no letters question named on GROWN_UP_CARD_OTHER since pass NS, Q122 (a)) or waits on a question of Mikey's (${L.GROWN_UP_CARD_WAITING.size}; the seven picture banks waited on Q98 until pass NI), never both (pass NG, round one's code read; since pass NH, Q96 (a), and its round one code read; since pass NI, Q98 (a); seven near misses caught)`,
+    real.length === 0 && plants.every(Boolean) && L.GROWN_UP_CARD_OTHER.size === 1 && L.GROWN_UP_CARD_BANKS.size === lettersBanks.length + L.GROWN_UP_CARD_OTHER.size && lettersBanks.length === 66 /* 66 since pass NL, Almost the same's and More small letters' four each that name a letter; 58 since pass NK's second wave, Small letters' four */ && L.GROWN_UP_CARD_WAITING.size === 0, `${real.slice(0, 6).join(' | ')}; plants ${plants}; ${lettersBanks.length}`); }
 // The join's and the serif runs' reach (pass NG, round two's code read): the reason after a wrong tap goes through keepLoneCapitals and ellsIn
 // with a voice as well as without, so the banks whose reasons they change are counted, every read-aloud bank at seeds 1 to 60 and every
 // wrong answer, the reason a voiced device prints: 41 banks gain a no-break space before a lone letter (27 in the seven letters lessons,
@@ -13185,6 +13226,12 @@ const moreRightProblems = (L) => { const r = {};
 // watched, where only a latest round under 60 percent of the usual time is called out; and that the report notes "guessing?", where only
 // Who Needs Help reads it. Each number and condition is read from the sentences and the code is run at it and just past it, on logs of
 // one kindergarten lesson; each old wording, and a wrong number in the new words, is planted in a copy of the definitions and caught.
+// Since pass NS, at Mikey's answer to Q121 ("Q121 - A"), the Key Word on what holds a score down says what the score does in place of
+// "A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a
+// row.", which the score never did (computeConfidence compares no round with the one before): a score also stays down while the latest
+// round has a mistake in it, and until the module's latest eight answers are all correct, unless at least two of its questions have come
+// back and 80 percent or more of them were right. Its numbers are read here too, the flawless round's point and the last point's two
+// ways run at them; the old sentence put back, and a wrong count in the new one, are planted and caught.
 { const E = Object.fromEntries(L.EXPLANATIONS.map((x) => [x.term, x.plain])); const RULES = L.CONFIDENCE_RULES;
   const WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, half: 0.5 };
   const num = (w) => (Object.prototype.hasOwnProperty.call(WORDS, w) ? WORDS[w] : /^\d+$/.test(String(w)) ? Number(w) : NaN);
@@ -13234,6 +13281,10 @@ const moreRightProblems = (L) => { const r = {};
     const b = /It comes either from (\w+) correct answers in a row, the module's latest (\w+), or from continuing to reliably answer its questions correctly as they reappear over time: at least (\w+) back, and (\d+) percent or more of them right\./.exec(conf);
     if (!b || num(b[1]) !== num(b[2]) || !streakAt(num(b[1])) || !strongAt(num(b[3]), Number(b[4]))) out.push('Key Words: the last point');
     if (!/without passing it\./.test(down)) out.push('Key Words: what holds a score down without a pass');
+    // Q121 (a): the latest round's mistake and the last point, both ways, as the code has them; the old sentence never again.
+    const q121 = /A score also stays down while the latest round has a mistake in it, and until the module's latest (\w+) answers are all correct, unless at least (\w+) of its questions have come back and (\d+) percent or more of them were right\./.exec(down);
+    if (!q121 || !flawlessAdds(1) || !streakAt(num(q121[1])) || !strongAt(num(q121[2]), Number(q121[3]))) out.push('Key Words: what holds a score down while the latest round has a mistake, and the last point');
+    if (/consecutive attempts/.test(down)) out.push('Key Words: the old sentence on consecutive attempts, which the score does not follow');
     const c = /If (\w+) or more wrong answers in the latest round come in under (\w+) seconds each, Who Needs Help says there are signs of guessing in that module\./.exec(down);
     if (!c || !guessAt(num(c[1]), num(c[2]))) out.push('Key Words: guessing');
     const d = /Getting (\w+) or more of the module's questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point,/.exec(down);
@@ -13264,6 +13315,10 @@ const moreRightProblems = (L) => { const r = {};
     'the old guessing note on the report': [swap('What holds a confidence score down', /If \w+ or more wrong answers in the latest round come in under \w+ seconds each, Who Needs Help says there are signs of guessing in that module\./, 'If two or more wrong answers come back in under four seconds, the progress report adds a note that says "guessing?"'), RULES],
     'the old point for any miss': [swap('What holds a confidence score down', /Getting \w+ or more of the module's questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point,/, 'Missing a question from the module when it comes back, in a memory check or a checkpoint, also costs a point,'), RULES],
     'a share other than half': [swap('What holds a confidence score down', /Getting half or more/, 'Getting most or more'), RULES],
+    // Since pass NS (Q121 (a)): the old sentence put back in the new one's place, and a wrong count in the new one.
+    'the old sentence on consecutive attempts (Q121)': [swap('What holds a confidence score down', /A score also stays down while the latest round has a mistake in it, and until the module's latest \w+ answers are all correct, unless at least \w+ of its questions have come back and \d+ percent or more of them were right\./, 'A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row.'), RULES],
+    'a wrong count of latest answers (Q121)': [swap('What holds a confidence score down', /(until the module's latest )(\w+)( answers)/, (m, a, n, b) => a + 'nine' + b), RULES],
+    'a wrong share back (Q121)': [swap('What holds a confidence score down', /(come back and )(\d+)( percent or more of them were right)/, (m, a, n, b) => a + (Number(n) - 5) + b), RULES],
     'the old "significantly faster or slower"': [swap('Typical answering time', /then watch for a latest round much faster than usual: under \d+ percent of the time per question they usually take in their other modules\. When that happens, View progress for this module says so\. A slower round is not called out\./, 'then watch for answers that arrive significantly faster or slower.'), RULES],
     'the old "+2 if the module is mastered"': [E, swapRule(/^\+\d+ once the module has been passed, .*$/, '+2 if the module is mastered (4 or more of 5 correct in one set).')],
     'the rules without the point taken when questions come back': [E, RULES.filter((x) => !/^-1 /.test(x))],
@@ -13271,7 +13326,7 @@ const moreRightProblems = (L) => { const r = {};
   };
   const now = problems(E, RULES);
   const uncaught = Object.entries(PLANTS).filter(([, [ex, rules]]) => !ex || !rules || problems(ex, rules).length === 0).map(([name]) => name);
-  ok(`the confidence score's Key Words and CONFIDENCE_RULES say what computeConfidence does, every number and condition read from the sentences and the code run at it and just past it: a pass adds 2 before its star, a flawless latest round 1, eight in a row or two back at 80 percent the last point, half or more wrong when questions come back costs a point, guessing named on Who Needs Help, a latest round under 60 percent of the usual called out and a slower one not (pass NQ, round one's code reads; ${Object.keys(PLANTS).length} old wordings and wrong numbers planted, each caught)`,
+  ok(`the confidence score's Key Words and CONFIDENCE_RULES say what computeConfidence does, every number and condition read from the sentences and the code run at it and just past it: a pass adds 2 before its star, a flawless latest round 1, eight in a row or two back at 80 percent the last point, half or more wrong when questions come back costs a point, guessing named on Who Needs Help, a latest round under 60 percent of the usual called out and a slower one not, and since pass NS what holds a score down said as the code does it, the latest round's mistake and the last point, where the old sentence on consecutive attempts stood (pass NQ, round one's code reads; Q121 (a), pass NS; ${Object.keys(PLANTS).length} old wordings and wrong numbers planted, each caught)`,
     now.length === 0 && uncaught.length === 0 && RULES.length === 6, JSON.stringify({ now, uncaught })); }
 // Pass NQ, engineer F2: what F's code fixes left undone (F's report, its seven items), in five blocks: a lesson's own reset read alike
 // by every reader of a lesson's current progress, Since you last looked's words, View progress for this module's pace, the

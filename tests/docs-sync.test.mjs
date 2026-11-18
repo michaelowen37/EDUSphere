@@ -568,7 +568,9 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     // with NEW-CHAT.md at the start of every chat, says it is read through the pass packet, its old words kept in the same block.
     ok("docs/CLAUDE-HISTORY.md keeps CLAUDE.md's first line and part two's Rules audit line as pass NG left them, CLAUDE.md's first line names the pass packet, and RULES-AUDIT section 9 names both changes (pass NH; a word changed in the block, planted, caught)",
       /^New chats: read docs\/NEW-CHAT\.md first, then docs\/RULES-AUDIT\.md/.test(kept) && kept.includes('\n- Rules audit (2026-10-06, pass LD, Mikey): docs/RULES-AUDIT.md maps every standing rule to what enforces it; read it with NEW-CHAT.md at the start of every chat, and when') && row.includes('the line Rules audit (2026-10-06, pass LD, Mikey), in CLAUDE-PART-2.md') && digest(kept) === NH_DIGEST && digest(kept.replace('says.', 'said.')) !== NH_DIGEST && kept.includes('says.')
-      && /^New chats: read docs\/NEW-CHAT\.md first, then the pass packet it asks for \(node tools\/pass-packet\.mjs/.test(manual) && row.includes("Corrected in pass NH, at Mikey's word (his answer to Q95, \"Q95 - A\")")); }
+      // Since pass NS (Mikey's answer to Q120, "Q120 - A") the first line names RULES-AUDIT's sections 9 to 11 and each agent's own rows in
+      // the pass packet's place, a change pass NS's own block holds whole.
+      && (/^New chats: read docs\/NEW-CHAT\.md first, then the pass packet it asks for \(node tools\/pass-packet\.mjs/.test(manual) || /^New chats: read docs\/NEW-CHAT\.md first, then docs\/RULES-AUDIT\.md's sections 9 to 11 whole and the latest docs\/DECISIONS\.md entry, [^\n]*\(Mikey's answer to Q120, pass NS; from pass NH a pass packet stood in their place\)/.test(manual)) && row.includes("Corrected in pass NH, at Mikey's word (his answer to Q95, \"Q95 - A\")")); }
   // The four lines pass NJ corrected (CLAUDE.md's Reflection questions, at Mikey's word of pass NJ; CLAUDE.md's line on check.sh's time
   // and part two's Running check.sh, which said about ten minutes and to poll; and since round one's code read part two's Wonder text
   // line, which said an educator's approval in the app is unchanged), kept word for word under a digest, the new lines in place. Since pass
@@ -934,16 +936,21 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 { const nc = readFileSync(new URL('../docs/NEW-CHAT.md', import.meta.url), 'utf8'); const hand = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8');
   const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
   const msg = (nc.match(/\n5\. Send: "([^"]+)"/) || [])[1] || ''; const prompt = (hand.match(/## The prompt\n\n([^\n]+)/) || [])[1] || '';
-  const okMsg = (m, p) => /read docs\/NEW-CHAT\.md, then the pass packet it asks for/.test(m) && !/docs\/RULES-AUDIT\.md/.test(m) && p === m;
+  // Since pass NS (Mikey's answer to Q120, "Q120 - A") the message names RULES-AUDIT's sections 9 to 11, which the lead reads whole, where
+  // from pass NH it named the pass packet; pass NR's message and pass NG's, planted, are each caught.
+  const okMsg = (m, p) => /read docs\/NEW-CHAT\.md, then RULES-AUDIT sections 9 to 11 and the latest DECISIONS entry/.test(m) && !/the pass packet/.test(m) && !/docs\/RULES-AUDIT\.md/.test(m) && p === m;
   const old = 'New chat for The Wise Human. Unzip the project, read docs/NEW-CHAT.md, docs/RULES-AUDIT.md, docs/EARMARKS.md, docs/INDEPENDENT-CHECKS.md and the latest DECISIONS entry, then continue. Committed through <pass>.';
-  ok("the opening message names the pass packet, and HANDOFF's prompt is that message word for word (pass NH, Q95 (a); pass NG's message, planted, caught)", okMsg(msg, prompt) && !okMsg(old, old) && !okMsg(msg, old), { msg: msg.slice(0, 120), same: prompt === msg });
+  const oldNR = 'New chat for The Wise Human. Unzip the project, read docs/NEW-CHAT.md, then the pass packet it asks for and the latest DECISIONS entry, then continue. Committed through <pass>.';
+  ok("the opening message names RULES-AUDIT sections 9 to 11, and HANDOFF's prompt is that message word for word (pass NS, Q120 (a); since pass NH, Q95 (a), it named the pass packet; pass NR's message and pass NG's, planted, caught)", okMsg(msg, prompt) && !okMsg(old, old) && !okMsg(msg, old) && !okMsg(oldNR, oldNR), { msg: msg.slice(0, 120), same: prompt === msg });
   const entries = dec.split(/\n(?=## \d{4}-\d{2}-\d{2} \(pass [A-Z]{2}\))/).filter((e) => /^## \d{4}-\d{2}-\d{2} \(pass [A-Z]{2}\)/.test(e));
   const from = (e) => { const p = (e.match(/^## \d{4}-\d{2}-\d{2} \(pass ([A-Z]{2})\)/) || [])[1] || ''; return p.length === 2 && p >= 'NH'; };
-  const bullet = /^- \*\*The pass packet\.\*\* .*node tools\/pass-packet\.mjs --areas [a-z0-9,]+.*Findings traced to a line the packet left out: (\d+|none)/m;
+  // Since pass NS (Mikey's answer to Q120, "Q120 - A") a bullet may name the task packets (--task) in place of one packet's areas.
+  const bullet = /^- \*\*The pass packet\.\*\* .*node tools\/pass-packet\.mjs (--areas [a-z0-9,]+|--task).*Findings traced to a line the packet left out: (\d+|none)/m;
+  const fromNS = (e) => { const p = (e.match(/^## \d{4}-\d{2}-\d{2} \(pass ([A-Z]{2})\)/) || [])[1] || ''; return p.length === 2 && p >= 'NS'; };
   // Each area a bullet names is one the tool has (since pass NH's round one code read: any word passed).
   const { AREAS } = await import('../tools/pass-packet.mjs');
   const areasOf = (e) => ((e.match(/^- \*\*The pass packet\.\*\* .*?--areas ([a-z0-9,]+)/m) || [])[1] || '').split(',').filter(Boolean);
-  const missing = entries.filter(from).filter((e) => !bullet.test(e) || !areasOf(e).length || areasOf(e).some((a) => !AREAS[a])).map((e) => e.slice(0, 30));
+  const missing = entries.filter(from).filter((e) => !bullet.test(e) || (!areasOf(e).length && !fromNS(e)) || areasOf(e).some((a) => !AREAS[a])).map((e) => e.slice(0, 30));
   const nh = entries.find((e) => /^## \d{4}-\d{2}-\d{2} \(pass NH\)/.test(e)) || '';
   ok('every DECISIONS entry from pass NH on has the pass packet\'s bullet, naming its areas and counting the findings traced to a line the packet left out (pass NH, Q95 (a); the bullet taken out, planted, caught)', nh !== '' && missing.length === 0 && !bullet.test(nh.replace(/^- \*\*The pass packet\.\*\*.*$/m, '')) && areasOf(nh.replace('--areas screens', '--areas screenz')).some((a) => !AREAS[a]), missing);
   // The packet's honest count (EARMARKS L27, pass NP's weekly flow review, its item 9; built in pass NQ): from pass NQ's entry on, the same
@@ -1289,9 +1296,9 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const wordRows = word.split('\n').filter(Boolean); const q85Rows = q85.split('\n').filter(Boolean);
   const ANSWERS = { 117: 'Q117 - A', 119: 'Q119 - A' };
   const answered = Object.entries(ANSWERS).every(([n, x]) => new RegExp(`^- Q${n}\\. Answered in pass NR \\(Mikey: "${x}"\\): .*The question as it stood: `, 'm').test(qs) && audit.includes(`\n- Q${n}. Answered in pass NR (Mikey: "${x}"). Its rule lives in `));
-  const raised = audit.includes('\n- Q120. A rules packet for each agent, read whole, in place of one big packet searched. ') && nc.includes('\n- Q120. A rules packet for each agent, read whole, in place of one big packet searched. ')
-    && audit.includes('\n- Q121. The Key Word that says what holds a confidence score down. ') && nc.includes('\n- Q121. The Key Word that says what holds a confidence score down. ')
-    && audit.includes("\n- Q122. The grown-up's card for one more question on a device with no voice. ") && nc.includes("\n- Q122. The grown-up's card for one more question on a device with no voice. ");
+  // Since pass NS, which answered them, a line for each in section 11, as pass NQ's block reads Q117 to Q119 (their words as asked are held
+  // in pass NS's block for answered questions, below).
+  const raised = [120, 121, 122].every((n) => new RegExp(`\\n- Q${n}\\. `).test(audit));
   const OPEN_WORD = ['Written 2026-10-06 (pass LD, rewritten in pass LE', "| **The pass packet (Mikey's answer to Q95, pass NH", '| **The records written once, each count filled in', "| **What pass NK learned (Claude's", "## 10. The plan, in Mikey's order (updated 2026-10-06", '1. This file complete and read by every chat (since pass NH'];
   const OPEN_Q85 = ['- **My Classroom:** ', '- **Practice:** ', '- **Wonder questions:** ', '- **What pre-K teaches:** ', "- **The educator's report:** ", '| **Say it together, one word in five silly ways', "| **Domain III's predictions, retelling and book handling", '| **A heard question prints none of the words it asks about', "| **A lesson's own reset bounds every reader", "| **The report's own words about a lesson say what", '| The class view: a need score', '| **The weekly note and Since you last looked', '| **A lesson named in a sentence keeps its name', '| **The light review, the fourth exposure', '| **A pre-reader hears all four Wonder voices', "| **No pre-K line or question waits under a short phone's fold", '| **The reading light never moves the words', "| **The picture to match draws at its answers' size", '| **No word under the scroll cue on a short phone', "| **A lesson's words keep a hyphenated word whole", '| **Every drawing on an answer tile reads at its edge', "| **Every drawing on the dark theme's lesson paper reads at its edge", '| **An id is defined once (pass MX)'];
   // The two CLAUDE lines (Q119 (a)): each says the weekly whole reads, the ripple read and what a lesson pass's alignment and final reads
@@ -1320,5 +1327,57 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     && wordRows.length === OPEN_WORD.length && OPEN_WORD.every((w, k) => wordRows[k].startsWith(w)) && q85Rows.length === OPEN_Q85.length && OPEN_Q85.every((w, k) => q85Rows[k].startsWith(w))
     && changed === wordRows.length - 1 && corrected === q85Rows.length && rows && ripple && plants.every(Boolean),
     JSON.stringify({ q: dig(qs), w: dig(word), c: dig(q85), k: dig(claudeLines), claudeNow, nWord: wordRows.length, nQ85: q85Rows.length, changed, corrected, answered, raised, rows, ripple, plants })); }
+// Pass NS's records (Mikey, opening pass NS: "Q120 - A", "Q121 - A" and "Q122 - A"): the three questions answered, each in one line in
+// section 11 and in full in docs/RULES-AUDIT-HISTORY.md's pass NS block for answered questions; the lines his answers changed (the file's
+// opening line, section 6's row on a heard question, section 7's row on confidence, section 8's row on the grown-up's card, section 9's rows
+// on what every pass reads, on the pass packet and on its honest count, and section 10's heading and first step), kept as pass NR left
+// them; CLAUDE.md's first line and part two's Rules audit line, changed under his standing word of pass NG after his answer to Q120, their
+// words as pass NR left them in docs/CLAUDE-HISTORY.md's pass NS block; and INDEPENDENT-CHECKS' How item 11, a packet for each agent. Each
+// block is held by its digest, every row opening as its list says, each changed row saying so, as many times as its rows (section 10's
+// heading, which can carry no sentence, aside), and section 9's rows naming them. And the pass packet's bullet, from pass NS on, gives the
+// task packets (--task), each read whole with its bytes, and both counts (Q120 (a)). One letter edited inside each block, and a made pass
+// NS entry with its bullet's --task taken out, planted, are each caught.
+{ const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const ic = readFileSync(new URL('../docs/INDEPENDENT-CHECKS.md', import.meta.url), 'utf8'); const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
+  const claudeHist = readFileSync(new URL('../docs/CLAUDE-HISTORY.md', import.meta.url), 'utf8'); const manual = readFileSync(new URL('../CLAUDE.md', import.meta.url), 'utf8'); const part2 = readFileSync(new URL('../CLAUDE-PART-2.md', import.meta.url), 'utf8');
+  const qName = "RULES-AUDIT section 11's answered questions in pass NS, word for word";
+  const wName = "RULES-AUDIT rows as pass NR left them, before pass NS changed them at Mikey's word, word for word";
+  const kName = "CLAUDE.md's first line and CLAUDE-PART-2.md's Rules audit line as pass NR left them, before pass NS changed them, word for word";
+  // Since pass NS's records read: part three's fifth line, which said a feature's rows come by the pass packet's areas, kept in its own block.
+  const p3Name = "CLAUDE-PART-3.md's line on the history's index as pass NR left it, before pass NS's records read corrected it, word for word";
+  const part3 = readFileSync(new URL('../CLAUDE-PART-3.md', import.meta.url), 'utf8');
+  const inside = (t, name) => { const a = t.indexOf(`<!-- ${name}: begin -->\n`); const b = t.indexOf(`<!-- ${name}: end -->`); return a < 0 || b < a ? '' : t.slice(a + `<!-- ${name}: begin -->\n`.length, b); };
+  const dig = (t) => createHash('sha256').update(t, 'utf8').digest('hex').slice(0, 8);
+  const plant = (t, name, from, to) => { const a = t.indexOf(`<!-- ${name}: begin -->`); const b = t.indexOf(`<!-- ${name}: end -->`); const i = a < 0 ? -1 : t.indexOf(from, a); return i < 0 || i > b ? t : t.slice(0, i) + to + t.slice(i + from.length); };   // inside its own block, never an older one with the same words
+  const qs = inside(hist, qName); const word = inside(hist, wName); const claudeLines = inside(claudeHist, kName); const p3Line = inside(claudeHist, p3Name);
+  const wordRows = word.split('\n').filter(Boolean);
+  const ANSWERS = { 120: 'Q120 - A', 121: 'Q121 - A', 122: 'Q122 - A' };
+  const answered = Object.entries(ANSWERS).every(([n, x]) => new RegExp(`^- Q${n}\\. Answered in pass NS \\(Mikey: "${x}"\\): .*The question as it stood: `, 'm').test(qs) && audit.includes(`\n- Q${n}. Answered in pass NS (Mikey: "${x}"). Its rule lives in `));
+  const OPEN_WORD = ['Written 2026-10-06 (pass LD, rewritten in pass LE', '| **A heard question prints none of the words it asks about', '| **Confidence, 1 to 5:**', "| **The grown-up's card on a device with no voice", '| Every pass: read NEW-CHAT, the pass packet', "| **The pass packet (Mikey's answer to Q95, pass NH", "| **The pass packet's honest count (pass NQ", "## 10. The plan, in Mikey's order (updated 2026-10-06", '1. This file complete and read by every chat (since pass NH'];
+  const said = (re) => (audit.match(re) || []).length;
+  const changed = said(/Changed in place in pass NS, at Mikey's word \(his answer to Q12[0-2], "Q12[0-2] - A"\), its pass NR words in docs\/RULES-AUDIT-HISTORY\.md\./g);
+  // The two CLAUDE lines (Q120 (a)): CLAUDE.md's first line names RULES-AUDIT's sections 9 to 11 and each agent's own rows, and keeps pass
+  // NR's last clause word for word; part two's line names them too; their old words kept; section 9's row on CLAUDE.md lines naming the change.
+  const claudeNow = /^New chats: read docs\/NEW-CHAT\.md first, then docs\/RULES-AUDIT\.md's sections 9 to 11 whole and the latest docs\/DECISIONS\.md entry, as NEW-CHAT says \(Mikey's answer to Q120, pass NS; from pass NH a pass packet stood in their place\); each agent is given a packet of its own task's rows of docs\/RULES-AUDIT\.md and docs\/EARMARKS\.md \(node tools\/pass-packet\.mjs --task\) and its brief in docs\/INDEPENDENT-CHECKS\.md, each read whole; since Mikey's answer to Q119 \(pass NR\) the three are read whole once a week/.test(manual.split('\n')[0])
+    && part2.includes('since pass NS (Q120) sections 9 to 11 whole, each agent its own rows; since pass NR,')
+    && /^New chats: read docs\/NEW-CHAT\.md first, then the pass packet it asks for [^\n]*\n- Rules audit \(2026-10-06, pass LD, Mikey\): [^\n]*since pass NR, at his answer to Q119, read whole once a week in the tools pass[^\n]*\n$/.test(claudeLines)
+    && audit.includes("Changed in pass NS, under Mikey's standing word of pass NG on CLAUDE.md, at his answer to Q120 (\"Q120 - A\"): CLAUDE.md's first line,");
+  const rows = audit.includes("Changed in pass NS, at Mikey's word (his answers to Q120, Q121 and Q122), each saying so,") && ic.includes('\n11. A packet for each agent (since pass NS, Mikey\'s answer to Q120, "Q120 - A";') && !ic.includes('\n11. The pass packet (since pass NH');
+  // The task packets' form in the bullet, from pass NS on: --task, read whole, the bytes and both counts.
+  const entriesOf = (text) => text.split(/\n(?=## \d{4}-\d{2}-\d{2} \(pass [A-Z]{2}\))/).filter((e) => /^## \d{4}-\d{2}-\d{2} \(pass [A-Z]{2}\)/.test(e));
+  const codeOf = (e) => (e.match(/^## \d{4}-\d{2}-\d{2} \(pass ([A-Z]{2})\)/) || [])[1] || '';
+  const taskForm = (e) => { const b = (e.match(/^- \*\*The pass packet\.\*\* .*$/m) || [''])[0]; return /node tools\/pass-packet\.mjs --task/.test(b) && /\bread whole\b/.test(b) && /\b\d{1,3}(?:,\d{3})+ bytes\b|\b\d+ bytes\b/.test(b) && /Findings traced to a line the packet left out: (\d+|none)\b/.test(b) && /Findings whose rule was in the packet and was missed: (\d+|none)\b/.test(b); };
+  const unkept = entriesOf(dec).filter((e) => codeOf(e) >= 'NS' && codeOf(e).length === 2).filter((e) => !taskForm(e)).map((e) => e.slice(0, 30));
+  const made = '## 2026-11-17 (pass NS): a made entry\n\n- **The pass packet.** The lead read RULES-AUDIT sections 9 to 11 whole (257,471 bytes), and each reader its own task packet, read whole (node tools/pass-packet.mjs --task --match \'a\', 36,077 bytes). Findings traced to a line the packet left out: none. Findings whose rule was in the packet and was missed: 1.\n';
+  const plants = [dig(inside(plant(hist, qName, 'A rules packet for each agent, read whole,', 'A rules packet for each agent, read hole,'), qName)) !== dig(qs),
+    dig(inside(plant(hist, wName, "a new chat's lead reads it through the pass packet", "a new chat's lead read it through the pass packet"), wName)) !== dig(word),
+    dig(inside(plant(claudeHist, kName, 'then the pass packet it asks for', 'then the pass packet it asked for'), kName)) !== dig(claudeLines),
+    taskForm(made), !taskForm(made.replace('pass-packet.mjs --task', 'pass-packet.mjs')),
+    dig(inside(plant(claudeHist, p3Name, 'which the pass packet brings by area', 'which the pass packet brought by area'), p3Name)) !== dig(p3Line)];
+  ok(`docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass NS, Q120 to Q122 (digest ${dig(qs)}), and the lines Mikey's answers changed (digest ${dig(word)}, ${wordRows.length} lines), unchanged; each answered in one line in section 11, each changed row saying so and section 9's rows naming them, and INDEPENDENT-CHECKS' How item 11 a packet for each agent; docs/CLAUDE-HISTORY.md keeps CLAUDE.md's first line and part two's Rules audit line as pass NR left them (digest ${dig(claudeLines)}), and since pass NS's records read part three's fifth line (digest ${dig(p3Line)}), the lines saying what Q120 (a) made true; and the pass packet's bullet in every entry from pass NS on gives the task packets, read whole, their bytes and both counts (pass NS; one letter edited in each block and the bullet's --task taken out, planted, caught)`,
+    dig(qs) === '28eeec29' && dig(word) === '672cd77e' && dig(claudeLines) === 'f705174f' && dig(p3Line) === '21b20699' && /^Since pass NL this file holds an index[^\n]*which the pass packet brings by area\.[^\n]*\n$/.test(p3Line) && part3.split('\n')[4].includes('which a task packet brings by its words.') && audit.includes("At pass NS's records read (Fable), CLAUDE.md's first line says") && claudeNow && answered && !/\n- Q12[0-2]\. (?!Answered)/.test(audit)
+    && wordRows.length === OPEN_WORD.length && OPEN_WORD.every((w, k) => wordRows[k].startsWith(w)) && changed === wordRows.length - 1 && rows && unkept.length === 0 && plants.every(Boolean),
+    JSON.stringify({ q: dig(qs), w: dig(word), k: dig(claudeLines), p3: dig(p3Line), claudeNow, nWord: wordRows.length, changed, answered, rows, unkept, plants })); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

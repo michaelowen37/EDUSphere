@@ -1686,6 +1686,14 @@ export function questionReadParts(q, shown = null) {
 // is; its fifth, whether a big letter and a small one shown are the same letter, names none and prints alike with a voice and without.
 // Since pass NL the four of each of Almost the same and More small letters that name a letter join it (66), Small letters' kinds made by
 // one maker (smallLetterBanks), each yes or no hiding its letter as Small letters' does.
+// Since pass NS, at Mikey's answer to Q122 ("Q122 - A"), one bank that is no letters bank joins it (67): pre-K 4's Print tells us
+// something's "What does this print tell us?" (p4-print-tells), whose three answers are heard choices, To stop, What is inside and I love
+// you. With no voice its buttons printed their answers, and under Mom's note, which prints I love you, the right one printed the same three
+// words, so a child who matched letter shapes tapped it without knowing what the print says, on 643 of seeds 1 to 2,000. Its card is built
+// as the which-sound kinds' is (Q97 (a)): while it is up the picture hides, the card says the question and lists the three answers in the
+// buttons' order, and Ready shows the picture and the buttons, numbered 1, 2 and 3 (below, GROWN_UP_CARD_HIDES). GROWN_UP_CARD_OTHER names
+// it, the card's one kind that asks no letters question, so the rules test reads every other bank on this list as a letters bank.
+export const GROWN_UP_CARD_OTHER = new Set(['p4-print-tells']);
 export const GROWN_UP_CARD_BANKS = new Set(['p3-ls-letter', 'p3-ls-sound', 'p3-ls-first', 'p3-ls-yesno', 'p3-look-name',
   'p4-name-letter', 'p4-name-sound', 'p4-name-first', 'p4-name-yesno', 'p4-end-letter', 'p4-end-sound', 'p4-end-first', 'p4-end-yesno',
   'p4-soe-letter', 'p4-soe-sound', 'p4-soe-first', 'p4-soe-yesno', 'p4-wbs-first', 'p4-wbs-last', 'p4-wbs-yesno',
@@ -1695,7 +1703,8 @@ export const GROWN_UP_CARD_BANKS = new Set(['p3-ls-letter', 'p3-ls-sound', 'p3-l
   'p4-qvy-letter', 'p4-qvy-sound', 'p4-qvy-pic', 'p4-qvy-first', 'p4-qvy-yesno',
   'p4-aei-first', 'p4-aei-pic', 'p4-aei-both', 'p4-aei-or', 'p4-aei-yesno', 'p4-ou-first', 'p4-ou-pic', 'p4-ou-name', 'p4-ou-or', 'p4-ou-yesno',
   'p4-sml-tap', 'p4-sml-big', 'p4-sml-find', 'p4-sml-yesno',
-  'p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno']);
+  'p4-kpuy-tap', 'p4-kpuy-big', 'p4-kpuy-find', 'p4-kpuy-yesno', 'p4-eirt-tap', 'p4-eirt-big', 'p4-eirt-find', 'p4-eirt-yesno',
+  ...GROWN_UP_CARD_OTHER]);
 // The letters questions waiting on Mikey's word. Pass NG's eight letter-name kinds waited here on Q96 until his answer in pass NH
 // ("Q96 - A") moved them to the card's list; the rules test holds every letters bank of a read-aloud course to the card's list or this
 // one, so a new letters bank cannot go unread, and one that should wait for a question of his goes here with its number. Since pass NH's
@@ -1764,6 +1773,10 @@ export const GROWN_UP_CARD_HIDES = new Map([
   ['p4-sml-yesno', (q) => String(q.prompt)],
   // Since pass NL, Almost the same's and More small letters' yes or no, made as Small letters' is.
   ['p4-kpuy-yesno', (q) => String(q.prompt)], ['p4-eirt-yesno', (q) => String(q.prompt)],
+  // Since pass NS (Q122 (a)), Print tells us something's "What does this print tell us?": its picture, which may print the very words of
+  // an answer (Mom's note, I love you), hides while the card says the question and lists the answers, so the note's words and the card's
+  // list are never on the screen together; after Ready the question prints as a device with no voice prints it (cardQuestion).
+  ['p4-print-tells', (q) => String(q.prompt)],
 ]);
 // The kinds whose setup names no letter and points at what Ready shows, so it prints after Ready, above it: the sign word kind's (pass NH)
 // and Write it by its sounds' word kind's (pass NI), each with that setup and what the card's first line tells the grown-up to read the
@@ -1773,10 +1786,15 @@ export const CARD_SETUP_AFTER_READY = new Map([
   ['p4-wbs-word', { setup: (q) => String(q.story).replace(/ Now listen to these .*$/, ''), above: 'letters' }],
 ]);
 // The question a hiding kind prints after Ready, for the grown-up to read aloud: a which-sound question's in Q97's words, any other
-// the question a device with a voice prints.
+// the question a device with a voice prints, but since pass NS (Q122 (a)) a heard kind that shows no letter, Print tells us something's,
+// which prints its question as a device with no voice prints it ("What does this print tell us?"), since its voiced frame says to tap
+// and hear.
 export const CARD_SOUND_QUESTION = 'Which sound does this letter say?';
 // The letters a question shows: a letters picture's text, or the letters in a pair's halves.
 const lettersShown = (v) => !v ? [] : v.kind === 'letters' ? [String(v.text)] : v.kind === 'pair' ? [...lettersShown(v.a), ...lettersShown(v.b)] : [];
+// A which-sound question (Q97): its answers are sounds the voice says, beside a letter it shows. Since pass NS the card's other heard
+// kind, Print tells us something's, shows a picture with print and no letter, and its answers are words.
+const whichSound = (q) => !!q && !!q.heardChoices && lettersShown(q.visual).length > 0;
 // A question with picture answers beside a letter shown (since pass NH's round one code read): which picture starts or ends with the
 // sound a letter says, or which word two letters are for. With no voice its print named the pictures beside the letter, so the rules test
 // reads these with the letters questions; they waited on GROWN_UP_CARD_WAITING (Q98), and since pass NI they show the card.
@@ -1834,7 +1852,10 @@ export function cardRuns(text) { return String(text).split(CARD_RUN); }
 const CARD_HOW = 'Read this aloud, then tap\u00A0Ready.';
 const CARD_HOW_ASKS = 'Read this aloud, then tap\u00A0Ready and read the\u00A0question.';
 const cardHowAbove = (above) => `Read this aloud, then tap\u00A0Ready and read the words above the\u00A0${above}.`;
-const cardAfter = (asks) => `After Ready, ${asks ? 'read the question, then ' : ''}point to each button and say its sound again. To see this list again, tap Show\u00A0the\u00A0words\u00A0again, under Check\u00A0answer.`;
+// Since pass NS (Q122 (a)) the line names what each button holds: a which-sound card's buttons a sound, Print tells us something's an
+// answer in words (Claude's words); and since round one's code read the print card's line says to read the question first too, since
+// the card says "What does this print tell us?" while the print is hidden, and only after Ready can "this print" point at anything.
+const cardAfter = (asks, holds = 'sound') => `After Ready, ${asks ? 'read the question, then ' : ''}point to each button and say its ${holds} again. To see this list again, tap Show\u00A0the\u00A0words\u00A0again, under Check\u00A0answer.`;
 // Since pass NI's round one screen read: a picture card (a hiding kind whose answers are pictures, Q98 (a)'s seven kinds and Q, V and Y's)
 // says its pictures' names before Ready, and its pictures show only after it, with no names, where a voice says each name while its
 // picture is on the screen; so its line after the names says to read the question (on Write it by its sounds' word card, the words above
@@ -1853,16 +1874,17 @@ export function grownUpCard(q) {
   const setup = hide ? CARD_SETUP_AFTER_READY.get(q.genId) : null;
   const pictures = !!hide && !sounds && picturesOnly(q);
   const how = pictures ? CARD_HOW : setup ? cardHowAbove(setup.above) : asks && !sounds ? CARD_HOW_ASKS : CARD_HOW;
-  return { say, sounds, hides: !!hide, asks, how, after: sounds ? cardAfter(asks) : pictures ? cardAfterPictures(setup) : null };
+  return { say, sounds, hides: !!hide, asks, how, after: sounds ? cardAfter(asks || !whichSound(q), whichSound(q) ? 'sound' : 'answer') : pictures ? cardAfterPictures(setup) : null };
 }
 // What prints above a card's answers, before Ready and after it: the setup and question a device with a voice prints, a which-sound
 // question's own prompt ("Which sound does it say?") in place of the voice's "Tap to hear each sound."
 // Since pass NH (Q97 (a)) a hiding kind prints nothing while the card is up (cardUp) and after Ready only its question: a which-sound
-// question's CARD_SOUND_QUESTION, any other the question a device with a voice prints; a kind on CARD_SETUP_AFTER_READY its setup above it.
+// question's CARD_SOUND_QUESTION, any other the question a device with a voice prints, but since pass NS (Q122 (a)) a heard kind that shows
+// no letter, Print tells us something's, its question as a device with no voice prints it; a kind on CARD_SETUP_AFTER_READY its setup above it.
 export function cardQuestion(q, cardUp = false) {
   if (!q) return { story: null, prompt: '' };
   if (GROWN_UP_CARD_HIDES.has(q.genId) && GROWN_UP_CARD_BANKS.has(q.genId)) { const setup = CARD_SETUP_AFTER_READY.get(q.genId);
-    return cardUp ? { story: null, prompt: '' } : { story: setup ? setup.setup(q) : null, prompt: q.heardChoices ? CARD_SOUND_QUESTION : (q.printed || q.prompt) }; }
+    return cardUp ? { story: null, prompt: '' } : { story: setup ? setup.setup(q) : null, prompt: whichSound(q) ? CARD_SOUND_QUESTION : q.heardChoices ? printedQuestion(q, false).prompt : (q.printed || q.prompt) }; }
   return { story: q.printedStory || q.story || null, prompt: q.heardChoices ? q.prompt : (q.printed || q.prompt) };
 }
 // The cues a grown-up reads beside a question's sentences said in a manner: each sentence of the words, cut where SENTENCE_BREAK cuts,
@@ -52218,6 +52240,10 @@ export function enabledCourseIds(events) {
 // questions come back is taken when half or more of those answers were wrong, where EXPLANATIONS said any miss and CONFIDENCE_RULES
 // said nothing; and "guessing?" is named on Who Needs Help, the one place that reads it. The rules test holds every number and
 // condition of both to the code, each old wording planted and caught.
+// Since pass NS, at Mikey's answer to Q121 ("Q121 - A"), the Key Word on what holds a score down says, in his chosen words, what the
+// score does where it said a score is held down by "scoring lower on consecutive attempts", which computeConfidence never compares: a
+// score also stays down while the latest round has a mistake in it (no flawless round's point), and until the module's latest eight
+// answers are all correct, unless at least two of its questions have come back and 80 percent or more of them were right (the last point).
 export const CONFIDENCE_RULES = [
   'Confidence starts at 1 for any module that has been practiced.',
   `+2 once the module has been passed, its pass mark met in one set (${CONFIG.MASTERY_MIN_CORRECT} or more of ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT} through grade 5, 7 of 8 in grades 6 to 8, 8 of 10 from grade 9), even before its star, which takes a second pass on another day.`,
@@ -52290,7 +52316,7 @@ export const EXPLANATIONS = [
   },
   {
     term: 'What holds a confidence score down',
-    plain: 'A score stays low when a student has practiced a module one or more times without passing it. A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row. The goal is to ensure that the information sticks. If two or more wrong answers in the latest round come in under four seconds each, Who Needs Help says there are signs of guessing in that module. This is because answering quickly usually indicates tapping rather than thinking. Getting half or more of the module\'s questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point, because the score is meant to say whether it stuck.',
+    plain: 'A score stays low when a student has practiced a module one or more times without passing it. A score also stays down while the latest round has a mistake in it, and until the module\'s latest eight answers are all correct, unless at least two of its questions have come back and 80 percent or more of them were right. The goal is to ensure that the information sticks. If two or more wrong answers in the latest round come in under four seconds each, Who Needs Help says there are signs of guessing in that module. This is because answering quickly usually indicates tapping rather than thinking. Getting half or more of the module\'s questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point, because the score is meant to say whether it stuck.',
   },
   {
     term: 'Answered correctly',

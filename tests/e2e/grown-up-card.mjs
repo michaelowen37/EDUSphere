@@ -1,7 +1,7 @@
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // The grown-up's card, walked in the real page (Q91, Mikey's answer in pass NG: "Q91 - A"; EARMARKS A96). In plain terms: on a
 // device with no voice, a grown-up reads each question aloud, and the letters banks GROWN_UP_CARD_BANKS names (24 in pass NG, 32 in
-// pass NH, 44 in pass NI, 58 in pass NK, 66 since pass NL) show, where their answers go, a card with the words to say and a Ready button. This walks every one at seeds 1 and 2 in both themes on a
+// pass NH, 44 in pass NI, 58 in pass NK, 66 in pass NL, and since pass NS 67, Print tells us something's what this print tells us among them) show, where their answers go, a card with the words to say and a Ready button. This walks every one at seeds 1 and 2 in both themes on a
 // 375 by 667 phone, and each at seed 1 on a 320 by 568 phone and on a phone held sideways (667 by 375), in both themes, and checks, as
 // a child and a grown-up meet it:
 //   - before Ready the card shows its words (the whole question as grownUpCard gives it, and a which-sound question's sounds in the
@@ -60,6 +60,11 @@
 // lists at seeds 1 and 2 and pinned, so a bank added to the list without its walk here fails. Since pass NL Almost the same's four
 // and More small letters' four join, 66 in all, and their two yes-or-no kinds hide, 30 hiding kinds; their cards hold the question, as
 // Small letters' does, so 26 still ask.
+// Since pass NS (Mikey's answer "Q122 - A") Print tells us something's what this print tells us joins, 67 in all, the card's one bank that
+// asks no letters question: a hiding kind (31), its card saying its question and listing its three answers in the buttons' order, its
+// picture hidden until Ready and its buttons numbered after it, as the which-sound kinds' are; its card holds the question, so 26 still
+// ask. Since then every heard card's line after its list is read too, worked out here from the question: each button's sound again where
+// the question shows a letter, each button's answer again where it shows a picture with print.
 // Run: node tests/e2e/make-page.mjs && node tests/e2e/grown-up-card.mjs
 import { createRequire } from 'node:module'; import { execSync } from 'node:child_process';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
@@ -181,7 +186,11 @@ for (const theme of ['light', 'dark']) {
       const pictures = card.hides && !card.sounds && q.choices.every((c) => /^(?:icon|pic|art):/.test(String(c))); if (pictures) pictureCards += 1;
       const how = pictures ? 'Read this aloud, then tap\u00A0Ready.' : above ? `Read this aloud, then tap\u00A0Ready and read the words above the\u00A0${above}.` : asks && !card.sounds ? 'Read this aloud, then tap\u00A0Ready and read the\u00A0question.' : 'Read this aloud, then tap\u00A0Ready.';
       const afterWant = pictures ? `After Ready, read ${above ? 'the words above the letters' : 'the question'}, then point to each picture and say its name again. To see the names again, tap Show the words again, under Check answer.` : null;
-      if (s.readyPulse || s.how !== how || (pictures ? flat(s.after) !== afterWant : !card.sounds && s.after !== null)) faults.ready.push({ where, pulse: s.readyPulse, how: s.how, want: how, after: s.after }); }
+      // Since pass NS: a heard card's line after its list, by what its buttons hold (a sound beside a letter shown, else an answer).
+      const holds = q.visual && /^(letters|pair)$/.test(q.visual.kind) ? 'sound' : 'answer';
+      // (since round one's code read of pass NS the print card's line reads the question first too: its card said "this print" with the print hidden)
+      const soundsAfter = `After Ready, ${asks || holds === 'answer' ? 'read the question, then ' : ''}point to each button and say its ${holds} again. To see this list again, tap Show the words again, under Check answer.`;
+      if (s.readyPulse || s.how !== how || (pictures ? flat(s.after) !== afterWant : card.sounds ? flat(s.after) !== soundsAfter : s.after !== null)) faults.ready.push({ where, pulse: s.readyPulse, how: s.how, want: how, after: s.after }); }
     { const want2 = ellsIn(s.cardText); const got = s.ells.map((e) => e.t); if (JSON.stringify(got) !== JSON.stringify(want2) || s.ells.some((e) => !e.serif)) faults.ells.push({ where, want: want2, got: s.ells }); }
     if (!lonesHeld(s.say)) faults.ells.push({ where, lone: s.say });
     const low = await cardContrast(page); if (low.length) faults.contrast.push({ where, low });
@@ -219,15 +228,15 @@ for (const theme of ['light', 'dark']) {
     { const want2 = ellsIn(s.feedback); const got = s.ells.map((e) => e.t); if (want2.length) ellReasons += 1; if (JSON.stringify(got) !== JSON.stringify(want2) || s.ells.some((e) => !e.serif)) faults.ells.push({ where, step: 'reason', want: want2, got: s.ells }); }
     if (s.card) faults.together.push({ where, step: 'after a wrong tap' });
   }
-  ok(`${theme}: before Ready each of the ${banks.length} banks shows the grown-up's card with its words and no answers or Check answer, at seeds 1 and 2 (Q91 (a); Q96 (a); Q98 (a))`, faults.before.length === 0 && banks.length === 66, faults.before.slice(0, 3));
-  ok(`${theme}: in the kinds whose picture or letter hides (${hidden} questions), the card stands alone before Ready and with the words again, and after Ready the picture and the question show with no setup line but the two kinds' own (Q97 (a); Q98 (a))`, faults.alone.length === 0 && hidden === 2 * L.GROWN_UP_CARD_HIDES.size && hidden === 2 * 30, faults.alone.slice(0, 3));
+  ok(`${theme}: before Ready each of the ${banks.length} banks shows the grown-up's card with its words and no answers or Check answer, at seeds 1 and 2 (Q91 (a); Q96 (a); Q98 (a); since pass NS, Q122 (a), Print tells us something's what this print tells us)`, faults.before.length === 0 && banks.length === 67, faults.before.slice(0, 3));
+  ok(`${theme}: in the kinds whose picture or letter hides (${hidden} questions), the card stands alone before Ready and with the words again, and after Ready the picture and the question show with no setup line but the two kinds' own (Q97 (a); Q98 (a))`, faults.alone.length === 0 && hidden === 2 * L.GROWN_UP_CARD_HIDES.size && hidden === 2 * 31, faults.alone.slice(0, 3));
   ok(`${theme}: Ready shows the answers under the same print, with Show the words again, and no word the card added prints beside them`, faults.after.length === 0, faults.after.slice(0, 3));
-  ok(`${theme}: a which-sound card lists its sounds in the buttons' order, and its buttons show their numbers, never a sound`, faults.numbers.length === 0, faults.numbers.slice(0, 3));
+  ok(`${theme}: a which-sound card lists its sounds in the buttons' order, and since pass NS the print card its answers, and their buttons show their numbers, never a sound or an answer`, faults.numbers.length === 0, faults.numbers.slice(0, 3));
   ok(`${theme}: Show the words again brings the card back and hides the answers`, faults.again.length === 0, faults.again.slice(0, 3));
   ok(`${theme}: the card and the answers are never on the screen together, before Ready, after it, with the words again or after a wrong tap`, faults.together.length === 0, faults.together.slice(0, 3));
   ok(`${theme}: the card's Ready ends above a 375 by 667 phone's fold on all ${banks.length} banks`, faults.fold.length === 0, faults.fold.slice(0, 3));
   ok(`${theme}: the ten picture cards (${pictureCards} questions) say under their names to read the question, or the words above the letters, then point to each picture and say its name again (pass NI's round one screen read)`, pictureCards === 20, pictureCards);
-  ok(`${theme}: Ready is the plain button, never the pulsing one, "tap Ready." holds together, and the ${asking} cards whose words stop before the question say to read it after Ready (the two letters' word card the words above them)`, faults.ready.length === 0 && asking === 2 * 26, faults.ready.slice(0, 3));
+  ok(`${theme}: Ready is the plain button, never the pulsing one, "tap Ready." holds together, the ${asking} cards whose words stop before the question say to read it after Ready (the two letters' word card the words above them), and since pass NS every heard card's line after its list says to say each button's sound, or on the print card its answer, again`, faults.ready.length === 0 && asking === 2 * 26, faults.ready.slice(0, 3));
   ok(`${theme}: every run of small l's on the card and in the reason draws in a serif type (${ellReasons} reasons hold one), and no lone capital starts a line of the card's words`, faults.ells.length === 0 && ellReasons >= 2, faults.ells.slice(0, 3));
   ok(`${theme}: Ready hands the focus to the first answer, and Show the words again hands it back to Ready`, faults.focus.length === 0, faults.focus.slice(0, 3));
   ok(`${theme}: a which-sound question's numbered buttons stand in one row`, faults.row.length === 0, faults.row.slice(0, 3));
@@ -269,7 +278,7 @@ for (const theme of ['light', 'dark']) {
   await page.close();
 }
 // Check answer above the fold after Ready (pass NI's round one screen read): on a 375 by 667 phone, in both themes, as a child the educator
-// added sees the question (no Walkthrough Mode tab), every one of the banks on the list (44 in pass NI, 58 in pass NK, 66 since pass NL) at seeds 1 to 6 is shown with no voice, Ready is tapped, and
+// added sees the question (no Walkthrough Mode tab), every one of the banks on the list (44 in pass NI, 58 in pass NK, 66 in pass NL, 67 since pass NS) at seeds 1 to 6 is shown with no voice, Ready is tapped, and
 // Check answer must end above the fold, its bottom read with the test page's own margin taken off (the fold check reads the same with a
 // voice). Near miss: Show the words again put back between the answers and Check answer, where round one had it, on Write it by its
 // sounds' word kind at seed 2, caught.
@@ -308,7 +317,7 @@ for (const theme of ['light', 'dark']) {
     }
   }
   ok(`${theme}: after Ready, Check answer ends above a 375 by 667 phone's fold on all ${banks.length} banks at seeds 1 to 6, read as a child sees them (${read} questions, the lowest ending at ${highest}; Show the words again at the foot of the question's card, where round one had it, planted on the word kind, caught at ${planted})`,
-    child && read === 6 * banks.length && banks.length === 66 && under.length === 0 && planted !== null && planted > 667, { child, under: under.slice(0, 4), planted });
+    child && read === 6 * banks.length && banks.length === 67 && under.length === 0 && planted !== null && planted > 667, { child, under: under.slice(0, 4), planted });
   await page.close();
 }
 // A 320 by 568 phone (since round one's reads, pass NG): wherever Ready sits below the fold the scroll cue shows and a tap on it brings
@@ -320,17 +329,28 @@ const cueClear = (page) => page.evaluate(() => { const cue = document.querySelec
   while (w.nextNode()) { const t = w.currentNode; const re = /\S+/g; let m; while ((m = re.exec(t.textContent))) { const rg = document.createRange(); rg.setStart(t, m.index); rg.setEnd(t, m.index + m[0].length);
     for (const r of rg.getClientRects()) if (r.right > c.left - gap && r.left < c.right + gap && r.bottom > c.top - gap && r.top < c.bottom + gap) hits.push(m[0]); } }
   return hits; });
+// Every answer of several words on the card's list (data-whole-answer): its text, its rows and how far its right edge passes its
+// paragraph's content box (since round one's code read of pass NS; one read, so the near miss below runs the very read the check runs).
+const wholeHeld = (page) => page.evaluate(() => [...document.querySelectorAll('[data-grown-up-card] [data-whole-answer]')].map((e) => { const p = e.closest('p'); const pr = p.getBoundingClientRect(); const cs = getComputedStyle(p);
+  const right = pr.right - parseFloat(cs.paddingRight || '0') - parseFloat(cs.borderRightWidth || '0'); const er = e.getBoundingClientRect();
+  return { t: e.textContent, rows: new Set([...e.getClientRects()].map((r) => Math.round(r.top))).size, over: Math.round((er.right - right) * 10) / 10 }; }));
+const wholeFaults = (held) => held.filter((h) => h.rows !== 1 || h.over > 0.5);
 // Since the third read's screen read the walk runs sideways too (667 by 375), where the cue's tap had left the question's first line 2 to 4
 // pixels from the screen's top: after Ready the question's first line keeps its 12 pixels (11 or more), and after the cue's tap Ready sits
 // 28 pixels above the screen's foot (25 to 31), never flush on it.
 for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'dark']) { const page = await openPage(theme); await noVoice(page); await page.setViewportSize({ width: W, height: H }); await page.waitForTimeout(300);
   // Sideways, a touch screen first asks to turn the phone upright (pass MS, Q74); a grown-up who cannot turn it taps Keep going sideways.
   const keep = page.locator('#edu-rotate.edu-rotate-on .edu-rotate-keep'); if (await keep.count()) { await keep.click(); await page.waitForTimeout(200); }
-  const short = { cue: [], after: [], row: [], again: [], room: [] }; let below = 0; const size = `${W} by ${H}`;
+  const short = { cue: [], after: [], row: [], again: [], room: [], whole: [] }; let below = 0; let wholeRead = 0; const size = `${W} by ${H}`;
   for (const g of banks) {
     const q = L.generateQuestion(g, 1); const card = L.grownUpCard(q); const where = `${g} s1`;
     await show(page, g, 1); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(700);
     let s = await state(page);
+    // Since pass NS (Q122 (a)): an answer of several words on the card's list stands on one row ("inside." stood alone at 320 by 568 on
+    // this test page, whose 8-pixel margin leaves the list 204 pixels; on the product, 220 wide, it fits, as round one's screen read measured).
+    // Since round one's code read: and never runs off its line, its right edge inside its paragraph's content box (a nowrap span always
+    // has one row, so the row count alone could not fail on a long answer).
+    { const held = await wholeHeld(page); wholeRead += held.length; for (const h of wholeFaults(held)) short.whole.push({ where, ...h }); }
     // Below the fold by the cue's own rule for a full-width row (whole): more than 4 pixels of it under the screen's foot.
     if (s.readyBottom > H + 4) { below += 1;
       if (s.cue) { const under = await cueClear(page); if (under.length) short.room.push({ where, under }); }
@@ -353,6 +373,22 @@ for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'da
   ok(`${theme}, ${size}: after Ready the question's first line is on the screen 11 pixels or more below its top, and the first answer has the focus`, short.after.length === 0, short.after.slice(0, 3));
   ok(`${theme}, ${size}: a which-sound question's numbered buttons stand in one row`, short.row.length === 0, short.row.slice(0, 3));
   ok(`${theme}, ${size}: after a pick, Show the words again leaves one cue at most, the one to Ready, and its tap brings Ready into view`, short.again.length === 0, short.again.slice(0, 3));
+  ok(`${theme}, ${size}: every answer of several words on a card's list stands on one row and inside its line, never past its paragraph's right edge (${wholeRead} read, the print card's three at seed 1; pass NS, Q122 (a), and round one's code read)`, short.whole.length === 0 && wholeRead === 3, short.whole.slice(0, 3));
+  // The near miss, once at 320 by 568 in the light theme: the hold taken off the print card's answers, "What is inside." breaks, caught
+  // (on this test page's 204-pixel list; the product's is 220, where the line fits, so this holds the hold, not the product's width).
+  if (theme === 'light' && W === 320) {
+    const seed = [...Array(60).keys()].map((i) => i + 1).find((x) => L.grownUpCard(L.generateQuestion('p4-print-tells', x)).sounds.includes('What is inside'));
+    await show(page, 'p4-print-tells', seed); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(500);
+    const broke = await page.evaluate(() => { const e = [...document.querySelectorAll('[data-whole-answer]')].find((x) => /What is inside/.test(x.textContent)); if (!e) return null; e.style.whiteSpace = 'normal';
+      const rows = new Set([...e.getClientRects()].map((r) => Math.round(r.top))).size; e.style.whiteSpace = 'nowrap'; return rows; });
+    ok('near miss: with its hold taken off at 320 by 568, on the test page\'s 204-pixel list (its 8-pixel margin; the product\'s 220 fits the line), the print card\'s "What is inside." breaks across two rows, caught (pass NS; the width named since round one\'s screen read)', broke !== null && broke > 1, broke);
+    // Since round two's records read: the right-edge read itself, on an answer planted too long for its line (a copy of the answer's
+    // own span, held whole as it is, put in its paragraph and taken out again, so the page React drew is left as it was).
+    await page.evaluate(() => { const e = [...document.querySelectorAll('[data-grown-up-card] [data-whole-answer]')].find((x) => /What is inside/.test(x.textContent)); if (!e) return;
+      const c = e.cloneNode(false); c.textContent = 'What is inside the very big brown box on the shelf.'; c.setAttribute('data-planted', ''); e.closest('p').appendChild(c); });
+    const planted = await wholeHeld(page); await page.evaluate(() => document.querySelectorAll('[data-planted]').forEach((x) => x.remove()));
+    const caughtOver = wholeFaults(planted).filter((h) => /very big brown box/.test(h.t));
+    ok('near miss: an answer planted too long for its line at 320 by 568 runs past its paragraph\'s right edge, and the read the check runs catches it (since round two\'s records read of pass NS)', caughtOver.length === 1 && caughtOver[0].over > 0.5 && caughtOver[0].rows === 1, planted); }
   if (theme === 'dark' || W !== 320) { await page.close(); continue; }   // the planted tall page below reads Ready's own scroll, the same in both themes and sizes, once
   // Ready's own scroll, held where the page's own end cannot do its work. With the numbers in a row the answers are short, and the page,
   // shorter after Ready, scrolls back by itself (in pass NG no kind at seed 1 left its question above the screen with Ready's scroll

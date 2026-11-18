@@ -14,8 +14,14 @@
 // Near misses, each made from a real packet and caught: a copied line changed by one character, a copied line dropped, an index line
 // pointing one line off, a file changed after its packet was made, and a copied line that differs from its file only in its bytes
 // (a no-break space for a space).
+// Since pass NS (Mikey's answer to Q120, "Q120 - A"): every packet copies INDEPENDENT-CHECKS' ripple read with the alignment and final
+// reads (EARMARKS L28), and a task packet (--task), one agent's packet read whole, is held too: every line it copies is its file's line
+// byte for byte; it copies nothing every packet copies unless its own words, areas or briefs choose it, and no index; it copies every row
+// its words name by its title, with the headings and table headers that keep each row in place; and its head gives its own bytes, and
+// says it is over when it holds more than about 40,000. Near misses, each caught: a packet made with the same words but not as a task
+// (the always list and the index in it), its head's count one byte off, an index put back under it, and a matched row dropped.
 // Run: node tests/pass-packet.test.mjs
-import { readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs'; import { spawnSync } from 'node:child_process'; import { fileURLToPath } from 'node:url';
 const T = await import('../tools/pass-packet.mjs');
 let passed = 0, failed = 0;
 const ok = (name, cond, info) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name + (info !== undefined ? '  ' + JSON.stringify(info).slice(0, 600) : '')); } };
@@ -93,7 +99,7 @@ for (const set of SETS) {
   const want = (key, section, why) => { const miss = sectionLines(key, section).filter((n) => !copied[key].has(n) && !(key === 'RA' && section === '9' && learned.some((l) => l.n === n && !newest.has(l.pass) && !(set.opts.areas || []).includes('process') && !set.opts.all))); return miss.length ? `${why}: ${key} lines ${miss.slice(0, 5).join(', ')}` : null; };
   const always = [want('RA', '0', 'RULES-AUDIT\'s opening'), want('RA', '1', 'section 1'), want('RA', '9', 'section 9'), want('RA', '10', 'section 10'), want('RA', '11', 'section 11'),
     want('EA', '0', 'EARMARKS\'s opening'), want('EA', 'When they are built', 'When they are built'), want('EA', 'How to add one', 'How to add one'),
-    ...['0', 'How the checks fit together', 'Who checks each part of NEW-CHAT', 'When', 'How', 'The alignment read', 'The final read'].map((s) => want('IC', s, s))].filter(Boolean);
+    ...['0', 'How the checks fit together', 'Who checks each part of NEW-CHAT', 'When', 'How', 'The ripple read', 'The alignment read', 'The final read'].map((s) => want('IC', s, s))].filter(Boolean);
   ok(`${set.name}: what every packet copies is copied whole`, always.length === 0, always);
   const newestCopied = learned.filter((l) => newest.has(l.pass)).every((l) => copied.RA.has(l.n));
   ok(`${set.name}: the newest three passes' learned rows are copied (${[...newest].join(', ')})`, newestCopied);
@@ -220,6 +226,87 @@ const copiedOf = (opts) => checkPacket(T.packet(opts)).copied;
   ok('the pass packet names the earmark rows every screen brief names, each open in EARMARKS, every open row waiting for the next screen read among them, with the screen brief and not without it (pass NK; an open row waiting for the next screen read left off the list, planted, caught)',
     T.SCREEN_BRIEF_ROWS.every(open) && missing(ea).length === 0 && waiting(ea).length >= 5 && withScreen.includes('## The earmark rows every screen brief names') && T.SCREEN_BRIEF_ROWS.every((id) => withScreen.includes('\n- ' + id + ' ') && !withScreen.includes('\n- ' + id + ' (not found')) && !without.includes('## The earmark rows every screen brief names') && checkPacket(withScreen).faults.length === 0 && missing(planted).join() === 'A999',
     { notOpen: T.SCREEN_BRIEF_ROWS.filter((id) => !open(id)), missing: missing(ea) }); }
+// A task packet (Q120 (a), pass NS): one agent's rows alone, read whole. Its faults against the files' texts, for the options it was made
+// with: a copy that differs from its file, a line every packet copies that its own words, areas and briefs did not choose, an index, a
+// row its words name left out, and a head whose count is not its own bytes, or that says over or not as its bytes are.
+{ const ALWAYS_SECTIONS = { RA: ['0', '1', '9', '10', '11'], EA: ['0', 'When they are built', 'How to add one'], IC: ['0', 'How the checks fit together', 'Who checks each part of NEW-CHAT', 'When', 'How', 'The ripple read', 'The alignment read', 'The final read'] };
+  const taskFaults = (text, opts) => { const out = []; const src = linesOf(TEXTS); let file = null;
+    const chosen = T.choose({ ...opts, task: true });
+    const words = opts.match ? new RegExp(opts.match, 'i') : null; const picked = (opts.areas || []).map((a) => T.AREAS[a]);
+    const areaWords = picked.map((a) => a.words).filter(Boolean); const areaRa = picked.flatMap((a) => a.ra || []); const areaEa = picked.flatMap((a) => a.ea || []);
+    const briefSections = (opts.briefs || []).flatMap((b) => [`The ${b} brief`, `The ${b}`]);
+    const copied = { RA: new Set(), EA: new Set(), IC: new Set() };
+    for (const line of String(text).split('\n')) {
+      const head = line.match(/^## (docs\/[A-Z-]+\.md): (.+)$/);
+      if (head) { if (head[2] !== 'copied for this task') out.push(`a part that is not copied rows: ${line.slice(0, 60)}`); file = Object.keys(T.SOURCES).find((k) => T.SOURCES[k] === head[1]); continue; }
+      const m = line.match(/^\[(RA|EA|IC) (\d+)\] ([\s\S]*)$/); if (!m) continue;
+      if (m[1] !== file) { out.push(`a line under another file's heading: ${line.slice(0, 60)}`); continue; }
+      const want = src[m[1]][+m[2] - 1]; if (want === undefined || Buffer.compare(Buffer.from(m[3]), Buffer.from(want)) !== 0) out.push(`copy differs: ${m[1]} ${m[2]}`);
+      copied[m[1]].add(+m[2]); }
+    // Nothing every packet copies, unless this task's words, areas or briefs choose it.
+    for (const k of ['RA', 'EA', 'IC']) for (const l of T.linesOf(k, TEXTS[k])) { if (!copied[k].has(l.n) || l.kind !== 'row' || !ALWAYS_SECTIONS[k].includes(l.section)) continue;
+      const mine = (k === 'RA' && (areaRa.includes(l.section) || [words, ...areaWords].some((w) => w && w.test(T.titleOf(l.line, 400)))))
+        || (k === 'EA' && (areaEa.includes(l.section) || (T.openEarmark(l.line) && [words, ...areaWords].some((w) => w && w.test(T.titleOf(l.line, 400))))))
+        || (k === 'IC' && briefSections.includes(l.section));
+      if (!mine) out.push(`a line every packet copies, not this task's: ${k} ${l.n}`); }
+    // Every row this task's words name by its title is copied (in RULES-AUDIT any row, in EARMARKS an open one).
+    if (words) for (const k of ['RA', 'EA']) for (const l of T.linesOf(k, TEXTS[k])) if (l.kind === 'row' && (k === 'RA' || T.openEarmark(l.line)) && words.test(T.titleOf(l.line, 400)) && !copied[k].has(l.n)) out.push(`a row its words name, left out: ${k} ${l.n}`);
+    if (/^## docs\/[A-Z-]+\.md: index of the rest$/m.test(text)) out.push('an index');
+    // The head's count is the packet's own bytes, over or not as they are.
+    const said = (text.match(/\n(\d+) rows, ([\d,]+) bytes in all(\. Over the about [\d,]+ bytes[^\n]*)?\.\n/) || []);
+    const bytes = Buffer.byteLength(text); const n = said[2] ? Number(said[2].replace(/,/g, '')) : -1;
+    if (n !== bytes) out.push(`its head says ${n} bytes, it holds ${bytes}`);
+    if (!!said[3] !== (bytes > T.TASK_BYTES)) out.push(`its head says over ${!!said[3]}, at ${bytes} bytes`);
+    const rows = Object.values(chosen).reduce((x, ls) => x + ls.filter((l) => l.copied && l.kind === 'row').length, 0); if (Number(said[1]) !== rows) out.push(`its head says ${said[1]} rows, it copies ${rows}`);
+    return out; };
+  const TASKS = [{ match: 'pre-K lesson|yes or no bank|answer tile|say-along|read-along' }, { match: "grown-up's card|GROWN_UP_CARD", briefs: ['screen'] }, { match: 'pass packet|whole reads?|ripple read', briefs: ['code'] }, { areas: ['licensing'] }];
+  const made = TASKS.map((o) => [o, T.packet({ ...o, task: true })]);
+  const now = made.map(([o, t]) => [JSON.stringify(o), taskFaults(t, o)]).filter(([, f]) => f.length);
+  ok(`a task packet copies its own rows alone, each its file's line byte for byte, every row its words name, nothing every packet copies that it did not choose and no index, and its head gives its own bytes, over or not as they are (pass NS, Q120 (a); ${made.map(([, t]) => Buffer.byteLength(t).toLocaleString('en-US')).join(', ')} bytes)`, now.length === 0, now.slice(0, 3));
+  // The near misses, each made from a real task packet.
+  const [o0, t0] = made[0];
+  const notTask = T.packet(o0); const offByOne = t0.replace(/(\n\d+ rows, )([\d,]+)( bytes in all)/, (m, a, n, b) => a + (Number(n.replace(/,/g, '')) + 1).toLocaleString('en-US') + b);
+  const indexed = t0 + '\n## docs/RULES-AUDIT.md: index of the rest\n\n[RA 1] a line (10 bytes)\n';
+  const dropped = t0.split('\n').filter((l, i, all) => i !== all.findIndex((x) => /^\[RA \d+\] \| \*\*/.test(x))).join('\n');
+  const plants = [taskFaults(notTask, o0).some((f) => /every packet copies/.test(f)) && taskFaults(notTask, o0).some((f) => /an index|not copied rows/.test(f)), taskFaults(offByOne, o0).some((f) => /its head says/.test(f)), taskFaults(indexed, o0).some((f) => /an index|not copied rows/.test(f)), taskFaults(dropped, o0).some((f) => /left out/.test(f))];
+  ok('near misses: a packet with the same words but not a task, its head\'s count one byte off, an index put back and a matched row dropped, each caught (pass NS)', plants.every(Boolean), plants);
+  // Since round one's code read of pass NS, which undid each of these alone and found the test still passing: Mikey's number held; the
+  // command line run as the lead runs it, once under the size and once over, its file the very bytes its head counts and the terminal's
+  // note there only when over; the screen rows in a task packet whose briefs take the screen brief; the edge of the size pinned with a
+  // planted row; and words of --match that name no row named, and a packet with no row refused.
+  ok('a task packet holds about 40,000 bytes, Mikey\'s number (Q120 (a): "under about 40,000 bytes and read whole"), and is over only past it (round one\'s code read of pass NS)', T.TASK_BYTES === 40000 && !T.taskOver(40000) && T.taskOver(40001));
+  { const tool = fileURLToPath(new URL('../tools/pass-packet.mjs', import.meta.url));
+    const run = (args) => spawnSync(process.execPath, [tool, '--task', ...args], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    const headCount = (s) => { const m = String(s).match(/\n\d+ rows, ([\d,]+) bytes in all/); return m ? Number(m[1].replace(/,/g, '')) : -1; };
+    const under = run(['--match', TASKS[2].match]); const over = run(['--match', TASKS[2].match, '--briefs', 'code']);
+    const fine = (r, isOver) => r.status === 0 && r.stdout.startsWith('# Task packet\n') && Buffer.byteLength(r.stdout) === headCount(r.stdout)
+      && /\. Over the about 40,000 bytes/.test(r.stdout) === isOver && /NOTE: this task packet holds [\d,]+ bytes, over/.test(r.stderr) === isOver;
+    ok(`the command line prints a task packet whose file holds the very bytes its head counts, and says over on the terminal only when it is over (${Buffer.byteLength(under.stdout).toLocaleString('en-US')} bytes under, ${Buffer.byteLength(over.stdout).toLocaleString('en-US')} over with the code brief, which it says to give by line range; round one's code read of pass NS)`,
+      fine(under, false) && fine(over, true) && /give a reader its brief by its line range/.test(over.stderr) && /give the reader its brief by its line range and leave --briefs out/.test(over.stdout),
+      { under: [under.status, Buffer.byteLength(under.stdout), headCount(under.stdout), under.stderr.slice(0, 200)], over: [over.status, Buffer.byteLength(over.stdout), headCount(over.stdout), over.stderr.slice(0, 200)] });
+    const none = run([]); const missed = run(['--match', 'zzzqqq|^The pass packet']);
+    ok('words of --match that name no row are named in the head and on the terminal, the rest kept, and a task packet with no row at all exits 2 with a plain note (round one\'s code read of pass NS)',
+      missed.status === 0 && /\nWords that named no row: zzzqqq\. /.test(missed.stdout) && /NOTE: these words of --match name no row: zzzqqq\.\n/.test(missed.stderr) && headCount(missed.stdout) === Buffer.byteLength(missed.stdout) && /\n[1-9]\d* rows, /.test(missed.stdout)
+        && !/Words that named no row/.test(under.stdout) && !/name no row/.test(under.stderr) && none.status === 2 && /NOTE: this task packet holds no row/.test(none.stderr),
+      { missed: [missed.status, missed.stderr.slice(0, 200)], none: [none.status, none.stderr.slice(0, 200)] }); }
+  ok('the words of --match are split at each | outside parentheses and brackets, and a word that names no rules audit row and no open earmark by its title is found, an open earmark\'s title and a word in other capitals naming their rows (round one\'s code read and round two\'s records read of pass NS)',
+    JSON.stringify(T.matchParts('a|(b|c)|[|]|d\\|e||f')) === JSON.stringify(['a', '(b|c)', '[|]', 'd\\|e', 'f']) && T.unmatchedWords(TASKS[0].match).length === 0 && JSON.stringify(T.unmatchedWords('zzzqqq|^The pass packet|(qqzz|xxyy)')) === JSON.stringify(['zzzqqq', '(qqzz|xxyy)']) && T.unmatchedWords(null).length === 0
+    // Since round two's records read: an open earmark's title names its row, and a word in other capitals names its row too, as the packet reads them.
+    && T.unmatchedWords('^A172').length === 0 && T.unmatchedWords("GROWN-UP'S CARD ON A DEVICE").length === 0);
+  ok('a task packet whose briefs take the screen brief holds the earmark rows every screen brief names, and one without it does not (round one\'s code read of pass NS)',
+    made[1][1].includes('## The earmark rows every screen brief names') && T.SCREEN_BRIEF_ROWS.every((id) => made[1][1].includes('\n- ' + id + ' ')) && !made[0][1].includes('## The earmark rows every screen brief names') && !made[2][1].includes('## The earmark rows every screen brief names'));
+  // The edge, with a planted row padded until its packet holds exactly 40,000 bytes: that packet is not over, and one byte more of its
+  // row is (the over words then lengthen the head, so no packet holds exactly 40,001).
+  { const plant = (pad) => ({ ...TEXTS, RA: TEXTS.RA + `\n| **Zqedge, a planted row (pass ZZ)** | ${'x'.repeat(pad)} |\n` });
+    const at = (pad) => T.packet({ match: 'Zqedge', task: true, texts: plant(pad) });
+    let pad = 39000; for (let i = 0; i < 6 && Buffer.byteLength(at(pad)) !== T.TASK_BYTES; i++) pad += T.TASK_BYTES - Buffer.byteLength(at(pad));
+    const edge = at(pad), past = at(pad + 1); const said = (t) => (t.match(/\n(\d+) rows, ([\d,]+) bytes in all(\. Over[^\n]*)?\.\n/) || []);
+    ok(`a planted row padded until its task packet holds exactly 40,000 bytes is not over, and one byte more of it is over (then ${Buffer.byteLength(past).toLocaleString('en-US')} bytes with the over words; round one's code read of pass NS)`,
+      Buffer.byteLength(edge) === 40000 && said(edge)[1] === '1' && said(edge)[2] === '40,000' && !said(edge)[3]
+        && said(past)[1] === '1' && !!said(past)[3] && Number(String(said(past)[2]).replace(/,/g, '')) === Buffer.byteLength(past) && Buffer.byteLength(past) > 40001,
+      { edge: [Buffer.byteLength(edge), said(edge).slice(1)], past: [Buffer.byteLength(past), said(past).slice(1, 3)] }); }
+  // --task and --all are opposite asks, refused with a plain message.
+  ok('--task with --all is refused with a plain message (pass NS)', (() => { try { T.choose({ all: true, task: true }); return false; } catch (e) { return /opposite packets/.test(e.message); } })()); }
 ok('every area takes a section, a brief or words', Object.values(T.AREAS).every((a) => (a.ra || []).length || (a.ea || []).length || (a.ic || []).length || a.words));
 ok('an unknown area is refused with a plain message', (() => { try { T.choose({ areas: ['nonsense'] }); return false; } catch (e) { return /no such area: nonsense/.test(e.message); } })());
 

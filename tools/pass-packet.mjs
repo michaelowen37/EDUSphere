@@ -6,10 +6,27 @@
 // every turn of the pass. This tool copies, word for word, the lines of those three files that the pass's areas touch, and lists
 // every other line in an index, one short line each with its file, its line number and its title, so the lead reads the packet and
 // opens a full file only where the index points. The full files stay the only source of the rules: the packet is a copy made at the
-// start of a pass and never kept in the repository, the alignment read and the final read still read the full files whole, and
-// tests/pass-packet.test.mjs holds every copied line to its file byte for byte and every line of the three files to the packet once,
-// copied or indexed. Each pass's DECISIONS entry names the areas it chose and counts any finding traced to a line the packet left
-// out (the docs sync test holds the entry to it), so the areas can be widened where they missed.
+// start of a pass and never kept in the repository, the three files are read whole once a week, in the week's tools pass, with a lesson
+// pass's ripple read reading whole the rows that restate what it changed (Mikey's answer to Q119, pass NR: "Q119 - A"; until then the
+// alignment read and the final read read them whole after every pass), and tests/pass-packet.test.mjs holds every copied line to its file
+// byte for byte and every line of the three files to the packet once, copied or indexed. Each pass's DECISIONS entry names the areas it
+// chose and counts any finding traced to a line the packet left out (the docs sync test holds the entry to it), so the areas can be
+// widened where they missed.
+//
+// A packet for each agent (Mikey's answer to Q120, pass NS: "Q120 - A"; raised by pass NR's weekly flow review, run on Fable, its sixth
+// recommendation). In plain terms: a pass's one packet had grown past a million bytes (pass NR's was 1,356,261), too long to read, so the
+// lead searched it and the engineers and readers it briefed got none, and in pass NR 55 of the 60 must fixes after round zero had
+// their rule in the packet and were missed, none traced to a line it left out. Since pass NS each engineer, writer and reader is given a
+// packet of its own task's rows alone, made with --task: the rows its --match words name by their titles (its banks, lessons, functions
+// and the words of its brief), with any --areas and --briefs it is given, and nothing every packet copies, no index and no screen rows
+// unless its --briefs takes the screen brief; such a packet holds about 40,000 bytes or less, so its agent reads it whole, and its head
+// says so when it holds more, so the lead narrows its words or splits the task. The lead reads RULES-AUDIT's sections 9 to 11 whole (the
+// process, the plan and the open questions) in place of searching one big packet, and opens any other row where its work needs it. Each
+// pass's DECISIONS entry gives each agent's packet, its bytes, and the findings its packet left out and those it held and the agent
+// missed. A reader's brief is given beside its packet by its line range, since a brief alone holds about 40,000 to 51,000 bytes; --briefs
+// is for a task whose work is a brief's own rows. Since round one's code read of pass NS a task packet names, in its head and on the
+// terminal, every word of its --match (each alternative at the top level of the expression) that named no row, since a misspelled name
+// leaves its rule out without a word, and the run exits 2 when the packet holds no row at all.
 //
 // What an area takes (Claude's design, within Mikey's choice): a RULES-AUDIT section whole (stories is section 3, audio 4, lessons
 // 5, banks 6, algorithms 7, screens 2 and 8, process every line of 9), or every RULES-AUDIT line whose title (its bold lead-in, or its
@@ -26,6 +43,8 @@
 //
 // Run: node tools/pass-packet.mjs --areas lessons,banks,letters,prek [--briefs code,screen] [--match <regular expression>] [--all]
 //      > <scratch folder>/packet.md        (--list prints every area and what it takes; --all copies every line, for the test)
+//      node tools/pass-packet.mjs --task --match '<an agent's words>' [--briefs <its brief>] [--areas <an area>]
+//      > <scratch folder>/packet-<agent>.md   (since pass NS, Q120 (a): one agent's packet, read whole)
 import { readFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url';
 
 // The three files, by the short names the packet's line labels use.
@@ -60,9 +79,30 @@ export const AREAS = {
   grade1: { say: 'the grade 1 earmarks', ea: ['Grade 1'] },
   program: { say: 'the program items (L rows)', ea: ['Program items'] },
 };
-// What every packet copies, whatever the areas.
+// What every packet copies, whatever the areas (but a task packet, below). Since pass NS INDEPENDENT-CHECKS' ripple read beside the
+// alignment and final reads, the reads that read the records after a pass (EARMARKS L28: since Q119 a lesson pass runs it).
 const ALWAYS = { ra: ['0', '1', '9', '10', '11'], ea: ['0', 'When they are built', 'How to add one'],
-  ic: ['0', 'How the checks fit together', 'Who checks each part of NEW-CHAT', 'When', 'How', 'The alignment read', 'The final read'] };
+  ic: ['0', 'How the checks fit together', 'Who checks each part of NEW-CHAT', 'When', 'How', 'The ripple read', 'The alignment read', 'The final read'] };
+// A task packet's size, read whole by one agent (Q120 (a): "under about 40,000 bytes and read whole"), and when a packet is over it.
+export const TASK_BYTES = 40000;
+export const taskOver = (bytes) => bytes > TASK_BYTES;
+// The alternatives of a --match expression at its top level (split at each | outside parentheses and brackets), and those that name no
+// rules audit row and no open earmark by its title, the rows a task packet copies by its words (since round one's code read of pass NS).
+export function matchParts(match) {
+  const parts = []; let depth = 0, cls = false, cur = '';
+  for (let i = 0; i < String(match).length; i++) { const c = match[i];
+    if (c === '\\') { cur += c + (match[i + 1] || ''); i += 1; continue; }
+    if (cls) { if (c === ']') cls = false; cur += c; continue; }
+    if (c === '[') cls = true; else if (c === '(') depth += 1; else if (c === ')') depth -= 1;
+    if (c === '|' && depth === 0) { parts.push(cur); cur = ''; continue; }
+    cur += c; }
+  parts.push(cur); return parts.filter((p) => p !== '');
+}
+export function unmatchedWords(match, texts = null) {
+  if (!match) return [];
+  const titles = [...linesOf('RA', texts ? texts.RA : sourceText('RA')).filter((l) => l.kind === 'row'), ...linesOf('EA', texts ? texts.EA : sourceText('EA')).filter((l) => l.kind === 'row' && openEarmark(l.line))].map((l) => titleOf(l.line, 400));
+  return matchParts(match).filter((p) => { const re = new RegExp(p, 'i'); return !titles.some((t) => re.test(t)); });
+}
 const NEWEST_LEARNED = 3;   // how many passes' learned rows section 9 copies when the process area is not chosen
 
 // A file's lines, each with its number (from 1), its section and what kind of line it is. A section is named by its heading: in
@@ -100,7 +140,7 @@ export const openEarmark = (line) => { const m = String(line).match(/^\| [AELP]\
 // of pass NK among them, so the list is kept here, in one place, and a packet whose --briefs takes the screen brief prints it with each
 // row's title; the pass packet test holds the list to EARMARKS both ways (every row here open, and every open row whose status waits for
 // the next screen read here).
-export const SCREEN_BRIEF_ROWS = ['A36', 'A106', 'A107', 'A108', 'A109', 'A110', 'A116', 'A117', 'A118', 'A121', 'A134', 'A135', 'A136', 'A137', 'A140', 'A142', 'A144', 'A145', 'A146', 'A155', 'A171', 'L18'];   // A145 since pass NN: the uncentered read's blind spots; A146 since pass NP: what the read-along's checks do not yet see; A155 since pass NQ: the Look back button with a course's whole label; A171 since pass NR: That reminds me!'s last two lines with motion on
+export const SCREEN_BRIEF_ROWS = ['A36', 'A106', 'A107', 'A108', 'A109', 'A110', 'A116', 'A117', 'A118', 'A121', 'A134', 'A135', 'A136', 'A137', 'A140', 'A142', 'A144', 'A145', 'A146', 'A155', 'A171', 'A172', 'L18'];   // A145 since pass NN: the uncentered read's blind spots; A146 since pass NP: what the read-along's checks do not yet see; A155 since pass NQ: the Look back button with a course's whole label; A171 since pass NR: That reminds me!'s last two lines with motion on; A172 since pass NS: the walk-through tab over a card's first line at 320 by 568
 export const waitsForScreenRead = (line) => { const m = String(line).match(/^\| [AELP]\d+ \|.*\| ([^|]*) \|\s*$/); return !!m && openEarmark(line) && /\bthe next screen read\b/i.test(m[1]); };
 export function screenRowsSection(eaText) {
   const rows = String(eaText).split('\n');
@@ -109,12 +149,14 @@ export function screenRowsSection(eaText) {
 }
 
 // Which lines a packet copies, for the areas, the briefs and the extra words chosen. Returns, for each file, its lines with copied set.
-export function choose({ areas = [], briefs = [], match = null, all = false, texts = null } = {}) {
+// Since pass NS (Q120 (a)) a task packet (task) copies only what its areas, briefs and words choose, nothing every packet copies.
+export function choose({ areas = [], briefs = [], match = null, all = false, task = false, texts = null } = {}) {
   const unknown = areas.filter((a) => !AREAS[a]); if (unknown.length) throw new Error(`no such area: ${unknown.join(', ')} (node tools/pass-packet.mjs --list)`);
-  const picked = areas.map((a) => AREAS[a]);
-  const raWhole = new Set([...ALWAYS.ra, ...picked.flatMap((a) => a.ra || [])]);
-  const eaWhole = [...ALWAYS.ea, ...picked.flatMap((a) => a.ea || [])];
-  const icWhole = new Set([...ALWAYS.ic, ...picked.flatMap((a) => a.ic || []), ...briefs.map((b) => `The ${b} brief`), ...briefs.map((b) => `The ${b}`)]);
+  if (task && all) throw new Error('--task and --all ask for opposite packets: a task packet copies one agent\'s rows, --all every line');
+  const picked = areas.map((a) => AREAS[a]); const always = task ? { ra: [], ea: [], ic: [] } : ALWAYS;
+  const raWhole = new Set([...always.ra, ...picked.flatMap((a) => a.ra || [])]);
+  const eaWhole = [...always.ea, ...picked.flatMap((a) => a.ea || [])];
+  const icWhole = new Set([...always.ic, ...picked.flatMap((a) => a.ic || []), ...briefs.map((b) => `The ${b} brief`), ...briefs.map((b) => `The ${b}`)]);
   const words = picked.map((a) => a.words).filter(Boolean); if (match) words.push(new RegExp(match, 'i'));
   const holds = (line) => words.some((w) => w.test(titleOf(line, 400)));
   const out = {};
@@ -176,7 +218,10 @@ export function indexOf(key, lines) {
 
 // The packet as text: a short head, then each file's copied lines and its index. Every copied line is "[RA 529] " and the line
 // exactly as the file has it.
+// Since pass NS (Q120 (a)) a task packet (opts.task) has a head of its own, its copied lines and no index: its agent reads it whole, and
+// its head names its bytes and says so when they pass TASK_BYTES.
 export function packet(opts = {}) {
+  if (opts.task) return taskPacket(opts);
   const chosen = choose(opts); const parts = [];
   const sizes = Object.entries(chosen).map(([key, lines]) => {
     const bytes = (l) => Buffer.byteLength(l.line) + 1;
@@ -200,6 +245,29 @@ export function packet(opts = {}) {
   return parts.join('\n');
 }
 
+// One agent's packet (Q120 (a)): the head, then each file's copied lines, with no index, read whole by the agent it is made for.
+export function taskPacket(opts = {}) {
+  const chosen = choose({ ...opts, task: true });
+  const body = [];
+  if ((opts.briefs || []).includes('screen')) body.push(...screenRowsSection(opts.texts ? opts.texts.EA : sourceText('EA')));
+  for (const [key, lines] of Object.entries(chosen)) {
+    const copied = lines.filter((l) => l.copied); if (!copied.length) continue;
+    body.push(`## ${SOURCES[key]}: copied for this task`, '', ...copied.map((l) => `[${key} ${l.n}] ${l.line}`), '');
+  }
+  const made = `Made by node tools/pass-packet.mjs --task${(opts.areas || []).length ? ' --areas ' + opts.areas.join(',') : ''}${(opts.briefs || []).length ? ' --briefs ' + opts.briefs.join(',') : ''}${opts.match ? ` --match '${opts.match}'` : ''}.`;
+  const say = 'A copy, never a source: the full files are the only source of the rules. These are the rows of docs/RULES-AUDIT.md and the open rows of docs/EARMARKS.md this task\'s words name (each row by its title), with the sections of docs/INDEPENDENT-CHECKS.md its --briefs name (a reader\'s brief is given beside this packet by its line range), each starting with its file and line number, so the full file opens at the same place. Read every row before you start, from the first to the last. A row this packet left out is opened where your brief or your work points to it, and a finding whose rule it left out is said so in your report (Q120 (a)).';
+  const rows = Object.values(chosen).reduce((n, lines) => n + lines.filter((l) => l.copied && l.kind === 'row').length, 0);
+  // Words that named no row (since round one's code read), and, over the size, what to do: a brief alone holds about 40,000 to 51,000 bytes, so a
+  // packet that takes one is given its brief by line range instead.
+  const missed = unmatchedWords(opts.match, opts.texts);
+  const overSay = (opts.briefs || []).length ? `. Over the about ${TASK_BYTES.toLocaleString('en-US')} bytes a task packet holds so its agent reads it whole: a brief alone holds about 40,000 to 51,000 bytes, so give the reader its brief by its line range and leave --briefs out` : `. Over the about ${TASK_BYTES.toLocaleString('en-US')} bytes a task packet holds so its agent reads it whole: narrow its words, or split the task`;
+  // The head counts its own bytes: the body's, and the head's as written with its count in it (a fixed point, found in two steps).
+  const headOf = (bytes) => ['# Task packet', '', made, say, ...(missed.length ? [`Words that named no row: ${missed.join(', ')}. A misspelled name leaves its rule out: check each before the agent starts.`] : []), '', `${rows} rows, ${bytes.toLocaleString('en-US')} bytes in all${taskOver(bytes) ? overSay : ''}.`, ''];
+  const bodyText = body.join('\n'); let bytes = Buffer.byteLength(bodyText);
+  for (let i = 0; i < 3; i++) bytes = Buffer.byteLength(headOf(bytes).join('\n') + '\n' + bodyText);
+  return headOf(bytes).join('\n') + '\n' + bodyText;
+}
+
 // Run on its own: the packet to standard output, or the list of areas.
 if (process.argv[1] && process.argv[1].endsWith('pass-packet.mjs')) {
   const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : null; };
@@ -209,6 +277,14 @@ if (process.argv[1] && process.argv[1].endsWith('pass-packet.mjs')) {
     console.log('Briefs (--briefs): story, story flow, picture, screen, lesson, Wonder, game, code, accuracy check.');
   } else {
     const list = (v) => (v ? v.split(',').map((x) => x.trim()).filter(Boolean) : []);
-    process.stdout.write(packet({ areas: list(arg('--areas')), briefs: list(arg('--briefs')), match: arg('--match'), all: process.argv.includes('--all') }) + '\n');
+    const task = process.argv.includes('--task');
+    const text = packet({ areas: list(arg('--areas')), briefs: list(arg('--briefs')), match: arg('--match'), all: process.argv.includes('--all'), task });
+    // A task packet ends with its own newline, so the file holds the very bytes its head counts.
+    process.stdout.write(task ? text : text + '\n');
+    // A task packet past its size says so on the terminal too, where the lead runs it (the packet's head says it as well), as do words
+    // that named no row; a task packet that holds no row at all exits 2 (since round one's code read of pass NS).
+    if (task && taskOver(Buffer.byteLength(text))) console.error(`NOTE: this task packet holds ${Buffer.byteLength(text).toLocaleString('en-US')} bytes, over the about ${TASK_BYTES.toLocaleString('en-US')} a task packet holds; narrow --match or split the task${list(arg('--briefs')).length ? ', and give a reader its brief by its line range' : ''}.`);
+    if (task) { const missed = unmatchedWords(arg('--match')); if (missed.length) console.error(`NOTE: these words of --match name no row: ${missed.join(', ')}.`);
+      if (/\n0 rows, /.test(text)) { console.error('NOTE: this task packet holds no row: give it --match words that name its rows.'); process.exitCode = 2; } }
   }
 }

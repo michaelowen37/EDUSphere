@@ -26,10 +26,11 @@ const reminder = page.getByText('Make your first backup soon');
 const oneAtATime = !((await reminder.count()) && (await page.getByRole('dialog', { name: "What's new" }).count()));
 if (await reminder.count()) { await page.getByRole('button', { name: 'Later', exact: true }).first().click(); await page.waitForTimeout(500); }
 const newsSeen = { shown: (await page.getByRole('dialog', { name: "What's new" }).count()) === 1, text: '' };
-if (newsSeen.shown) newsSeen.text = await page.getByRole('dialog', { name: "What's new" }).textContent();
+// A note keeps its last two words together with a no-break space since pass NT, so the words are read with it as a space.
+if (newsSeen.shown) newsSeen.text = (await page.getByRole('dialog', { name: "What's new" }).textContent()).replace(/\u00a0/g, ' ');
 // More Details (pass HL, Mikey): the pop-up shows short notes and a centered link to a page with every note in full.
 const details = { link: (await page.getByRole('button', { name: 'More Details' }).count()) === 1, text: '' };
-if (details.link) { await page.getByRole('button', { name: 'More Details' }).click(); await page.waitForTimeout(300); details.text = await page.textContent('#root'); await page.getByRole('button', { name: 'Back to Classroom' }).click(); await page.waitForTimeout(300); }
+if (details.link) { await page.getByRole('button', { name: 'More Details' }).click(); await page.waitForTimeout(300); details.text = (await page.textContent('#root')).replace(/\u00a0/g, ' '); await page.getByRole('button', { name: 'Back to Classroom' }).click(); await page.waitForTimeout(300); }
 { const got = page.getByRole('button', { name: 'Got it' }); if (await got.count()) await got.click(); }
 await page.waitForTimeout(200);
 const newsGone = (await page.getByRole('dialog', { name: "What's new" }).count()) === 0;

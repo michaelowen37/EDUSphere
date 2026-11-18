@@ -3,11 +3,35 @@ import { readFileSync } from 'node:fs';
 // Any model (or person) can read PASS/FAIL lines below without knowing React.
 import * as L from '../src/logic.mjs';
 import { briefNews, recentNews, newestNews } from '../tools/whats-new.mjs'; // What's new short notes and history (pass HL)
+import vmCopies from 'node:vm';
+import v8Stats from 'node:v8';
+
+// A planted copy of src/logic.mjs, loaded so it can be let go (pass NT, EARMARKS L36). In plain terms: several checks below change one
+// line of the app's logic in a copy and load the copy, to prove a check catches the change. Until pass NT each copy was loaded with
+// import(), and Node keeps every module it imports until the run ends, so every copy (a whole copy of the logic each, in five places, two
+// of them loops) stayed for the rest of the run. Each copy now runs in a context of its own, as build.sh pastes the logic into the page
+// (its export words taken off), and hands back the names the module would have exported, so once a check is done with it nothing holds
+// the copy and its memory can be freed. The copy's functions run in that context: logic.mjs uses no instanceof and no host global at
+// load, and the few its functions use (crypto, TextEncoder, TextDecoder, atob, btoa) are handed in; a copy whose text holds instanceof is
+// refused, since an object from this test's realm is no instance in the copy's. Measured in pass NT: the two ways gave the same 3,318 lines
+// word for word; round one's code read loaded six copies each way and found import() holding 77 MB of large objects, then 90, never freed,
+// and this loader 154 MB at first and 39 after ordinary collections, once V8's compilation cache lets the scripts go; and the whole run's
+// most memory held did not move past one run's noise (3,688 MB with import(), 3,634 and 3,668 MB with the loader), so the copies were not
+// what takes the run past Node's default heap of about 2 GB, and EARMARKS L36 keeps that.
+const loadLogicCopy = (text, filename = 'logic-copy.mjs') => {
+  if (/\binstanceof\b/.test(text)) throw new Error(`${filename}: the logic uses instanceof, which a copy in its own context cannot keep; load it with import()`);
+  const names = [...text.matchAll(/^export (?:async\s+)?(?:const|function\*?|class)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1]);
+  const box = vmCopies.createContext({ console, crypto: globalThis.crypto, TextEncoder, TextDecoder, atob, btoa, setTimeout, clearTimeout, queueMicrotask, structuredClone, URL, performance });
+  vmCopies.runInContext(`'use strict';\n${text.replace(/^export /gm, '')}\n;globalThis.__copy = { ${names.join(', ')} };`, box, { filename });
+  const out = box.__copy; delete box.__copy; return out; };
+// The run's highest heap read, taken at every check line (ok, below), for the memory line before the summary (EARMARKS L36). A timer would
+// fire only while the run waits on something, which most of it never does (round one's code read: two runs read 2,255 and 2,836 MB).
+let peakHeap = 0;
 
 let pass = 0, fail = 0;
 // The choice token a shown shape picture would have (pass MB): Circle and Square's same-shape kind must offer another look.
 const csTokenOf = (v) => (v && v.kind === 'shape' ? (v.variant ? `shape:${v.name}~${v.variant}` : `shape:${v.name}`) : '');
-const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
+const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; peakHeap = Math.max(peakHeap, v8Stats.getHeapStatistics().used_heap_size); };
 const val = (s) => { const [n, d] = s.split('/').map(Number); return n / d; }; // independent fraction value
 
 // ---- 1. Every generator produces valid, correct questions across many seeds ----
@@ -8160,7 +8184,7 @@ ok('attempt is reproducible from its seed', JSON.stringify(L.buildAttempt('compa
     const wsNow = lean(doses(L, WS[0], 300, false), WS[1]); const wsWide = lean(doses(L, WS[0], 100, true), WS[1]);
     const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const NAMES = ' && (mixed || (Array.isArray(alt.aboutWords) && alt.aboutWords.length > 0) || (Array.isArray(alt.asksFirstOf) && alt.asksFirstOf.length > 0))) { q = alt; break; } }';
     let wsPlant = null; const dir = fsx.mkdtempSync(join(tmpdir(), 'edu-handoff-'));
-    try { if (lsrc.split(NAMES).length === 2) { const f = join(dir, 'logic-first-handoff.mjs'); fsx.writeFileSync(f, lsrc.replace(NAMES, ') { q = alt; break; } }')); const P = await import(pathToFileURL(f).href); wsPlant = lean(doses(P, WS[0], 300, false), WS[1]); } }
+    try { if (lsrc.split(NAMES).length === 2) { const f = join(dir, 'logic-first-handoff.mjs'); fsx.writeFileSync(f, lsrc.replace(NAMES, ') { q = alt; break; } }')); const P = loadLogicCopy(fsx.readFileSync(f, 'utf8'), f); wsPlant = lean(doses(P, WS[0], 300, false), WS[1]); } }
     finally { fsx.rmSync(dir, { recursive: true, force: true }); }
     const over = reads.filter(([, v]) => v === null || v >= 70); const most = reads.reduce((a, b) => (b[1] > a[1] ? b : a), ['', 0]);
     ok(`in a triple dose built after two rounds of one dose, a child who always taps Yes or always taps No scores under 70 percent on every yes or no bank of the lessons the echo rule reaches, but Words in a sentence's, held under 75 (round two's code read, pass NF; ${reached.length} lessons, ${reads.length} banks at seeds 1 to 100, the most ${most[0]} ${most[1]}; Words in a sentence's ${wsNow} at seeds 1 to 300, its own lean 70.2 with no handoff at all, EARMARKS A112, and ${wsWide} with two triple doses' prompts avoided; the handoff as first built, free to hand a turn to a question that names nothing, planted, caught at ${wsPlant})`,
@@ -8293,7 +8317,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     const now = unworded(L); const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
     const PATTERN = 'const pic = /^(?:icon|pic|art|shape|solid):([a-z]+(?:-[a-z]+)*)$/.exec(raw);'; let planted = null;
     if (lsrc.split(PATTERN).length === 2) { const dir = fsx.mkdtempSync(join(tmpdir(), 'edu-words-'));
-      try { const f = join(dir, 'logic-old-pattern.mjs'); fsx.writeFileSync(f, lsrc.replace(PATTERN, () => 'const pic = /^(?:icon|pic|art|shape|solid):([a-z]+)$/.exec(raw);')); planted = unworded(await import(pathToFileURL(f).href)); }
+      try { const f = join(dir, 'logic-old-pattern.mjs'); fsx.writeFileSync(f, lsrc.replace(PATTERN, () => 'const pic = /^(?:icon|pic|art|shape|solid):([a-z]+)$/.exec(raw);')); planted = unworded(loadLogicCopy(fsx.readFileSync(f, 'utf8'), f)); }
       finally { fsx.rmSync(dir, { recursive: true, force: true }); } }
     ok(`every picture any bank offers is put into words by describeChoice, the yo-yo whole (${now.n} icon, pic and art choices at seeds 1 to 60 of every bank; the pattern as it stood before pass NI, planted in a copy, caught: ${planted ? planted.raw.join(', ') : 'not planted'}; since the third read a look's hyphenated name read too, icon:yo-yo~red, though no bank offers one today)`,
       now.n >= 22965 && now.threw === 0 && now.raw.length === 0 && !!planted && planted.raw.includes('icon:yo-yo') && L.describeChoice('icon:yo-yo~red') === 'the yo-yo', JSON.stringify({ raw: now.raw.slice(0, 6), threw: now.threw, look: L.describeChoice('icon:yo-yo~red') })); }
@@ -10264,7 +10288,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       ['a word stretched on its v undone', '([mnsfzrlv])\\2{2,}$/i', '([mnsfzrl])\\2{2,}$/i', (P) => casesOff(P).includes('Revvv.')]];
     const caught = []; const dir = fsx.mkdtempSync(join(tmpdir(), 'edu-notation-'));
     try { let k = 0; for (const [name, from, to, trips] of PLANTS) { if (lsrc.split(from).length !== 2) { caught.push(name + ': not found once'); continue; }
-        const f = join(dir, `logic-notation-${k++}.mjs`); fsx.writeFileSync(f, lsrc.replace(from, () => to)); const P = await import(pathToFileURL(f).href); if (!trips(P)) caught.push(name + ': not caught'); } }
+        const f = join(dir, `logic-notation-${k++}.mjs`); fsx.writeFileSync(f, lsrc.replace(from, () => to)); const P = loadLogicCopy(fsx.readFileSync(f, 'utf8'), f); if (!trips(P)) caught.push(name + ': not caught'); } }
     finally { fsx.rmSync(dir, { recursive: true, force: true }); }
     const seedPlant = seedsShared(lsrc.replace('v: 14,', 'v: 13,'));
     ok(`every sound's notation reads back to its own sound, Q, V and Y's lines play vvv each time they say it (${qvyLines} lines), v's three speech edits each hold their case, and every sound has a noise seed of its own (pass NI, round one's code read; ${seedsOf(lsrc).length} seeds; four copies with one undone, and v given z's seed, planted, caught)`,
@@ -10705,7 +10729,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       if (lsrc.split(MADE).length !== 2) missed.push('vvv\'s making not found once in logic.mjs, so its bounds\' plants did not run');
       else { const dir = fsx.mkdtempSync(join(tmpdir(), 'edu-vvv-'));
         try { for (const [k, name, text] of ALONE) { if (text === MADE) { missed.push(`${name} (its change did not take)`); continue; }
-          const f = join(dir, `logic-vvv-${k}.mjs`); fsx.writeFileSync(f, lsrc.replace(MADE, () => text)); const P = await import(pathToFileURL(f).href);
+          const f = join(dir, `logic-vvv-${k}.mjs`); fsx.writeFileSync(f, lsrc.replace(MADE, () => text)); const P = loadLogicCopy(fsx.readFileSync(f, 'utf8'), f);
           const get = (s, o) => (s === 'v' ? P.soundClipSamples('v', o) : L.soundClipSamples(s, o));
           const paces = vvvAt(get); const says = soundProblems(get);
           const alone = paces.every((b) => Object.keys(VVV_SAYS).every((j) => b[j] === (j !== k))) && says.length === 1 && says[0] === VVV_SAYS[k];
@@ -13232,6 +13256,17 @@ const moreRightProblems = (L) => { const r = {};
 // round has a mistake in it, and until the module's latest eight answers are all correct, unless at least two of its questions have come
 // back and 80 percent or more of them were right. Its numbers are read here too, the flawless round's point and the last point's two
 // ways run at them; the old sentence put back, and a wrong count in the new one, are planted and caught.
+// Since pass NT, at Mikey's answer to Q123 ("Q123 - A but we can alter the end a little"), that sentence is two, the second his own
+// words with one typo fixed ("student's" written as "students") and, at his later word ("Yes on the "can earn that point instead" and
+// "questions that come back.""), two phrases Claude offered in place of "recurring memory checks" and "another point": "A score also
+// stays down while the latest round has a mistake in it. It stays down until the module's latest eight answers are all correct. A
+// secondary way to improve confidence is through questions that come back. When at least two module questions return and they're
+// answered correctly 80% or more of the time, students can earn that point instead." Each sentence says one thing the score does, so the
+// latest round's point is no longer read as waiting on what comes back. Its numbers are read as before; "that point instead" is read as the
+// same point the latest eight answers earn, below the score's top, where a sixth could not hide behind the cap of 5 (samePoint, since round
+// one's code read, which found the first check of it read only states already at 5); and "questions that come back" as earning it however
+// they come back, a checkpoint and a practice review as well as a memory check (strongAt). Q121's one sentence, (a)'s two as asked, his
+// first words, a wrong share, a wrong count of questions back and the typo are planted and caught.
 { const E = Object.fromEntries(L.EXPLANATIONS.map((x) => [x.term, x.plain])); const RULES = L.CONFIDENCE_RULES;
   const WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, half: 0.5 };
   const num = (w) => (Object.prototype.hasOwnProperty.call(WORDS, w) ? WORDS[w] : /^\d+$/.test(String(w)) ? Number(w) : NaN);
@@ -13258,8 +13293,22 @@ const moreRightProblems = (L) => { const r = {};
   const streakAt = memo((k) => k > N && k < 2 * N && runOf(k) === runOf(k - 1) + 1 && runOf(k - 1) === runOf(N)
     && L.computeConfidence(ID, [round(ID, 1, Array(N).fill(1)), round(ID, 2, Array(N).fill(1)), round(ID, 3, [...Array(N - 1).fill(1), 0])]).streak === 0);
   const backs = (rights, total) => Array.from({ length: total }, (_, j) => back(10 + j, j < rights));
+  // Since pass NT (round one's code read, MUST FIX 2): "questions that come back" earn the point however they come back, a checkpoint and a
+  // practice review as well as a memory check, so a code that counted memory checks alone toward it fails strongAt.
+  const anyWayBackBy = (sc) => () => sc([pass1, checkpoint(10, true), practiceReview(11, true)]) === sc([pass1]) + 1 && sc([pass1, checkpoint(10, true), checkpoint(11, true)]) === sc([pass1]) + 1
+    && sc([pass1, practiceReview(10, true), practiceReview(11, true)]) === sc([pass1]) + 1;
   const strongAt = memo((minBack, percent) => score([pass1, ...backs(minBack, minBack)]) === score([pass1]) + 1 && score([pass1, ...backs(minBack - 1, minBack - 1)]) === score([pass1])
-    && score([pass1, ...backs(4, 5)]) === score([pass1]) + (80 >= percent ? 1 : 0) && score([pass1, ...backs(3, 4)]) === score([pass1]) + (75 >= percent ? 1 : 0));
+    && score([pass1, ...backs(4, 5)]) === score([pass1]) + (80 >= percent ? 1 : 0) && score([pass1, ...backs(3, 4)]) === score([pass1]) + (75 >= percent ? 1 : 0)
+    && anyWayBackBy(score)());
+  // Since pass NT (Q123; round one's code read, MUST FIX 1): the point the returning questions earn is the same point the latest eight
+  // answers earn, read below the score's top, where a sixth point could not hide behind the cap of 5: a long round (a triple dose's 15
+  // answers, its first wrong) is passed and not flawless, so the latest k answers right put it at 4, one over a plain pass, and minBack
+  // questions back all right then add nothing to it, while the same questions back after a plain pass put that pass at 4 too. A code that
+  // gave the two ways a point each fails here (round one planted it, and every check before this one passed).
+  const LONG = round(ID, 1, [0, ...Array(3 * N - 1).fill(1)]);
+  const samePointBy = (sc) => (k, minBack) => k <= 3 * N - 1 && sc([LONG]) === sc([pass1]) + 1 && sc([LONG]) < 5 && sc([LONG, ...backs(minBack, minBack)]) === sc([LONG])
+    && sc([pass1, ...backs(minBack, minBack)]) === sc([LONG]);
+  const samePoint = memo(samePointBy(score));
   // Half: one miss of one, one of two, a miss in a checkpoint and a miss in a practice review each take the point; one of three does not.
   const weakAt = memo((share) => share === 0.5 && score([pass1, back(10, false)]) === score([pass1]) - 1 && score([pass1, back(10, true), back(11, false)]) === score([pass1]) - 1
     && score([pass1, back(10, true), back(11, true), back(12, false)]) === score([pass1]) && score([pass1, checkpoint(10, false)]) === score([pass1]) - 1 && score([pass1, practiceReview(10, false)]) === score([pass1]) - 1);
@@ -13281,9 +13330,10 @@ const moreRightProblems = (L) => { const r = {};
     const b = /It comes either from (\w+) correct answers in a row, the module's latest (\w+), or from continuing to reliably answer its questions correctly as they reappear over time: at least (\w+) back, and (\d+) percent or more of them right\./.exec(conf);
     if (!b || num(b[1]) !== num(b[2]) || !streakAt(num(b[1])) || !strongAt(num(b[3]), Number(b[4]))) out.push('Key Words: the last point');
     if (!/without passing it\./.test(down)) out.push('Key Words: what holds a score down without a pass');
-    // Q121 (a): the latest round's mistake and the last point, both ways, as the code has them; the old sentence never again.
-    const q121 = /A score also stays down while the latest round has a mistake in it, and until the module's latest (\w+) answers are all correct, unless at least (\w+) of its questions have come back and (\d+) percent or more of them were right\./.exec(down);
-    if (!q121 || !flawlessAdds(1) || !streakAt(num(q121[1])) || !strongAt(num(q121[2]), Number(q121[3]))) out.push('Key Words: what holds a score down while the latest round has a mistake, and the last point');
+    // Q121 (a), since pass NT in Q123's words: the latest round's mistake and the last point, both ways, as the code has them, each in
+    // a sentence of its own; the old sentence never again, and "that point instead" the same point, never a sixth (samePoint).
+    const q123 = /A score also stays down while the latest round has a mistake in it\. It stays down until the module's latest (\w+) answers are all correct\. A secondary way to improve confidence is through questions that come back\. When at least (\w+) module questions return and they're answered correctly (\d+)% or more of the time, students can earn that point instead\./.exec(down);
+    if (!q123 || !flawlessAdds(1) || !streakAt(num(q123[1])) || !strongAt(num(q123[2]), Number(q123[3])) || !samePoint(num(q123[1]), num(q123[2]))) out.push('Key Words: what holds a score down while the latest round has a mistake, and the last point');
     if (/consecutive attempts/.test(down)) out.push('Key Words: the old sentence on consecutive attempts, which the score does not follow');
     const c = /If (\w+) or more wrong answers in the latest round come in under (\w+) seconds each, Who Needs Help says there are signs of guessing in that module\./.exec(down);
     if (!c || !guessAt(num(c[1]), num(c[2]))) out.push('Key Words: guessing');
@@ -13307,6 +13357,8 @@ const moreRightProblems = (L) => { const r = {};
   // The old words, and a wrong number in the new ones, each planted in a copy of the definitions; each must be caught.
   const swap = (term, re, to) => { const ex = { ...E }; const was = ex[term]; ex[term] = String(was).replace(re, to); return ex[term] === was ? null : ex; };
   const swapRule = (re, to) => { const out = RULES.map((x) => x.replace(re, to)); return out.join('\n') === RULES.join('\n') ? null : out; };
+  // Q123's words, the latest round's sentence and Mikey's three, as one text a plant replaces (since pass NT).
+  const Q123_DOWN = /A score also stays down while the latest round has a mistake in it\. It stays down until the module's latest \w+ answers are all correct\. A secondary way to improve confidence is through questions that come back\. When at least \w+ module questions return and they're answered correctly \d+% or more of the time, students can earn that point instead\./;
   const PLANTS = {
     'the old start and pass ("Mastering a module adds 2 and a flawless round adds another.")': [swap('Confidence, scored 1 to 5', /Passing a module adds \w+, even before its star, and a flawless latest round adds \w+ more\./, 'Mastering a module adds 2 and a flawless round adds another.'), RULES],
     'a wrong number for a pass': [swap('Confidence, scored 1 to 5', /(Passing a module adds )(\w+)/, (m, w, n) => w + (num(n) + 1)), RULES],
@@ -13316,9 +13368,15 @@ const moreRightProblems = (L) => { const r = {};
     'the old point for any miss': [swap('What holds a confidence score down', /Getting \w+ or more of the module's questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point,/, 'Missing a question from the module when it comes back, in a memory check or a checkpoint, also costs a point,'), RULES],
     'a share other than half': [swap('What holds a confidence score down', /Getting half or more/, 'Getting most or more'), RULES],
     // Since pass NS (Q121 (a)): the old sentence put back in the new one's place, and a wrong count in the new one.
-    'the old sentence on consecutive attempts (Q121)': [swap('What holds a confidence score down', /A score also stays down while the latest round has a mistake in it, and until the module's latest \w+ answers are all correct, unless at least \w+ of its questions have come back and \d+ percent or more of them were right\./, 'A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row.'), RULES],
+    'the old sentence on consecutive attempts (Q121)': [swap('What holds a confidence score down', /A score also stays down while the latest round has a mistake in it\. It stays down until the module's latest \w+ answers are all correct\. A secondary way to improve confidence is through questions that come back\. When at least \w+ module questions return and they're answered correctly \d+% or more of the time, students can earn that point instead\./, 'A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row.'), RULES],
     'a wrong count of latest answers (Q121)': [swap('What holds a confidence score down', /(until the module's latest )(\w+)( answers)/, (m, a, n, b) => a + 'nine' + b), RULES],
-    'a wrong share back (Q121)': [swap('What holds a confidence score down', /(come back and )(\d+)( percent or more of them were right)/, (m, a, n, b) => a + (Number(n) - 5) + b), RULES],
+    'a wrong share back (Q121)': [swap('What holds a confidence score down', /(answered correctly )(\d+)(% or more of the time)/, (m, a, n, b) => a + (Number(n) - 5) + b), RULES],
+    // Since pass NT (Q123): Q121's one sentence and (a)'s two, as asked, each put back in the words' place; a wrong count back; the typo.
+    'Q121\'s one sentence put back (Q123)': [swap('What holds a confidence score down', Q123_DOWN, 'A score also stays down while the latest round has a mistake in it, and until the module\'s latest eight answers are all correct, unless at least two of its questions have come back and 80 percent or more of them were right.'), RULES],
+    '(a)\'s two sentences as asked (Q123)': [swap('What holds a confidence score down', Q123_DOWN, 'A score also stays down while the latest round has a mistake in it. It stays down until the module\'s latest eight answers are all correct, unless at least two of its questions have come back and 80 percent or more of them were right.'), RULES],
+    'a wrong count of questions back (Q123)': [swap('What holds a confidence score down', /(When at least )(\w+)( module questions return)/, (m, a, n, b) => a + 'three' + b), RULES],
+    'the typo put back (Q123)': [swap('What holds a confidence score down', /students can earn that point instead/, 'student\'s can earn that point instead'), RULES],
+    'his first words put back (Q123)': [swap('What holds a confidence score down', /through questions that come back\. (When at least \w+ module questions return and they're answered correctly \d+% or more of the time, students can earn) that point instead\./, (m, mid) => `through recurring memory checks. ${mid} another point.`), RULES],
     'the old "significantly faster or slower"': [swap('Typical answering time', /then watch for a latest round much faster than usual: under \d+ percent of the time per question they usually take in their other modules\. When that happens, View progress for this module says so\. A slower round is not called out\./, 'then watch for answers that arrive significantly faster or slower.'), RULES],
     'the old "+2 if the module is mastered"': [E, swapRule(/^\+\d+ once the module has been passed, .*$/, '+2 if the module is mastered (4 or more of 5 correct in one set).')],
     'the rules without the point taken when questions come back': [E, RULES.filter((x) => !/^-1 /.test(x))],
@@ -13326,7 +13384,18 @@ const moreRightProblems = (L) => { const r = {};
   };
   const now = problems(E, RULES);
   const uncaught = Object.entries(PLANTS).filter(([, [ex, rules]]) => !ex || !rules || problems(ex, rules).length === 0).map(([name]) => name);
-  ok(`the confidence score's Key Words and CONFIDENCE_RULES say what computeConfidence does, every number and condition read from the sentences and the code run at it and just past it: a pass adds 2 before its star, a flawless latest round 1, eight in a row or two back at 80 percent the last point, half or more wrong when questions come back costs a point, guessing named on Who Needs Help, a latest round under 60 percent of the usual called out and a slower one not, and since pass NS what holds a score down said as the code does it, the latest round's mistake and the last point, where the old sentence on consecutive attempts stood (pass NQ, round one's code reads; Q121 (a), pass NS; ${Object.keys(PLANTS).length} old wordings and wrong numbers planted, each caught)`,
+  // Since pass NT, round one's code read's two code faults, each planted in a copy of the logic (loadLogicCopy) and read by the very check
+  // the words lean on: a point for each way where the code gives one point either way (samePoint fails it), and the point earned by memory
+  // checks alone (the any-way-back cases fail it); each check passes the real code and its other fault.
+  const lsrcC = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+  const CODE_FAULTS = { 'a point for each way': ['  if (streak >= 8 || retentionStrong) score += 1;', '  if (streak >= 8) score += 1; if (retentionStrong) score += 1;'],
+    'memory checks alone': ['  const retentionStrong = reviews.length >= 2 && reviewsCorrect / reviews.length >= 0.8;', "  const retentionStrong = reviews.length >= 2 && reviewsCorrect / reviews.length >= 0.8 && active.some((e) => e.type === 'attempt_completed' && [e.review, e.review2].some((r) => r && r.moduleId === moduleId));"] };
+  const faulty = Object.fromEntries(Object.entries(CODE_FAULTS).map(([name, [from, to]]) => [name, lsrcC.split(from).length === 2 ? loadLogicCopy(lsrcC.replace(from, () => to), `logic-confidence-${name.replace(/ /g, '-')}.mjs`) : null]));
+  const scoreIn = (M) => (events) => M.computeConfidence(ID, events).score;
+  const faultsCaught = Object.values(faulty).every(Boolean) && !samePointBy(scoreIn(faulty['a point for each way']))(8, 2) && anyWayBackBy(scoreIn(faulty['a point for each way']))()
+    && !anyWayBackBy(scoreIn(faulty['memory checks alone']))() && samePointBy(scoreIn(faulty['memory checks alone']))(8, 2) && samePointBy(score)(8, 2) && anyWayBackBy(score)();
+  if (!faultsCaught) uncaught.push('a code fault planted in a copy of the logic (pass NT)');
+  ok(`the confidence score's Key Words and CONFIDENCE_RULES say what computeConfidence does, every number and condition read from the sentences and the code run at it and just past it: a pass adds 2 before its star, a flawless latest round 1, eight in a row or two back at 80 percent the last point, half or more wrong when questions come back costs a point, guessing named on Who Needs Help, a latest round under 60 percent of the usual called out and a slower one not, and since pass NS what holds a score down said as the code does it, the latest round's mistake and the last point, where the old sentence on consecutive attempts stood, and since pass NT each in a sentence of its own, the last point from questions that come back the same point, never a sixth (pass NQ, round one's code reads; Q121 (a), pass NS; Q123, pass NT; ${Object.keys(PLANTS).length} old wordings and wrong numbers planted, each caught, and since round one's code read of pass NT ${Object.keys(CODE_FAULTS).length} code faults planted in copies of the logic, a point for each way and the point from memory checks alone, each caught)`,
     now.length === 0 && uncaught.length === 0 && RULES.length === 6, JSON.stringify({ now, uncaught })); }
 // Pass NQ, engineer F2: what F's code fixes left undone (F's report, its seven items), in five blocks: a lesson's own reset read alike
 // by every reader of a lesson's current progress, Since you last looked's words, View progress for this module's pace, the
@@ -14189,7 +14258,7 @@ const moreRightProblems = (L) => { const r = {};
         ["the lesson's goal", `${LL.teachPhrase(LL.getModule(BK).title)} | ${LL.goalPhrase(LL.getModule(BK).title)}`]].map(([where, text]) => [`${state}: ${where}`, String(text || '')]); });
     // A copy of the logic made with one swap (null when the swap is not found exactly as often as it should be), and removed after.
     const lsrcB = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const dir = fsx.mkdtempSync(join(tmpdir(), 'edu-because-')); let k = 0;
-    const copyWith = async (from, to, times) => { if (lsrcB.split(from).length !== times + 1) return null; const f = join(dir, `logic-because-${k++}.mjs`); fsx.writeFileSync(f, lsrcB.split(from).join(to)); return import(pathToFileURL(f).href); };
+    const copyWith = async (from, to, times) => { if (lsrcB.split(from).length !== times + 1) return null; const f = join(dir, `logic-because-${k++}.mjs`); fsx.writeFileSync(f, lsrcB.split(from).join(to)); return loadLogicCopy(fsx.readFileSync(f, 'utf8'), f); };
     let Q = null; let P = null; try { Q = await copyWith("\n    title: 'Because',\n", "\n    title: 'Quokka',\n", 2); P = await copyWith('(keep && !common) || because ? first', 'keep && !common ? first', 1); } finally { fsx.rmSync(dir, { recursive: true, force: true }); }
     // Each place a title stands, read from the Quokka copy's same sentence: its words around the title must be this sentence's words.
     const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -14379,5 +14448,22 @@ const moreRightProblems = (L) => { const r = {};
   const uncaught = Object.entries(OLD).filter(([, [name, from, to]]) => { const fn = plant(name, from, to); return !fn || failing({ ...L, [name]: fn }).length === 0; }).map(([what]) => what);
   ok(`Next up follows the report's order (grade, subject, the course's title, as the Assigned now list sorts), the why line counts every reason it sits above, and View progress tells a lesson moved past and a lesson a practice review reopened what comes next, what the move did for the lessons that need it read from the gate, and a fresh try due since a day gone or due today on the very day (pass NR, the screen read's SHOULD CONSIDER 1, 2 and 3; round one's code read, MUST FIX 1 and SHOULD CONSIDER 4 and 5; round two's read, SHOULD CONSIDER 8; ${Object.keys(CASES).length} cases; ${Object.keys(OLD).length - near} old codes and ${near} near misses put back in their own sources, each caught)`,
     failing(L).length === 0 && uncaught.length === 0, JSON.stringify({ failsNow: failing(L), uncaught })); }
+// What's new's notes hold their last two words together and wrap evenly, in the pop-up an educator meets once after an update and on
+// More Details, whose block titles wrap balanced (pass NT, round one's screen read, MUST FIX 1: at 320 pixels the worked example ended on
+// "4." alone, and at 390 and 393 a note on "sentence." alone; on More Details a title ended on "time" alone at 412 to 430). Each site's
+// old text, planted alone in a copy of the screen code, is caught; the lead's look and round two's read read the pop-up by eye.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const SITES = [["<li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>", '<li key={k} style={{ marginBottom: 4 }}>{t}</li>'],
+    ["<li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>", '<li key={k} style={{ marginBottom: 6 }}>{t}</li>'],
+    ["fontSize: 14, color: C.muted, textWrap: 'balance' }}>{bk.title.charAt(0)", 'fontSize: 14, color: C.muted }}>{bk.title.charAt(0)']];
+  const held = (src) => SITES.every(([now]) => src.split(now).length === 2);
+  const caught = SITES.map(([now, old]) => { const p = ui.replace(now, old); return p !== ui && !held(p); });
+  ok(`What's new's notes keep their last two words together and wrap evenly in the pop-up and on More Details, and its block titles wrap balanced (pass NT, round one's screen read; ${SITES.length} sites, each old text planted alone, caught)`,
+    held(ui) && caught.every(Boolean), JSON.stringify({ held: SITES.map(([now]) => ui.split(now).length - 1), caught })); }
+// The run's memory (pass NT, EARMARKS L36): the most the process held, as the system measured it, and the highest heap read at a check
+// (garbage not yet collected included), against the heap's limit, so a run growing toward its limit says so in its own last lines, before
+// the summary, which stays the last line for check.sh's step 1.
+{ peakHeap = Math.max(peakHeap, v8Stats.getHeapStatistics().used_heap_size); const limit = v8Stats.getHeapStatistics().heap_size_limit;
+  console.log(`memory: ${Math.round(process.resourceUsage().maxRSS / 1024)} MB held at the most (maxRSS), the highest heap read at a check ${Math.round(peakHeap / 1048576)} MB of its ${Math.round(limit / 1048576)} MB limit`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

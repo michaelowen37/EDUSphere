@@ -2,8 +2,9 @@
 // -----------------------------------------------------------------------------------------------------------------
 // Run part of the rules test alone (pass NQ, EARMARKS L26: the lead's block runner, put in the tree so no chat builds it again).
 //
-// In plain terms: tests/logic.test.mjs is about 12,600 lines and takes about 15 minutes (853 to 937 seconds in pass NQ) and up to
-// 3 GB whole. A reader or an engineer who changed one bank, one module or one pass's checks needs only that part, so this tool cuts the
+// In plain terms: tests/logic.test.mjs is about 14,400 lines and takes about 13 to 17 minutes whole (796 and 808 seconds in pass NT's two
+// runs alone, 1,018 inside pass NS's check.sh; 853 to 937 in pass NQ) and holds up to about 3.7 GB (3,634 to 3,688 MB at the most in pass
+// NT's three runs; since pass NT its own last lines say so), so it runs with a 4 GB heap. A reader or an engineer who changed one bank, one module or one pass's checks needs only that part, so this tool cuts the
 // part out of the test, runs it by itself and reports the same summary line and FAIL lines the whole test would. It never runs the
 // whole test, and it never edits it.
 //

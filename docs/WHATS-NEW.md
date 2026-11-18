@@ -9,6 +9,11 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 18, 2026 (what holds a confidence score down, one rule at a time)
+
+- On a student's report, What holds a confidence score down, one of the Key Words, now gives each rule its own sentence. A score stays down while the latest round has a mistake in it, and it stays down until the lesson's latest eight answers are all correct. Questions that come back later are a second way up: when at least two of a lesson's questions have come back, in memory checks, checkpoints or practice reviews, and 80% or more of them were answered correctly, your student earns that last point without the eight in a row.
+- A student who passed a lesson and got both of its returning questions right, but made one mistake in their newest round, has a score of 4, and a perfect round next time brings it to 5. It's one last point either way, so a student whose latest eight answers are all right already has it, and the returning questions never add a sixth.
+
 ## November 17, 2026 (the grown-up's card for one more question, and what holds a confidence score down)
 
 - On a phone, tablet or computer with no voice, the four-year-olds' question "What does this print tell us?" in Print tells us something now shows the card for the grown-up, as the letters questions do. While the card is up the picture hides, and you read the question and its three answers aloud; then tap Ready, read the question again with the print showing, and point to each numbered button as you say its answer. Before, the buttons printed their answers, so under Mom's note, which says I love you, the right button printed the note's own words, and a child could match the letters without reading anything.

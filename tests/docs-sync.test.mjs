@@ -1379,5 +1379,118 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     dig(qs) === '28eeec29' && dig(word) === '672cd77e' && dig(claudeLines) === 'f705174f' && dig(p3Line) === '21b20699' && /^Since pass NL this file holds an index[^\n]*which the pass packet brings by area\.[^\n]*\n$/.test(p3Line) && part3.split('\n')[4].includes('which a task packet brings by its words.') && audit.includes("At pass NS's records read (Fable), CLAUDE.md's first line says") && claudeNow && answered && !/\n- Q12[0-2]\. (?!Answered)/.test(audit)
     && wordRows.length === OPEN_WORD.length && OPEN_WORD.every((w, k) => wordRows[k].startsWith(w)) && changed === wordRows.length - 1 && rows && unkept.length === 0 && plants.every(Boolean),
     JSON.stringify({ q: dig(qs), w: dig(word), k: dig(claudeLines), p3: dig(p3Line), claudeNow, nWord: wordRows.length, changed, answered, rows, unkept, plants })); }
+// Every name a CLAUDE file mentions is in the tree (pass NT, EARMARKS L31; pass NR's research sweep: Treude and Baltes, a preprint of June
+// 8, 2026, found 23 percent of 612 repositories' agent files naming a function, file or script that no longer exists). Every session loads
+// CLAUDE.md and its parts two and three, so a name there that the code has dropped sends a coder after something gone. Each code name the
+// three files mention outside part three's index (camelCase, PascalCase with a capital inside, capitals joined by underscores, a data-
+// attribute, a window.__ name, each also after a dot, and every word inside backticks) must stand whole in the code outside a comment, in
+// src, tests, tools or .claude or in check.sh or build.sh, never only inside a longer name; each file path must be a file, and a bare file
+// name, in backticks or in prose, a file somewhere in the tree outside a dot folder. Part three's index names the lines moved to
+// docs/CLAUDE-HISTORY.md, so its names are read there (the index's own check, above). The few names the files mention that are not the
+// project's code are listed with their reasons, each still mentioned and still absent from src, so the list cannot outlive them. Not read,
+// so named here: a name a string in the code holds counts as there (event names and words check.sh prints live only in strings); a single
+// word in capitals (STORIES, CONFIG) is not read as a name; and a path under dist/, which the build makes, is not read.
+// And since pass NT (EARMARKS L34): a count of kindergarten's groups or of the free storefront's modules any of the three files states is
+// the code's (subjectsForGrade('K') and the free courses' modules), since part two's line Module ids are global gave 234 modules, which the
+// next free lesson makes stale; the line now names the rules test, which holds both, with the counts when it was written, so today the
+// check reads no such count and holds the line by its words, and a count written back in the form the line had is read against the code.
+// Since round one's code read of pass NT: a gone name inside a longer one (shareRound in shareRounds), each comment form, a name after a
+// dot, a bare file name in prose and a stale count in any number of groups are planted too, each caught.
+{ const { readdirSync, statSync, existsSync } = await import('node:fs'); const { join } = await import('node:path'); const { fileURLToPath } = await import('node:url');
+  const ROOT = fileURLToPath(new URL('..', import.meta.url));
+  const CLAUDE_NAMES_KEPT = { 'sessionStorage': "the artifact host blocks it (CLAUDE.md's Gotchas), so the app never calls it", 'keepOneFile': "CLAUDE.md's Backups line names it as gone", 'fontTools': "the Python tool the logo's font was subset with (part two's Fonts line), not the project's code",
+    'CHANGES.md': "the retired changes-only zip's file, which CLAUDE.md's line on it names as left behind (pass JV)" };
+  const CLAUDE_NAMES_FLOOR = 312;
+  const walk = (d, dots = true) => readdirSync(d).flatMap((f) => { const p = join(d, f); return statSync(p).isDirectory() ? (/^(node_modules|fixtures|out|art|planted)$/.test(f) || (!dots && f.startsWith('.')) ? [] : walk(p, dots)) : [p]; });
+  // A file's code with its comments set aside: every block comment (a JSX {/* */} among them) blanked, then a line that opens as a comment,
+  // and what follows // on a line (# in a shell script). A // inside a string sets the rest of its line aside too, which can only name a
+  // name as missing, never pass one.
+  const uncommented = (text, sh) => (sh ? text : text.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))).split('\n').map((l) => { const t = l.trimStart(); if (sh ? t.startsWith('#') : (t.startsWith('//') || t.startsWith('*'))) return ''; const k = sh ? l.search(/\s#/) : l.indexOf('//'); return k < 0 ? l : l.slice(0, k); }).join('\n');
+  // This block's own lines are left out, since its list and its plants name the very names it reads for.
+  const ownBlock = (t) => { const a = t.indexOf('  const CLAUDE_NAMES_KEPT = {'); const b = t.lastIndexOf('JSON.stringify({ missing, staleKept, readNow'); return a < 0 || b < 0 ? t : t.slice(0, a) + t.slice(t.indexOf('\n', b)); };
+  const codeFiles = [...['src', 'tests', 'tools', '.claude'].flatMap((d) => walk(join(ROOT, d))), join(ROOT, 'check.sh'), join(ROOT, 'build.sh')].filter((p) => /\.(mjs|jsx|js|sh|json)$/.test(p));
+  const code = codeFiles.map((p) => uncommented(p.endsWith('/tests/docs-sync.test.mjs') ? ownBlock(readFileSync(p, 'utf8')) : readFileSync(p, 'utf8'), /\.sh$/.test(p))).join('\n');
+  const srcCode = walk(join(ROOT, 'src')).filter((p) => /\.(mjs|jsx)$/.test(p)).map((p) => uncommented(readFileSync(p, 'utf8'), false)).join('\n');
+  const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const holds = (text, n) => new RegExp(`(?<![\\w$-])${esc(n)}(?![\\w$-])`).test(text);
+  // A bare file name is read without regard to case, since Mikey's words quoted in the files say claude.md for CLAUDE.md.
+  const baseNames = new Set(walk(ROOT, false).map((p) => p.slice(p.lastIndexOf('/') + 1).toLowerCase()));
+  const PATH = /(?<![\w])((?:src|tests|tools|docs|icons|licenses|\.claude)\/[\w./-]+\.(?:mjs|jsx|json|js|md|csv|sh|svg|png|html))(?![\w])/g;
+  const FILE = /^[\w-]+\.(?:mjs|jsx|json|js|md|csv|sh|svg|html)$/;
+  const namesOf = (text) => { const names = new Set(); const paths = new Set([...text.matchAll(PATH)].map((m) => m[1])); const files = new Set(); const rest = text.replace(PATH, ' ');
+    for (const m of rest.matchAll(/`([^`]+)`/g)) for (const t of m[1].split(/[\s/<>()[\],;:=+{}]+/)) { const w = t.replace(/\.$/, '');
+      if (FILE.test(w)) files.add(w); else if (/^[A-Za-z_][\w$-]*$/.test(w) && w.length > 2 && !/^(node|bash|npm|tsc|const|let|import|from|return|true|false|null|grep|the|and)$/.test(w)) names.add(w); }
+    for (const m of rest.replace(/`[^`]+`/g, ' ').matchAll(/(?<![\w/-])([A-Za-z][\w-]*\.(?:mjs|jsx|json|js|md|csv|sh|svg|html))(?![\w])/g)) files.add(m[1]);
+    for (const m of rest.matchAll(/(?<![\w/-])([a-z]+[A-Z][A-Za-z0-9]*|[A-Z][a-z0-9]+[A-Z][A-Za-z0-9]*|[A-Z][A-Z0-9]*_[A-Z0-9_]+|data-[a-z-]+|window\.__\w+)(?![\w])/g)) names.add(m[1]);
+    return { names, paths, files }; };
+  const textsNow = ['CLAUDE.md', 'CLAUDE-PART-2.md', 'CLAUDE-PART-3.md'].map((f) => { let t = readFileSync(join(ROOT, f), 'utf8');
+    if (f === 'CLAUDE-PART-3.md') { const a = t.indexOf('## Lines moved in pass NL'); const b = t.indexOf('## Lines added since pass NL'); t = a < 0 || b < a ? t : t.slice(0, a) + t.slice(b); } return [f, t]; });
+  let read = 0;
+  const missingIn = (texts, kept = CLAUDE_NAMES_KEPT, inCode = code) => { const out = []; read = 0; for (const [f, t] of texts) { const { names, paths, files } = namesOf(t); read += names.size + paths.size + files.size;
+    for (const n of names) if (!holds(inCode, n) && !Object.prototype.hasOwnProperty.call(kept, n)) out.push(`${f}: ${n}`);
+    for (const p of paths) if (!existsSync(join(ROOT, p))) out.push(`${f}: ${p} (no such file)`);
+    for (const x of files) if (!baseNames.has(x.toLowerCase()) && !Object.prototype.hasOwnProperty.call(kept, x)) out.push(`${f}: ${x} (no file of that name)`); } return out; };
+  const missing = missingIn(textsNow); const readNow = read; const all = textsNow.map(([, t]) => t).join('\n');
+  const staleOf = (kept) => Object.keys(kept).filter((n) => !all.includes(n) || holds(srcCode, n)); const staleKept = staleOf(CLAUDE_NAMES_KEPT);
+  const plantGone = missingIn([['CLAUDE.md', textsNow[0][1] + '\n- A line planted by pass NT: call `plantedGoneName` from tools/planted-missing.mjs, beside `planted-missing.sh`.\n']]);
+  const plantDocs = missingIn([['CLAUDE.md', textsNow[0][1] + '\n- A line planted by pass NT: heldSoundSpoken says when a held sound was heard.\n']]);
+  const plantComment = missingIn(textsNow, Object.fromEntries(Object.entries(CLAUDE_NAMES_KEPT).filter(([n]) => n !== 'keepOneFile')));
+  const plantLonger = missingIn([['CLAUDE.md', textsNow[0][1] + '\n- A line planted by pass NT: shareRound(round) deals the cookies; `openModul` opens one.\n']]);
+  const plantDotted = missingIn([['CLAUDE.md', textsNow[0][1] + '\n- A line planted by pass NT: CONFIG.GONE_SETTING and L.goneHelperOfOld, beside goneTool.mjs in prose.\n']]);
+  const commentForms = [uncommented('x = 1; // goneName\n * goneName\n/* goneName */\ny = 2; /* goneName */ z = 3;\n{/* goneName */}', false), uncommented('run x # goneName\n# goneName', true)].every((t) => !t.includes('goneName'))
+    && uncommented('keep = 1;', false).includes('keep') && uncommented('run keep', true).includes('keep');
+  const plants = [plantGone.some((x) => x.endsWith(': plantedGoneName')), plantGone.some((x) => x.includes('tools/planted-missing.mjs (no such file)')), plantGone.some((x) => x.includes('planted-missing.sh (no file of that name)')), plantDocs.some((x) => x.endsWith(': heldSoundSpoken')), plantComment.length === 1 && plantComment[0] === 'CLAUDE.md: keepOneFile',
+    plantLonger.some((x) => x.endsWith(': shareRound')) && plantLonger.some((x) => x.endsWith(': openModul')), plantDotted.some((x) => x.endsWith(': GONE_SETTING')) && plantDotted.some((x) => x.endsWith(': goneHelperOfOld')) && plantDotted.some((x) => x.includes('goneTool.mjs (no file of that name)')), commentForms,
+    staleOf({ ...CLAUDE_NAMES_KEPT, plantedStaleName: 'a name no CLAUDE file mentions, planted' }).includes('plantedStaleName'), staleOf({ ...CLAUDE_NAMES_KEPT, useState: 'a name the code holds, planted' }).includes('useState')];
+  // L34: a count of kindergarten's groups or of the free storefront's modules the files state is the code's, its plants made from the code.
+  const WORDS = { nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20 };
+  const groupsNow = L.subjectsForGrade('K').length; const freeNow = L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0);
+  const countsWrong = (text) => { const out = [];
+    for (const m of text.matchAll(/kindergarten folds into (\w+) groups/g)) { const n = WORDS[m[1]] || Number(m[1]); if (n !== groupsNow) out.push(`kindergarten folds into ${m[1]} groups, where the code has ${groupsNow}`); }
+    for (const m of text.matchAll(/free storefront holds (\d+) modules/g)) if (Number(m[1]) !== freeNow) out.push(`the free storefront holds ${m[1]} modules, where the code has ${freeNow}`);
+    return out; };
+  const counts = countsWrong(all);
+  const part2 = textsNow[1][1]; const NOW_WORDS = "the rules test holds kindergarten's groups and the free storefront's modules";
+  const countPlants = [countsWrong(part2.replace(NOW_WORDS, `kindergarten folds into ${groupsNow} groups and the free storefront holds ${freeNow - 1} modules`)).length === 1,
+    countsWrong(part2.replace(NOW_WORDS, `kindergarten folds into ${groupsNow - 1} groups and the free storefront holds ${freeNow} modules`)).length === 1,
+    countsWrong(part2.replace(NOW_WORDS, `kindergarten folds into ${groupsNow} groups and the free storefront holds ${freeNow} modules`)).length === 0];
+  ok(`every code name and file path the three CLAUDE files mention outside part three's index is in the tree: a name whole, outside a comment, in src, tests, tools or .claude, or in check.sh or build.sh, a path a file and a bare file name a file somewhere in the tree outside a dot folder (EARMARKS L31, pass NT; ${readNow} read, at least ${CLAUDE_NAMES_FLOOR}; ${Object.keys(CLAUDE_NAMES_KEPT).length} named as not the project's code, each with its reason, each still mentioned and none in src; not read: a name only a string holds counts as there, a single word in capitals, a path under dist/; a gone function, a missing tool, a missing file name, a name only the docs hold, a name only a code comment holds, a gone name inside a longer one, names after a dot and a bare file name in prose, planted, caught, every comment form set aside, and a kept name no file mentions and one src holds, each caught as stale); and a count of kindergarten's groups or the free storefront's modules the files state is the code's (EARMARKS L34; ${groupsNow} and ${freeNow} today; the files state none today, part two's line naming the rules test that holds them, held by its words; a stale count of each, made from the code, planted, caught, and the right counts passing)`,
+    missing.length === 0 && staleKept.length === 0 && readNow >= CLAUDE_NAMES_FLOOR && plants.every(Boolean) && counts.length === 0 && countPlants.every(Boolean) && part2.includes(`all under Philosophy; ${NOW_WORDS} (nine groups and 102 modules when this line was written).`),
+    JSON.stringify({ missing, staleKept, readNow, plants, counts, countPlants })); }
+// Pass NT's records (Mikey, opening pass NT: "Q123 - A but we can alter the end a little: ...", and later in the pass his yes on the two
+// phrases Claude offered): Q123 answered in one line in section 11 and in full in docs/RULES-AUDIT-HISTORY.md's pass NT block for answered
+// questions; section 7's row on confidence, changed at his word, kept as pass NS left it in the pass NT block for his word; part two's line
+// Module ids are global, changed under his standing word of pass NG on CLAUDE.md (EARMARKS L34), kept as pass NS left it in
+// docs/CLAUDE-HISTORY.md's pass NT block; section 9's rows naming each change, and its new rows for L31, L34, L36 and what pass NT
+// learned. Each block is held by its digest; one letter edited inside each, planted, is caught.
+{ const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const claudeHist = readFileSync(new URL('../docs/CLAUDE-HISTORY.md', import.meta.url), 'utf8'); const part2 = readFileSync(new URL('../CLAUDE-PART-2.md', import.meta.url), 'utf8');
+  const qName = "RULES-AUDIT section 11's answered questions in pass NT, word for word";
+  const wName = "RULES-AUDIT rows as pass NS left them, before pass NT changed them at Mikey's word, word for word";
+  const kName = "CLAUDE-PART-2.md's line Module ids are global as pass NS left it, before pass NT changed it, word for word";
+  const inside = (t, name) => { const a = t.indexOf(`<!-- ${name}: begin -->\n`); const b = t.indexOf(`<!-- ${name}: end -->`); return a < 0 || b < a ? '' : t.slice(a + `<!-- ${name}: begin -->\n`.length, b); };
+  const dig = (t) => createHash('sha256').update(t, 'utf8').digest('hex').slice(0, 8);
+  const plant = (t, name, from, to) => { const a = t.indexOf(`<!-- ${name}: begin -->`); const b = t.indexOf(`<!-- ${name}: end -->`); const i = a < 0 ? -1 : t.indexOf(from, a); return i < 0 || i > b ? t : t.slice(0, i) + to + t.slice(i + from.length); };
+  const qs = inside(hist, qName); const word = inside(hist, wName); const kept = inside(claudeHist, kName);
+  const ANSWER = 'Q123 - A but we can alter the end a little: "It stays down until the module\'s latest eight answers are all correct.  A secondary way to improve confidence is through recurring memory checks.  When at least two module questions return and they\'re answered correctly 80% or more of the time, student\'s can earn another point."';
+  const LATER = 'Yes on the "can earn that point instead" and "questions that come back."';
+  const answered = qs.startsWith(`- Q123. Answered in pass NT (Mikey: "${ANSWER}", and later in the pass: "${LATER}"): `) && qs.includes('The question as it stood: The Key Word\'s new sentence on what holds a confidence score down')
+    && audit.includes(`\n- Q123. Answered in pass NT (Mikey: "${ANSWER}", and later in the pass: "${LATER}"). Its rule lives in section 7 (the row on confidence) and src/logic.mjs (EXPLANATIONS: What holds a confidence score down).`) && !/\n- Q123\. (?!Answered)/.test(audit);
+  const wordRow = word.split('\n').filter(Boolean);
+  const changed = (audit.match(/Changed in place in pass NT, at Mikey's word \(his answer to Q123\), its pass NS words in docs\/RULES-AUDIT-HISTORY\.md\./g) || []).length;
+  const s9 = audit.slice(audit.indexOf('## 9. Process'), audit.indexOf('\n## 10.'));
+  const named = s9.includes("Changed in pass NT, at Mikey's word (his answer to Q123), saying so, its pass NS words in docs/RULES-AUDIT-HISTORY.md's pass NT block for his word: section 7's row on confidence;")
+    && s9.includes("Changed in pass NT, under Mikey's standing word of pass NG on CLAUDE.md (EARMARKS L34): part two's line Module ids are global (2026-09-29, pass GL),");
+  const NEW_ROWS = ['| **Every name a CLAUDE file mentions is in the tree (pass NT, EARMARKS L31', "| **The floor guard's plants read the baseline, and the counts the CLAUDE files state are the code's (pass NT, EARMARKS L34", "| **The rules test's planted copies are released, and its memory said (pass NT, EARMARKS L36", '| **What pass NT learned ('];
+  const rowsThere = NEW_ROWS.every((r) => s9.split('\n').some((l) => l.startsWith(r)));
+  const claudeOk = /^- Module ids are global \(2026-09-29, pass GL\): [^\n]*kindergarten folds into thirteen groups and the free storefront holds 234 modules \(nine groups and 102 modules when this line was written\)\.\n$/.test(kept)
+    && part2.includes("all under Philosophy; the rules test holds kindergarten's groups and the free storefront's modules (nine groups and 102 modules when this line was written).");
+  const plants = [dig(inside(plant(hist, qName, 'can earn that point instead', 'can earn that point insted'), qName)) !== dig(qs),
+    dig(inside(plant(hist, wName, 'computeConfidence never compares', 'computeConfidence never compared'), wName)) !== dig(word),
+    dig(inside(plant(claudeHist, kName, 'the free storefront holds 234 modules', 'the free storefront holds 233 modules'), kName)) !== dig(kept)];
+  ok(`docs/RULES-AUDIT-HISTORY.md keeps the question answered in pass NT, Q123 (digest ${dig(qs)}), and section 7's row on confidence as pass NS left it (digest ${dig(word)}), unchanged, Q123 answered in one line in section 11 and the row saying it changed at his word; docs/CLAUDE-HISTORY.md keeps part two's line Module ids are global as pass NS left it (digest ${dig(kept)}); section 9's rows name both changes, and its rows for L31, L34, L36 and what pass NT learned are there (pass NT; one letter edited inside each block, planted, caught)`,
+    dig(qs) === 'bf553318' && dig(word) === '85074b9f' && dig(kept) === '51b46257' && answered && wordRow.length === 1 && wordRow[0].startsWith('| **Confidence, 1 to 5:**') && changed === 1 && named && rowsThere && claudeOk && plants.every(Boolean),
+    JSON.stringify({ q: dig(qs), w: dig(word), k: dig(kept), answered, rows: wordRow.length, changed, named, rowsThere, claudeOk, plants })); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

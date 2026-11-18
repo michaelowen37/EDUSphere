@@ -1435,12 +1435,14 @@ const ponder = () => page.evaluate(() => {
   // and every span the page keeps there is read whole and inside its paragraph (pass NE: a change that keeps words whole is read for
   // every older line whose wrap it moves). Their floors are the counts the code has: 70 stories (53 until round two's code read found the
   // words read joined with commas), and 150 spans at the three widths, the lead's run alone of this read (none broken, none past its
-  // paragraph; the 17 stories the paragraph reading adds keep no span today).
+  // paragraph; the 17 stories the paragraph reading adds keep no span today). Since pass NT (EARMARKS L34) the stories' floor is 71, the
+  // count this filter gives in node (OLDER_KEPT.length) on pass NQ's and pass NR's trees (pass NR's lead) and on pass NS's and pass NT's
+  // (pass NT's), where the floor had stayed at 70, one story behind the count.
   const { STORIES: ALL_STORIES } = await import('../../src/stories.mjs');
   const SPELLED = /((?<![A-Za-z'])[A-Za-z](?:(?:, (?:and )?| and )[A-Za-z](?![A-Za-z'])){2,}|\bI spy\b)/; const SHORT_RUN = /^\s*[A-Za-z]{1,7}(?:, [A-Za-z]{1,7})+[.!?]?\s*$/;
   const SENTENCES = new RegExp('(' + L.SENTENCE_BREAK.source + ')');
   const OLDER_KEPT = Object.keys(ALL_STORIES).filter((id) => !STORIES_KEPT[id] && [].concat(ALL_STORIES[id].words || []).some((p) => String(p).split(SENTENCES).some((x) => SHORT_RUN.test(x) || SPELLED.test(x))));   // paragraph by paragraph (round two's code read: the words joined with commas hid a run that ends a paragraph)
-  const OLDER_FLOOR = { stories: 70, spans: 150 }; let olderScreens = 0; let olderSpans = 0;
+  const OLDER_FLOOR = { stories: 71, spans: 150 }; let olderScreens = 0; let olderSpans = 0;
   const off = []; let spans = 0; let screens = 0; let plantBroken = null; let plantGone = null;
   const plants = async (run) => {
     if (plantBroken === null) { plantBroken = await page.evaluate(() => { const s = [...document.querySelectorAll('[data-whole]')].find((x) => x.offsetParent !== null); if (!s) return null; const br = document.createElement('br'); br.setAttribute('data-plant-br', ''); s.insertBefore(br, s.lastChild); return true; }); plantBroken = !!plantBroken && (await keptRead()).broken.length > 0; await page.evaluate(() => { const b = document.querySelector('[data-plant-br]'); if (b) b.remove(); }); }

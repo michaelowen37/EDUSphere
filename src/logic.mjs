@@ -52244,6 +52244,12 @@ export function enabledCourseIds(events) {
 // score does where it said a score is held down by "scoring lower on consecutive attempts", which computeConfidence never compares: a
 // score also stays down while the latest round has a mistake in it (no flawless round's point), and until the module's latest eight
 // answers are all correct, unless at least two of its questions have come back and 80 percent or more of them were right (the last point).
+// Since pass NT, at his answer to Q123 ("Q123 - A but we can alter the end a little"), it says so in (a)'s first sentence and then his own
+// three, one typo fixed and, at his later word ("Yes on the "can earn that point instead" and "questions that come back.""), two phrases
+// Claude offered: the latest round's mistake in one sentence (no flawless round's point), "It stays down until the module's latest eight
+// answers are all correct." in the next, and the returning questions as a second way to the same last point ("A secondary way to improve
+// confidence is through questions that come back. When at least two module questions return and they're answered correctly 80% or more
+// of the time, students can earn that point instead."), so the latest round's point is never read as waiting on what comes back.
 export const CONFIDENCE_RULES = [
   'Confidence starts at 1 for any module that has been practiced.',
   `+2 once the module has been passed, its pass mark met in one set (${CONFIG.MASTERY_MIN_CORRECT} or more of ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT} through grade 5, 7 of 8 in grades 6 to 8, 8 of 10 from grade 9), even before its star, which takes a second pass on another day.`,
@@ -52316,7 +52322,7 @@ export const EXPLANATIONS = [
   },
   {
     term: 'What holds a confidence score down',
-    plain: 'A score stays low when a student has practiced a module one or more times without passing it. A score also stays down while the latest round has a mistake in it, and until the module\'s latest eight answers are all correct, unless at least two of its questions have come back and 80 percent or more of them were right. The goal is to ensure that the information sticks. If two or more wrong answers in the latest round come in under four seconds each, Who Needs Help says there are signs of guessing in that module. This is because answering quickly usually indicates tapping rather than thinking. Getting half or more of the module\'s questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point, because the score is meant to say whether it stuck.',
+    plain: 'A score stays low when a student has practiced a module one or more times without passing it. A score also stays down while the latest round has a mistake in it. It stays down until the module\'s latest eight answers are all correct. A secondary way to improve confidence is through questions that come back. When at least two module questions return and they\'re answered correctly 80% or more of the time, students can earn that point instead. The goal is to ensure that the information sticks. If two or more wrong answers in the latest round come in under four seconds each, Who Needs Help says there are signs of guessing in that module. This is because answering quickly usually indicates tapping rather than thinking. Getting half or more of the module\'s questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point, because the score is meant to say whether it stuck.',
   },
   {
     term: 'Answered correctly',

@@ -429,59 +429,102 @@ if (process.argv[1] && process.argv[1].endsWith('floor-guard.test.mjs') && proce
   // baseline; a planted DECISIONS bullet or line goes into a temporary copy of DECISIONS, at the end of its newest entry.
   const dir = mkdtempSync(join(tmpdir(), 'floor-guard-'));
   try {
-    const copy = (rel, edit) => { const text = readFileSync(join(ROOT, rel), 'utf8'); const changed = edit(text); if (changed === text) return null; const p = join(dir, rel.replace(/\//g, '__')); writeFileSync(p, changed); return { [rel]: p }; };
     const withLines = (...lines) => { const at = decisions.lastIndexOf('\n## Open items'); const p = join(dir, 'DECISIONS.md'); writeFileSync(p, `${decisions.slice(0, at)}\n${lines.join('\n')}\n${decisions.slice(at)}`); return newestEntry(readFileSync(p, 'utf8')); };
     const loosened = (...items) => withLines(`${LOOSENED} ${items.join('; ')}.`);
-    const verdict = (over, ent = entry) => compare(baseline, readTree(disk(over || {})), ent);
     const has = (list, part) => list.some((l) => l.includes(part));
-    const value = (key) => (tree.values.find((e) => e.key === key) || {}).value;
-    const pinOf = (key) => (tree.values.find((e) => e.key === key) || { values: [] }).values;
-    // A floor lowered, with no line and with its item in the Loosened bullet, and raised: tile-edges' FLOORS.drawings.
-    const drawings = value('tests/e2e/tile-edges.mjs::FLOORS.drawings');
-    const floorTo = (n) => copy('tests/e2e/tile-edges.mjs', (t) => t.replace(/(const FLOORS = \{ drawings: )\d+/, `$1${n}`));
-    const low = drawings && floorTo(drawings - 4); const lowRes = low && verdict(low);
-    const lowNamed = low && verdict(low, loosened(`tile-edges FLOORS.drawings ${drawings} to ${drawings - 4} (planted by the guard's own test)`));
-    ok(`a FLOORS value lowered with no line fails, and passes with its item in the Loosened bullet (tile-edges' FLOORS.drawings, ${drawings} to ${drawings - 4}, planted in a copy)`,
-      !!low && has(lowRes.lenient, `FLOORS.drawings in tests/e2e/tile-edges.mjs: ${drawings} to ${drawings - 4}, lowered`) && !has(lowNamed.lenient, 'FLOORS.drawings') && has(lowNamed.named, 'FLOORS.drawings'), low ? lowRes.lenient.join(' | ') : 'the plant found no FLOORS.drawings in tests/e2e/tile-edges.mjs');
-    const high = drawings && floorTo(drawings + 6); const highRes = high && verdict(high);
-    ok(`a floor raised passes with no line, reported as strict (tile-edges' FLOORS.drawings, ${drawings} to ${drawings + 6}, planted in a copy)`,
-      !!high && !has(highRes.lenient, 'FLOORS.drawings') && has(highRes.strict, `FLOORS.drawings in tests/e2e/tile-edges.mjs: ${drawings} to ${drawings + 6}, raised`), high ? highRes.strict.join(' | ') : 'no plant');
-    // A wait added: a lesson line put in fold-check's FOLD_WAITS.
-    const wait = copy('tests/e2e/fold-check.mjs', (t) => t.replace(/export const FOLD_WAITS = \{/, "export const FOLD_WAITS = { 'planted-wait 1': 'a wait planted by the guard', "));
-    const waitRes = wait && verdict(wait);
-    ok("a wait added with no line fails (fold-check's FOLD_WAITS gains 'planted-wait 1', planted in a copy)", !!wait && has(waitRes.lenient, 'FOLD_WAITS in tests/e2e/fold-check.mjs: "planted-wait 1" added'), wait ? waitRes.lenient.join(' | ') : 'the plant found no FOLD_WAITS');
-    // A pinned .length lowered (question-screens' section 16b's fifteen lines) and a pinned plain count lowered (its 33 screens).
-    const pairs = pinOf('tests/e2e/question-screens.mjs::PRINT_PAIRS.length ===')[0];
-    const pin = pairs && copy('tests/e2e/question-screens.mjs', (t) => t.replace(`PRINT_PAIRS.length === ${pairs}`, `PRINT_PAIRS.length === ${pairs - 1}`)); const pinRes = pin && verdict(pin);
-    ok(`a pinned .length lowered with no line fails (question-screens' PRINT_PAIRS.length === ${pairs} made ${pairs - 1}, planted in a copy)`, !!pin && has(pinRes.lenient, `PRINT_PAIRS.length (===) in tests/e2e/question-screens.mjs: ${pairs} to ${pairs - 1}, lowered`), pin ? pinRes.lenient.join(' | ') : 'the plant found no PRINT_PAIRS.length');
-    const screens = pinOf('tests/e2e/question-screens.mjs::screens ===')[0];
-    const plain = screens && copy('tests/e2e/question-screens.mjs', (t) => t.replace(`screens === ${screens} `, `screens === ${screens - 1} `)); const plainRes = plain && verdict(plain);
-    ok(`a pinned plain count lowered with no line fails (question-screens' screens === ${screens} made ${screens - 1}, a count by its making, planted in a copy; round one's code read of pass NQ)`, !!plain && has(plainRes.lenient, `screens (===) in tests/e2e/question-screens.mjs: ${screens} to ${screens - 1}, lowered`), plain ? plainRes.lenient.join(' | ') : 'the plant found no screens === in tests/e2e/question-screens.mjs');
-    // A floor written as arithmetic (round one's code read of pass NQ): question-screens' KEPT_FLOOR made "<itself> - 10" is built by code, and gone.
-    const kept = value('tests/e2e/question-screens.mjs::KEPT_FLOOR');
-    const arith = kept !== undefined && copy('tests/e2e/question-screens.mjs', (t) => t.replace(`const KEPT_FLOOR = ${kept};`, `const KEPT_FLOOR = ${kept} - 10;`));
-    const arithTree = arith && readTree(disk(arith)); const arithRes = arith && compare(baseline, arithTree, entry);
-    ok(`a floor written as arithmetic is read as built by code, so it is gone from the tree and fails with no line (question-screens' KEPT_FLOOR = ${kept} made ${kept} - 10, planted in a copy; round one's code read of pass NQ)`,
-      !!arith && arithTree.computed.includes('tests/e2e/question-screens.mjs KEPT_FLOOR') && has(arithRes.lenient, `KEPT_FLOOR in tests/e2e/question-screens.mjs: ${kept}, gone from the tree`), arith ? arithRes.lenient.join(' | ') : 'the plant found no KEPT_FLOOR');
-    // A limit raised (the question screens' limit in check.sh, a tenth more): with no line it fails against the baseline and against
-    // CHECK-TIMES; its item in the Loosened bullet passes; and a line outside the bullet that holds its name and new limit, beside a
-    // bullet that names only a floor, still fails twice (round one's code read of pass NQ).
-    const qs = value('check.sh::run "the question screens"'); const up = qs && Math.round(qs * 1.1);
-    const lim = qs && copy('check.sh', (t) => t.replace(`run "the question screens" ${qs} `, `run "the question screens" ${up} `)); const limRes = lim && verdict(lim);
-    const limNamed = lim && verdict(lim, loosened(`the question screens' limit ${qs.toLocaleString('en-US')} to ${up.toLocaleString('en-US')}, a tenth more seconds (planted by the guard's own test, its new limit followed by a comma)`));
-    const limOutside = lim && verdict(lim, withLines(`${LOOSENED} tile-edges FLOORS.drawings ${drawings} to ${drawings - 4} (planted by the guard's own test).`, `- The question screens' limit was raised from ${qs.toLocaleString('en-US')} to ${up.toLocaleString('en-US')} seconds, a line planted by the guard's own test outside the Loosened bullet.`));
-    ok(`a limit raised in check.sh with no line fails, against the baseline and against docs/CHECK-TIMES.md's newest run; it passes with its item in the Loosened bullet; and a line outside the bullet holding its name and new limit still fails twice (the question screens, ${qs} to ${up}, planted in a copy)`,
-      !!lim && has(limRes.lenient, `check.sh's run "the question screens": ${qs} to ${up}, raised`) && has(limRes.limits, `check.sh's run "the question screens": ${up} seconds, over the ${qs}`) && limNamed.lenient.length === res.lenient.length && limNamed.limits.length === 0
-      && has(limOutside.lenient, `check.sh's run "the question screens": ${qs} to ${up}, raised`) && has(limOutside.limits, `check.sh's run "the question screens": ${up} seconds`),
-      lim ? JSON.stringify({ lenient: limRes.lenient, limits: limRes.limits, named: limNamed && limNamed.named, outside: limOutside && [limOutside.lenient, limOutside.limits] }) : 'the plant found no run "the question screens"');
-    // A step's count fallen (the stories' count in docs/CHECK-TIMES.md's newest passing run, nine fewer): with no line it fails, and a
-    // check.sh bullet that reports the fallen count, as every entry's does, still fails (round one's code read of pass NQ).
-    const stories = value('CHECK-TIMES::5/13 stories');
-    const fall = stories && copy('docs/CHECK-TIMES.md', (t) => { const i = t.indexOf('| 5/13 stories |'); const j = t.indexOf('\n', i); return i < 0 ? t : t.slice(0, i) + t.slice(i, j).replace(new RegExp(`\\b${stories}( passed)`), `${stories - 9}$1`) + t.slice(j); });
-    const fallRes = fall && verdict(fall);
-    const fallBullet = fall && verdict(fall, withLines(`- **check.sh.** ALL CHECKS PASSED, its one whole run on the final tree, a bullet planted by the guard's own test: the rules test 3,243, the docs sync test 122, the stories ${(stories - 9).toLocaleString('en-US')}, the click-through 366 and every other step whole.`));
-    ok(`a step's count of checks fallen with no line fails, and a check.sh bullet that reports the fallen count does not name it (the stories, ${stories} to ${stories - 9} in docs/CHECK-TIMES.md's newest run, planted in a copy)`,
-      !!fall && has(fallRes.lenient, `the step stories (docs/CHECK-TIMES.md): ${stories} to ${stories - 9}, lowered`) && has(fallBullet.lenient, `the step stories (docs/CHECK-TIMES.md): ${stories} to ${stories - 9}, lowered`), fall ? JSON.stringify([fallRes.lenient, fallBullet.lenient]) : 'the plant found no count for 5/13 stories');
+    // Since pass NT (EARMARKS L34): every plant takes the baseline's value, never the tree's, and finds the tree's own text by the tree's
+    // value, so a pass that raised a value before --write wrote the baseline still plants a lowering against the baseline. In pass NR the
+    // tree's FLOORS.drawings, raised to 700, made 696, read as raised from the baseline's 694, and the stories' count, 6,975 in the
+    // newest run, made 6,966, read against the baseline's 6,939 as not fallen, so the guard failed its own plants until --write ran. Since
+    // round one's code read of pass NT, which undid nine parts of that fix one at a time with every check still passing on a tree whose
+    // values were the baseline's, the plants run twice: on the tree as it stands, and on a tree that raised its values before --write
+    // (below), asking the same verdicts.
+    const baseOf = (key) => (baseline.find((e) => e.key === key) || {}).value;
+    const basePinOf = (key) => (baseline.find((e) => e.key === key) || { values: [] }).values;
+    const drawings = baseOf('tests/e2e/tile-edges.mjs::FLOORS.drawings');
+    let copies = 0;
+    // The plants on the tree with under's files swapped in ({} is the tree as it stands): each check a [label, condition, what it read].
+    const plantChecks = (under) => {
+      const t = readTree(disk(under)); const own = compare(baseline, t, entry); const out = [];
+      const copy = (rel, edit) => { const text = readFileSync(under[rel] || join(ROOT, rel), 'utf8'); const changed = edit(text); if (changed === text) return null; const p = join(dir, `${rel.replace(/\//g, '__')}-${copies++}`); writeFileSync(p, changed); return { ...under, [rel]: p }; };
+      const verdict = (over, ent = entry) => compare(baseline, readTree(disk(over || under)), ent);
+      const value = (key) => (t.values.find((e) => e.key === key) || {}).value;
+      const pinOf = (key) => (t.values.find((e) => e.key === key) || { values: [] }).values;
+      // A floor lowered, with no line and with its item in the Loosened bullet, and raised: tile-edges' FLOORS.drawings, the baseline's.
+      const drawings = baseOf('tests/e2e/tile-edges.mjs::FLOORS.drawings');
+      const floorTo = (n) => copy('tests/e2e/tile-edges.mjs', (x) => x.replace(/(const FLOORS = \{ drawings: )\d+/, `$1${n}`));
+      const low = drawings && floorTo(drawings - 4); const lowRes = low && verdict(low);
+      const lowNamed = low && verdict(low, loosened(`tile-edges FLOORS.drawings ${drawings} to ${drawings - 4} (planted by the guard's own test)`));
+      out.push([`a FLOORS value lowered with no line fails, and passes with its item in the Loosened bullet (tile-edges' FLOORS.drawings, ${drawings} to ${drawings - 4}, planted in a copy)`,
+        !!low && has(lowRes.lenient, `FLOORS.drawings in tests/e2e/tile-edges.mjs: ${drawings} to ${drawings - 4}, lowered`) && !has(lowNamed.lenient, 'FLOORS.drawings') && has(lowNamed.named, 'FLOORS.drawings'), low ? lowRes.lenient.join(' | ') : 'the plant found no FLOORS.drawings in tests/e2e/tile-edges.mjs']);
+      const drawingsNow = value('tests/e2e/tile-edges.mjs::FLOORS.drawings'); const highTo = drawings && drawingsNow && Math.max(drawings, drawingsNow) + 6;
+      const high = highTo && floorTo(highTo); const highRes = high && verdict(high);
+      out.push([`a floor raised passes with no line, reported as strict (tile-edges' FLOORS.drawings, ${drawings} to ${highTo}, planted in a copy)`,
+        !!high && !has(highRes.lenient, 'FLOORS.drawings') && has(highRes.strict, `FLOORS.drawings in tests/e2e/tile-edges.mjs: ${drawings} to ${highTo}, raised`), high ? highRes.strict.join(' | ') : 'no plant']);
+      // A wait added: a lesson line put in fold-check's FOLD_WAITS.
+      const wait = copy('tests/e2e/fold-check.mjs', (x) => x.replace(/export const FOLD_WAITS = \{/, "export const FOLD_WAITS = { 'planted-wait 1': 'a wait planted by the guard', "));
+      const waitRes = wait && verdict(wait);
+      out.push(["a wait added with no line fails (fold-check's FOLD_WAITS gains 'planted-wait 1', planted in a copy)", !!wait && has(waitRes.lenient, 'FOLD_WAITS in tests/e2e/fold-check.mjs: "planted-wait 1" added'), wait ? waitRes.lenient.join(' | ') : 'the plant found no FOLD_WAITS']);
+      // A pinned .length lowered (question-screens' section 16b's fifteen lines) and a pinned plain count lowered (its 33 screens).
+      const pairs = basePinOf('tests/e2e/question-screens.mjs::PRINT_PAIRS.length ===')[0]; const pairsNow = pinOf('tests/e2e/question-screens.mjs::PRINT_PAIRS.length ===')[0];
+      const pin = pairs && pairsNow && copy('tests/e2e/question-screens.mjs', (x) => x.replace(`PRINT_PAIRS.length === ${pairsNow}`, `PRINT_PAIRS.length === ${pairs - 1}`)); const pinRes = pin && verdict(pin);
+      out.push([`a pinned .length lowered with no line fails (question-screens' PRINT_PAIRS.length === ${pairs} made ${pairs - 1}, planted in a copy)`, !!pin && has(pinRes.lenient, `PRINT_PAIRS.length (===) in tests/e2e/question-screens.mjs: ${pairs} to ${pairs - 1}, lowered`), pin ? pinRes.lenient.join(' | ') : 'the plant found no PRINT_PAIRS.length']);
+      const screens = basePinOf('tests/e2e/question-screens.mjs::screens ===')[0]; const screensNow = pinOf('tests/e2e/question-screens.mjs::screens ===')[0];
+      const plain = screens && screensNow && copy('tests/e2e/question-screens.mjs', (x) => x.replace(`screens === ${screensNow} `, `screens === ${screens - 1} `)); const plainRes = plain && verdict(plain);
+      out.push([`a pinned plain count lowered with no line fails (question-screens' screens === ${screens} made ${screens - 1}, a count by its making, planted in a copy; round one's code read of pass NQ)`, !!plain && has(plainRes.lenient, `screens (===) in tests/e2e/question-screens.mjs: ${screens} to ${screens - 1}, lowered`), plain ? plainRes.lenient.join(' | ') : 'the plant found no screens === in tests/e2e/question-screens.mjs']);
+      // A floor written as arithmetic (round one's code read of pass NQ): question-screens' KEPT_FLOOR made "<itself> - 10" is built by code, and gone.
+      const kept = baseOf('tests/e2e/question-screens.mjs::KEPT_FLOOR'); const keptNow = value('tests/e2e/question-screens.mjs::KEPT_FLOOR');
+      const arith = kept !== undefined && keptNow !== undefined && copy('tests/e2e/question-screens.mjs', (x) => x.replace(`const KEPT_FLOOR = ${keptNow};`, `const KEPT_FLOOR = ${keptNow} - 10;`));
+      const arithTree = arith && readTree(disk(arith)); const arithRes = arith && compare(baseline, arithTree, entry);
+      out.push([`a floor written as arithmetic is read as built by code, so it is gone from the tree and fails with no line (question-screens' KEPT_FLOOR = ${keptNow} made ${keptNow} - 10, planted in a copy; round one's code read of pass NQ)`,
+        !!arith && arithTree.computed.includes('tests/e2e/question-screens.mjs KEPT_FLOOR') && has(arithRes.lenient, `KEPT_FLOOR in tests/e2e/question-screens.mjs: ${kept}, gone from the tree`), arith ? arithRes.lenient.join(' | ') : 'the plant found no KEPT_FLOOR']);
+      // A limit raised (the question screens' limit in check.sh, a tenth over the highest of the baseline's, the tree's and the one the newest
+      // run recorded): with no line it fails against the baseline and against CHECK-TIMES; its item in the Loosened bullet passes, every other
+      // lenient move of the tree as it stands still there; and a line outside the bullet that holds its name and new limit, beside a bullet
+      // that names only a floor, still fails twice (round one's code read of pass NQ).
+      const qs = baseOf('check.sh::run "the question screens"'); const qsNow = value('check.sh::run "the question screens"');
+      const qsStep = (t.values.find((e) => e.key === 'check.sh::run "the question screens"') || {}).step; const qsRun = t.doc.runs.find((r) => r.steps.some((x) => x.name === qsStep && x.limit !== null));
+      const qsWas = qsRun ? qsRun.steps.find((x) => x.name === qsStep && x.limit !== null).limit : qs; const up = qs && qsNow && Math.round(Math.max(qs, qsNow, qsWas) * 1.1);
+      const lim = qs && qsNow && copy('check.sh', (x) => x.replace(`run "the question screens" ${qsNow} `, `run "the question screens" ${up} `)); const limRes = lim && verdict(lim);
+      const limNamed = lim && verdict(lim, loosened(`the question screens' limit ${qs.toLocaleString('en-US')} to ${up.toLocaleString('en-US')}, a tenth more seconds (planted by the guard's own test, its new limit followed by a comma)`));
+      const limOutside = lim && verdict(lim, withLines(`${LOOSENED} tile-edges FLOORS.drawings ${drawings} to ${drawings - 4} (planted by the guard's own test).`, `- The question screens' limit was raised from ${qs.toLocaleString('en-US')} to ${up.toLocaleString('en-US')} seconds, a line planted by the guard's own test outside the Loosened bullet.`));
+      out.push([`a limit raised in check.sh with no line fails, against the baseline and against docs/CHECK-TIMES.md's newest run; it passes with its item in the Loosened bullet; and a line outside the bullet holding its name and new limit still fails twice (the question screens, ${qs} to ${up}, planted in a copy)`,
+        !!lim && has(limRes.lenient, `check.sh's run "the question screens": ${qs} to ${up}, raised`) && has(limRes.limits, `check.sh's run "the question screens": ${up} seconds, over the ${qsWas}`) && limNamed.lenient.length === own.lenient.filter((l) => !l.includes('"the question screens"')).length && limNamed.limits.length === 0
+        && has(limOutside.lenient, `check.sh's run "the question screens": ${qs} to ${up}, raised`) && has(limOutside.limits, `check.sh's run "the question screens": ${up} seconds`),
+        lim ? JSON.stringify({ lenient: limRes.lenient, limits: limRes.limits, named: limNamed && limNamed.named, outside: limOutside && [limOutside.lenient, limOutside.limits] }) : 'the plant found no run "the question screens"']);
+      // A step's count fallen (the stories' count in docs/CHECK-TIMES.md's newest passing run, nine under the baseline's): with no line it
+      // fails, and a check.sh bullet that reports the fallen count, as every entry's does, still fails (round one's code read of pass NQ).
+      const stories = baseOf('CHECK-TIMES::5/13 stories'); const storiesNow = value('CHECK-TIMES::5/13 stories');
+      const fall = stories && storiesNow && copy('docs/CHECK-TIMES.md', (x) => { const i = x.indexOf('| 5/13 stories |'); const j = x.indexOf('\n', i); return i < 0 ? x : x.slice(0, i) + x.slice(i, j).replace(new RegExp(`\\b${storiesNow}( passed)`), `${stories - 9}$1`) + x.slice(j); });
+      const fallRes = fall && verdict(fall);
+      const fallBullet = fall && verdict(fall, withLines(`- **check.sh.** ALL CHECKS PASSED, its one whole run on the final tree, a bullet planted by the guard's own test: the rules test 3,243, the docs sync test 122, the stories ${(stories - 9).toLocaleString('en-US')}, the click-through 366 and every other step whole.`));
+      out.push([`a step's count of checks fallen with no line fails, and a check.sh bullet that reports the fallen count does not name it (the stories, ${stories} to ${stories - 9} in docs/CHECK-TIMES.md's newest run, planted in a copy)`,
+        !!fall && has(fallRes.lenient, `the step stories (docs/CHECK-TIMES.md): ${stories} to ${stories - 9}, lowered`) && has(fallBullet.lenient, `the step stories (docs/CHECK-TIMES.md): ${stories} to ${stories - 9}, lowered`), fall ? JSON.stringify([fallRes.lenient, fallBullet.lenient]) : 'the plant found no count for 5/13 stories']);
+      return out;
+    };
+    for (const [label, cond, info] of plantChecks({})) ok(label, cond, info);
+    // The tree raised before --write, as pass NR's was (EARMARKS L34): tile-edges' FLOORS.drawings six over the baseline, question-screens'
+    // PRINT_PAIRS.length and screens one over and its KEPT_FLOOR four over, the question screens' limit in check.sh a fifth over, as the
+    // limit the newest run recorded for its step, and the stories' newest count 36 over, each written whatever the tree holds.
+    const tv = (key) => (tree.values.find((e) => e.key === key) || {}).value; const tp = (key) => (tree.values.find((e) => e.key === key) || { values: [] }).values[0];
+    const writeAs = (rel, edit) => { const p = join(dir, `${rel.replace(/\//g, '__')}-raised`); writeFileSync(p, edit(readFileSync(join(ROOT, rel), 'utf8'))); return p; };
+    const R = { drawings: drawings + 6, pairs: basePinOf('tests/e2e/question-screens.mjs::PRINT_PAIRS.length ===')[0] + 1, screens: basePinOf('tests/e2e/question-screens.mjs::screens ===')[0] + 1,
+      kept: baseOf('tests/e2e/question-screens.mjs::KEPT_FLOOR') + 4, limit: Math.round(baseOf('check.sh::run "the question screens"') * 1.2), stories: baseOf('CHECK-TIMES::5/13 stories') + 36 };
+    const limitStep = (tree.values.find((e) => e.key === 'check.sh::run "the question screens"') || {}).step;
+    const newestLine = (x, start, edit) => { const i = x.indexOf(start); const j = x.indexOf('\n', i); return i < 0 ? x : x.slice(0, i) + edit(x.slice(i, j)) + x.slice(j); };
+    const raised = {
+      'tests/e2e/tile-edges.mjs': writeAs('tests/e2e/tile-edges.mjs', (x) => x.replace(/(const FLOORS = \{ drawings: )\d+/, `$1${R.drawings}`)),
+      'tests/e2e/question-screens.mjs': writeAs('tests/e2e/question-screens.mjs', (x) => x.replace(`PRINT_PAIRS.length === ${tp('tests/e2e/question-screens.mjs::PRINT_PAIRS.length ===')}`, `PRINT_PAIRS.length === ${R.pairs}`)
+        .replace(`screens === ${tp('tests/e2e/question-screens.mjs::screens ===')} `, `screens === ${R.screens} `).replace(`const KEPT_FLOOR = ${tv('tests/e2e/question-screens.mjs::KEPT_FLOOR')};`, `const KEPT_FLOOR = ${R.kept};`)),
+      'check.sh': writeAs('check.sh', (x) => x.replace(`run "the question screens" ${tv('check.sh::run "the question screens"')} `, `run "the question screens" ${R.limit} `)),
+      'docs/CHECK-TIMES.md': writeAs('docs/CHECK-TIMES.md', (x) => newestLine(newestLine(x, '| 5/13 stories |', (l) => l.replace(new RegExp(`\\b${tv('CHECK-TIMES::5/13 stories')}( passed)`), `${R.stories}$1`)),
+        `| ${limitStep} |`, (l) => l.replace(/^(\| [^|]+ \| [^|]+ \| )\d+( \|)/, `$1${R.limit}$2`))) };
+    const rt = readTree(disk(raised)); const rv = (key) => (rt.values.find((e) => e.key === key) || {}).value; const rp = (key) => (rt.values.find((e) => e.key === key) || { values: [] }).values[0];
+    const rRun = rt.doc.runs.find((r) => r.steps.some((x) => x.name === limitStep && x.limit !== null));
+    const raisedRead = { drawings: rv('tests/e2e/tile-edges.mjs::FLOORS.drawings'), pairs: rp('tests/e2e/question-screens.mjs::PRINT_PAIRS.length ==='), screens: rp('tests/e2e/question-screens.mjs::screens ==='), kept: rv('tests/e2e/question-screens.mjs::KEPT_FLOOR'), limit: rv('check.sh::run "the question screens"'), stories: rv('CHECK-TIMES::5/13 stories'), recorded: rRun ? rRun.steps.find((x) => x.name === limitStep && x.limit !== null).limit : null };
+    ok(`the tree raised before --write reads every value raised, the limit the newest run recorded too (EARMARKS L34, pass NT: FLOORS.drawings ${R.drawings}, PRINT_PAIRS.length ${R.pairs}, screens ${R.screens}, KEPT_FLOOR ${R.kept}, the question screens' limit ${R.limit}, the stories ${R.stories})`,
+      Object.keys(R).every((k) => raisedRead[k] === R[k]) && raisedRead.recorded === R.limit, JSON.stringify(raisedRead));
+    for (const [label, cond, info] of plantChecks(raised)) ok(`on a tree that raised its values before --write (EARMARKS L34, pass NT), ${label}`, cond, info);
     // The FAIL line names every lenient move (pass NQ, F4, after round three's code read; until then the first twelve): thirteen made moves.
     const made = Array.from({ length: 13 }, (_, i) => `made move ${i + 1} in a made file: ${i + 20} to ${i + 10}, lowered`); const line = lenientLine(entry, made).split(' | ');
     ok('the FAIL line for lenient moves names every move, not the first twelve (thirteen made moves; pass NQ, F4)', made.every((m) => line.includes(m)), line.join(' | '));

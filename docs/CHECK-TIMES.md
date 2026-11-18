@@ -6,6 +6,55 @@ tools/check-times.mjs reads it and prints, step by step, its seconds over the ru
 
 A step whose seconds say not recorded was not measured: the oldest run, pass NP's final run, was written here in pass NQ from its DECISIONS entry, with the counts that entry lists and the limits check.sh had then.
 
+## Run of 2026-11-18 08:00 CST
+
+Began 2026-11-18 08:00 CST and ended 2026-11-18 11:09 CST, 189 minutes in all. Verdict: ALL CHECKS PASSED.
+
+| Step | Seconds | Limit | Share of limit | Status | Summary line |
+|---|---|---|---|---|---|
+| 1/13 rules tests | 900 |  |  | passed | 3319 passed, 0 failed |
+| 2/13 curriculum coverage | 0 |  |  | passed | 386 passed, 0 failed |
+| 3/13 spelling and style | 1 |  |  | passed | 80 passed, 0 failed |
+| 3b/13 the rules audit and algorithms match the code | 26 |  |  | passed | 134 passed, 0 failed |
+| 3c/13 the pass packet copies its rows word for word | 1 |  |  | passed | 54 passed, 0 failed |
+| 3d/13 no floor, count, wait or limit loosened without its DECISIONS line | 4 |  |  | passed | 24 passed, 0 failed |
+| 3e/13 the rules test's block runner proves itself | 4 | 60 | 7% | passed | 11 passed, 0 failed |
+| 3f/13 the blind read proves itself | 2 | 60 | 3% | passed | 9 passed, 0 failed |
+| 3g/13 the planted-defect set builds, leaks nothing and scores as it must | 102 | 300 | 34% | passed | 40 passed, 0 failed |
+| 4/13 lesson lines and pictures | 20 |  |  | passed | 93 passed, 0 failed |
+| 5/13 stories | 1 |  |  | passed | 6975 passed, 0 failed |
+| 5b/11 art ledger | 2 |  |  | passed | 48 passed, 0 failed |
+| 5c/11 pictures | 0 |  |  | passed | 2 passed, 0 failed |
+| 6/13 old backups still restore | 0 |  |  | passed | 21 passed, 0 failed |
+| 6b/13 updating a folder from a delivered zip | 1 |  |  | passed | 25 passed, 0 failed |
+| 7/13 build | 5 |  |  | passed | no summary line |
+| 8/13 render smoke | 3 |  |  | passed | PASS - artifact loads and renders its first screen (63169 chars of HTML) |
+| 9/13 syntax | 4 |  |  | passed | no summary line |
+| 10/13 browser click-through (about twelve minutes) | 533 | 1500 | 36% | passed | 373 passed, 0 failed |
+| 10/13 license codes in the browser | 9 | 120 | 8% | passed | 7 passed, 0 failed |
+| 10/13 dragging with a desktop mouse | 31 | 150 | 21% | passed | 14 passed, 0 failed |
+| 10/13 changing the educator PIN | 18 | 120 | 15% | passed | 13 passed, 0 failed |
+| 10/13 the first week tour, card by card, and pages that open at the top | 200 | 420 | 48% | passed | 130 passed, 0 failed |
+| 11/13 back button from every screen, and the words in their boxes on every screen it lands on | 32 | 200 | 16% | passed | 25 passed, 0 failed |
+| 12/13 dark theme: every word readable, paper screens light | 51 | 200 | 26% | passed | 85 passed, 0 failed |
+| 13/13 standalone page keeps its data | 79 | 150 | 53% | passed | 25 passed, 0 failed |
+| 13b/13 the scroll cue on a phone lesson | 41 | 120 | 34% | passed | 16 passed, 0 failed |
+| 13c/13 the quick look back and Action Items, walked as a student and an educator | 24 | 240 | 10% | passed | 14 passed, 0 failed |
+| 13d/13 game breaks, elective stories and Let's Read, walked as a student and an educator | 247 | 600 | 41% | passed | 91 passed, 0 failed |
+| 13e/13 question pictures, More Info, the Wonder pictures and the read-along | 2611 | 4000 | 65% | passed | 149 passed, 0 failed |
+| 13f/13 a game's welcome and its demonstration | 791 | 1800 | 44% | passed | 79 passed, 0 failed |
+| 13g/13 every game on the narrowest phone, in a wider font, after a wrong tap | 201 | 600 | 34% | passed | 160 games at 1 sizes (160 opened, wide font, 43 read after a wrong tap): 0 problems |
+| 13h/13 every word in every drawn picture, in both themes | 259 | 900 | 29% | passed | 9 passed, 0 failed |
+| 13i/13 the reading lists' Details, in both themes | 35 | 240 | 15% | passed | 10 passed, 0 failed |
+| 13j/13 every pre-K line and question on a short phone, in both themes | 1858 | 3100 | 60% | passed | 23 passed, 0 failed |
+| 13k/13 every drawing on an answer tile, at its edge, in both themes | 322 | 660 | 49% | passed | 4 passed, 0 failed |
+| 13l/13 every drawing on the dark theme's lesson paper, at its edge | 608 | 1030 | 59% | passed | 8 passed, 0 failed |
+| 13m/13 no word under the scroll cue on a short phone, in both themes | 496 | 1020 | 49% | passed | 49 passed, 0 failed |
+| 13n/13 the grown-up's card on a device with no voice, in both themes | 1491 | 2620 | 57% | passed | 75 passed, 0 failed |
+| 13o/13 a browser too old for the app sees a note, and the page uses nothing newer than it names | 189 | 420 | 45% | passed | 36 passed, 0 failed |
+| 13p/13 a student signed out after fifteen quiet minutes | 91 | 240 | 38% | passed | 15 passed, 0 failed |
+| 13q/13 a lesson's look proves itself, screen by screen | 29 | 60 | 48% | passed | 11 passed, 0 failed |
+
 ## Run of 2026-11-17 14:12 CST
 
 Began 2026-11-17 14:12 CST and ended 2026-11-17 17:25 CST, 194 minutes in all. Verdict: ALL CHECKS PASSED.

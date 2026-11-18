@@ -229,6 +229,8 @@ Since pass NP (round one's screen read): the read-along reaches a question's own
 
 Since pass NQ: every screen brief names A155 with the rows above, the Look back button that carries a course's whole label, read at 320 by 568 in both themes, as the pass packet prints it.
 
+Since pass NT (round one's screen read): What's new is read as an educator meets it, the pop-up's notes each cut at its first sentence and More Details' notes whole, at 320, 375, 390 and 393 pixels wide and wider, in both themes, for a word or a number alone on a note's last line, a number parted from its unit, a dash opening a line, and a note that leans on the one before it, which the pop-up shows alone; a definition's numbers and units are read on the Key Words card at the same widths and in print (A174).
+
 ## The lesson brief
 
 Read each lesson and bank against its cited standards and report on:
@@ -378,6 +380,8 @@ Since pass NP (round one's code read and the lead's runs): a check that builds i
 Since pass NQ (engineer F2's fixes of what round one's code reads found): a new reader of a lesson's current progress reads the lesson's own reset through lessonResetTimes and clearedByLessonReset, as every such reader does, and what is left as the student's history, on purpose, is named in the comment above the two (a lesson reset to 0 attempts had kept its confidence and its signs of guessing on Who Needs Help), Who Needs Help's rounds per module and the weekly note's Still practicing among those readers since round three's code read found them counting rounds from before the reset (engineer F4), and a line that names lessons tells two of one title apart (ten titles belong to two lessons each, and the weekly note and Since you last looked printed a shared title twice); and since engineer F3's fixes of F2's own five findings a title inside a sentence goes through lowerTitle or lessonInSentence (a button read "Look back at the first texans"), a sentence naming two lessons is read for a shared title, and a sentence about what comes next reads the code's own rule (View progress promised a lesson never passed that its questions come back); and the reason after a wrong tap is the one place the voice reads that wears no faint and no mark (Q112 (c)), held by the rules test's Q112 block.
 
 Since pass NS (round one's code read): a tool's command line is read by running it, as the lead runs it (spawnSync), its file's bytes and its terminal's notes held, and a number Mikey gave is written into the test as his number, since a test that compared the packet tool with its own constant pinned nothing; each such change is undone alone in a copy and the test run, as twelve were in pass NS.
+
+Since pass NT (round one's code read): a check of a claim about a capped score reads it below the cap, where a second point cannot hide, and the claim's code fault is planted in a copy of the logic beside the check (loadLogicCopy, never import()); a claim that something counts however it comes is held for each way it comes; a near miss of a fault that shows only on a changed tree runs its checks on such a tree, each part of the fix then undone alone; a search of the code for a name reads it whole, sets every comment form aside and leaves its own lines out, and its label says what it does not read; a plant built from a count is made from the code's count; and a claim that a change saved memory is measured by the change's own parts, since one whole run is one sample.
 
 ## The ripple read
 

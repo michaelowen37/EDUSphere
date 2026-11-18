@@ -1,13 +1,14 @@
-NS: Q120 to Q122: a packet for each agent, the print card, the Key Word
+NT: Q123 in Mikey's words; tools items L34, L31 and L36 in part
 
-- Pass NS (committed through NR): a small pass at the end of the week, building Mikey's answers Q120 (a), Q121 (a) and Q122 (a).
-- Q120 (a): each engineer, writer and reader gets a task packet of its own rows of RULES-AUDIT and EARMARKS, read whole beside its brief (node tools/pass-packet.mjs --task, about 40,000 bytes or less, with its words checked against the rows they name), and the lead reads RULES-AUDIT sections 9 to 11 whole; written into the records, CLAUDE.md's first line and the docs sync test.
-- Q121 (a): the Key Word What holds a confidence score down says what computeConfidence does, in his chosen words. Q123 raised: that sentence can be read two ways.
-- Q122 (a): with no voice, Print tells us something's "What does this print tell us?" shows the grown-up's card (67 banks, 31 hiding kinds), the picture hidden under the card, the buttons numbered, and the card asking the grown-up to read the question again once the print shows.
-- Round one's code read (Fable) and screen read (Opus), round two's records read (Fable), and their fixes: the packet test runs the command line and holds the 40,000; each key word's name wraps balanced; EARMARKS A172; the records say what a task packet copies; two blank lines that split RULES-AUDIT's tables taken out.
-- check.sh: every test passed, the rules test 3,318; the second run's last six steps ran alone on the same copy after a restart of the machine killed it (Mikey's standing word of pass NQ); the first run failed one pin of the screen code, fixed.
+- Pass NT (committed through NS): a small pass at the end of the week, building Mikey's answer Q123 (a) with his own words for its end, then the three tools items pass NS could not reach.
+- Q123 (a): the Key Word What holds a confidence score down gives each rule its own sentence, in his words ("student's" made "students"), with the two phrases he took: "questions that come back" and "can earn that point instead". The rules test reads the point below the score's top and for every way a question comes back, with nineteen word plants and two code faults. What's new gains a block for November 18.
+- L34: the floor guard's plants read the baseline and run on a raised tree too; question-screens' floor of older stories is 71; part two's line Module ids names the rules test for its counts.
+- L31: the docs sync test reads every name and path the three CLAUDE files mention against the tree, each name whole and outside comments, the names that are not the project's code kept with their reasons.
+- L36, in part: the rules test loads its planted copies of the logic in contexts of their own and says its memory before its summary; what stays live past Node's default heap waits for a heap snapshot.
+- Round one's code read (Fable) and screen read (Opus), round two's records read (Fable), and their fixes: the point read below the top and for every way back; the floor guard's plants on a raised tree; names read whole; What's new's notes keep their last two words together and wrap evenly, in a row of their own; L27 and L36 open again to the packet tool; EARMARKS A173 and A174.
+- check.sh: every test passed in one run of 189 minutes, none past two thirds of its limit; the rules test 3,319.
 
-Passes: NS
+Passes: NT
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01NP3XVNmSE7KT79AY7L9dVu
+Claude-Session: https://claude.ai/code/session_01NP3XVR7HdPXSxLvft2Dr4g

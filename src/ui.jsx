@@ -16682,7 +16682,9 @@ function EduSphereScreens() {
         <div className="edu-rise" style={{ width: 'min(440px, 100%)', maxHeight: '85vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
           <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700 }}>What's new</p>
           <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{news.date}</p>
-          <ul data-news-brief="" style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{newsBrief.slice(0, 4).map((t, k) => <li key={k} style={{ marginBottom: 4 }}>{t}</li>)}</ul>
+          {/* Each note keeps its last two words together and wraps evenly (pass NT, round one's screen read: the worked example ended on "4."
+              alone at 320 pixels, and a note on "sentence." alone at 390 and 393, the widths most iPhones have). */}
+          <ul data-news-brief="" style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{newsBrief.slice(0, 4).map((t, k) => <li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>)}</ul>
           {newsBrief.length > 4 && <p style={{ margin: '-8px 0 14px', fontSize: 14, color: C.muted }}>And {newsBrief.length - 4} more in More Details.</p>}
           <Btn onClick={dismissNews}>Got it</Btn>
           <p style={{ margin: '14px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 15 }} onClick={async () => { await dismissNews(); setScreen('whats-new'); }}>More Details</button></p>
@@ -17498,8 +17500,10 @@ function EduSphereScreens() {
         {blocks.map((bk, i) => (
           <div key={`${bk.date}-${i}`} style={{ ...card, marginBottom: 14 }} data-news-block="">
             <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 17 }}>{bk.date}</p>
-            {bk.title && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>{bk.title.charAt(0).toUpperCase() + bk.title.slice(1)}</p>}
-            <ul style={{ margin: 0, padding: '0 0 0 20px', fontSize: 15, lineHeight: 1.6 }}>{bk.items.map((t, k) => <li key={k} style={{ marginBottom: 6 }}>{t}</li>)}</ul>
+            {/* The title wraps balanced, and each note keeps its last two words together and wraps evenly, as the pop-up's do (pass NT,
+                round one's screen read: a title ended on "time" alone at 412 to 430 pixels, and a note on "sixth." alone at 414). */}
+            {bk.title && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textWrap: 'balance' }}>{bk.title.charAt(0).toUpperCase() + bk.title.slice(1)}</p>}
+            <ul style={{ margin: 0, padding: '0 0 0 20px', fontSize: 15, lineHeight: 1.6 }}>{bk.items.map((t, k) => <li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>)}</ul>
           </div>
         ))}
       </div></div>

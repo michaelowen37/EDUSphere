@@ -200,6 +200,12 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NT (Mikey's answer Q123 in his own words, and three tools items: the floor guard's plants, the names in the CLAUDE files, and the rules test's planted copies)
+
+- A sentence of Mikey's own words that reads two ways is offered a fix as a choice and left as he wrote it until he takes one; his typo is fixed and told. He took two phrases in pass NT ("questions that come back" and "that point instead"), each saying outright what the score does.
+- A worked example in a What's new note is worked out from the code, and its claims are held to what the code does in every state, not only the example's: "a student with eight right in a row" is the latest eight answers, since a miss in the newest round breaks the run.
+- A note the pop-up shows alone, cut at its first sentence, stands on its own words; one that opens "For example" leans on a note the pop-up may not show beside it.
+
 ## Learned in pass NS (Mikey's answers Q120 to Q122: a packet for each agent, the grown-up's card for Print tells us something, and the Key Word on what holds a confidence score down)
 
 - A card says its question in words that point at nothing while its picture hides ("What does this print tell us?" under a card with no print showing), so it tells the grown-up to read the question again once the picture shows (round one's code and screen reads).

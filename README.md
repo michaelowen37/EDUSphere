@@ -256,8 +256,9 @@ newest version by opening the address.
   restore, the build, a render check, a syntax check, a real-browser click-through of
   every screen, and a reload test of the standalone page. It must end with
   `ALL CHECKS PASSED`.
-- `node tests/logic.test.mjs` runs the rules alone, which is the fastest loop when
-  changing content or logic.
+- `node --max-old-space-size=4096 tests/logic.test.mjs` runs the rules alone, which is
+  the fastest loop when changing content or logic (since pass NR its whole run needs
+  more than Node's default heap of about 2 GB, so it is given 4 GB).
 - `./build.sh` generates two things from `src/logic.mjs` (content and rules),
   `src/curriculum.mjs` (the standards map) and `src/ui.jsx` (screens):
   `dist/edusphere-prototype.jsx` for the chat preview, and `index.html` for everyone

@@ -574,12 +574,12 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.III.C.3', text: 'Child produces some distinct letter-sound correspondences with adult assistance.', moduleIds: ['letters-and-sounds'] },
       { framework: 'TEKS', code: 'PK3.IV.C.5', text: 'Child demonstrates emerging use of spacing in their writing attempts with adult support.', moduleIds: ['space-between-words'] },
       { framework: 'TEKS', code: 'PK3.III.E.4', text: 'Child begins to notice the basic features of print.', moduleIds: ['space-between-words'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['space-between-words', 'pictures-and-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['space-between-words', 'pictures-and-words', 'words-all-around'] },
       // Pass NM: Listen to the story, PK3 III.D.4 whole and Head Start's P-LIT 5 in part, its 36 to 48 month progression (EARMARKS E12, the
       // standards review of Domain III's questions about a story), and Pictures and words, PK3 III.E.2 whole, joining the P-LIT 2 row with its
       // 36 to 48 month progression whole (print told from pictures, and print something meaningful).
       { framework: 'TEKS', code: 'PK3.III.D.4', text: 'Child responds to questions relevant to the text read aloud with adult assistance.', moduleIds: ['listen-to-the-story'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.5', text: 'Asks and answers questions about a book that was read aloud.', moduleIds: ['listen-to-the-story', 'what-happens-next'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.5', text: 'Asks and answers questions about a book that was read aloud.', moduleIds: ['listen-to-the-story', 'what-happens-next', 'that-is-like-me'] },
       { framework: 'TEKS', code: 'PK3.III.E.2', text: 'Child can distinguish between pictures and print.', moduleIds: ['pictures-and-words'] },
       // Pass NP: What happens next?, PK3 III.D.5 whole, joining the P-LIT 5 row (its predictions, with modeling and support), and Act it out,
       // PK3 III.D.1 in part and Head Start's P-LIT 4 in part, its 36 to 48 month progression (EARMARKS E12, the standards review of Domain
@@ -590,6 +590,16 @@ const PREK_TAUGHT = [
       // Pass NP's second wave: Hold a book, PK3 III.E.3 in part (EARMARKS E12, the standards review of Domain III's book handling: the child's
       // own handling of a real book and pretending to read it, with a grown-up, are the child's own, which its turn asks for).
       { framework: 'TEKS', code: 'PK3.III.E.3', text: 'Child handles books with increasing skill and imitates reading with awareness of directionality.', moduleIds: ['hold-a-book'] },
+      // Pass NR: Words all around us, PK3 III.E.1 whole (EARMARKS E12, the standards review of Domain III's print all around us: words
+      // noticed outside books and what each tells us, by where it is seen), joining the P-LIT 2 row with its 36 to 48 month progression's
+      // print as something meaningful, asking a grown-up what it says.
+      { framework: 'TEKS', code: 'PK3.III.E.1', text: 'Child notices and connects meaning to environmental print.', moduleIds: ['words-all-around'] },
+      // Pass NR's second wave: That is like me!, PK3 III.D.2 in part (EARMARKS E12, the standards review of Domain III's connections to books
+      // read aloud: what a personal connection is and how to tell one, something in a story, a thing, a place, something that happened or a
+      // feeling, like something in a listener's own life, are taught and asked, the voice the adult assistance, while the child's own
+      // connections, told to a grown-up, are the turn's; in part since round one's lesson reads), joining the P-LIT 5 row for the likes of
+      // its 36 to 48 month progression's first sentence (which part a friend liked best, and the child's own in the turn; dislikes not taught).
+      { framework: 'TEKS', code: 'PK3.III.D.2', text: 'Child makes personal connections to books read aloud with adult assistance.', moduleIds: ['that-is-like-me'] },
       // Pass NF: Look and write, PK3 IV.C.3 and IV.C.1 in part and Head Start's P-LIT 6 in part, its 36 to 48 month progression (EARMARKS E12,
       // Domain IV beside the letters: letter-like forms and real letters made with a model, and a name's first letter).
       { framework: 'TEKS', code: 'PK3.IV.C.3', text: 'Child uses letter like forms when writing and begins to include recognizable letters with a model and adult guidance.', moduleIds: ['look-and-write'] },
@@ -725,7 +735,7 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK4.IV.C.3', text: 'Child writes familiar words using letter-sound correspondences, often using letters associated with beginning, medial and/or ending sounds to write words with adult support as needed.', moduleIds: ['write-by-sounds'] },
       { framework: 'TEKS', code: 'PK4.IV.C.5', text: 'Child demonstrates use of spacing in their writing with adult support as needed.', moduleIds: ['spaces-between-words'] },
       { framework: 'TEKS', code: 'PK4.III.E.2', text: 'Child can distinguish between elements of print including letters, words, and pictures.', moduleIds: ['spaces-between-words'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['spaces-between-words', 'end-marks', 'which-way-we-read-pk'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['spaces-between-words', 'end-marks', 'which-way-we-read-pk', 'print-tells-us'] },
       // Pass NK's second wave: End marks, PK4 III.E.4 whole (end punctuation and case) and IV.C.6 in part (a mark put at the end when
       // writing, chosen for a sentence heard; the child's own writing with punctuation waits), joining the P-LIT 2 row; and Small letters,
       // III.C.1 in part (eighteen big letters by name and seven small ones), joining the III.C.1 and P-LIT 3 rows.
@@ -744,6 +754,16 @@ const PREK_TAUGHT = [
       // Pass NP's second wave: Which way we read, PK4 III.E.3 in part (the child's own holding of a real book and pointing to each word as a
       // grown-up reads are the child's own; EARMARKS E13), joining the P-LIT 2 row (its 48 to 60 month progression's holding a book correctly and following it left to right).
       { framework: 'TEKS', code: 'PK4.III.E.3', text: 'Child holds books right side up and demonstrates understanding of print directionality.', moduleIds: ['which-way-we-read-pk'] },
+      // Pass NR: Print tells us something, PK4 III.E.1 whole (EARMARKS E13, the standards review of Domain III's print all around us: all
+      // print says something a writer wrote to tell a reader, and print is talk written down), joining the P-LIT 2 row (its 48 to 60 month
+      // progression's first sentence, the connection between speech and print).
+      { framework: 'TEKS', code: 'PK4.III.E.1', text: 'Child recognizes that all print carries meaning and serves as a means for communication.', moduleIds: ['print-tells-us'] },
+      // Pass NR's second wave: That reminds me!, PK4 III.D.2 in part (EARMARKS E13, the standards review of Domain III's connections to books
+      // read aloud: what a connection is, to a listener's own life and to another story, and how two stories are alike are taught and asked,
+      // the voice the adult assistance, while the child's own connections, told to a grown-up, are the turn's; in part since round one's
+      // lesson reads); it joins no Head Start row, since P-LIT 5's 48 to 60 month progression asks about a story's details and inferences,
+      // which Questions about a story and Story clues teach, and not connections.
+      { framework: 'TEKS', code: 'PK4.III.D.2', text: 'Child makes connections between books read aloud and personal experiences or ideas from other texts with adult assistance.', moduleIds: ['that-reminds-me'] },
       // Pass NL: Almost the same and More small letters, III.C.1 in part (with Small letters, fifteen small letters by name, as many as it asks,
       // and with the lessons before them twenty-two big letters, while naming them aloud is the child's own talk), each joining the III.C.1
       // and P-LIT 3 rows.

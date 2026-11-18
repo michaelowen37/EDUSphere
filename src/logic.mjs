@@ -63,7 +63,12 @@ export function lowerTitle(title) {
   // the same (pass MH, the second read of the late fixes: "Massachusetts belonged to new England."): New England, New York and
   // New Orleans keep it, and new ocean floor does not.
   const common = /^(Big|Standard|Social|New)$/.test(first) && !/^[A-Z]/.test(words[1] || '');
-  words[0] = keep && !common ? first : first.charAt(0).toLowerCase() + first.slice(1);
+  // A title that opens with Because keeps its capital too (pass NR, round three's screen read, its SHOULD CONSIDER 2). In plain terms:
+  // lowercased, the title of the two Because lessons (philosophy for Kindergarten to grade 2, and for grades 3 to 5) read as the
+  // sentence's own word, "B-1's confidence score in because from philosophy for Kindergarten to grade 2 currently stands at 5 out of 5."
+  // and "B-1 has not opened because yet.", and so did grade 3's Because, so, then; with its capital the title reads as a lesson's name.
+  const because = /^Because\b/.test(first);
+  words[0] = (keep && !common) || because ? first : first.charAt(0).toLowerCase() + first.slice(1);
   return words.map((w, i) => (i === 0 ? w : (/^[A-Z]{2,}/.test(w) || /^(DNA|RNA|Earth|Newton|Ohm|Boyle|Punnett|Pythagorean|Milky|Gulf|Big|Bang)$/.test(w) ? w : w))).join(' ');
 }
 
@@ -114,14 +119,44 @@ export function planRowName(entry, entries) {
 }
 // One line for a course anywhere it appears in a list.
 export function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject})`; }
-// A lesson named inside a sentence (pass NQ, F3). In plain terms: its title as lowerTitle writes it, so a name keeps its capital ("the
-// first Texans", where lowercasing the whole title read "the first texans"), with its course beside it (courseLabel) when the lesson it
-// is named beside has the same title, as the weekly note tells two lessons of one title apart. A loop back from The first Texans in
-// grade 7 goes to The first Texans in grade 4, and "a quick look back at the first Texans" read as a look back at the lesson itself.
-export function lessonInSentence(id, besideId = null) {
+// The course a lesson is from, said inside a sentence (pass NR, the screen read's MUST FIX 2, EARMARKS A155): its grade as
+// gradeInSentence says it and its subject in lower case, "fourth grade history", the words the report's summary uses for a course; an
+// elective made for a band of grades is said by its band, since its first grade alone would name one year of several, and its subject
+// comes first, "technology for grades 9 to 12" and "philosophy for Kindergarten to grade 2" (round one's code read, SHOULD CONSIDER 1:
+// "Because from Kindergarten to grade 2 philosophy" read as a range from one thing to another). Until pass NR a sentence carried the
+// course's list label (courseLabel), and a child read "a quick look back at the first Texans in The story of Texas (Grade 4 - History)".
+export function courseInSentence(course) {
+  const band = course.elective && course.audience && /^(?:Grades|Kindergarten to) /.test(course.audience) ? course.audience.replace(/^Grades /, 'grades ') : null;
+  const subject = String(course.subject).toLowerCase();
+  return band ? `${subject} for ${band}` : `${gradeInSentence(course.grade)} ${subject}`;
+}
+// One rule for two lessons of one title (pass NR, EARMARKS A156 and the screen read's MUST FIX 4). In plain terms: ten titles belong to
+// two lessons each (More and fewer is a pre-K 3 lesson and a pre-K 4 one; The first Texans a grade 4 lesson and a grade 7 one), and a
+// title needs its course beside it wherever another lesson of that title is in one of the student's assigned courses (enabledIds, the
+// list enabledCourseIds gives), or is among the lessons the same sentence or page names or speaks of (besideIds), as a loop back from
+// grade 7's The first Texans to grade 4's names both when only grade 7's course is assigned. Every place that names a lesson for a
+// person reads it here (lessonInSentence, the stuck and practice review sentences, Who Needs Help, the weekly note, Since you last looked,
+// Practice so far and the lesson page), so no screen names two lessons the same way. Until pass NR each place decided pair by pair: Who
+// Needs Help named a lesson by its title alone in five of its reasons, and View progress said "the lesson Spanish and Mexican Texas stays
+// locked" beside grade 4's lesson of that title, open on the same report.
+export function sharesTitle(id, enabledIds = [], besideIds = []) {
+  const m = getModule(id); if (!m) return false;
+  const enabled = enabledIds || []; const beside = besideIds || [];
+  return MODULES.some((x) => x.id !== m.id && x.title === m.title && (enabled.includes(x.courseId) || beside.includes(x.id)));
+}
+// The words a sentence puts after a lesson's title to say which lesson it is: " from fourth grade history" when the title needs its
+// course (sharesTitle), and nothing when it does not.
+export function fromCourse(id, enabledIds = [], besideIds = []) {
+  return sharesTitle(id, enabledIds, besideIds) ? ` from ${courseInSentence(getCourse(getModule(id).courseId))}` : '';
+}
+// A lesson named inside a sentence (pass NQ, F3; the one rule above since pass NR). In plain terms: its title as lowerTitle writes it, so
+// a name keeps its capital ("the first Texans", where lowercasing the whole title read "the first texans"), followed by its course
+// (fromCourse) when the lesson it is named beside (besideId) or another lesson in the student's assigned courses (enabledIds) has the same
+// title. A loop back from The first Texans in grade 7 goes to The first Texans in grade 4, and "a quick look back at the first Texans" read
+// as a look back at the lesson itself; it now reads "a quick look back at the first Texans from fourth grade history".
+export function lessonInSentence(id, besideId = null, enabledIds = []) {
   const m = getModule(id); if (!m) return '';
-  const other = besideId ? getModule(besideId) : null;
-  return other && other.id !== m.id && other.title === m.title ? `${lowerTitle(m.title)} in ${courseLabel(getCourse(m.courseId))}` : lowerTitle(m.title);
+  return `${lowerTitle(m.title)}${fromCourse(id, enabledIds, besideId ? [besideId] : [])}`;
 }
 
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and
@@ -1593,11 +1628,16 @@ export function printedChoice(q, c, voice = true) { return voice && q && q.heard
 // question shows carries unvoicedStory, a grown-up's line printed in the setup's place with no voice (the spacing questions' sentence
 // with its spaces sat above writing that may have none); the grown-up reads the writing's own words aloud.
 export const UNVOICED_SPACING = 'For the grown-up: read the words aloud, then ask.';
+// Since round three's screen read of pass NR (its MUST FIX 1) a question whose prompt, printed whole, would give its answer away to a
+// child who compares it with what the question shows carries unvoicedPrompt, the words printed in the prompt's place with no voice, as
+// unvoicedStory is printed in the setup's place: p4-print-which's four note questions printed "Which print tells Ana, I love you?" above
+// the note's tile, which prints I love you, on 643 of seeds 1 to 2,000 with no voice, where a device with a voice prints PRINT4_WHICH_SHOWN's
+// "Which print tells Ana what Mom wrote?". With no voice they print those words too, and the grown-up reads them aloud.
 export function printedQuestion(q, voice = true) {
   if (!q) return { story: null, prompt: '' };
   if (voice) return { story: q.printedStory ? q.printedStory : q.story || null, prompt: q.printed ? q.printed : q.prompt };
-  if (q.unvoicedStory) return { story: q.unvoicedStory, prompt: q.prompt };
-  return { story: q.story ? mannerCues(q.story, q.voices) : null, prompt: q.prompt };
+  if (q.unvoicedStory) return { story: q.unvoicedStory, prompt: q.unvoicedPrompt || q.prompt };
+  return { story: q.story ? mannerCues(q.story, q.voices) : null, prompt: q.unvoicedPrompt || q.prompt };
 }
 // What a read-aloud question says and prints, part by part, for the read-along (pass NP, readAlongMap): its setup, then its question,
 // each said as written and printed as the screen prints it (shown, printedQuestion's with a voice unless the screen hands its own), so a
@@ -5804,12 +5844,12 @@ function PREK3_READING_MODULES() { return [
       // real animals make many sounds, so listening closely matters.
       pictures: [{ serial: 'P101', alt: 'A duck and a dog in a sunny farmyard', step: 9 }],
       script: [
-        { say: 'The cat says meow. ' + sayAlong('meow', ['slow', 'mouse', 'silly', 'fast', 'stretch']), show: { kind: 'pic', name: 'cat' } },
+        { say: 'The cat says meow. ' + sayAlong('meow', ['slow', 'whisper', 'silly', 'fast', 'stretch']), show: { kind: 'pic', name: 'cat' } },
         { say: 'The duck says quack. ' + sayAlong('quack', ['giant', 'whisper', 'bounce', 'fast', 'dough']), show: { kind: 'pic', name: 'duck' } },
         { say: 'The bee says buzz. ' + sayAlong('buzz', ['slow', 'whisper', 'slide', 'fast', 'stretch']), show: { kind: 'pic', name: 'bee' } },
-        { say: 'The frog says ribbit. ' + sayAlong('ribbit', ['slow', 'mouse', 'bounce', 'fast', 'dough']), show: { kind: 'pic', name: 'frog' } },
+        { say: 'The frog says ribbit. ' + sayAlong('ribbit', ['slow', 'whisper', 'bounce', 'fast', 'dough']), show: { kind: 'pic', name: 'frog' } },
         { say: 'The owl says hoot. ' + sayAlong('hoot', ['giant', 'whisper', 'chant', 'fast', 'stretch']), show: { kind: 'pic', name: 'owl' } },
-        { say: 'The bear says growl. ' + sayAlong('growl', ['giant', 'mouse', 'silly', 'fast', 'dough']), show: { kind: 'pic', name: 'bear' } },
+        { say: 'The bear says growl. ' + sayAlong('growl', ['giant', 'whisper', 'silly', 'fast', 'dough']), show: { kind: 'pic', name: 'bear' } },
         { say: 'Many animals have a sound of their own. When you hear one, you can tell which animal is near.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
         { say: 'Hearing helps you know what is near. When you hear hoot, an owl may be near, even when you cannot see it.', show: { kind: 'pic', name: 'owl' } },
         { say: 'Listen. Meow, then quack. You heard the cat first, because the cat says meow. You heard the duck second, because the duck says quack.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
@@ -6667,7 +6707,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Now you try. Which story did you like best, the lost hat or the lost sock? Tell a grown-up.', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'sock' } }, voices: [['Which story did you like best, the lost hat or the lost sock?', 'ask'], ['Tell a grown-up.', 'tell', 'turn']] },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and teaches listening for who is in a story, what they do, where things are and how someone feels, and asks the child who lost or found a thing, what a friend lost or found, where a friend looked or found it, how a friend felt and whether a friend lost or found it, the child responding by tapping a picture or Yes or No, the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson answers questions about a story\'s main characters and events and asks the child which story they liked best, to tell a grown-up in a turn of their own, while making predictions is What happens next?\'s, and asking questions about a story waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.4 (responds to questions relevant to the text read aloud with adult assistance.), since the lesson reads short stories aloud and teaches listening for who is in a story, what they do, where things are and how someone feels, and asks the child who lost or found a thing, what a friend lost or found, where a friend looked or found it, how a friend felt and whether a friend lost or found it, the child responding by tapping a picture or Yes or No, the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson answers questions about a story\'s main characters and events and asks the child which story they liked best, to tell a grown-up in a turn of their own, while dislikes are not taught, making predictions is What happens next?\'s, and asking questions about a story waits (EARMARKS E12).'],
     generators: ['p3-tale-who', 'p3-tale-what', 'p3-tale-where', 'p3-tale-feel', 'p3-tale-yesno'],
   },
   // Pictures and words (pass NM, PK3 III.E.2 whole and Head Start P-LIT 2's 36 to 48 month progression whole; Claude's design): a page
@@ -6742,7 +6782,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Now you try. When a grown-up reads you a book, stop and guess what will happen next. Then listen to find out.', show: { kind: 'icon', name: 'book' }, voices: [['When a grown-up reads you a book, stop and guess what will happen next.', 'tell'], ['Then listen to find out.', 'tell', 'turn']] },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.5 (attempts to make predictions about a text with adult assistance), since the lesson teaches that a guess about what will happen next in a story is called a prediction, that clues the story tells us help us make a good guess, that a good guess fits its story\'s clues, so a picture that is a good guess after one story is not after another, and that not everything in a story is a clue, that we listen on to find out whether a guess was right, and that a guess that is not right is okay, and asks the child what will happen next in a short story read aloud, how someone will feel, which one was the clue, whether a guess was right once the story told what happened, and whether a guess shown is a good one, the child making each prediction by a tap and the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson models predictions about events that might happen next and has the child make them with support, while answering questions about likes and about main characters and events are Listen to the story\'s, and asking questions about a story waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.5 (attempts to make predictions about a text with adult assistance), since the lesson teaches that a guess about what will happen next in a story is called a prediction, that clues the story tells us help us make a good guess, that a good guess fits its story\'s clues, so a picture that is a good guess after one story is not after another, and that not everything in a story is a clue, that we listen on to find out whether a guess was right, and that a guess that is not right is okay, and asks the child what will happen next in a short story read aloud, how someone will feel, which one was the clue, whether a guess was right once the story told what happened, and whether a guess shown is a good one, the child making each prediction by a tap and the voice the adult assistance, so it is taught whole, and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), whose 36 to 48 month progression reads "Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.", in part, since the lesson models predictions about events that might happen next and has the child make them with support, while answering questions about main characters and events is Listen to the story\'s, likes are asked in Listen to the story\'s turn and in That is like me!, dislikes are not taught, and asking questions about a story waits (EARMARKS E12).'],
     generators: ['p3-next-guess', 'p3-next-feel', 'p3-next-clue', 'p3-next-check', 'p3-next-good'],
   },
   // Act it out (pass NP, PK3 III.D.1 and Head Start P-LIT 4 in part; Claude's design): after a story, we can act it out, pretending to
@@ -6818,6 +6858,101 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.3 (handles books with increasing skill and imitates reading with awareness of directionality.), in part, since the lesson teaches the front and the back of a book, holding it right side up, opening it at the front and turning one page at a time, and that on a page we start reading at the top, by the first word, read along each line, in English, the way an arrow points, and stop at the bottom, after the last word, and asks the child which one is the front or the back of a book, which book is right side up or upside down, and where on a page we start or stop reading, the child answering by a tap, while the child\'s own handling of a real book and pretending to read it, with a grown-up, are the child\'s own, which a turn of the child\'s own asks for (EARMARKS E12).'],
     generators: ['p3-book-front', 'p3-book-up', 'p3-book-start', 'p3-book-isfront', 'p3-book-isstart'],
+  },
+  // Words all around us (pass NR, PK3 III.E.1 whole and Head Start P-LIT 2 in part; the lead's design): words are not only in books but
+  // all around us, on signs, on boxes and on doors, while this tree, this ball and this dog have none; each word tells us something, and
+  // where we see a word can help us know what it says (a stop sign tells cars to stop, the word on a milk carton tells us what is inside,
+  // a name on a cubby tells us who it is for, and a sign on a shop's door tells us that we can go in); and a grown-up can read words to
+  // us when we ask, What does this say? Its four pictures with words (sign~stop, milk~carton, cubby~name, door~open) are drawn by the
+  // app, since each carries the word a question depends on. Since the week's research sweep (pass NR) line 4 finds a letter inside the print, stop starts with the
+  // letter S, just like sun (S is Letters and sounds' letter), and the turn asks for a letter the child knows; no question asks it. The
+  // child's own looking for words around them, and asking a grown-up what they say, is the turn's. It builds on Pictures and words, which
+  // tells the words on a page from its picture and shows that we read the words (Mikey's answer to Q84).
+  // Five lines name a picture their first words did not (tests/scripts.test.mjs: every drawn picture on a line is named by it): line 1 the
+  // milk carton among the boxes, line 8 the milk carton and the cubby, line 9 the stop sign, line 11 the teacher as a grown-up, and line 13
+  // all three of its row. Since round one's lesson reads (pass NR): line 2 asks about this tree and says this tree, this ball and this
+  // dog, since many balls carry words; lines 5 and 10 ask what does this word tell us and what does its word say, as their banks do;
+  // line 8's sentence of 32 words is three; where we see a word can help us know what it says, since a shop's door can say open or
+  // closed; and the turn looks for words with a grown-up.
+  {
+    id: 'words-all-around',
+    skill: 'Writing',
+    order: 33,
+    requires: ['pictures-and-words'],
+    requiresWhy: 'Words all around us looks for words outside books, on signs, boxes and doors, and finds what each tells us, so it builds on Pictures and words, which tells the words on a page from its picture and shows that we read the words.',
+    title: 'Words all around us',
+    tagline: 'Signs, boxes and doors',
+    lesson: {
+      paragraphs: ['Words are not only in books. Words are all around us, on signs, on boxes and on doors.', 'And words tell us things. A stop sign tells cars to stop, the word on a milk carton tells us what is inside, a name on a cubby tells us who it is for, and a sign on a shop\'s door can tell us that we can go in.', 'Where we see a word can help us know what it says. And when we want to know what words say, we can ask a grown-up, What does this say?'],
+      keyIdea: 'Words are all around us, and they tell us things. Ask a grown-up, What does this say?',
+      example: { kind: 'icon', name: 'milk~carton', caption: 'The word on a milk carton tells us what is inside.' },
+      script: [
+        { say: 'Words are not only in books. Words are all around us, on signs, on boxes like this milk carton, and on doors. Let\'s look for them!', show: { kind: 'row', items: [{ kind: 'icon', name: 'sign~stop' }, { kind: 'icon', name: 'milk~carton' }, { kind: 'icon', name: 'door~open' }] } },
+        { say: 'Does this tree have words on it? No! This tree, this ball and this dog have no words on them.', show: { kind: 'row', items: [{ kind: 'icon', name: 'tree' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'dog~sit' }] } },
+        { say: 'Which one has a word on it? The stop sign! And which one has no words on it? The tree.', show: { kind: 'pair', a: { kind: 'icon', name: 'sign~stop' }, b: { kind: 'icon', name: 'tree' } } },
+        { say: 'This red sign with eight sides stands at the corner. Its word says stop, and stop starts with the letter S, just like sun. It tells cars to stop.', show: { kind: 'pair', a: { kind: 'icon', name: 'sign~stop' }, b: { kind: 'icon', name: 'sun' } } },
+        { say: 'This milk carton has a word on it too, and its word says milk. What does this word tell us? It tells us what is inside. Milk!', show: { kind: 'icon', name: 'milk~carton' } },
+        { say: 'Here is a cubby at school, with a name above it. The name says Sam, and it tells us who the cubby is for. It is Sam\'s!', show: { kind: 'icon', name: 'cubby~name' } },
+        { say: 'This shop\'s door has a sign. Its word says open, and it tells us that we can go in.', show: { kind: 'icon', name: 'door~open' } },
+        { say: 'Words tell us things. A sign can tell us to stop. The word on a milk carton can tell us what is inside. And a name on a cubby can tell us who it is for.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sign~stop' }, { kind: 'icon', name: 'milk~carton' }, { kind: 'icon', name: 'cubby~name' }] } },
+        { say: 'Which one tells us what is inside? The milk carton! Its word says milk, and the stop sign\'s word says stop.', show: { kind: 'pair', a: { kind: 'icon', name: 'milk~carton' }, b: { kind: 'icon', name: 'sign~stop' } } },
+        { say: 'Where we see a word can help us know what it says. A red sign with eight sides stands at the corner. What does its word say? Stop! And the word on a shop\'s door can say open.', show: { kind: 'pair', a: { kind: 'icon', name: 'sign~stop' }, b: { kind: 'icon', name: 'door~open' } } },
+        { say: 'When you see words and want to know what they say, ask a grown-up, What does this say? A grown-up, like your teacher, can read the words to you.', show: { kind: 'icon', name: 'teacher' } },
+        { say: 'Now you try. With a grown-up, look for words on a sign, a box or a door. Point to them, find a letter you know, and ask, What does this say?', show: null, voices: [['With a grown-up, look for words on a sign, a box or a door.', 'tell'], ['Point to them, find a letter you know, and ask, What does this say?', 'ask', 'turn']] },
+        { say: 'Words are all around us, on signs, milk cartons and doors, and they tell us things. Ask a grown-up, What does this say?', show: { kind: 'row', items: [{ kind: 'icon', name: 'sign~stop' }, { kind: 'icon', name: 'milk~carton' }, { kind: 'icon', name: 'door~open' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.1 (notices and connects meaning to environmental print.), since the lesson teaches that words are all around us, outside books, on a stop sign, a milk carton, a cubby\'s name card and a shop\'s door, has the child notice which things have words on them and which have none, and connects each to what it tells us, to stop, what is inside, who it is for and that we can go in, by where the words are seen, and finds the letter a sign\'s word starts with, the child answering by a tap, with a turn of the child\'s own to look for words around them and ask a grown-up what they say, and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 36 to 48 month progression reads "Distinguishes print from pictures and shows an understanding that print is something meaningful, such as asking an adult "What does this say?" or "Read this."", in part, since the lesson teaches that print all around us is something meaningful, and asking a grown-up, What does this say?, while distinguishing print from pictures is taught in Pictures and words.'],
+    generators: ['p3-around-has', 'p3-around-tells', 'p3-around-which', 'p3-around-says', 'p3-around-yesno'],
+  },
+  // That is like me! (pass NR's second wave, PK3 III.D.2 in part and Head Start P-LIT 5 in part; the lead's design): a story read aloud
+  // can make us think of our own life, and a connection is when something in a story, a thing, a place, something that happened or a
+  // feeling, is like something in our own life; something said that is not about the story is not a connection; and we can tell what part
+  // of a story we liked best. The app cannot know a child's own life, so no question asks about it: each asks about Ben's stories and what
+  // his friends say of them (LINK3_STORIES, LINK3_NOT, LINK3_YESNO, LINK3_FEELS and LINK3_LIKED), and the child's own connections, and the
+  // part the child liked best, are the turn's, with a grown-up, the adult assistance; so III.D.2 is cited in part (round one's lesson
+  // reads, pass NR). It builds on Listen to the story, which listens to a short story and answers questions about it (Mikey's answer to
+  // Q84).
+  // Where the lead's lines changed, and the rule that changed each (the engineer's build): line 1 and the last line name the book they
+  // show, and line 4 the book and the teddy it shows (tests/scripts.test.mjs: every drawn picture on a line is named by it); line 4 says
+  // the four kinds of connection and a new line 10 tells a place connection, which no line had; lines 5, 7, 8 and 9 ask their bank's own
+  // question, the yes or no, the feeling, which one is not about the story and which part Mia liked best, with Mia's "favorite part" said
+  // as the bank says it (every kind modeled by a line in its bank's words); line 10 shows the slide, which the liked bank shows (every
+  // picture a bank shows drawn in its lesson); line 3's first sentence ends after Mia listened, since lines 2 and 3 read as one stretch of
+  // sentences of a length (tools/lesson-flow.mjs, monotone); and the turn's "that is like me! and tell how." is two sentences, That is
+  // like me! And tell how., since the read-along ends a sentence at every end mark. Since round one's lesson reads (pass NR): line 4 says
+  // like one way only ("In our book, it was a teddy."); line 9 models the liked bank with a story of two parts, one picture for each, as
+  // the bank deals it (Mia's part had held both pictures); and the turn asks for the part the child liked best too. Since round two's
+  // read: line 8 asks the which bank's own question word for word, a connection to the story, as every line that models a kind does.
+  {
+    id: 'that-is-like-me',
+    skill: 'Listening',
+    order: 34,
+    requires: ['listen-to-the-story'],
+    requiresWhy: 'That is like me! listens to a short story and thinks about how it is like your own life, so it builds on Listen to the story, which listens to a short story and answers questions about it.',
+    title: 'That is like me!',
+    tagline: 'A story and my life',
+    lesson: {
+      paragraphs: ['When we listen to a story, we can think, is anything in the story like me? A story can make us think of our own life. A connection is when something in a story, a thing, a place, something that happened or a feeling, is like something in your own life.', 'When Mia heard that Ben lost his teddy, she said, I lost my teddy once too! That is a connection. But when Ana said, I like pizza, that was not about Ben\'s story, so it was not a connection.', 'We can tell what part of a story we liked best. Ask a grown-up to listen while you tell how a story is like you, and which part you liked best.'],
+      keyIdea: 'A connection is when something in a story is like something in your own life. Listen, and think, is that like me?',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'teddy' }, caption: 'Ben lost his teddy in the book, and Mia lost her teddy once too.' },
+      script: [
+        { say: 'When we listen to a story in a book, we can think, is anything in the story like me?', show: { kind: 'icon', name: 'book' } },
+        { say: 'Here is a story. Ben lost his teddy bear, and he felt sad. Then he found it under his bed, and he felt happy!', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'face', feeling: 'happy' } } },
+        { say: 'Mia listened. She said, I lost my teddy once too! The story made Mia think of her own life. That is a connection.', show: { kind: 'icon', name: 'teddy' } },
+        { say: 'A connection is when something in a story is like something in your own life. In our book, it was a teddy. It can be a thing, a place, something that happened or a feeling.', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'teddy' } } },
+        { say: 'Leo said, I have a teddy bear too! Is that a connection to the story? Yes! That is a connection, because Leo has a teddy, like Ben.', show: { kind: 'icon', name: 'teddy' } },
+        { say: 'Ana said, I like pizza. Pizza is not in Ben\'s story, so that is not a connection.', show: { kind: 'icon', name: 'pizza' } },
+        { say: 'A feeling can be a connection too. Ben felt sad when he lost his teddy. Sam said, I felt sad when I lost my hat! How did they both feel? They both felt sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'Which one is a connection to the story? I lost my teddy once too! And which one is not about the story? I like pizza.', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'pizza' } } },
+        { say: 'We can tell what part we liked best. Ben hugged his teddy bear, and then he went to bed. Mia said, My favorite part was when Ben went to bed! Which part did Mia like best? The bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'bed' } } },
+        { say: 'A place can be a connection too. In a new story, Ben went down the slide at the park. Ana said, I go to the park too!', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Now you try. Listen to a story with a grown-up. Then say, That is like me! And tell how. And tell which part you liked best.', show: null, voices: [['Listen to a story with a grown-up.', 'tell'], ['And tell how.', 'tell'], ['And tell which part you liked best.', 'tell', 'turn']] },
+        { say: 'A connection is when something in a story is like something in your own life. Listen to a book, and think, is that like me?', show: { kind: 'icon', name: 'book' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.2 (makes personal connections to books read aloud with adult assistance.), in part, since what a personal connection is and how to tell one are taught and asked, that something in a story read aloud, a thing, a place, something that happened or a feeling, can be like something in a listener\'s own life, and that something said that is not about the story is not one, the child telling by a tap which friend\'s words are a connection to a story, whether a friend\'s words are a connection, how a friend and a story\'s friend both felt, and which words are not about a story, the voice the adult assistance, while the child\'s own connections, told to a grown-up after a story, are the child\'s own, which the turn asks for (EARMARKS E12), and Head Start ELOF Goal P-LIT 5 (asks and answers questions about a book that was read aloud), in part, since the lesson teaches the likes of the first sentence of its 36 to 48 month progression, "Can answer basic questions about likes or dislikes in a book or story.", asking the child by a tap which part of a story a friend liked best, with a turn of the child\'s own to tell a grown-up which part they liked best, while dislikes are not taught, answering questions about main characters and events is Listen to the story\'s, making predictions is What happens next?\'s, and asking questions about a story waits (EARMARKS E12).'],
+    generators: ['p3-link-which', 'p3-link-yesno', 'p3-link-feel', 'p3-link-liked', 'p3-link-not'],
   },
 ]; }
 
@@ -7913,7 +8048,8 @@ function PREK_MODULES() { return [
   // Play with a plan (pass MR, Mikey's answer to Q70, "Q70 - C"): the second half of Let's play together, playing together with a
   // plan, from the 2022 Texas Prekindergarten Guidelines' PK4 I.C.4 (cited whole: making a plan, each friend's part, talking while
   // playing, agreeing on a change and finishing together, in block play and pretend play) and the Head Start ELOF goal P-SE 4's first
-  // two sentences for four-year-olds. Every line but the first and the recap was Let's play together's own (pass MO).
+  // two sentences for four-year-olds. Every line but the first and the recap was Let's play together's own (pass MO). Since round two's
+  // read (pass NR) line 7 says we do not change the plan without asking, the words of the yes or no's new idea row.
   {
     id: 'play-with-a-plan',
     skill: 'Getting along',
@@ -7934,7 +8070,7 @@ function PREK_MODULES() { return [
         { say: 'Each friend does a part. You do your part, and your friend does theirs, and together you make the whole house.', show: { kind: 'icon', name: 'house' } },
         { say: 'Talk while you play. You might ask, can you pass me a block? Your friend might say, here you go!', show: { kind: 'icon', name: 'block' } },
         { say: 'Pretend play can have a plan too. Let\'s play pizza shop! You make the pizza, and I bring the plates.', show: { kind: 'icon', name: 'pizza' } },
-        { say: 'When you have a new idea, say it, and ask, is that okay? Then you and your friend agree on the new plan.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'When you have a new idea, say it, and ask, is that okay? Then you and your friend agree on the new plan. We do not change the plan without asking.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
         { say: 'When the house is done, you can feel happy, because you made it together. Say, we did it, and give a high five.', show: { kind: 'face', feeling: 'happy' } },
         { say: 'Playing together can be more fun with a plan. Make a plan together, and each friend does a part.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
       ],
@@ -9770,8 +9906,115 @@ function PREK_READING_MODULES() { return [
         { say: 'Hold a book right side up, and read each line from its start to its end, top to bottom.', show: { kind: 'icon', name: 'book~cover' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.3 (holds books right side up and demonstrates understanding of print directionality.), in part, since the lesson teaches holding a book right side up and opening it at the front, reading the words on a line, in English, from left to right, from its start to its end, the top line first and then the line under it, and going down to the start of the next line at the end of a line, and asks the child whether a book is right side up or upside down, which word on a line and which line we read first or last, which word we read next when a line ends, and which arrow shows the way along a line or down to the next one, the child answering by a tap, while the child\'s own holding of a real book and pointing to each word as a grown-up reads are the child\'s own, which a turn of the child\'s own asks for (EARMARKS E13), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson teaches two of print\'s rules, holding a book right side up and following it left to right and from top to bottom, while the connection between speech and print is Spaces between words\'.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.3 (holds books right side up and demonstrates understanding of print directionality.), in part, since the lesson teaches holding a book right side up and opening it at the front, reading the words on a line, in English, from left to right, from its start to its end, the top line first and then the line under it, and going down to the start of the next line at the end of a line, and asks the child whether a book is right side up or upside down, which word on a line and which line we read first or last, which word we read next when a line ends, and which arrow shows the way along a line or down to the next one, the child answering by a tap, while the child\'s own holding of a real book and pointing to each word as a grown-up reads are the child\'s own, which a turn of the child\'s own asks for (EARMARKS E13), and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson teaches two of print\'s rules, holding a book right side up and following it left to right and from top to bottom, while the connection between speech and print is taught in Spaces between words, End marks and Print tells us something.'],
     generators: ['p4-way-up', 'p4-way-word', 'p4-way-line', 'p4-way-next', 'p4-way-arrow'],
+  },
+  // Print tells us something (pass NR, PK4 III.E.1 whole and Head Start P-LIT 2 in part; the lead's design): print is words written down,
+  // and all print says something, on a sign, a box, a page or a note; someone writes print to tell a reader something, and the reader finds
+  // out by reading it, even when the writer is not there (Mom, the writer, and Ana, who finds out, with Mom's note); and print is talk written
+  // down, so it says the same words every time anyone reads it (Leo's words, I like dogs, written down by his teacher). Its pictures with
+  // words (sign~stop, box~crayons, note~love, note~dogs) are drawn by the app, since each carries the words a question depends on; the two
+  // notes never share a row. Since the week's research sweep (pass NR) the turn has the child point to each word while a grown-up reads the
+  // child's own words back. The child's own talk, written down and read back, is the turn's. It builds on Write to tell, which shows people
+  // writing to tell their ideas (Mikey's answer to Q84). Since round one's lesson reads (pass NR): line 1 shows print on a book's cover,
+  // since the plain book carries none; line 3 draws the crayon box closed, as its line says, and asks what does this print tell us, and
+  // line 10 what does the print say, as their banks do; the note is for Ana, who finds out, since a grown-up reads it to her; line 7 is
+  // in the past, as the who bank says it; and line 8 draws Leo's teacher with empty hands (teacher~hands) beside the dog and the note the
+  // teacher wrote, since the teacher holding a book open read against the line's writing, and the who bank shows the same picture.
+  // Since round two's reads (pass NR): line 1 shows print on a note (note~love), as line 13 does, since the book's cover drew its name
+  // as two bars; line 7 asks the who bank's own question, Who wrote the note?; line 8's row draws the dog first, as the line says it; and
+  // what this print tells is heard, and the note's which question prints without the note's words (DRAWN_WORDS, below).
+  {
+    id: 'print-tells-us',
+    skill: 'Writing',
+    order: 48,
+    requires: ['write-to-tell'],
+    requiresWhy: 'Print tells us something finds that all print says something a writer wanted to tell a reader, and that print is talk written down, so it builds on Write to tell, which shows people writing a list, a card, a letter and a sign to tell their ideas.',
+    title: 'Print tells us something',
+    tagline: 'Talk written down',
+    lesson: {
+      paragraphs: ['Print is words written down, and it is all around us, on signs, on boxes, in books and on notes. All print says something.', 'Someone writes print to tell us something. Mom writes a note for Ana, I love you! When a grown-up reads it to Ana, she finds out what Mom wanted to tell her, even though Mom is not there. Mom is the writer, and the note is for Ana.', 'Print is talk written down. When Leo says, I like dogs, his teacher can write his words. Then the print says, I like dogs, every time anyone reads it.', 'Even when you cannot read print yet, you know it says something, so you can ask a grown-up, What does this say?'],
+      keyIdea: 'All print says something. People write words to tell us things, and when we read them, we find out.',
+      example: { kind: 'icon', name: 'note~love', caption: 'Mom\'s note tells Ana, I love you!' },
+      script: [
+        { say: 'Print is words written down. Look, here is print on a sign, on a box and on a note.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sign~stop' }, { kind: 'icon', name: 'box~crayons' }, { kind: 'icon', name: 'note~love' }] } },
+        { say: 'Does all print say something? Yes! This stop sign\'s print tells cars to stop. Every word on a box or a page says something too.', show: { kind: 'icon', name: 'sign~stop' } },
+        { say: 'This box\'s print says crayons. What does this print tell us? It tells us what is inside, even before we open the box.', show: { kind: 'icon', name: 'box~crayons' } },
+        { say: 'Someone writes print to tell us something. Mom wrote a note for Ana\'s lunch box. It says, I love you!', show: { kind: 'icon', name: 'note~love' } },
+        { say: 'At lunch, a grown-up reads the note to Ana. Now she knows what Mom wanted to tell her, even though Mom is not there. Ana feels happy!', show: { kind: 'pair', a: { kind: 'icon', name: 'note~love' }, b: { kind: 'face', feeling: 'happy' } } },
+        { say: 'Mom is the writer, and the note is for Ana. The writer tells, and Ana finds out.', show: { kind: 'icon', name: 'note~love' } },
+        { say: 'Grandma wrote a note for you, and Grandpa read it to you. Who wrote the note? Grandma! And who read the note to you? Grandpa!', show: { kind: 'pair', a: { kind: 'icon', name: 'grandma' }, b: { kind: 'icon', name: 'grandpa' } } },
+        { say: 'Print is talk written down. Leo says, I like dogs! And his teacher writes his words down on a note.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'teacher~hands' }, { kind: 'icon', name: 'note~dogs' }] } },
+        { say: 'Now the print on this note says, I like dogs. It says the same words every time anyone reads it, today and tomorrow.', show: { kind: 'icon', name: 'note~dogs' } },
+        { say: 'Mia says, I like cats! But the teacher wrote down Leo\'s words on the note. What does the print say? It still says, I like dogs.', show: { kind: 'icon', name: 'note~dogs' } },
+        { say: 'Which one tells us what is inside? The crayon box! Its print says crayons, and the note\'s print says, I love you.', show: { kind: 'pair', a: { kind: 'icon', name: 'box~crayons' }, b: { kind: 'icon', name: 'note~love' } } },
+        { say: 'Now you try. Tell a grown-up something you want to say to a friend, and ask them to write your words down. Then point to each word while they read your words back to you.', show: null, voices: [['Tell a grown-up something you want to say to a friend, and ask them to write your words down.', 'tell'], ['Then point to each word while they read your words back to you.', 'tell', 'turn']] },
+        { say: 'All print says something, on a sign, a box or a note. People write words to tell us things, and when we read them, we find out.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sign~stop' }, { kind: 'icon', name: 'box~crayons' }, { kind: 'icon', name: 'note~love' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.E.1 (recognizes that all print carries meaning and serves as a means for communication.), since the lesson teaches that all print says something, on a sign, a box, a page and a note, that a writer writes print to tell a reader something, who finds out by reading it, even when the writer is not there, and that print is talk written down, which says the same words every time anyone reads it, the child answering by a tap, with a turn of the child\'s own to have a grown-up write down the child\'s words and read them back while the child points to each word, and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson teaches the connection between speech and print, talk written down and read back, while print\'s rules and conventions are taught in Which way we read, holding a book right side up and following it left to right, in Spaces between words, a space between words, and in End marks, a sentence\'s big first letter and its end mark.'],
+    generators: ['p4-print-who', 'p4-print-tells', 'p4-print-talk', 'p4-print-which', 'p4-print-yesno'],
+  },
+  // That reminds me! (pass NR's second wave, PK4 III.D.2 in part; the lead's design): a story read aloud can remind us of our own life
+  // (Mia: I could not sleep last night either!) or of another story (Ana: That reminds me of Owl's story! Both friends could not sleep.);
+  // two stories can be alike, with the same problem, the same feeling or the same kind of place; and something said that is not about the
+  // story is not a connection. The lesson tells two stories, Owl's and Bear's, which share a problem and what each friend did about it.
+  // Each bank asks about a story and what a friend says of it (LINK4_STORIES, LINK4_YESNO), or about two stories that share one thing
+  // (LINK4_GRID, LINK4_PAIRS), and the child's own connections are the turn's, with a grown-up; so III.D.2 is cited in part (round one's
+  // lesson reads, pass NR). It builds on Questions about a story, which answers who, what, where and when about a story read aloud
+  // (Mikey's answer to Q84).
+  // The lead's words are in the lines as given (the two stories, Mia's and Ana's words, what both share, and the turn); around them (the
+  // engineer's build): each friend falls asleep in their story, so "both counted to fall asleep" is what the stories told; Bear's line
+  // says the moon was up, since it shows the moon (no sheep is drawn, and every drawn picture on a line is named by it,
+  // tests/scripts.test.mjs); Ana hears Bear's story before she says it reminds her of Owl's, and the line asking how the two stories are
+  // alike thinks about the stories of Owl and Bear, since each line shows the owl and the bear and names each picture it shows (the
+  // engineer's brief); and a line asks each bank's own question in its words (every kind modeled by a line). Since the lead's look: the
+  // feeling line's face is the feeling it works (sad, the other feelings named and not drawn), the turn says That reminds me! as heard
+  // words are written, and the which bank's line says both its choices and models its own wrong kind, a comment of a friend's own life
+  // that is like another story (a kite at the park), as the bank's wrong choices are, where I like pizza, which line 11 models, never is
+  // one. Since round one's lesson reads: Owl could not sleep in the day and counted the clouds (owls hunt at night, as Match the land
+  // animals says), and Bear at night; could not sleep ... either, after a negative; line 1 and the which line's long sentences are
+  // shorter, the which line's reason in the bank's words (so that one is not like Owl's story); two lines say every heard choice of the
+  // alike and same banks, lost something, got stuck, felt sad, mad or scared, and a park, a beach, a farm or a lake; and Duck's lines have
+  // a friend tell a story we never heard, the whale's (the lesson's long story has a goat of its own), in Duck's own shape, as the same
+  // bank's friend tells hers (four banks deal a story the child never heard, and no line modeled one), the teddy named and not drawn.
+  // Since round two's read: the friend names the whale before she tells its story, as the same bank's friend names its animal, since a
+  // voice cannot say quotation marks and She after Ana spoke had three owners; the place line tells two stories at the lake before it
+  // says both friends were there; and the which line thinks about Owl's story and then asks the bank's own question word for word, a
+  // connection to the story, as every line that models a kind does. Since round three's screen read: line 2 draws clouds to count, three
+  // white clouds in a day sky (cloud~three), where one small gray cloud stood for "she counted the clouds", as line 3 marks the night with
+  // the moon; its words and their audio are as they were.
+  {
+    id: 'that-reminds-me',
+    skill: 'Listening',
+    order: 49,
+    requires: ['story-questions'],
+    requiresWhy: 'That reminds me! connects a story read aloud to our own lives and to another story, so it builds on Questions about a story, which answers who, what, where and when about a story read aloud.',
+    title: 'That reminds me!',
+    tagline: 'My life and other stories',
+    lesson: {
+      paragraphs: ['A story can remind us of our own life, or of another story we know, and that is a connection.', 'Owl could not sleep in the day, so she counted the clouds. Bear could not sleep at night, so he counted sheep. When Mia said, I could not sleep last night either, she made a connection to her own life. And when Ana said, That reminds me of Owl\'s story, she made a connection to another story.', 'Two stories can be alike. They can have the same problem, the same feeling or the same kind of place. Owl and Bear both could not sleep, and both counted to fall asleep.', 'Something said that is not about the story, like I like pizza, is not a connection.'],
+      keyIdea: 'A connection is when a story reminds you of your own life, or of another story you know. Listen, and think, what does it remind me of?',
+      example: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bear' }, caption: 'Owl and Bear could not sleep, and both counted to fall asleep.' },
+      script: [
+        { say: 'A story in a book can remind us of our own life, or of another story we know.', show: { kind: 'icon', name: 'book' } },
+        { say: 'Here is a story. Owl could not sleep in the day, so she counted the clouds. Then she fell asleep.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'icon', name: 'cloud~three' } } },
+        { say: 'Here is another story. Bear could not sleep when the moon was up, so he counted sheep. And soon he fell asleep too.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'moon' } } },
+        { say: 'Mia said, I could not sleep last night either! Mia thought of her own life, and her own bed at home. That is a connection to her own life.', show: { kind: 'icon', name: 'bed' } },
+        { say: 'Ana heard Bear\'s story and said, That reminds me of Owl\'s story! Both friends could not sleep. Is that a connection to her own life, or to another story? Another story!', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'Think about the stories of Owl and Bear. How are the two stories alike? Both friends could not sleep, so they had the same problem, and both counted to fall asleep.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'Two stories can be alike in other ways too. In one story, a friend lost something and felt sad. In another, a friend got stuck and felt sad too. Both friends felt sad! That is the same feeling, and a feeling can be sad, mad or scared.', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'Two stories can be in the same kind of place too. In one story, a friend got stuck at the lake. In another, a friend lost something at the lake. Both friends were at the lake! It could be a park, a beach, a farm or a lake.', show: { kind: 'icon', name: 'lake' } },
+        { say: 'Here is a new story. Duck could not sleep, so she hugged her teddy. Ana said, That reminds me of the story about the whale! The whale could not sleep, so she sang a song.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'pic', name: 'whale' } } },
+        { say: 'We never heard the whale\'s story before, but Ana told us what happened in it. What is the same in both stories? Both Duck and the whale could not sleep, so they had the same problem.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'pic', name: 'whale' } } },
+        { say: 'Leo said, I like pizza. Is that a connection? No! Pizza is not in either story, so that is not a connection.', show: { kind: 'icon', name: 'pizza' } },
+        { say: 'Think about Owl\'s story. Which one is a connection to the story? I could not sleep last night either, or, I fly my kite at the park too? I could not sleep last night either! Owl\'s story has no kite in it, so that one is not like Owl\'s story.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'icon', name: 'kite' } } },
+        { say: 'Now you try. After a story with a grown-up, say, That reminds me! Tell them about your own life, or about another story you know.', show: null, voices: [['Tell them about your own life, or about another story you know.', 'tell', 'turn']] },
+        { say: 'A connection is when a story in a book reminds you of your own life, or of another story you know. Listen, and think, what does it remind me of?', show: { kind: 'icon', name: 'book' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.D.2 (makes connections between books read aloud and personal experiences or ideas from other texts with adult assistance.), in part, since what a connection is and how two stories are alike are taught and asked, two kinds of connection between a story read aloud and what a listener knows, to their own life and to another story, two stories alike in the same problem, the same feeling or the same kind of place, and something said that is not about the story, which is not a connection, the child telling by a tap whether a friend\'s connection is to her own life or to another story, which friend\'s words are a connection and whether a friend\'s words are one, and finding by a tap what two stories share, the voice the adult assistance, while the child\'s own connections, to their own life and to the stories they know, told to a grown-up, are the child\'s own, which the turn asks for (EARMARKS E13).'],
+    generators: ['p4-link-kind', 'p4-link-alike', 'p4-link-which', 'p4-link-yesno', 'p4-link-same'],
   },
 ]; }
 
@@ -31112,12 +31355,16 @@ const PE_YESNO = [['Is a baby very little?', 'Yes', 'Yes. A baby is very little,
 // yes or no about each rule. The replies are the lesson's own; a wrong reply is a sentence about something else.
 const TK_LISTEN = [['What can you do while your friend is talking?', 'Listen', 'Talk at the same time', 'Listen. Your friend talks, and you listen. When your friend stops, it is your turn.'], ['Your friend is talking. When is it your turn to talk?', 'When your friend stops', 'Right now', 'When your friend stops talking, it is your turn to talk.'], ['How can you show your friend you are listening?', 'Nod and smile', 'Talk at the same time', 'Nod and smile. Turn toward your friend, so your friend knows you are listening.'], ['Your friend is telling you a story. What can you do?', 'Listen', 'Shout while your friend talks', 'Listen. Your friend talks, and you listen. When your friend stops, it is your turn.']];
 // Each wrong reply as it is named after a wrong tap (doing it, never the bare command), and why it is not the answer.
-const TK_WRONG_WHY = { 'Talk at the same time': ['Talking at the same time', 'would mean two friends talking at once, so your friend could not finish.'], 'Right now': ['Right now', 'is while your friend is still talking, so wait until your friend stops.'], 'Shout while your friend talks': ['Shouting while your friend talks', 'is not kind, and your friend could not finish.'] };
+const TK_WRONG_WHY = { 'Talk at the same time': ['Talking at the same time', 'is not taking turns, so wait for your turn.'], 'Right now': ['Right now', 'is while your friend is still talking, so wait until your friend stops.'], 'Shout while your friend talks': ['Shouting while your friend talks', 'is not kind. Listen, and wait for your turn.'] };
 const TK_TURN = [['your friend', "Your friend's turn"], ['your teacher', "Your teacher's turn"], ['Grandma', "Grandma's turn"]];
 export const TK_SAY_BACK = [['I have a new puppy dog!', 'What is its name?'], ['I made a tower!', 'I like your tower!'], ['I went to the park!', 'What did you play?'], ['I have a new hat!', 'I like your hat!']];
 const TK_OFF_TOPIC = ['I want a glass of water.', 'I like pizza.'];   // the lesson's own two, each said on its own line as not about the puppy
-// Yes or no about each rule, with what the wrong answer would mean for that one question.
-const TK_YESNO = [['Is it kind to talk at the same time as your friend?', 'No', 'No. Wait until your friend stops, and then it is your turn.', 'would mean it is kind, but then your friend could not finish.'], ['Is it kind to wait until your friend stops talking?', 'Yes', 'Yes. When your friend stops, it is your turn to talk.', 'would mean it is not kind to wait, but it is.'], ['Is it kind to listen while your friend talks?', 'Yes', 'Yes. Your friend talks, and you listen. Then it is your turn.', 'would mean it is not kind to listen, but it is.'], ['Can you take turns talking with your teacher too?', 'Yes', 'Yes. You can take turns talking with grown-ups you know, like your teacher and your family.', 'would mean you cannot take turns with your teacher, but you can.'], ["Is it kind to stand very close, right in your friend's face?", 'No', "No. Right in your friend's face is too close. Stand close enough to hear, and give your friend some room.", "would mean it is kind, but right in your friend's face is too close."], ['Is it kind to shout while your friend is talking?', 'No', 'No. Listen while your friend talks, and then it is your turn.', 'would mean it is kind to shout, but shouting while your friend talks is not kind.']];
+// Yes or no about each rule, with what the wrong answer would mean for that one question. Since pass NR (EARMARKS A154, pass NQ's reads)
+// the close row asks what the lesson says, too close, never unkind, and the last two rows, from the lesson's lines on waiting and on hi
+// and bye, keep the bank even, four Yes rows to four No; the reasons say the lesson's own words, never "at once" or "finish", which no line says.
+// Since round one's lesson reads (pass NR) the first row asks what line 5 says, do you talk at the same time, as the close row asks too
+// close, never whether it is kind.
+const TK_YESNO = [['When your friend is talking, do you talk at the same time?', 'No', 'No. Wait until your friend stops, and then it is your turn.', 'would mean you talk at the same time, but you wait and listen while your friend talks.'], ['Is it kind to wait until your friend stops talking?', 'Yes', 'Yes. When your friend stops, it is your turn to talk.', 'would mean it is not kind to wait, but it is.'], ['Is it kind to listen while your friend talks?', 'Yes', 'Yes. Your friend talks, and you listen. Then it is your turn.', 'would mean it is not kind to listen, but it is.'], ['Can you take turns talking with your teacher too?', 'Yes', 'Yes. You can take turns talking with grown-ups you know, like your teacher and your family.', 'would mean you cannot take turns with your teacher, but you can.'], ["Is right in your friend's face too close?", 'Yes', "Yes. Right in your friend's face is too close. Stand close enough to hear, and give your friend some room.", "would mean it is not too close, but right in your friend's face is too close."], ['Is it kind to shout while your friend is talking?', 'No', 'No. Listen while your friend talks, and then it is your turn.', 'would mean it is kind to shout, but shouting while your friend talks is not kind.'], ['When your friend is talking, is it your turn to talk?', 'No', 'No. When your friend is talking, wait and listen. When your friend stops, it is your turn.', 'would mean it is your turn, but your friend is still talking.'], ['Do you say bye to start talking with a friend?', 'No', 'No. Say hi to start talking, and say bye when you are done.', 'would mean bye starts talking, but hi starts it, and bye is for when you are done.']];
 // Talking with a friend (pass MR, Q70): how close to stand, from the lesson's bubble of space. Two questions with two answers, so
 // the answer is never the same one every time.
 const TK_ROOM = [['How close can you stand when you talk with a friend?', 'Close enough to hear', "Right in your friend's face", "Close enough to hear. Give your friend some room, like a bubble of space around each of you."], ['Your friend is talking with you. Where is too close?', "Right in your friend's face", 'Close enough to hear', "Right in your friend's face is too close. Stand close enough to hear, and give your friend some room."]];
@@ -34737,6 +34984,471 @@ Object.assign(GENERATORS, {
       whyNot: along ? { 'icon:arrow~down': { name: 'The arrow that points down', why: 'shows the way to the next line.' } } : { 'icon:arrow': { name: 'The arrow that points along', why: 'shows the way we read along a line.' } }, alsoRight: [] }; },
 });
 
+// Words all around us (pre-K 3, pass NR, PK3 III.E.1): the four things its lines draw with a word on them, and the three with none. A
+// row of AROUND3_PRINT holds the look that draws the thing, its name as the lines say it, its word, what its word tells us as a choice
+// (tells) and as the words after "it tells us" (clause), the reason a wrong tap on that meaning hears after its own words, which says whose
+// print tells it (meant: "To stop is what the word on a stop sign tells us."), and the name a wrong thing has in Which one tells us
+// (whichName: "The word on the stop sign says stop, and it tells us to stop."). A meaning's reason is named by the meaning itself, since
+// More Info says "name, which you just chose, why", so the name must be what the child chose (the lead's look, round two); two meanings
+// say who it is for and that we can go in, so "Who it is for is what ..." reads well, and the lines teach those words. The door's
+// whichName says word, not sign: a reason that says sign names the stop sign, often on the same screen, and a first wrong tap's reason
+// that names a picture still open is held back (whyNotNamesOpenWrong), as the rules test's plant shows. Every question is keyed on the
+// one thing it asks about (aboutWords), so a round asks about each thing once while it can: an explanation about the milk carton would
+// answer a later question about it. Which one has a word on it is answered by sight, since each thing's word is drawn on it, so it is
+// kept only from coming before a question its explanation answers (its saysFirstOf against their asksFirstOf, pass NB's one-way key),
+// and keyed apart (has milk) so a triple dose asks it once a thing: keyed on the thing both ways, as built first, it gave way to the
+// other four kinds' questions about the four things, so a round asked which one has no words on it two times in three, and a child
+// who always tapped the dog was right 43.9 percent of the time in first rounds (the engineer's blind read, pass NR; chance 33.3), and
+// a kind was dropped or asked twice in 21 percent of rounds.
+export const AROUND3_PRINT = {
+  stop: { look: 'icon:sign~stop', name: 'stop sign', word: 'stop', tells: 'To stop', clause: 'to stop', meant: 'is what the word on a stop sign tells us.', whichName: 'The word on the stop sign' },
+  milk: { look: 'icon:milk~carton', name: 'milk carton', word: 'milk', tells: 'What is inside', clause: 'what is inside', meant: 'is what the word on a milk carton tells us.', whichName: 'The word on the milk carton' },
+  cubby: { look: 'icon:cubby~name', name: 'cubby', word: 'Sam', tells: 'Who it is for', clause: 'who it is for', meant: 'is what a name on a cubby tells us.', whichName: 'The name on the cubby' },
+  door: { look: 'icon:door~open', name: 'shop\'s door', word: 'open', tells: 'That we can go in', clause: 'that we can go in', meant: 'is what the sign on a shop\'s door tells us.', whichName: 'The word on the shop\'s door' },
+};
+// The things the lines draw with no words on them; each is fair beside any thing with a word, since none of them has a word. Each is named
+// as the lines name it, and drawn by its look (AROUND3_LOOKS): since round three's screen read (pass NR, its MUST FIX 2) the dog is the whole
+// dog sitting up (dog~sit), where the dog's face stood 36 pixels tall in a 69-pixel tile beside print drawings 55 to 63 tall, so "Which one
+// has no words on it?" was answered by the one short picture; line 2 draws the same dog. The tree draws larger on these tiles (the screen's
+// PRINT_TILE_GROW), and the ball keeps its size.
+export const AROUND3_THINGS = ['tree', 'ball', 'dog'];
+export const AROUND3_LOOKS = { tree: 'icon:tree', ball: 'icon:ball', dog: 'icon:dog~sit' };
+// Which one tells us something, asked of each thing with a word by what its word tells us, in the lesson's words: the lead's question first,
+// and the same question with "word" and with "can tell", as lines 8 and 10 say it. A later round leaves out the last two rounds'
+// questions, so with one question to an answer, as the design gave them, it ruled out answers: a child who tapped a thing that was not
+// this bank's answer in the last two rounds was right 53.7 percent of the time in later rounds (chance 33.3; pass NM's rule, a question
+// ruled out and never an answer); with three to an answer, 36.3 (the engineer's read, pass NR). The cubby's three ask who it is for and
+// never say cubby, since the cubby is the only one on the screen (the lead's look, round one).
+export const AROUND3_WHICH = {
+  milk: ['Which one tells us what is inside?', 'Which word tells us what is inside?', 'Which one can tell us what is inside?'],
+  stop: ['Which one tells cars to stop?', 'Which word tells cars to stop?', 'Which one can tell us to stop?'],
+  cubby: ['Which one tells us who it is for?', 'Which word tells us who it is for?', 'Which one can tell us who it is for?'],
+  door: ['Which one tells us that we can go in?', 'Which word tells us that we can go in?', 'Which one can tell us that we can go in?'],
+};
+// What does its word say: a story line that names only the place the word is seen, the word it says there, the explanation, and the reason
+// a wrong tap on that word hears after its own words. Each place's word is said by the line that draws it (stop, milk, open), so the
+// three heard choices are always the same three. The cubby is left out, since a story that named Sam would give the answer (the lead's
+// design). For the same reason the milk carton's story says a carton: the design's 'You see a word on a milk carton.' says milk, the
+// answer, and the rules test fails a question whose own words give its answer away by sound (pass NR, the engineer's build); the child
+// still tells the word by where it is seen, as line 10 teaches, and a carton is said in the lines only as the milk carton (round one's
+// lesson reads: fridge is said in no line). A red sign with eight sides says stop, since other red signs say other words, and a shop's
+// door can say open, since it can say closed too (round one's lesson reads). Since round two's read the door's story is the milk
+// carton's shape, you see a sign on a shop's door, and its explanation says when the sign says open, since hangs and then were said in
+// no line.
+export const AROUND3_SAYS = {
+  stop: { told: 'A red sign with eight sides stands at the corner.', word: 'Stop', explain: 'Stop. A red sign with eight sides says stop, and it tells cars to stop.', why: 'is what the word on a red sign with eight sides says.' },
+  milk: { told: 'You see a word on a carton.', word: 'Milk', explain: 'Milk. The word on a milk carton says milk, and it tells us what is inside.', why: 'is what the word on a milk carton says.' },
+  door: { told: 'You see a sign on a shop\'s door.', word: 'Open', explain: 'Open. When the sign on a shop\'s door says open, it tells us that we can go in.', why: 'is what the word on a shop\'s door can say.' },
+};
+// Yes or no, four of each, every one a fact a line says: the question, its answer, the explanation, the reason a wrong tap hears (after
+// Yes or No), the thing it asks about alone (aboutWords, pass NM's rule) and, where a row asks about a picture, that picture, shown
+// above the question: since round one's lesson reads (pass NR) the tree row asks about this tree, shown, as line 2 does, since a ball or
+// a tree a child sees can carry words, and a word on a ball is the very print the lesson teaches a child to notice.
+// No row's explanation tells the meaning of a thing it does not ask about: since round one's code read (pass NR) the
+// last row says only what the milk carton tells us, since its second sentence, a name on a cubby tells us who it is for, told a later
+// cubby question's answer in 150 of 3,000 first and later rounds (the rules test reads every round's order), and keyed to keep it from
+// them a kind came twice in 18 percent of rounds, not 13.5. The shop's door's row, since round three's final read, explains only what its
+// own sign can say, when it says open, since round two's read found "Its word says open" said a shop's door always says open; the fix
+// between, which told the stop sign's meaning, needed a key (saysFirstOf, against 147 of 3,000 rounds) at the milk row's price, a kind
+// twice in 17.6 percent of rounds, which the milk row's choice above declined.
+export const AROUND3_YESNO = [
+  ['Are words only in books?', 'No', 'No. Words are all around us, on signs, on boxes and on doors.', 'would mean words are only in books, but words are all around us.', ['books']],
+  ['Does a stop sign have a word on it?', 'Yes', 'Yes. Its word says stop, and it tells cars to stop.', 'would mean a stop sign has no word, but its word says stop.', ['stop']],
+  ['Does this tree have words on it?', 'No', 'No. This tree has no words on it.', 'would mean this tree has words, but this tree has no words on it.', ['tree'], 'tree'],
+  ['Can a grown-up read words to you?', 'Yes', 'Yes. Ask a grown-up, What does this say? A grown-up can read the words to you.', 'would mean a grown-up cannot read words to you, but a grown-up can.', ['grown-up']],
+  ['Does the word on a milk carton tell us what is inside?', 'Yes', 'Yes. Its word says milk, and it tells us what is inside.', 'would mean it does not, but it tells us what is inside.', ['milk']],
+  ['Does a name on a cubby tell us who it is for?', 'Yes', 'Yes. The name says Sam, so the cubby is for Sam.', 'would mean it does not, but a name tells us who it is for.', ['cubby']],
+  ['Does the sign on a shop\'s door tell cars to stop?', 'No', 'No. When the sign on a shop\'s door says open, it tells us that we can go in.', 'would mean it tells cars to stop, but its word can say open.', ['door']],
+  ['Does the word on a milk carton tell us who it is for?', 'No', 'No. It tells us what is inside.', 'would mean it tells us who it is for, but it tells us what is inside.', ['milk']],
+];
+
+Object.assign(GENERATORS, {
+  // Words all around us: which one has a word on it, one thing with a word beside two of the tree, the ball and the dog, or which one has
+  // no words on it, one of those three beside two things with a word, about half each, so every picture is sometimes the answer and
+  // sometimes not (the lead's design).
+  'p3-around-has': (rng) => { const P = AROUND3_PRINT;
+    if (rng() < 0.5) { const k = pick(rng, Object.keys(P)); const p = P[k]; const [t1, t2] = shuffle(rng, AROUND3_THINGS).slice(0, 2);
+      return { type: 'choice', story: null, prompt: 'Which one has a word on it?', choices: shuffle(rng, [p.look, AROUND3_LOOKS[t1], AROUND3_LOOKS[t2]]), answer: p.look, aboutWords: [`has ${k}`], saysFirstOf: [k],
+        explain: `The ${p.name}. Its word says ${p.word}, and it tells us ${p.clause}.`, visual: null, explainVisual: null,
+        whyNot: Object.fromEntries([t1, t2].map((t) => [AROUND3_LOOKS[t], { name: `The ${t}`, why: 'has no words on it.' }])), alsoRight: [] }; }
+    const t = pick(rng, AROUND3_THINGS); const [k1, k2] = shuffle(rng, Object.keys(P)).slice(0, 2);
+    return { type: 'choice', story: null, prompt: 'Which one has no words on it?', choices: shuffle(rng, [AROUND3_LOOKS[t], P[k1].look, P[k2].look]), answer: AROUND3_LOOKS[t], aboutWords: [t],
+      explain: `The ${t}. This ${t} has no words on it.`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries([k1, k2].map((k) => [P[k].look, { name: `The ${P[k].name}`, why: `has a word on it. Its word says ${P[k].word}.` }])), alsoRight: [] }; },
+  // What does this word tell us: one thing with a word, shown, and what its word tells us beside two of the other three meanings.
+  'p3-around-tells': (rng) => { const P = AROUND3_PRINT; const k = pick(rng, Object.keys(P)); const p = P[k]; const others = shuffle(rng, Object.keys(P).filter((x) => x !== k)).slice(0, 2);
+    return { type: 'choice', story: null, prompt: 'What does this word tell us?', choices: shuffle(rng, [k, ...others].map((x) => P[x].tells)), answer: p.tells, aboutWords: [k], asksFirstOf: [k],
+      explain: `Its word says ${p.word}, so it tells us ${p.clause}.`, visual: { kind: 'icon', name: p.look.slice(5) }, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((x) => [P[x].tells, { name: P[x].tells, why: P[x].meant }])), alsoRight: [] }; },
+  // Which one tells us something: three things with a word, the one whose word tells it and two of the other three.
+  'p3-around-which': (rng) => { const P = AROUND3_PRINT; const k = pick(rng, Object.keys(P)); const p = P[k]; const others = shuffle(rng, Object.keys(P).filter((x) => x !== k)).slice(0, 2);
+    return { type: 'choice', story: null, prompt: pick(rng, AROUND3_WHICH[k]), choices: shuffle(rng, [k, ...others].map((x) => P[x].look)), answer: p.look, aboutWords: [k], asksFirstOf: [k],
+      explain: `The ${p.name}. Its word says ${p.word}.`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((x) => [P[x].look, { name: P[x].whichName, why: `says ${P[x].word}, and it tells us ${P[x].clause}.` }])), alsoRight: [] }; },
+  // What does its word say: no picture, a story line naming the place, and the three words heard (heardChoices), since a pre-reader hears
+  // a word and never reads it.
+  'p3-around-says': (rng) => { const k = pick(rng, Object.keys(AROUND3_SAYS)); const s = AROUND3_SAYS[k];
+    return { type: 'choice', story: s.told, prompt: 'What does its word say?', choices: shuffle(rng, Object.values(AROUND3_SAYS).map((x) => x.word)), answer: s.word, heardChoices: true, aboutWords: [k], asksFirstOf: [k],
+      explain: s.explain, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(Object.entries(AROUND3_SAYS).filter(([x]) => x !== k).map(([, o]) => [o.word, { name: o.word, why: o.why }])), alsoRight: [] }; },
+  // Yes or no, a row of AROUND3_YESNO, four Yes and four No.
+  'p3-around-yesno': (rng) => { const [ask, answer, explain, why, about, shown, says] = pick(rng, AROUND3_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, aboutWords: [...about], asksFirstOf: about.filter((w) => AROUND3_PRINT[w]), ...(says ? { saysFirstOf: [...says] } : {}), explain, visual: shown ? { kind: 'icon', name: shown } : null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] }; },
+});
+
+// Print tells us something (pre-K 4, pass NR, PK4 III.E.1). The people a note can be written and read by, each as a sentence starts with
+// them and as it says them later (your teacher); the three pictures with print a question shows, each with its name as the lines say it,
+// what its print says, what it tells us as a choice, the explanation and the reason a wrong tap on that choice hears, in the lesson's
+// words; and the pairs of short sentences talk written down is asked with, each two sentences that differ in one word, in the shape the
+// lesson's own (I like dogs, I like cats), with two pairs of friends, Leo and Mia (the lesson's own) and Ana and Ben. Every question is
+// keyed on what it asks about (aboutWords): a story's two people, a picture with print, or a pair of sentences; the yes or no rows on
+// the picture with print they ask about, or a key of their own, so a triple dose asks as many Yes rows as No rows (keyed on the pair of
+// sentences its explanation names, the third row gave way to Talk written down's questions, and a triple dose's yes or no was No 58 percent
+// of the time; the engineer's blind read, pass NR). A wrong meaning's reason is named by the meaning itself, "To stop is what a stop sign
+// tells us.", since More Info says "name, which you just chose, why" (the lead's look, round two). Each person's third entry is the
+// picture the who bank shows: the teacher with empty hands (teacher~hands), since the teacher who holds a book open, reading, would read
+// against "Your teacher wrote a note" (round one's lesson reads, pass NR); line 8 draws the same picture.
+export const PRINT4_PEOPLE = { grandma: ['Grandma', 'Grandma', 'icon:grandma'], grandpa: ['Grandpa', 'Grandpa', 'icon:grandpa'], teacher: ['Your teacher', 'your teacher', 'icon:teacher~hands'] };
+export const PRINT4_TELLS = {
+  stop: { look: 'icon:sign~stop', name: 'stop sign', says: 'says stop', tells: 'To stop', explain: 'To stop. A stop sign\'s print tells cars to stop.', meant: 'is what a stop sign tells us.' },
+  box: { look: 'icon:box~crayons', name: 'crayon box', says: 'says crayons', tells: 'What is inside', explain: 'What is inside. The box\'s print says crayons.', meant: 'is what a box\'s print tells us.' },
+  note: { look: 'icon:note~love', name: 'note', says: 'says, I love you', tells: 'I love you', explain: 'I love you. Mom wrote it to tell Ana, I love you.', meant: 'is what Mom\'s note says.' },
+};
+// Which one tells us something, asked of each picture with print by what its print tells, in the lesson's words: the lead's question first,
+// and the same question with "print" and with "can tell". With one question to an answer, as the design gave them, a later round's rule
+// against the last two rounds' questions ruled out answers, and since all three pictures are on every screen a child who tapped the one
+// that was not this bank's answer in the last two rounds was right 71.9 percent of the time (chance 33.3; pass NM's rule); with four to an
+// answer, 38.1, and with two, 44.2 (the engineer's read, pass NR).
+// Since round one's screen read (pass NR) the note's four questions print without the note's words while a voice can speak (printed),
+// the voice still saying the lesson's question: the note's tile prints I love you, so a printed question that said it gave its own answer
+// to a child who matched letter shapes. Since round three's screen read they print the same words with no voice too (unvoicedPrompt, read
+// by printedQuestion), where the whole question printed above the note's tile on 643 of seeds 1 to 2,000; the grown-up reads "Which one
+// tells Ana what Mom wrote?" aloud, and a child who has heard the lesson knows Mom wrote I love you.
+export const PRINT4_WHICH_SHOWN = { 'Which one tells Ana, I love you?': 'Which one tells Ana what Mom wrote?', 'Which print tells Ana, I love you?': 'Which print tells Ana what Mom wrote?', 'Which one can tell Ana, I love you?': 'Which one can tell Ana what Mom wrote?', 'Which print can tell Ana, I love you?': 'Which print can tell Ana what Mom wrote?' };
+export const PRINT4_WHICH = {
+  box: ['Which one tells us what is inside?', 'Which print tells us what is inside?', 'Which one can tell us what is inside?', 'Which print can tell us what is inside?'],
+  stop: ['Which one tells cars to stop?', 'Which print tells cars to stop?', 'Which one can tell cars to stop?', 'Which print can tell cars to stop?'],
+  note: ['Which one tells Ana, I love you?', 'Which print tells Ana, I love you?', 'Which one can tell Ana, I love you?', 'Which print can tell Ana, I love you?'],
+};
+export const PRINT4_TALK = [['I like dogs', 'I like cats'], ['I can jump', 'I can hop'], ['I see the moon', 'I see the sun'], ['I have a red hat', 'I have a blue hat']];
+export const PRINT4_FRIENDS = [['Leo', 'Mia'], ['Ana', 'Ben']];
+// Yes or no, four of each, every one a fact a line says, as AROUND3_YESNO's rows are, each a reason after a wrong tap of eighteen words or
+// fewer with its Yes or No (the More Info rule). Since round one's lesson reads (pass NR) every word of a row is a word the lines say
+// (just, marks, nothing, new, go and bed were in none), and no one word tells the answer: just or new said No 76.6 percent of the time,
+// and now the best one-word rule, Yes when a row says a word or No, is right 62.5 percent (four rows of each, every word in at most one
+// more row of one answer than of the other). Each is keyed on what its explanation tells: the note's words, a key of its own, the
+// box, the stop sign, or Leo's words written down (written down, which talk written down's explanation tells too).
+export const PRINT4_YESNO = [
+  ['Does all print say something?', 'Yes', 'Yes. All print says something, on a sign, a box, a page or a note.', 'would mean print does not say something, but all print says something.', ['all print']],
+  ['Does Mom\'s note tell Ana, I love you, even though Mom is not there?', 'Yes', 'Yes. Mom is not there, but her note still tells Ana, I love you.', 'would mean the note does not tell Ana, but it still tells her, I love you.', ['note']],
+  ['Does Leo\'s teacher write his words down on a note?', 'Yes', 'Yes. Leo says, I like dogs, and his teacher writes his words down on a note.', 'would mean his teacher does not write his words down, but the teacher writes them down.', ['written down']],
+  ['Does the box\'s print tell us what is inside?', 'Yes', 'Yes. The crayon box\'s print says crayons. It tells us what is inside.', 'would mean it does not, but it tells us what is inside.', ['box']],
+  ['Is Mom there when a grown-up reads the note to Ana?', 'No', 'No. Mom is not there, but a grown-up reads her note to Ana.', 'would mean Mom is there, but Mom is not there when the note is read.', ['writer']],
+  ['Does Leo\'s note say what Mia says?', 'No', 'No. The teacher wrote down Leo\'s words, and it still says, I like dogs.', 'would mean Leo\'s note says what Mia says, but it says what Leo says.', ['written down']],
+  ['Does a stop sign\'s print tell us what is inside?', 'No', 'No. A stop sign\'s print says stop, and it tells cars to stop.', 'would mean it tells us what is inside, but it tells cars to stop.', ['stop']],
+  ['Does Mom\'s note say, I like dogs?', 'No', 'No. Mom\'s note says, I love you.', 'would mean the note says, I like dogs, but it says, I love you.', ['note']],
+];
+
+Object.assign(GENERATORS, {
+  // Who wrote the note, or who read it to you: two of Grandma, Grandpa and your teacher, the writer and the reader, both named in the story,
+  // and the three pictures. A child who heard only the story is right half the time, by chance, since both people it names are its own.
+  'p4-print-who': (rng) => { const ids = Object.keys(PRINT4_PEOPLE); const [w, r] = shuffle(rng, ids).slice(0, 2); const out = ids.find((x) => x !== w && x !== r);
+    const N = (x, start) => PRINT4_PEOPLE[x][start ? 0 : 1]; const wrote = rng() < 0.5; const other = wrote ? r : w;
+    return { type: 'choice', story: `${N(w, true)} wrote a note for you, and ${N(r)} read it to you.`, prompt: wrote ? 'Who wrote the note?' : 'Who read the note to you?', choices: shuffle(rng, ids.map((x) => PRINT4_PEOPLE[x][2])), answer: PRINT4_PEOPLE[wrote ? w : r][2], aboutWords: [[w, r].sort().join(' and ')],
+      explain: `${N(w, true)} wrote the note, so ${N(w)} is the writer. ${N(r, true)} read it to you.`, visual: null, explainVisual: null,
+      whyNot: { [PRINT4_PEOPLE[other][2]]: wrote ? { name: N(r, true), why: `read the note to you, and ${N(w)} wrote it.` } : { name: N(w, true), why: `wrote the note, and ${N(r)} read it to you.` }, [PRINT4_PEOPLE[out][2]]: { name: N(out, true), why: 'is not in this story.' } }, alsoRight: [] }; },
+  // What does this print tell us: one picture with print, shown, and the three things print tells in this lesson.
+  // Since round one's screen read (pass NR) a heard question, in the house's frame (writeTells'): the note's own words are a choice, and
+  // printed on the button beside the note they gave the answer to a child who matched letter shapes.
+  'p4-print-tells': (rng) => { const k = pick(rng, Object.keys(PRINT4_TELLS)); const t = PRINT4_TELLS[k];
+    return { type: 'choice', story: null, prompt: 'What does this print tell us?', printed: 'Tap to hear each one. What does this print tell us?', choices: shuffle(rng, Object.values(PRINT4_TELLS).map((x) => x.tells)), answer: t.tells, heardChoices: true, aboutWords: [k],
+      explain: t.explain, visual: { kind: 'icon', name: t.look.slice(5) }, explainVisual: null,
+      whyNot: Object.fromEntries(Object.entries(PRINT4_TELLS).filter(([x]) => x !== k).map(([, o]) => [o.tells, { name: o.tells, why: o.meant }])), alsoRight: [] }; },
+  // Talk written down: two friends each say a sentence of one pair, either order, and the teacher writes down one friend's words, either
+  // one; the two sentences are the choices. Both are in the story, so a child who heard only the story is right half the time, by chance.
+  // Since round one's lesson reads (pass NR) it is a heard question: while the voice can speak the screen prints neither sentence, in its
+  // setup or on its buttons (printedStory, heardChoices), since a child who matched the friend's name printed twice, and then the one word
+  // that differs, could answer without listening (RULES-AUDIT, a heard question prints none of the words it asks about).
+  'p4-print-talk': (rng) => { const pair = pick(rng, PRINT4_TALK); const [sa, sb] = shuffle(rng, pair); const [a, b] = shuffle(rng, pick(rng, PRINT4_FRIENDS)); const firstWritten = rng() < 0.5;
+    const [who, said, other, otherSaid] = firstWritten ? [a, sa, b, sb] : [b, sb, a, sa];
+    return { type: 'choice', story: `${a} says, ${sa}! ${b} says, ${sb}! The teacher writes down ${who}'s words.`, printedStory: 'Listen to what two friends say.', prompt: 'What does the print say?', choices: shuffle(rng, [`${sa}.`, `${sb}.`]), answer: `${said}.`, heardChoices: true, aboutWords: [pair[0]],
+      explain: `${said}. The teacher wrote down ${who}'s words, so the print says what ${who} said.`, visual: null, explainVisual: null,
+      whyNot: { [`${otherSaid}.`]: { name: otherSaid, why: `is what ${other} said, and the teacher wrote down ${who}'s words.` } }, alsoRight: [] }; },
+  // Which one tells us something: the three pictures with print, every time.
+  'p4-print-which': (rng) => { const k = pick(rng, Object.keys(PRINT4_TELLS)); const t = PRINT4_TELLS[k]; const ask = pick(rng, PRINT4_WHICH[k]);
+    return { type: 'choice', story: null, prompt: ask, ...(PRINT4_WHICH_SHOWN[ask] ? { printed: PRINT4_WHICH_SHOWN[ask], unvoicedPrompt: PRINT4_WHICH_SHOWN[ask] } : {}), choices: shuffle(rng, Object.values(PRINT4_TELLS).map((x) => x.look)), answer: t.look, aboutWords: [k],
+      explain: `The ${t.name}. Its print ${t.says}.`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(Object.entries(PRINT4_TELLS).filter(([x]) => x !== k).map(([, o]) => [o.look, { name: `The ${o.name}'s print`, why: `${o.says}.` }])), alsoRight: [] }; },
+  // Yes or no, a row of PRINT4_YESNO, four Yes and four No.
+  'p4-print-yesno': (rng) => { const [ask, answer, explain, why, about] = pick(rng, PRINT4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, aboutWords: [...about], explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] }; },
+});
+
+// That is like me! (pre-K 3, pass NR's second wave, PK3 III.D.2): Ben's short stories, one sentence each in the lesson's shape, each about
+// a thing, a place, something that happened or a feeling a three-year-old knows (a lost teddy found, a new puppy, a birthday cake,
+// splashing in rain puddles, a trip to the park, a tower that fell down, and a dark night with a night-light). A row holds the story and
+// three comments a friend could make that are connections to it, each naming what the story names, with the words after "because" that say
+// why it is a connection, in the lesson's words ("because Leo has a teddy, like Ben"). Three comments a story, so the not bank can offer
+// two connections beside the one that is not, and so no one comment is the which bank's answer often enough for a child who always taps it
+// (with two a story the best read 55.2 percent in triple doses, where the bound is 56; the engineer's blind read, pass NR). No comment
+// says "too", and every one ends in "!": with the lesson's "too" on every connection and none on the comments that are not, a child who
+// heard only the comments was right every time by the one with "too" (the engineer's blind read, pass NR), so the story is what tells them
+// apart. Nor do a comment's first words tell them apart: about a third of each kind starts I can, and the connections and the comments
+// about other things start I like, I have and My about as often (round one's lesson read, pass NR: with five comments about other things
+// starting I can and no connection, a child who never tapped I can was right 72.0 percent of the time in the which bank, and one who
+// always did 61.6 in the not bank; now 55.0 and 39.1 at most by any opening, a comment of its own opening, I drew or I picked, learned by
+// heart), and their lengths match (6.2 words on the mean to 6.2). Every question is keyed on its story (aboutWords), so a round asks about
+// each story once: an explanation about the puppy would answer a later question about it.
+export const LINK3_STORIES = {
+  teddy: { told: 'Ben lost his teddy bear, and then he found it.', comments: [{ said: 'I have a teddy bear!', because: 'Ben has a teddy bear too' }, { said: 'I lost my teddy bear once!', because: 'Ben lost his teddy bear too' }, { said: 'I like to hug my teddy bear!', because: 'Ben has a teddy bear too' }] },
+  puppy: { told: 'Ben got a new puppy, and it licked his face.', comments: [{ said: 'I have a puppy!', because: 'Ben has a puppy too' }, { said: 'A puppy licked my face once!', because: 'a puppy licked Ben\'s face too' }, { said: 'I can play with my puppy!', because: 'Ben has a puppy too' }] },
+  cake: { told: 'Ben had a birthday cake, and he blew out the candles.', comments: [{ said: 'I had a birthday cake!', because: 'Ben had a birthday cake too' }, { said: 'I can blow out birthday candles!', because: 'Ben blew out candles too' }, { said: 'I like to eat birthday cake!', because: 'Ben had a birthday cake too' }] },
+  rain: { told: 'It rained, and Ben splashed in the puddles.', comments: [{ said: 'I can splash in the rain puddles!', because: 'Ben splashed in the puddles too' }, { said: 'I jump in the big puddles when it rains!', because: 'Ben splashed in the puddles too' }, { said: 'I like to play in the rain!', because: 'Ben played in the rain too' }] },
+  park: { told: 'Ben went to the park, and he went down the slide.', comments: [{ said: 'I go to the park!', because: 'Ben went to the park too' }, { said: 'I can go down the slide!', because: 'Ben went down the slide too' }, { said: 'I like the swings at the park!', because: 'Ben went to the park too' }] },
+  tower: { told: 'Ben made a tall tower, and then it fell down.', comments: [{ said: 'My tower fell down once!', because: 'Ben\'s tower fell down too' }, { said: 'I can make a tall tower!', because: 'Ben made a tall tower too' }, { said: 'My blocks fall down all the time!', because: 'Ben\'s tower fell down too' }] },
+  night: { told: 'Ben felt scared in the dark, so he turned on his night-light.', comments: [{ said: 'I have a night-light in my room!', because: 'Ben has a night-light too' }, { said: 'I feel scared in the dark sometimes!', because: 'Ben felt scared in the dark too' }, { said: 'I can turn on my night-light!', because: 'Ben turned on his night-light too' }] },
+};
+// Comments about other things (the lead's design): none names a thing any story in LINK3_STORIES names, so none is ever about the story it
+// is offered beside, and each is fair beside every story; nor says a word a story or its connections say but little words and big, so no
+// word is a cue (an apple eaten, beside the cake a connection eats, was picked instead, and the shoes are sky blue, since new is a word of
+// Ben's new puppy and bright holds light, a word of his night-light; the engineer's reads, pass NR). The words after "because" say what
+// the story has none of, for the not bank's explanation, in the lesson's words ("Pizza is not in Ben's story"). Twelve of them: the not
+// bank's answer is always one of these, so a child who always tapped one was right whenever it was shown and at chance otherwise, 50.3 to
+// 51.6 percent with four and 40.3 to 41.4 with ten (the engineer's blind reads, pass NR; three choices are marked above 42.3), and with
+// twelve about 40. Their lengths and first words match the connections' (above): with the first twelve, mostly shorter, a child who tapped
+// the longer comment was right 73 percent of the time in the which bank, and the shorter one 53 in the not bank (the engineer's read, pass
+// NR).
+export const LINK3_NOT = [
+  { said: 'I like pizza!', none: 'there is no pizza in it' },
+  { said: 'My shoes are sky blue!', none: 'there are no shoes in it' },
+  { said: 'I have a red ball!', none: 'there is no ball in it' },
+  { said: 'I can ride my bike fast!', none: 'there is no bike in it' },
+  { said: 'I can clap my hands loudly!', none: 'there is no clapping in it' },
+  { said: 'I can hop on one foot!', none: 'there is no hopping in it' },
+  { said: 'I drew a big round circle!', none: 'there is no drawing in it' },
+  { said: 'I have a green crayon in my bag!', none: 'there is no crayon in it' },
+  { said: 'I like to sing songs with my dad!', none: 'there is no song in it' },
+  { said: 'I picked a big red apple today!', none: 'there is no apple in it' },
+  { said: 'I can count up to ten!', none: 'there is no counting in it' },
+  { said: 'I like to paint pictures of the sun!', none: 'there is no painting in it' },
+];
+// Yes or no, four of each: a story, the friend who speaks, the friend's words, the answer, the explanation and the reason a wrong tap
+// hears after Yes or No. Four stories and the four comments the lesson's friends say of them, crossed, so each story and each comment is
+// a Yes once and a No once: a child who heard only the story, or only the comment, is right half the time, as by chance (a No row's
+// comment is another story's connection, each the comment of a story that shares nothing with the one it is offered beside). Each
+// friend says one comment, so who speaks tells nothing either.
+export const LINK3_YESNO = [
+  ['puppy', 'Mia', 'I have a puppy!', 'Yes', 'Yes. Ben got a new puppy, and Mia has a puppy too.', 'would mean it is not a connection, but Mia has a puppy, like Ben.'],
+  ['puppy', 'Leo', 'I go to the park!', 'No', 'No. Ben\'s story has no park in it, so that is not a connection.', 'would mean it is a connection, but there is no park in Ben\'s story.'],
+  ['park', 'Leo', 'I go to the park!', 'Yes', 'Yes. Ben went to the park, and Leo goes to the park too.', 'would mean it is not a connection, but Leo goes to the park, like Ben.'],
+  ['park', 'Sam', 'My tower fell down once!', 'No', 'No. Ben\'s story has no tower in it, so that is not a connection.', 'would mean it is a connection, but there is no tower in Ben\'s story.'],
+  ['tower', 'Sam', 'My tower fell down once!', 'Yes', 'Yes. Ben\'s tower fell down, and Sam\'s tower fell down once too.', 'would mean it is not a connection, but Sam\'s tower fell down, like Ben\'s.'],
+  ['tower', 'Ana', 'I had a birthday cake!', 'No', 'No. Ben\'s story has no cake in it, so that is not a connection.', 'would mean it is a connection, but there is no cake in Ben\'s story.'],
+  ['cake', 'Ana', 'I had a birthday cake!', 'Yes', 'Yes. Ben had a birthday cake, and Ana had one too.', 'would mean it is not a connection, but Ana had a birthday cake, like Ben.'],
+  ['cake', 'Mia', 'I have a puppy!', 'No', 'No. Ben\'s story has no puppy in it, so that is not a connection.', 'would mean it is a connection, but there is no puppy in Ben\'s story.'],
+];
+// How did they both feel: Ben's feeling in a story, and a friend who says the same thing happened, naming no feeling (the lead's design).
+// Each thing that happens comes in two stories, one sad and one happy (a tower that fell down, a rainy day, a trip to the park), mirrored
+// as pass NP's guesses are, and the friend's words are the same in both, so a child who heard only the friend is right half the time, as
+// by chance: with one story to each, a lost thing sad and a found thing happy, the friend's words alone told the feeling every time. The
+// friend says "and I felt just like Ben!", so the question's both is true of the friend as of Ben: the friend's feeling is the story's,
+// and no feeling is named. The faces are the two the lesson draws, sad and happy. The story says Ben's feeling, so a child who heard only
+// the story is right every time, by the lead's design: the answer is the story's feeling.
+export const LINK3_FEELS = [
+  { key: 'tower', feel: 'sad', told: 'Ben made a tall tower, and it fell down, and he felt sad.', who: 'Sam', said: 'My tower fell down once too, and I felt just like Ben!', moment: 'when his tall tower fell down' },
+  { key: 'tower', feel: 'happy', told: 'Ben\'s tower fell down with a big crash, and he laughed and felt happy!', who: 'Sam', said: 'My tower fell down once too, and I felt just like Ben!', moment: 'when his tower fell down with a big crash' },
+  { key: 'rain', feel: 'sad', told: 'It rained all day, so Ben could not go outside, and he felt sad.', who: 'Mia', said: 'It rained at my house too, and I felt just like Ben!', moment: 'when he could not go outside' },
+  { key: 'rain', feel: 'happy', told: 'It rained, and Ben jumped in the puddles, and he felt happy!', who: 'Mia', said: 'It rained at my house too, and I felt just like Ben!', moment: 'when he jumped in the puddles' },
+  { key: 'park', feel: 'sad', told: 'Ben went to the park, but then it was time to go home, and he felt sad.', who: 'Leo', said: 'I went to the park too, and I felt just like Ben!', moment: 'when it was time to go home' },
+  { key: 'park', feel: 'happy', told: 'Ben went to the park, and he went down the slide, and he felt happy!', who: 'Leo', said: 'I went to the park too, and I felt just like Ben!', moment: 'when he went down the slide' },
+];
+// Which part did Mia like best (P-LIT 5's likes): Ben's stories of two parts, each part a thing the lesson draws and what Ben did with it,
+// as Mia's words say it. Either part may be Mia's favorite, drawn half and half, so each picture is the answer half the times it is shown
+// and a child who heard only the story is right half the time (the book and the slide also come in both orders, so neither is always the
+// part told first); Mia's words name the part by what happened, so a child who heard her is right every time, by the lead's design: what
+// Mia liked is what she said. No part is a thing the lesson says is not in Ben's story (round one's lesson read, pass NR: Ben ate pizza
+// in a liked story while the lines say "Pizza is not in Ben's story"), so the book has the pizza's place.
+export const LINK3_LIKED = {
+  'book slide': { told: 'Ben read a book, and then he went down the slide.', parts: [['book', 'read a book'], ['slide', 'went down the slide']] },
+  'slide book': { told: 'Ben went down the slide, and then he read a book.', parts: [['slide', 'went down the slide'], ['book', 'read a book']] },
+  'hat book': { told: 'Ben put on his hat, and then he read a book.', parts: [['hat', 'put on his hat'], ['book', 'read a book']] },
+  'teddy bed': { told: 'Ben hugged his teddy bear, and then he went to bed.', parts: [['teddy', 'hugged his teddy bear'], ['bed', 'went to bed']] },
+};
+// A heard comment named in a reason as pass MS names a sentence a child could say: Saying, I have a puppy, is ...
+const linkSaid = (s) => { const t = String(s).replace(/[.!?]+$/, ''); return `Saying, ${/^I\b/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1)}`; };
+
+Object.assign(GENERATORS, {
+  // Which one is a connection: one of the story's three comments, beside a comment about other things, shuffled, so the answer is never always
+  // first; both comments heard, never printed while the voice can speak (heardChoices). By the lead's design a comment about other things
+  // (LINK3_NOT) is never this bank's answer and always the not bank's, so a child who heard only the question and had learned those twelve
+  // comments by heart would be right every time (the blind read's heard-only-the-question mark, 100 percent in both banks, by design).
+  'p3-link-which': (rng) => { const k = pick(rng, Object.keys(LINK3_STORIES)); const s = LINK3_STORIES[k]; const c = pick(rng, s.comments); const n = pick(rng, LINK3_NOT);
+    return { type: 'choice', story: `Listen. ${s.told}`, prompt: 'Which one is a connection to the story?', choices: shuffle(rng, [c.said, n.said]), answer: c.said, heardChoices: true, aboutWords: [k],
+      explain: `${c.said} That is a connection, because ${c.because}.`, visual: null, explainVisual: null,
+      whyNot: { [n.said]: { name: linkSaid(n.said), why: 'is not about Ben\'s story.' } }, alsoRight: [] }; },
+  // Is that a connection: a row of LINK3_YESNO, four Yes and four No.
+  'p3-link-yesno': (rng) => { const [k, who, said, answer, explain, why] = pick(rng, LINK3_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: `Listen. ${LINK3_STORIES[k].told} ${who} said, ${said}`, prompt: 'Is that a connection to the story?', choices: yesNo(rng), answer, aboutWords: [k],
+      explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] }; },
+  // How did they both feel: the story's feeling, beside the other face the lesson draws (the story alone answers, by the lead's design: the
+  // blind read's heard-only-the-story mark, 100 percent, as LINK3_FEELS says).
+  'p3-link-feel': (rng) => { const f = pick(rng, LINK3_FEELS); const other = f.feel === 'sad' ? 'happy' : 'sad';
+    return { type: 'choice', story: `Listen. ${f.told} ${f.who} said, ${f.said}`, prompt: 'How did they both feel?', choices: shuffle(rng, ['face:sad', 'face:happy']), answer: `face:${f.feel}`, aboutWords: [`feel ${f.key}`],
+      explain: `They both felt ${f.feel}. Ben felt ${f.feel} ${f.moment}, and ${f.who} felt just like Ben.`, visual: null, explainVisual: null,
+      whyNot: { [`face:${other}`]: { name: capFirst(other), why: `is not how Ben felt, because the story says he felt ${f.feel}.` } }, alsoRight: [] }; },
+  // Which part did Mia like best: the two parts' pictures, Mia's favorite either one.
+  'p3-link-liked': (rng) => { const k = pick(rng, Object.keys(LINK3_LIKED)); const s = LINK3_LIKED[k]; const fav = rng() < 0.5 ? 0 : 1; const [pic, did] = s.parts[fav]; const [otherPic] = s.parts[1 - fav];
+    return { type: 'choice', story: `Listen. ${s.told} Mia said, My favorite part was when Ben ${did}!`, prompt: 'Which part did Mia like best?', choices: shuffle(rng, s.parts.map(([p]) => `icon:${p}`)), answer: `icon:${pic}`, aboutWords: [`liked ${k}`],
+      explain: `The ${pic}. Mia said her favorite part was when Ben ${did}.`, visual: null, explainVisual: null,
+      whyNot: { [`icon:${otherPic}`]: { name: `The ${otherPic}`, why: 'is the other part of Ben\'s story, not the part Mia liked best.' } }, alsoRight: [] }; },
+  // Which one is not about the story: two of the story's three comments and one about other things, its place shuffled (by the lead's
+  // design always one of LINK3_NOT, the blind read's 100 percent by the question alone, as the which bank's above).
+  'p3-link-not': (rng) => { const k = pick(rng, Object.keys(LINK3_STORIES)); const s = LINK3_STORIES[k]; const n = pick(rng, LINK3_NOT); const shown = shuffle(rng, s.comments).slice(0, 2).map((c) => c.said);
+    return { type: 'choice', story: `Listen. ${s.told}`, prompt: 'Which one is not about the story?', choices: shuffle(rng, [...shown, n.said]), answer: n.said, heardChoices: true, aboutWords: [k],
+      explain: `${n.said} That is not about Ben's story, because ${n.none}.`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(shown.map((c) => [c, { name: linkSaid(c), why: 'is about Ben\'s story.' }])), alsoRight: [] }; },
+});
+
+// That reminds me! (pre-K 4, pass NR's second wave, PK4 III.D.2): six short stories, one sentence each, each with two comments friends
+// make of it, one a connection to the friend's own life and one to another story, which the friend tells of in a few words (as the lead's
+// Ana does: That reminds me of Owl's story!). A comment's row holds the friend who says it, its words, its kind, the words after "because"
+// that say why it is a connection, and what the kind question's explanation says. Each story's things are its own, so a comment of one
+// story is never about another: the which bank offers a story's connection beside two other stories' comments, so every comment is the
+// answer beside its own story and a wrong choice beside the others (as pass NP's mirrored stories are). No comment shares a thing, an
+// action or a kind of animal with a story it is dealt beside as a wrong choice (round one's lesson reads, pass NR: a bird who flew up high
+// sat beside Owl, who is a bird, and a bean that grew up to the sky beside Fox's kite, which went up high, two fair connections marked
+// wrong), so Snail's other story is a pumpkin seed that grew into a big pumpkin, which never goes up, and Fox's a ball that bounced up
+// high, which is no bird and comes straight back down, where a balloon that floated up high, as round one's fix had it, sat beside Owl's
+// clouds, both up in the sky (round two's read, pass NR); the rules test reads every pair by the ideas each holds, the sky among them.
+// The only story a comment names is Bear's, the lesson's own; the other stories it tells of are said in its own words, by animals the
+// alike banks' stories do not have (a thing may be theirs too: the ball is also Cat's and the sand Otter's, and no screen deals both).
+// Rabbit's is a monkey who lost his banana, an animal and a thing no other story here and no line of either lesson has: a cat who lost her
+// hat, as first built, sat beside the alike banks' Cat, who lost her ball, and Mouse, who lost his hat (the lead's look, pass NR). The
+// friends who speak are Mia and Ana, since the kind question asks about her own life. Owl could not sleep in the day, since most owls hunt
+// at night (pre-K 4's Match the land animals; round one's lesson read), and Bear at night. Every question is keyed on its story
+// (aboutWords), so a round asks about each story once.
+export const LINK4_STORIES = {
+  owl: { name: 'Owl', told: 'Owl could not sleep in the day, so she counted the clouds.', comments: [
+    { who: 'Mia', said: 'I could not sleep last night either!', kind: 'own', because: 'Owl could not sleep either', kindWhy: 'Mia could not sleep last night, and that is her own life.' },
+    { who: 'Ana', said: 'That reminds me of the story about the bear who could not sleep!', kind: 'another', story: 'the bear who could not sleep', because: 'Owl and the bear both could not sleep', kindWhy: 'Ana thought of a story about a bear, who could not sleep either.' }] },
+  rabbit: { name: 'Rabbit', told: 'Rabbit lost his red mitten in the snow.', comments: [
+    { who: 'Ana', said: 'I lost my mitten in the snow once too!', kind: 'own', because: 'Rabbit lost his mitten in the snow too', kindWhy: 'Ana lost her mitten in the snow once, and that is her own life.' },
+    { who: 'Mia', said: 'That reminds me of a story about a monkey who lost his banana!', kind: 'another', story: 'a monkey who lost his banana', because: 'Rabbit and the monkey both lost something', kindWhy: 'Mia thought of a story about a monkey, who lost something too.' }] },
+  fox: { name: 'Fox', told: 'Fox flew her kite at the park, and it went up high.', comments: [
+    { who: 'Mia', said: 'I fly my kite at the park too!', kind: 'own', because: 'Fox flew her kite at the park too', kindWhy: 'Mia flies her kite at the park, and that is her own life.' },
+    { who: 'Ana', said: 'That reminds me of a story about a ball that bounced up high!', kind: 'another', story: 'a ball that bounced up high', because: 'Fox\'s kite and the ball both went up high', kindWhy: 'Ana thought of a story about a ball that went up high too.' }] },
+  penguin: { name: 'Penguin', told: 'Penguin baked cookies with her grandma.', comments: [
+    { who: 'Ana', said: 'I bake cookies with my grandma too!', kind: 'own', because: 'Penguin baked cookies with her grandma too', kindWhy: 'Ana bakes cookies with her grandma, and that is her own life.' },
+    { who: 'Mia', said: 'That reminds me of a story about a pig who baked a cake!', kind: 'another', story: 'a pig who baked a cake', because: 'Penguin and the pig both baked something', kindWhy: 'Mia thought of a story about a pig, who baked something too.' }] },
+  turtle: { name: 'Turtle', told: 'Turtle made a sandcastle at the beach.', comments: [
+    { who: 'Mia', said: 'I made a sandcastle at the beach too!', kind: 'own', because: 'Turtle made a sandcastle at the beach too', kindWhy: 'Mia made a sandcastle at the beach, and that is her own life.' },
+    { who: 'Ana', said: 'That reminds me of a story about a crab who dug in the sand!', kind: 'another', story: 'a crab who dug in the sand', because: 'Turtle and the crab both played in the sand', kindWhy: 'Ana thought of a story about a crab, who played in the sand too.' }] },
+  snail: { name: 'Snail', told: 'Snail planted a seed, and it grew into a flower.', comments: [
+    { who: 'Ana', said: 'I planted a seed at school too!', kind: 'own', because: 'Snail planted a seed too', kindWhy: 'Ana planted a seed at school, and that is her own life.' },
+    { who: 'Mia', said: 'That reminds me of a story about a pumpkin seed that grew into a big pumpkin!', kind: 'another', story: 'a pumpkin seed that grew into a big pumpkin', because: 'Snail\'s seed and the pumpkin seed both grew', kindWhy: 'Mia thought of a story about a pumpkin seed that grew too.' }] },
+};
+// Is that a connection: six of each (the lead's design says four and four). Every story and one comment of each, crossed as pre-K 3's are,
+// so each story and each comment is a Yes once and a No once (a No row's comment is another story's, about nothing its story has): a child
+// who heard only the story, or only the comment, is right half the time, as by chance. Three comments are to the friend's own life and
+// three to another story, each a Yes once. Six, not four: with four of the six stories here, a triple dose's other story banks, which ask
+// about each story once while they can, drew the two left out more often, and the which bank read 43.0 percent by the question alone in
+// triple doses, where three choices are marked above 42.3 (35.3 with six; the engineer's blind read, pass NR).
+export const LINK4_YESNO = [
+  ['owl', 'Ana', 'That reminds me of the story about the bear who could not sleep!', 'Yes', 'Yes. Owl and the bear both could not sleep, so that is a connection to another story.', 'would mean it is not a connection, but Owl and the bear both could not sleep.'],
+  ['owl', 'Ana', 'I lost my mitten in the snow once too!', 'No', 'No. Owl\'s story has no snow and no mitten in it, so that is not a connection.', 'would mean it is a connection, but Owl\'s story has no mitten in it.'],
+  ['rabbit', 'Ana', 'I lost my mitten in the snow once too!', 'Yes', 'Yes. Rabbit lost his mitten in the snow, and Ana did too, a connection to her own life.', 'would mean it is not a connection, but Ana lost her mitten too, like Rabbit.'],
+  ['rabbit', 'Ana', 'That reminds me of a story about a ball that bounced up high!', 'No', 'No. Nothing in Rabbit\'s story went up high, so that is not a connection.', 'would mean it is a connection, but nothing in Rabbit\'s story went up high.'],
+  ['fox', 'Ana', 'That reminds me of a story about a ball that bounced up high!', 'Yes', 'Yes. Fox\'s kite went up high, like the ball, so that is a connection to another story.', 'would mean it is not a connection, but Fox\'s kite went up high, like the ball.'],
+  ['fox', 'Mia', 'I made a sandcastle at the beach too!', 'No', 'No. Fox\'s story has no beach and no sandcastle in it, so that is not a connection.', 'would mean it is a connection, but Fox\'s story has no sandcastle in it.'],
+  ['turtle', 'Mia', 'I made a sandcastle at the beach too!', 'Yes', 'Yes. Turtle made a sandcastle at the beach, and Mia did too, a connection to her own life.', 'would mean it is not a connection, but Mia made a sandcastle too, like Turtle.'],
+  ['turtle', 'Ana', 'That reminds me of the story about the bear who could not sleep!', 'No', 'No. Turtle\'s story has nothing about sleep in it, so that is not a connection.', 'would mean it is a connection, but Turtle\'s story has nothing about sleep in it.'],
+  ['penguin', 'Mia', 'That reminds me of a story about a pig who baked a cake!', 'Yes', 'Yes. Penguin and the pig both baked something, so that is a connection to another story.', 'would mean it is not a connection, but Penguin and the pig both baked something.'],
+  ['penguin', 'Ana', 'I planted a seed at school too!', 'No', 'No. Penguin\'s story has no seed in it, so that is not a connection.', 'would mean it is a connection, but Penguin\'s story has no seed in it.'],
+  ['snail', 'Ana', 'I planted a seed at school too!', 'Yes', 'Yes. Snail planted a seed, and Ana did too, a connection to her own life.', 'would mean it is not a connection, but Ana planted a seed too, like Snail.'],
+  ['snail', 'Mia', 'That reminds me of a story about a pig who baked a cake!', 'No', 'No. Nobody in Snail\'s story baked a cake, so that is not a connection.', 'would mean it is a connection, but nobody in Snail\'s story baked a cake.'],
+];
+// How two stories are alike (the lead's design: a problem, a feeling or a kind of place): ten short stories, each with all three, a problem
+// (lost something or got stuck), a feeling (sad, mad or scared) and a place (the park, the lake, the beach or the farm), and twelve pairs
+// of them, each sharing one of the three and differing in the other two, four pairs for each kind, chosen so each choice is the answer
+// about a third of the times it is shown (from 28 to 36 percent at seeds 1 to 4,000 of each bank, where nine pairs left the farm and
+// scared never shared, so a child could rule them out; the engineer's read, pass NR). A question's choices are what both share and one
+// other thing of each story, of the two other kinds, so the three choices are three kinds of thing: built first with each story's one
+// other thing, of one kind, the two wrong choices were always alike and the answer the odd one out, right every time (the engineer's
+// read, pass NR). A child who heard one story alone is right half the time, as the lead's design asks, since that story has
+// what both share and one of the wrong things; one who heard both and not the question, a third. A story's row holds its friend, its
+// sentence, what it has, and its problem as a friend says it, with what was lost or where it got stuck (did).
+export const LINK4_GRID = {
+  cat: { name: 'Cat', told: 'Cat lost her ball at the park, and she felt sad.', has: { problem: 'lost', feel: 'sad', place: 'park' }, did: 'lost her ball' },
+  mouse: { name: 'Mouse', told: 'Mouse lost his hat at the lake, and he felt mad.', has: { problem: 'lost', feel: 'mad', place: 'lake' }, did: 'lost his hat' },
+  bunny: { name: 'Bunny', told: 'Bunny got stuck in the snow at the farm, and he felt sad.', has: { problem: 'stuck', feel: 'sad', place: 'farm' }, did: 'got stuck in the snow' },
+  otter: { name: 'Otter', told: 'Otter got stuck in the sand at the beach, and she felt scared.', has: { problem: 'stuck', feel: 'scared', place: 'beach' }, did: 'got stuck in the sand' },
+  zebra: { name: 'Zebra', told: 'Zebra lost her shovel at the beach, and she felt mad.', has: { problem: 'lost', feel: 'mad', place: 'beach' }, did: 'lost her shovel' },
+  lamb: { name: 'Lamb', told: 'Lamb got stuck in the fence at the farm, and she felt scared.', has: { problem: 'stuck', feel: 'scared', place: 'farm' }, did: 'got stuck in the fence' },
+  hippo: { name: 'Hippo', told: 'Hippo lost her toy boat at the lake, and she felt sad.', has: { problem: 'lost', feel: 'sad', place: 'lake' }, did: 'lost her toy boat' },
+  puppy: { name: 'Puppy', told: 'Puppy got stuck in the mud at the lake, and he felt mad.', has: { problem: 'stuck', feel: 'mad', place: 'lake' }, did: 'got stuck in the mud' },
+  chick: { name: 'Chick', told: 'Chick lost her flashlight at the farm, and she felt scared.', has: { problem: 'lost', feel: 'scared', place: 'farm' }, did: 'lost her flashlight' },
+  turkey: { name: 'Turkey', told: 'Turkey got stuck in the bushes at the park, and he felt mad.', has: { problem: 'stuck', feel: 'mad', place: 'park' }, did: 'got stuck in the bushes' },
+};
+// Each choice, by what it says both friends did, felt or were; and the twelve pairs, by the kind of thing they share.
+export const LINK4_BOTH = { problem: { lost: 'Both friends lost something.', stuck: 'Both friends got stuck.' }, feel: { sad: 'Both friends felt sad.', mad: 'Both friends felt mad.', scared: 'Both friends felt scared.' }, place: { park: 'Both friends were at the park.', lake: 'Both friends were at the lake.', beach: 'Both friends were at the beach.', farm: 'Both friends were at the farm.' } };
+export const LINK4_PAIRS = [['lamb', 'puppy', 'problem'], ['otter', 'turkey', 'problem'], ['zebra', 'hippo', 'problem'], ['mouse', 'chick', 'problem'], ['otter', 'chick', 'feel'], ['cat', 'bunny', 'feel'], ['mouse', 'turkey', 'feel'], ['zebra', 'turkey', 'feel'], ['cat', 'turkey', 'place'], ['bunny', 'chick', 'place'], ['hippo', 'puppy', 'place'], ['otter', 'zebra', 'place']];
+// What a story's friend did, felt or was, for one kind of thing, as an explanation, a reason or a friend's words say it.
+const linkDid = (x, kind) => (kind === 'problem' ? x.did : kind === 'feel' ? `felt ${x.has.feel}` : `was at the ${x.has.place}`);
+// A pair's three choices, the first story giving one other kind and the second the last (either way about, by the draw): what both share,
+// what the first story has of kind ka, and what the second has of kind kb.
+function linkThree(rng, a, b, kind) { const A = LINK4_GRID[a]; const B = LINK4_GRID[b]; const [ka, kb] = shuffle(rng, Object.keys(A.has).filter((d) => d !== kind));
+  return { A, B, kind, ka, kb, right: LINK4_BOTH[kind][A.has[kind]], ownA: LINK4_BOTH[ka][A.has[ka]], ownB: LINK4_BOTH[kb][B.has[kb]] }; }
+// How a friend tells of the other story: whole, its problem, its place and its feeling, so every wrong choice is ruled out by words the
+// child heard (told first by what the two share and one other thing, the reason after a wrong tap named the third, which the friend never
+// said, "because the cat felt sad"; the lead's look, pass NR), and in the first story's own shape, two short sentences (round one's lesson
+// reads, pass NR: told whole in one sentence it ran to 23 words), the second opening on the other story's animal by name and then he or
+// she as its own sentence says it (round two's read, pass NR: opened on She, right after Mia or Ana spoke, a voice that cannot say
+// quotation marks left She to the girl who spoke, the first story's friend or the other). The friend says, That reminds me of the story
+// about the turkey! and then tells it: The turkey got stuck in the bushes at the park, and he felt mad. A child who heard only the friend
+// is right half the time still: the friend's story has what both share and the other story's own thing, and not the first's.
+const linkHe = (x) => /, and (he|she) felt /.exec(x.told)[1];
+function linkTold(B, b) { const he = linkHe(B); return `The ${b} ${B.did} at the ${B.has.place}, and ${he} felt ${B.has.feel}.`; }
+
+Object.assign(GENERATORS, {
+  // A connection to her own life, or to another story: one of a story's two comments, Yes about half the time each way. A child who heard
+  // only the friend's words is right every time, by design: a comment that tells of another story says so (That reminds me of a story
+  // about ...), and telling the two kinds apart is the idea the bank asks about (round one's lesson read, pass NR, 100 percent).
+  'p4-link-kind': (rng) => { const k = pick(rng, Object.keys(LINK4_STORIES)); const s = LINK4_STORIES[k]; const c = pick(rng, s.comments); const own = c.kind === 'own';
+    return { type: 'choice', story: `Listen. ${s.told} ${c.who} said, ${c.said}`, prompt: 'Is that a connection to her own life, or to another story?', choices: shuffle(rng, ['Her own life', 'Another story']), answer: own ? 'Her own life' : 'Another story', aboutWords: [k],
+      explain: `${own ? 'Her own life' : 'Another story'}. ${c.kindWhy}`, visual: null, explainVisual: null,
+      whyNot: own ? { 'Another story': { name: 'Another story', why: `is not what ${c.who} told about. She told about her own life.` } } : { 'Her own life': { name: 'Her own life', why: `is not what ${c.who} told about. She told about another story.` } }, alsoRight: [] }; },
+  // How are the two stories alike: two stories that share one thing, either one first, and three choices, what both share and one other
+  // thing of each, of the two other kinds (three since the engineer's build: with the design's two, the shared thing and one story's own,
+  // a child who heard one story alone was right three times in four, where the lead's design asks for half).
+  'p4-link-alike': (rng) => { const [a0, b0, kind] = pick(rng, LINK4_PAIRS); const [a, b] = rng() < 0.5 ? [a0, b0] : [b0, a0]; const t = linkThree(rng, a, b, kind);
+    return { type: 'choice', story: `Listen. ${t.A.told} ${t.B.told}`, prompt: 'How are the two stories alike?', choices: shuffle(rng, [t.right, t.ownA, t.ownB]), answer: t.right, heardChoices: true, aboutWords: [[a0, b0].join(' and ')],
+      explain: `${t.right} ${t.A.name} ${linkDid(t.A, kind)}, and ${t.B.name} ${linkDid(t.B, kind)} too.`, visual: null, explainVisual: null,
+      whyNot: { [t.ownA]: { name: t.ownA.replace(/\.$/, ''), why: `is not true, because ${t.B.name} ${linkDid(t.B, t.ka)}.` }, [t.ownB]: { name: t.ownB.replace(/\.$/, ''), why: `is not true, because ${t.A.name} ${linkDid(t.A, t.kb)}.` } }, alsoRight: [] }; },
+  // Which one is a connection: one of the story's two comments, beside a comment of each of two other stories, shuffled. A wrong comment of a
+  // friend's own life is not like the story, where pre-K 3's is not about it: an answer that tells of another story says about, and a reason
+  // saying a word of the answer the question never said is held back from a first wrong tap (whyNotNamesAnswer), which "is not about
+  // Penguin's story" was (the engineer's build).
+  'p4-link-which': (rng) => { const k = pick(rng, Object.keys(LINK4_STORIES)); const s = LINK4_STORIES[k]; const c = pick(rng, s.comments);
+    const others = shuffle(rng, Object.keys(LINK4_STORIES).filter((x) => x !== k)).slice(0, 2).map((x) => pick(rng, LINK4_STORIES[x].comments));
+    return { type: 'choice', story: `Listen. ${s.told}`, prompt: 'Which one is a connection to the story?', choices: shuffle(rng, [c.said, ...others.map((o) => o.said)]), answer: c.said, heardChoices: true, aboutWords: [k],
+      explain: `${c.said} That is a connection, because ${c.because}.`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((o) => [o.said, o.kind === 'own' ? { name: linkSaid(o.said), why: `is not like ${s.name}'s story.` } : { name: `The story about ${o.story}`, why: `is not like ${s.name}'s story.` }])), alsoRight: [] }; },
+  // Is that a connection: a row of LINK4_YESNO, six Yes and six No.
+  'p4-link-yesno': (rng) => { const [k, who, said, answer, explain, why] = pick(rng, LINK4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: `Listen. ${LINK4_STORIES[k].told} ${who} said, ${said}`, prompt: 'Is that a connection?', choices: yesNo(rng), answer, aboutWords: [k],
+      explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] }; },
+  // What is the same in both stories: one story of a pair, and a friend's connection to the other, which the friend names and then tells
+  // whole in two short sentences, the second opening on its animal by name (its problem, its place and its feeling, linkTold), and three
+  // choices, what both share and one other thing of each, of the two other kinds, so each wrong choice's reason says only what the child
+  // heard (the lead's look and round one's lesson reads, pass NR). The lead's design names one thing, the bear who could not sleep, which
+  // gave the answer to a child who heard only the friend; told whole, the friend's story has what both share and the other story's own
+  // thing a wrong choice says, so that child is right half the time, as one who heard only the story is.
+  'p4-link-same': (rng) => { const [a0, b0, kind] = pick(rng, LINK4_PAIRS); const [a, b] = rng() < 0.5 ? [a0, b0] : [b0, a0]; const t = linkThree(rng, a, b, kind); const who = rng() < 0.5 ? 'Mia' : 'Ana';
+    return { type: 'choice', story: `Listen. ${t.A.told} ${who} said, That reminds me of the story about the ${b}! ${linkTold(t.B, b)}`, prompt: 'What is the same in both stories?', choices: shuffle(rng, [t.right, t.ownA, t.ownB]), answer: t.right, heardChoices: true, aboutWords: [[a0, b0].join(' and ')],
+      explain: `${t.right} ${t.A.name} ${linkDid(t.A, kind)}, and in the other story, the ${b} ${linkDid(t.B, kind)} too.`, visual: null, explainVisual: null,
+      whyNot: { [t.ownA]: { name: t.ownA.replace(/\.$/, ''), why: `is not true, because the ${b} ${linkDid(t.B, t.ka)}.` }, [t.ownB]: { name: t.ownB.replace(/\.$/, ''), why: `is not true, because ${t.A.name} ${linkDid(t.A, t.kb)}.` } }, alsoRight: [] }; },
+});
+
 // Write it by its sounds (pass NE, PK4 IV.C.3): each word the lesson's lines say, with the letter for its first sound and the letter for
 // its last sound, each spelled with that letter first and that letter last; and the sound each of those letters says, as the letters
 // lessons teach it. Every question is a tap, and nothing a child writes is asked for or kept; a word heard is never printed while the voice
@@ -35645,13 +36357,13 @@ const P4_PLAY_BODY = [
 const P4_PLAY_PLAN = [
   ['You and your friend want to build a house with blocks. What can you do first?', 'Make a plan', 'Grab all the blocks', 'Make a plan together. A plan says what you will make, and who does each part.', 'Grabbing all the blocks', 'leaves none for your friend, so it is not fair.', 'You can say, let\'s build a house with blocks, you build the walls, and I build the roof.'],
   ['What does a plan say?', 'What you will make, and who does each part', 'Who gets all the blocks', 'A plan says what you will make, and who does each part, so each friend has a part.', 'Who gets all the blocks', 'is not a plan, because each friend needs blocks to do a part.', 'A plan can say, let\'s build a house with blocks, you build the walls, and I build the roof.'],
-  ['You have a new idea for the game. What can you do?', 'Say it, and ask, is that okay?', 'Knock the house down', 'Say your idea, and ask your friend, is that okay? Then you both agree on the new plan.', 'Knocking the house down', 'is not kind, and it can make your friend sad.', 'Listen to your friend\'s idea, too.'],
+  ['You have a new idea for the game. What can you do?', 'Say it, and ask, is that okay?', 'Knock the house down', 'Say your idea, and ask your friend, is that okay? Then you both agree on the new plan.', 'Knocking the house down', 'is not kind, and it can make your friend sad.', null],
   ['Your plan is to build a house, and your friend builds the roof. What can you do?', 'Do your part', 'Do every part yourself', 'Do your part of the plan. Each friend does a part, and together you make the whole house.', 'Doing every part yourself', 'leaves your friend with no part, so it is not playing together.', 'You can build the walls.'],
   ['While you build, how can you ask your friend for a block?', 'Can you pass me a block?', 'Give me that!', 'Asking, can you pass me a block, is a kind way to ask while you play together.', 'Saying give me that', 'tells your friend what to do, and asking is kinder.', 'You can say, please pass me a block.'],
 ];
 // Who does which part of a plan: each plan's two parts, yours and your friend's, each in its you form and its your friend form, so
 // the question can name them in either order and ask about either one; the answer is whoever the plan gives the asked part.
-const P4_PLAY_PARTS = [
+export const P4_PLAY_PARTS = [
   ['You and your friend build a house with blocks.', ['build the walls', 'builds the walls'], ['build the roof', 'builds the roof']],
   ['You and your friend play pizza shop.', ['make the pizza', 'makes the pizza'], ['bring the plates', 'brings the plates']],
   ['You and your friend have a pretend tea party.', ['pour the tea', 'pours the tea'], ['pass the cups', 'passes the cups']],
@@ -35684,12 +36396,22 @@ const P4_PLAN_TOGETHER = [
   ['The house is done. What can you and your friend say?', 'We did it!', 'I did it all!', 'We did it! You made the house together, so you can both feel happy.', 'Saying I did it all', 'is not true, because you made it together.', null],
   ['You ask, can you pass me a block? What is a kind thing your friend might say?', 'Here you go!', 'No, never!', 'Here you go! Talking while you play can help you play together.', 'Saying no, never', 'is not a kind way to play together.', null],
 ];
+// Yes or no about plans, four Yes rows and four No (pass NR, EARMARKS A154: four Yes rows to one No had answered Yes on 477 of seeds 1
+// to 600). Since round one's lesson reads (pass NR) no one word tells the answer: every Yes row said can and no No row did, so Yes when it
+// says can was right every time, and only marked three No rows (87.3 percent); now can is in two Yes rows and one No row, and the best
+// one-word rule reads 75 percent of the rows, on okay, play, friend or the (76.6 percent of seeds 1 to 2,000, on friend), under the rules
+// test's bound of 80. Since round two's read the roof row names the plan, since without it a child who would help build the roof was
+// told no, and line 7 says we do not change the plan without asking, the words of the new idea's No row. Each explanation is as short
+// as the lesson's lines, and each reason eighteen words or fewer.
 const P4_PLAN_YESNO = [
-  ['Can a plan say who does each part?', 'Yes', 'Yes. A plan says what you will make, and who does each part.', 'would mean a plan cannot say who does each part, but it can.', 'A plan can say, you build the walls, and I build the roof.'],
+  ['Does a plan say who does each part?', 'Yes', 'Yes. A plan says what you will make, and who does each part.', 'would mean a plan does not say who does each part, but it does.', 'A plan can say, you build the walls, and I build the roof.'],
   ['Is it playing together if one friend does every part?', 'No', 'No. When you play together, each friend does a part of the plan.', 'would mean one friend can do it all, but each friend does a part.', null],
-  ['Can pretend play have a plan too?', 'Yes', 'Yes. Pretend play can have a plan, like a pizza shop where you make the pizza and your friend brings the plates.', 'would mean pretend play cannot have a plan, but it can.', null],
-  ['Can you talk while you play together?', 'Yes', 'Yes. Talk while you play, like, can you pass me a block?', 'would mean you cannot talk while you play, but you can.', null],
+  ['Can pretend play have a plan too?', 'Yes', 'Yes. Pretend play can have a plan too, like a pizza shop. You make the pizza, and your friend brings the plates.', 'would mean pretend play cannot have a plan, but it can.', null],
+  ['Is it okay to talk while you play together?', 'Yes', 'Yes. Talk while you play, like, can you pass me a block?', 'would mean you should not talk while you play, but you can talk while you play.', null],
   ['When you have a new idea, can you ask, is that okay?', 'Yes', 'Yes. Say your idea, and ask, is that okay? Then you both agree on the new plan.', 'would mean you cannot ask about a new idea, but you can.', null],
+  ['When the plan says your friend builds the roof, do you build the roof too?', 'No', 'No. Each friend does a part. Your friend builds the roof, and you build the walls.', 'would mean you both build the roof, but each friend does a part.', null],
+  ['When you have a new idea, can you change the plan without asking?', 'No', 'No. Say your idea, and ask, is that okay? Then you both agree on the new plan.', 'would mean you change the plan alone, but you and your friend agree on the new plan.', null],
+  ['Is a plan only for building with blocks?', 'No', 'No. Pretend play can have a plan too. You make the pizza, and your friend brings the plates.', 'would mean only blocks can have a plan, but pretend play can have one too.', null],
 ];
 // Play with a plan (pass MR, Q70): what a plan says you will make, or what talking while you play asks for, by its picture.
 const P4_PLAN_WHAT = [['You and your friend say, let\'s build a house with blocks. What will you make?', 'house', 'A house. A plan says what you will make, and this plan says a house.'], ['You and your friend say, let\'s play pizza shop! What will you make?', 'pizza', 'A pizza. In the pizza shop, you make the pizza, and your friend brings the plates.'], ['You ask your friend, can you pass me a block? What will your friend pass you?', 'block', 'A block. You asked for a block, so your friend passes you a block.']];
@@ -35969,9 +36691,10 @@ Object.assign(GENERATORS, {
   'p4-play-body': (rng) => socialRow(pick(rng, P4_PLAY_BODY), rng),
   'p4-play-plan': (rng) => socialRow(pick(rng, P4_PLAY_PLAN), rng),
   // Who does which part (pass MO): a plan's two parts named in either order, and either part asked; the wrong choice is the other
-  // player, told by the part the plan gives that player.
+  // player, told by the part the plan gives that player. Since pass NR either part may be yours (EARMARKS A154), so a question's words
+  // alone never give its answer.
   'p4-play-part': (rng) => {
-    const [scene, mine, theirs] = pick(rng, P4_PLAY_PARTS); const youFirst = rng() < 0.5; const askMine = rng() < 0.5;
+    const [scene, a, b] = pick(rng, P4_PLAY_PARTS); const [mine, theirs] = rng() < 0.5 ? [a, b] : [b, a]; const youFirst = rng() < 0.5; const askMine = rng() < 0.5;
     const said = youFirst ? `You ${mine[0]}, and your friend ${theirs[1]}.` : `Your friend ${theirs[1]}, and you ${mine[0]}.`;
     const answer = askMine ? 'You' : 'Your friend'; const choices = shuffle(rng, ['You', 'Your friend']);
     const explain = askMine ? `The plan says you ${mine[0]}, and your friend ${theirs[1]}.` : `The plan says your friend ${theirs[1]}, and you ${mine[0]}.`;
@@ -39420,7 +40143,18 @@ export const DRAWING_NAMES = { outside: 'drawing of the sun and a ball', rain: '
 // Since pass NP the books and pages of Hold a book and Which way we read, and the arrow that points down, each named by what it shows,
 // never by a word its questions ask for (round one's code read: "the front of a book" answered Which one is the front of the book? to
 // a screen reader, as the pages' first names did).
-export const LOOK_NAMES = { 'sign~stop': 'stop sign', 'book~cover': 'book with a name and a sun at the top', 'book~back': 'book with no name and no picture', 'book~down': 'book with its sun at the bottom', 'page~start': 'page with a dot at the top', 'page~end': 'page with a dot at the bottom', 'arrow~down': 'arrow pointing down' };
+// Since pass NR the things with words of Words all around us and Print tells us something, each named as the lead's design names it: the
+// milk carton, the cubby with Sam's name, the shop's door, the crayon box, the note, and the note that says I like dogs.
+export const LOOK_NAMES = { 'sign~stop': 'stop sign', 'book~cover': 'book with a name and a sun at the top', 'book~back': 'book with no name and no picture', 'book~down': 'book with its sun at the bottom', 'page~start': 'page with a dot at the top', 'page~end': 'page with a dot at the bottom', 'arrow~down': 'arrow pointing down',
+  'milk~carton': 'milk carton', 'cubby~name': 'cubby with Sam\'s name', 'door~open': 'shop\'s door', 'box~crayons': 'crayon box', 'note~love': 'note', 'note~dogs': 'note that says I like dogs',
+  // Since round three's screen read (pass NR): That reminds me!'s line 2 draws three clouds in a day sky, and a screen reader says so.
+  'cloud~three': 'three clouds in the sky' };
+// The words a drawing prints (pass NR, round one's screen read), line by line as the drawing sets them: the one table the drawings
+// (ICON_LOOKS in src/ui.jsx, and the word card) read their words from, and the one the rules test reads to hold that no question prints a
+// word a drawing on its screen prints (the note's I love you was on the note and on the answer's button, a third of p4-print-tells, and on
+// the note's tile and in the printed question, a third of p4-print-which, so a child who matched letter shapes needed no print read).
+// On an answer tile these drawings draw at a drawing's size (choiceFace in src/ui.jsx), so their words read at a phone's size too.
+export const DRAWN_WORDS = { word: ['cat'], 'sign~stop': ['STOP'], 'milk~carton': ['MILK'], 'cubby~name': ['Sam'], 'door~open': ['OPEN'], 'box~crayons': ['CRAYONS'], 'note~love': ['I love', 'you'], 'note~dogs': ['I like', 'dogs'] };
 // Turns a choice like 'dots:4' into words a child can hear: "the group with 4".
 export function describeChoice(choice, q = null) {
   const raw = String(choice).replace(/#\d+$/, '');
@@ -47402,13 +48136,13 @@ export const WONDER = [
       { voice: 'A scientist says', says: 'When I finish something hard, my body shows it. I stand up tall, and sometimes I need a rest too!' },
       { voice: 'An artist says', says: 'Proud feels shiny to me, like a gold star. I would paint myself on a mountaintop, waving!' },
       { voice: 'A grandparent of faith says', says: 'When someone in our house learns something new, we all cheer at dinner!' },
-      { voice: 'A skeptic says', says: 'Did I do it all by myself? Someone showed me how first, so I would thank them too!' },
+      { voice: 'A skeptic says', says: 'I did it, and I feel proud! Then I wonder how I learned it. Someone showed me how, so I thank them too!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'When I finish something hard, my body shows it. My chin goes up and I stand up tall, and sometimes my arms and legs feel tired too, so I take a little rest.' },
       { voice: 'An artist', says: 'Proud feels shiny to me, like a gold star stuck right on my heart. If I painted proud, I would paint myself on top of a tall mountain, waving my arms, with the whole sky around me.' },
       { voice: 'A grandparent of faith', says: 'When someone in our house learns something new, like pouring their own milk, we all cheer for them at dinner. Later we tell someone far away, like a cousin on the phone, so they can cheer too.' },
-      { voice: 'A skeptic', says: 'Did I really do it all by myself? Someone showed me how first, and I watched and practiced. So I would feel proud of all my practice, and I would say thank you to the person who taught me too.' },
+      { voice: 'A skeptic', says: 'I did it myself, and I feel proud. Then I like to ask how I learned it. Someone showed me how first, and I watched and practiced, lots of times. So I am proud of all that practice too, and I say thank you to the person who taught me.' },
     ],
     closing: 'How would you cheer for a friend who did something hard?',
   },
@@ -47492,13 +48226,13 @@ export const WONDER = [
       { voice: 'A scientist says', says: 'Dad drove home on a street I did not know. After supper we drew both roads on paper. Both lines ended at our house!' },
       { voice: 'An artist says', says: 'I saw a whale painted on a wall when Mom drove home by the river! A new street woke my eyes up!' },
       { voice: 'A grandparent of faith says', says: 'Grandmother and I had to walk home through strange fields. I was scared, so I held her coat. It smelled like our kitchen!' },
-      { voice: 'A skeptic says', says: 'Was Dad sure of the way? He was not! He said we could turn around. We did, one time, and we still got home.' },
+      { voice: 'A skeptic says', says: 'My uncle drove down a new street. It ended at a fence! He laughed and turned around, and we still got home.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Workers closed our road one afternoon, and my dad turned the car down a street I had never seen. Nothing outside my window looked like the way home. After supper, he got out a pencil and paper. He drew our house as a dot, and my school as another dot. I drew the old road between them, with its five stoplights. Then he drew the new road, which went the long way around the pond. There were two lines, and both of them ended at the same dot! The new way had felt strange while I was riding on it. On paper, it was just one more line to my house.' },
       { voice: 'An artist', says: 'The day our road was closed, my mom drove home along the river, and I pressed my nose to the window. There was a house as yellow as a lemon. There was a wall with a whale painted on it, as long as a bus. There was a man selling flowers out of buckets, red and orange and pink. I had never seen any of it, and it had all been a few streets away the whole time! That night I tried to draw our old way home, and I could hardly remember what was on it. I had ridden that road so many times that my eyes had gone to sleep on it. A new street wakes them up. The next day, on the old road, I looked for one thing I had never drawn, and I found a blue door.' },
       { voice: 'A grandparent of faith', says: 'The spring I was six, the river came up over the little bridge near our house, and the bridge was closed. My grandmother and I had to walk home the long way, through fields I did not know. The path was muddy, and the trees were not our trees. I was scared, and I held on to her coat with both hands. Then I pressed my face against it. The wool smelled of wood smoke and soap, the way our kitchen smelled on washing day. With my nose in her sleeve, the fields did not seem so strange. I believe we can carry a little of home with us, and that day my grandmother carried it in her coat. When we came into our kitchen at last, it smelled just like her sleeve.' },
-      { voice: 'A skeptic', says: 'The street my dad took had not one house I knew, and I asked him if it went home. He said he thought so. If it did not, we would turn around and try the next one. I did not like that answer at first. I wanted him to be sure. Two streets later, the road ended at a fence, with a field behind it. My dad laughed, backed the car up and turned around. The next street came out by the big blue mailbox on our corner. My dad had been wrong about one street, and we were home anyway. He had not needed to be sure. He had needed to know what to do if he was wrong. A new way felt less scary to me after that, since a wrong turn can be turned around.' },
+      { voice: 'A skeptic', says: 'The street my uncle took had not one house I knew, and I asked him if it went home. He said he thought so. If it did not, we would turn around and try the next one. I did not like that answer at first. I wanted him to be sure. Two streets later, the road ended at a fence, with a field behind it. My uncle laughed, backed the car up and turned around. The next street came out by the big blue mailbox on our corner. My uncle had been wrong about one street, and we were home anyway. He had not needed to be sure. He had needed to know what to do if he was wrong. A new way felt less scary to me after that, since a wrong turn can be turned around.' },
     ],
     closing: 'What do you like to look for on the way home?',
   },
@@ -47523,6 +48257,127 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'I skipped a page in my pig book once, and I knew it right away, because the pig was suddenly dripping wet. First I wanted to see if I could work out the missing page from what came after it. The pig was wet, and there were puddles on the path. So I guessed that it had rained on him. Then I turned back to check. There was no rain at all! The pig had jumped into the pond to get his hat, and the puddles were from his own feet. My guess was wrong, and I still liked it, because I had made it from things I could see. I did it on purpose a few times after that. I would skip a page, guess, and check. My guesses got better, and they were not right every time.' },
     ],
     closing: 'How do you like to turn the pages of a book?',
+  },
+  // Pass NR: four early questions, one for each early theme (36 each before the pass), so each has 37 of the 148. They sit beside
+  // the pass's lessons on print all around us, and one of them, the note in a pocket, touches that world: a writer tells a reader,
+  // a child asks a grown-up, What does this say?, and the scientist counts a note's words by its spaces before he can read one
+  // (the lessons' own words, each word is a group of letters, and a space shows where one word stops and the next word starts). The
+  // other three do not. Is a seed alive: "The Science of Plants", an open textbook of the University of Minnesota, chapter 9.2,
+  // Seed Physiology (open.lib.umn.edu/horticulture/chapter/9-2-seed-physiology), read on November 16, 2026, by the writer twice
+  // (the second time for round one's fixes) and by round one's reader, each time through a fetch tool's extract and never the page
+  // itself (the proxy refused the reader a direct download), so these quotes are the extract's and still want one read against the
+  // page: a seed as "a living plant in a quiescent state", "the embryo's metabolism slows
+  // down to nearly zero" (the scientist's "a living plant at rest" and "living so slowly") and "Water moves through the pericarp and
+  // seed coat into cells and leads to reactivation of the metabolic processes." (his "Water helps start it up again", helps and
+  // never alone: the chapter lists the outside conditions a seed needs as water, oxygen, temperature and, for some small seeds,
+  // light, and calls seeds dormant "if they are alive and don't germinate even if provided with favorable conditions for
+  // germination", all of which the voice leaves out). Seeds kept dry in a jar are the chapter's own home storage ("get them dry,
+  // put them in a tightly lidded glass jar"), the grandparent's pumpkin seeds. The old date seed: Sallon,
+  // Solowey, Cohen, Korchinsky, Egli, Woodhatch, Simchoni and Kislev, 2008, "Germination, genetics, and growth of an ancient date
+  // seed", Science 320(5882), page 1464 (doi 10.1126/science.1153600), its abstract read on PubMed's record (PMID 18556553) the same
+  // day, through the same tool and never the paper itself: "An ancient date seed (Phoenix dactylifera L.) excavated from Masada and
+  // radiocarbon-dated to the first century Common Era" was germinated, and "Growth and development of the seedling over 26 months
+  // was compatible with normal date seedlings" (the scientist's "about two thousand years old" and "a young palm tree", and his
+  // short voice's palm tree seed, so no child hears date as a day; Masada stands above the Dead Sea in the Judaean Desert, his "very old
+  // place in the desert", which is the writer's own knowledge and on neither page). What the artist saw inside a soaked bean: Ohio
+  // 4-H's "Easy Bean Babies" (ohio4h.org/earthday/easy-bean-babies, The Ohio State University), read the same way on the same day:
+  // "Soak the lima bean seeds overnight or for about 12 hours.", the seed coat taken off, "carefully separate the two pieces of
+  // the bean", "After the cotyledons are pulled apart, notice the two tiny leaves." and "The baby root is the radicle." (her two
+  // halves, two tiny leaves and the point of a root; the page says nothing of lines on the leaves, so she says none), and the chapter's
+  // "An embryo, which is the new plant," stands behind her "the plant was already there". That eight
+  // of the scientist's ten beans rooted in a week, the mother's pumpkin seeds and the skeptic's bean and pebble are each voice's own
+  // memory, and none tells a study. The note, the line and the dropped toys: every line is a voice's own memory or noticing, and
+  // none tells a study. The grandparent's father is the one docs/CHARACTERS.md gives her; her mother is the one of
+  // w-early-letter-backward; the skeptic's grandpa, who walks him to school, is the one of w-early-gift-not-hoped-for; and the uncle
+  // of his new-way-home voices, fixed in this pass, is the one docs/CHARACTERS.md gives Mike. No voice of the four questions turns
+  // to its grown years (no "years later", "when I was grown" or "when I was older"), so the stage keeps twelve such voices.
+  {
+    id: 'w-early-note-in-my-pocket',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A little note is in your pocket. Someone who loves you put it there. You have not read it yet. How do you feel?',
+    options: ['Happy', 'Loved', 'I want to know what it says'],
+    simple: [
+      { voice: 'A scientist says', says: 'Mom\'s note had three groups of letters, with spaces between. So, three words! At home, Mom read them. It said, you are brave.' },
+      { voice: 'An artist says', says: 'Dad\'s writing was tall and leaning, like Dad in a hurry. I could not read his note. But it looked like him! I smiled.' },
+      { voice: 'A grandparent of faith says', says: 'Grandmother tucked her morning prayer in my coat. Each night she read it to me. It was the first thing I read by myself!' },
+      { voice: 'A skeptic says', says: 'I guessed my note said, cookies today! I asked my teacher what it said. Grandpa had written, I love you! I kept it.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'One morning, before I could read, I found a folded note in my lunch box. I unfolded it and looked hard at it. I could not tell what the marks said, so I looked at how they sat on the paper. The letters stood in groups, with a little space after each group. My teacher had shown us that each group of letters is a word, and that a space shows where one word stops and the next word starts. I put my finger on each group and counted, and there were three. So my note had three words in it! I did not know which words they were, and I felt happy anyway, because I had found out something true about my note. At home I asked my mom to read it to me. She touched each word as she said it, and the note said, you are brave. There were three words, as I had counted. I still like to find out what I can about a thing before I ask.' },
+      { voice: 'An artist', says: 'My dad wrote in a hurry, and his letters showed it. They were tall and thin, and every one of them leaned forward, as if the words were running to catch a bus. My dad walked like that too. One morning at school, I found a folded paper in my coat pocket. I could not read yet, so I did not know what it said. I knew whose it was the moment I opened it, though, because the letters were leaning. It was like seeing him wave from across the room! I kept that note in my pocket all day, and I took it out again and again just to look. I think a person\'s writing is a little like a drawing of them. Nobody else\'s hand makes quite the same lines.' },
+      { voice: 'A grandparent of faith', says: 'On my first day of school, my grandmother tucked a small folded paper into my coat pocket. I could not read, and I was too shy to ask my teacher about it. So I kept my hand on it. All that day I could feel its corner under my fingers. That evening, I gave the paper back to her and asked what it said. She read it out loud, and I knew every word already. It was the short prayer she said over me at the door each morning, asking that I be kept safe and that I be kind. After that, the paper went to school in my pocket every day, and every evening I asked her to read it again. I watched her finger move under the words. One evening that winter, I read the first line before she could say it. It was the first thing I ever read by myself. I still know that prayer by heart, and I say it at my own door each morning.' },
+      { voice: 'A skeptic', says: 'I found a note in my pocket at school one day, and right away I thought I knew what it said. My grandpa had been talking about cookies on our walk to school that morning. So I told my friend that the note said, cookies today. I could not read a word of it! I had made a guess, and then I had believed my own guess. At snack time I took the note to my teacher and asked her, what does this say? She read it to me slowly. It said, I love you, have a good day, and at the bottom it said, Grandpa. There were no cookies in it anywhere. I felt a little let down for about one minute. Then I thought it over, and I liked the real words better than my guess. Now, when I see writing I cannot read, I try not to decide what it says. I ask someone who can read it.' },
+    ],
+    closing: 'Who would you like to make a note for?',
+  },
+  {
+    id: 'w-early-is-a-seed-alive',
+    theme: 'world',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A seed sits still in your hand. It does not eat, and it does not move. Is a seed alive?',
+    options: ['Yes', 'No', 'Not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'Once, scientists planted a palm tree seed about two thousand years old. It grew! I think some seeds can rest a very long time.' },
+      { voice: 'An artist says', says: 'Mom and I soaked a big bean and opened it. Two tiny leaves lay inside! To my eyes, the plant was already there.' },
+      { voice: 'A grandparent of faith says', says: 'My mother kept pumpkin seeds in a jar all winter. She said they were sleeping. I believe life can be very quiet.' },
+      { voice: 'A skeptic says', says: 'A seed and a pebble looked the same to me. I planted and watered both. Only the seed came up! So something was different.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Ten dry beans from the kitchen sat in a cup on our table, hard and still. I wanted to know if anything in them was living, so my dad helped me set up a test. We laid the beans on a wet paper towel inside a glass jar and set the jar by the window. By the next morning, the beans had swelled. A few days later their skins split, and by the end of the week, eight of the ten had pushed out a small white root. Plant scientists say that a dry seed is a living plant at rest. It is living so slowly that it seems to do nothing at all. Water helps start it up again. Some seeds can rest for a very long time. Scientists once planted the seed of a date palm that had been dug up from a very old place in the desert. Their tests showed that the seed was about two thousand years old, and it sprouted and grew into a young palm tree! So when I hold a seed now, I think of it as alive and waiting.' },
+      { voice: 'An artist', says: 'A dry bean is not much to look at. It is smooth and plain, like a bead with no hole in it. One evening my mom and I left a big white bean in a cup of water. In the morning it was fat and soft, and its skin slipped off like a little jacket. My mom showed me how to open it with my thumbs, and it came apart in two halves. Tucked between them was something tiny and pale. I bent down and looked very closely. It was two tiny leaves, folded together, and below them was a little point where the root would start! The whole plant had been drawn in there, too small to see from the outside. I do not know if folded-up leaves are awake or asleep. It looked to me like a picture waiting for someone to open the book.' },
+      { voice: 'A grandparent of faith', says: 'My mother saved the seeds from her best pumpkin every fall. She washed them, dried them on a cloth, and put them in a jar on the pantry shelf. All winter they sat there in the dark, and to me they looked dry and done. I asked her once if they were dead. She said they were sleeping, and that she would not wake them until the ground was warm. In the spring she let me press them into the dirt with my thumb. She said a few quiet words over each one, the way she did over our supper. Then the vines came up, and I thought about that jar. Something had been alive in it all winter, without one sound or one wiggle. I believe life is a gift, and I believe it can be very quiet.' },
+      { voice: 'A skeptic', says: 'My teacher gave each of us a bean seed in a paper cup. Mine was small and brown and hard. Coming in from recess with my class, I had picked up a pebble that was small and brown and hard too. I held one in each hand, and I could not see why one should be alive and the other not. So I asked for a second cup, and I planted them both. I gave them the same dirt, the same water and the same sunny windowsill. After a week and a half, the seed had a green loop poking up, and the pebble was still a pebble. So there was something in the seed that I could not see by looking. Then I noticed the cup beside mine, which was my friend\'s. Her seed never came up at all. Had hers been alive when we planted it? I did not know, and my teacher said she could not be sure either. Looking had not told me which things were alive. I had to wait and watch what they did, and even that did not answer everything.' },
+    ],
+    closing: 'If you had one seed, where would you plant it?',
+  },
+  {
+    id: 'w-early-last-in-line',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your turn at the front of the line is over, and now you are at the very back. How does that feel?',
+    options: ['Sad', 'Okay', 'A little of both'],
+    simple: [
+      { voice: 'A scientist says', says: 'When I led the line, I counted eleven friends behind me. The next day, at the back, I counted eleven ahead. The same friends!' },
+      { voice: 'An artist says', says: 'I felt sad at the back. Then I saw the whole line! Red coat, green coat, yellow hat. That is what the back shows!' },
+      { voice: 'A grandparent of faith says', says: 'I was smallest, so I walked last. My teacher made me keeper of the gate. I thanked God for my gate!' },
+      { voice: 'A skeptic says', says: 'The front looked best to me. Then I led, and held the door for my teacher and class. I got to the swings last!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'In my class, the first child in line was called the leader. Each morning our teacher sent the leader of the day before to the very back, and everyone else moved up one place. On my day to lead, I looked over my shoulder and counted the friends behind me, and there were eleven. The next morning I was last, and I felt sad about it. It seemed to me that I had lost something. So I counted again, to see what was gone. There were eleven friends ahead of me. I checked who they were, and they were the same eleven, standing in the same order as the day before. Not one friend was missing from our line, and I was still in it. The only thing that had changed was where I stood. I had counted to find out what I had lost, and the count came out the same.' },
+      { voice: 'An artist', says: 'The back of the line was not where I wanted to be. I felt sad there, and I dragged my feet. Then we went around a corner in the hall, and I saw something I had never seen from the front. I could see the whole line at once! There was a red coat, then a green one, then a yellow hat with a pom-pom, then two blue coats holding hands. The line bent around the corner like a caterpillar, and every part of it was a different color. From the front, all I had ever seen was my teacher\'s back and the door. The leader sees where the line is going, and from the back I could see the line itself. I drew that caterpillar when I got home, with every coat in its place. I still like the back of a line, where I can see everyone.' },
+      { voice: 'A grandparent of faith', says: 'I was the smallest child in my class, and our teacher lined us up from the tallest to the smallest, so I walked at the back every day. I minded it very much, since the back seemed the worst place of all. One morning, our teacher stopped at the schoolyard gate and waited for me. She said that the last one in line had a job. The last one closed the gate behind us, so that everyone was safely in. I pulled it shut with both hands and heard the latch click. After that, I walked at the back as the keeper of the gate. I thanked God for my gate. Someone trusted me with the end of our line, and I have tried to be worth that trust.' },
+      { voice: 'A skeptic', says: 'First in line looked like the best place there was, and I wanted it every day. The leader got out the door first, so the leader had to get the most recess. I never once checked it. Then my turn to lead came around, and I found out what the leader did. I walked beside my teacher, where there was no room for hopping. At the playground door, she had me stop and hold it open while every other child went past me. By the time I let go of the door, both swings were taken! First in line had turned out to be last to the swings. I laughed about it, and so did my teacher. The next day I went to the back, as every leader did, and it did not feel like losing anymore. I had believed something about the front for weeks without testing it once. Now, when everyone wants the same place, I like to find out what really happens there.' },
+    ],
+    closing: 'Where do you like to stand in a line?',
+  },
+  {
+    id: 'w-early-carried-too-much',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You tried to carry all your toys at once, and they all fell down. What could you do next?',
+    options: ['Carry a few at a time', 'Find a basket', 'Ask for help'],
+    simple: [
+      { voice: 'A scientist says', says: 'I dropped my blocks, so I tested my arms. Six blocks stayed. Seven fell, every time! My arms had a number. It was six!' },
+      { voice: 'An artist says', says: 'Just before my books fell, I felt the top one slide. Now I know that feeling! It tells me, stop and put one down.' },
+      { voice: 'A grandparent of faith says', says: 'I dropped every spoon at the church supper. My father and I made small trips, singing. I believe each trip was a prayer.' },
+      { voice: 'A skeptic says', says: 'Dad and I each cleaned up a pile. My one giant armful fell, and Dad finished first. Next night, with a basket, I did!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I wanted to move my blocks across the room in one trip, so I piled them up to my chin. Halfway there, they slid, and every one of them hit the floor. I was mad for a minute. Then I began to wonder how many blocks my arms could really hold. I started over with two blocks and walked across the room. Then I tried three, then four, then five. Six blocks made it across. Seven blocks fell to the floor. I tried seven two more times to be sure, and they fell both times. So my arms had a number, and the number was six. I had not known that before the crash. I could not have found my edge without going over it once. That winter I tried again, and my number had gone up to eight. A drop does not tell me that I am bad at carrying. It tells me where my edge is today.' },
+      { voice: 'An artist', says: 'I used to carry my picture books in one tall stack, with my chin on the top one to hold it down. One day the stack let go, and the books went everywhere. It sounded like a drum set falling down the stairs! While I picked them up, I thought about the moment just before. I had felt it coming. The top book had begun to slide under my chin, very slowly, and my arms had gone tight and shaky. I had kept walking anyway. So the next time, I paid attention to that feeling. When the slide began, I stopped, knelt down and set two books on the floor. Not one book fell that time. I think my body tells me when I am holding too much, a moment before anything drops. It speaks very softly, and I have to be listening for it.' },
+      { voice: 'A grandparent of faith', says: 'Our church held a supper every fall, and the year I was five, I was given a job. I was to carry the spoons from the kitchen to the long tables. I wanted to be finished first, so I scooped up every spoon in both arms. They slid out by the door and rang on the floor like bells. Everyone turned to look, and I wanted to hide. My father came over and helped me gather them. He did not scold me. He gave me six spoons, took six himself, and walked beside me to the tables. On the way back for more, he began to sing, and I sang with him. We made a great many trips. My father told me that setting a table for others is a kind of prayer, said with your feet as well as your hands. I still believe what he told me. Going back for more was not a mistake, since every trip was part of the prayer.' },
+      { voice: 'A skeptic', says: 'At clean-up time, my dad and I each had a pile of my toys to put in the toy box, and I wanted to finish before he did. I had a plan for winning. One trip had to be faster than three, so I grabbed my whole pile in one giant armful. My dad took a few things and walked. I got four steps before a truck slid out, and then the rest went too. While I was crawling around after my toys, he made his second trip and his third. He finished long before I did. My plan had lost to plain walking! The next night I asked to try again, and this time I dumped my pile into the laundry basket first. I made one trip, I dropped nothing, and I finished first. So three trips were faster on the first night, and one trip was faster on the second. The answer changed when I had a basket. I try not to hold an answer too tightly now, since a new tool can change it.' },
+    ],
+    closing: 'What would you carry in a basket?',
   },
   {
     id: 'w-growing-left-it-at-home',
@@ -49381,13 +50236,20 @@ export function lightReviewState(events, moduleId) {
 export const LIGHT_REVIEWS_PER_DAY = 2;
 const localDayKey = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 const endOfLocalDay = (iso) => { const d = new Date(iso); d.setHours(23, 59, 59, 999); return d.toISOString(); };
+// Whether a review dated dueAt is due at the moment now, by the rule above: from the start of the device's own day its date falls on,
+// and on every day after until it is taken. The queue reads it here, and so does View progress for a lesson moved past (moduleStory),
+// so the report calls a fresh try due on the day the student is first offered it (round one's code read, SHOULD CONSIDER 5).
+export function reviewIsDue(dueAt, now = new Date().toISOString()) { return !!dueAt && String(dueAt) <= endOfLocalDay(now); }
+// Whether that day is the very day of the moment now, by the same device day (round two's read, SHOULD CONSIDER 8): View progress says
+// such a fresh try "is due today", where "which has been due since November 16" was read on November 16.
+export function reviewDueToday(dueAt, now = new Date().toISOString()) { return !!dueAt && localDayKey(dueAt) === localDayKey(now); }
 export function lightReviewQueue(events, now = new Date().toISOString(), allowIds = null) {
   const progress = deriveProgress(events);
   const queue = [];
   for (const id of [...progress.masteredIds, ...MODULES.filter((m) => progress.perModule[m.id].movedPast && !progress.perModule[m.id].mastered).map((m) => m.id)]) {   // moved past joins for its fresh try (pass LQ)
     if (allowIds && !allowIds.includes(id)) continue;
     const st = lightReviewState(events, id);
-    if (!st.dueAt || String(st.dueAt) > endOfLocalDay(now)) continue;   // due on its day, from the start of that day
+    if (!reviewIsDue(st.dueAt, now)) continue;   // due on its day, from the start of that day
     queue.push({ moduleId: id, stage: st.stage, dueAt: st.dueAt, missedKinds: st.missedKinds || [] });
   }
   return queue.sort((a, b) => String(a.dueAt).localeCompare(String(b.dueAt)));   // a stable sort keeps the star order on a tie
@@ -49502,7 +50364,12 @@ export function stuckAfterReviewIds(events) { return reviewingIds(events).filter
 // The educator moves the student forward: one appended event, never a rewrite. The lesson's review closes; the star,
 // the gate and the memory checks are untouched, so the lesson keeps coming back lightly inside later rounds.
 export function makeMovedForwardEvent(moduleId, at) { return { type: 'moved_forward', at, moduleId }; }
-const describeDay = (iso) => { const d = new Date(iso); return `${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getUTCMonth()]} ${d.getUTCDate()}`; };
+// The day a moment fell on, as this device reads it (pass NR, the screen read's MUST FIX 3): its own day, as the screens' own dates
+// are (the Practice Reviews card's date line, View progress's "Passed on"), where it read the UTC day, so at 7 PM Central one move read
+// "November 12" under the card's "November 11". A day written without a time ("2026-09-14") is that day wherever the device is, since
+// JavaScript would read it as midnight UTC, the evening before in the Americas. niceDate below reads a day the same way. Each stays one
+// line that needs nothing else, as the rules test loads it.
+const describeDay = (iso) => { const day = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso)); const d = day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(iso); return `${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getMonth()]} ${d.getDate()}`; };
 // How long ago, in plain words (pass LN: weeks are counted down, so 25 days is "three weeks", never "one month").
 const gapWords = (fromIso, toIso) => {
   const days = Math.max(0, Math.round((new Date(toIso) - new Date(fromIso)) / 86400000));
@@ -49515,20 +50382,22 @@ const ofFive = (n) => ['none', 'one', 'two', 'three', 'four', 'all five'][n] || 
 // The sentences an educator reads, in Mikey's approved wording (pass LE): one per lesson for its latest review, newest
 // first. Titles are wrapped in asterisks so the screen can emphasize them.
 // The two lessons a stuck sentence names, the lesson and the one its loop back went to, as *Title Case* for the screen's emphasis
-// (pass NQ, F3). When the two share a title, each has its course beside it (courseLabel), as the weekly note tells two lessons of one
-// title apart: grade 7's The first Texans loops back to grade 4's, and the sentence named both The First Texans.
-function stuckTitles(id, backId) {
-  const m = getModule(id); const b = backId ? getModule(backId) : null; const twin = !!(m && b && b.id !== m.id && b.title === m.title);
-  const one = (x) => (twin ? `*${titleCase(x.title)}* in ${courseLabel(getCourse(x.courseId))}` : `*${titleCase(x.title)}*`);
-  return { title: m ? one(m) : '', back: b ? one(b) : '' };
+// (pass NQ, F3). When the two share a title, each has its course after it, as the weekly note tells two lessons of one title apart:
+// grade 7's The first Texans loops back to grade 4's, and the sentence named both The First Texans. Since pass NR the course follows the
+// one rule (fromCourse), so a lesson whose title another assigned lesson shares has it too, said as "from fourth grade history".
+function stuckTitles(id, backId, enabledIds = []) {
+  const m = getModule(id); const b = backId ? getModule(backId) : null;
+  const one = (x, other) => `*${titleCase(x.title)}*${fromCourse(x.id, enabledIds, other ? [other.id] : [])}`;
+  return { title: m ? one(m, b) : '', back: b ? one(b, m) : '' };
 }
 // The stuck sentence by itself, in Mikey's wording (pass LG); `action` adds the line that points at the Move forward
-// button, which the Action Item popup shows and the summary leaves out.
-export function stuckSentence(events, moduleId, name = 'This student', { action = true } = {}) {
+// button, which the Action Item popup shows and the summary leaves out. `enabledIds` are the student's assigned courses, which tell a
+// title another assigned lesson shares (stuckTitles, since pass NR): the log's own unless a caller hands it one lesson's events only.
+export function stuckSentence(events, moduleId, name = 'This student', { action = true, enabledIds = null } = {}) {
   const stuck = lightReviewStuck(events, moduleId);
   if (!stuck) return null;
   const mod = getModule(moduleId); if (!mod) return null;
-  const back = getModule(stuck.loopedTo); const named = stuckTitles(moduleId, back ? back.id : null);
+  const back = getModule(stuck.loopedTo); const named = stuckTitles(moduleId, back ? back.id : null, enabledIds || enabledCourseIds(events));
   const title = named.title;
   const backNote = back ? ' and one of those rounds was after looping back to ' + named.back : '';
   const score = ofFive(lightReviewState(events, moduleId).last.correct);
@@ -49563,7 +50432,7 @@ export function neverMasteredStuckIds(events) {
 export function movedPastIds(events) { const progress = deriveProgress(events); return MODULES.filter((m) => progress.perModule[m.id].movedPast && !progress.perModule[m.id].mastered).map((m) => m.id); }
 export function neverStuckSentence(events, moduleId, name = 'This student', { action = true } = {}) {
   const st = neverMasteredStuck(events, moduleId); if (!st) return null;
-  const back = st.loopedTo ? getModule(st.loopedTo) : null; const named = stuckTitles(moduleId, back ? back.id : null);   // pass NQ, F3: a shared title
+  const back = st.loopedTo ? getModule(st.loopedTo) : null; const named = stuckTitles(moduleId, back ? back.id : null, enabledCourseIds(events));   // pass NQ, F3: a shared title; pass NR: an assigned one
   const title = named.title;
   const backNote = back ? ' and one of those rounds was after looping back to ' + named.back : '';
   const act = action ? ` You can still move ${name} forward by clicking below.` : '';
@@ -49575,7 +50444,7 @@ export function neverMovedSentence(events, moveEvent, name = 'This student') {
   const mod = getModule(moveEvent.moduleId); if (!mod) return null;
   const st = neverMasteredStuck(events.filter((x) => (x.moduleId === moveEvent.moduleId || x.type === 'progress_reset') && (!x.at || String(x.at) < String(moveEvent.at))), moveEvent.moduleId);
   const rounds = st ? countWords(st.rounds) + ' rounds' : 'several rounds';
-  const back = st && st.loopedTo ? getModule(st.loopedTo) : null; const named = stuckTitles(moveEvent.moduleId, back ? back.id : null);
+  const back = st && st.loopedTo ? getModule(st.loopedTo) : null; const named = stuckTitles(moveEvent.moduleId, back ? back.id : null, enabledCourseIds(events));
   const title = named.title;
   const loopNote = back ? ', including a loop back to ' + named.back + ',' : '';
   return `You moved ${name} forward past ${title} on ${describeDay(moveEvent.at)}, before it was mastered, because ${rounds}${loopNote} did not get it to hold. ${title} stays on ${name}'s list as not yet mastered and comes back as a practice review in three weeks for a fresh try.`;
@@ -49594,15 +50463,43 @@ export function actionStuckItems(events, name = 'This student') {
 export function lightReviewHistory(events, name = 'This student') {
   const active = activeEvents(events);
   const mine = (id, at) => events.filter((x) => (x.moduleId === id || x.type === 'progress_reset') && (!x.at || String(x.at) <= String(at)));
-  const out = [];
-  for (const e of active.filter((x) => x.type === 'light_review_completed')) { const s = lightReviewSentences(mine(e.moduleId, e.at), name, 1)[0]; if (s) out.push({ at: e.at, kind: e.outcome, moduleId: e.moduleId, text: s }); }
-  for (const e of active.filter((x) => x.type === 'moved_forward')) { const s = lightReviewSentences(mine(e.moduleId, e.at), name, 1)[0] || neverMovedSentence(events, e, name); if (s) out.push({ at: e.at, kind: 'moved', moduleId: e.moduleId, text: s }); }
-  for (const id of neverMasteredStuckIds(events)) { const st = neverMasteredStuck(events, id); const s = neverStuckSentence(events, id, name, { action: false }); if (s) out.push({ at: st.at, kind: 'stuck', moduleId: id, text: s }); }
-  for (const id of stuckAfterReviewIds(events)) { const last = active.filter((x) => x.type === 'attempt_completed' && x.moduleId === id).pop(); const s = stuckSentence(events, id, name, { action: false }); if (s) out.push({ at: last ? last.at : null, kind: 'stuck', moduleId: id, text: s }); }
-  return out.sort((x, y) => String(y.at).localeCompare(String(x.at)));
+  // The student's assigned courses, read from the whole log (pass NR): one lesson's events hold none, and enabledCourseIds would read
+  // every course as assigned there.
+  const enabledIds = enabledCourseIds(events);
+  // The practice review and Move Forward entries, each one's lesson named beside the lessons in besideIds (below) as well as the assigned
+  // ones; and the lessons stuck right now, whose sentences name both lessons of a loop back with their courses themselves (stuckTitles).
+  const reviewed = (besideIds) => {
+    const out = [];
+    for (const e of active.filter((x) => x.type === 'light_review_completed')) { const s = lightReviewSentences(mine(e.moduleId, e.at), name, 1, { enabledIds, besideIds })[0]; if (s) out.push({ at: e.at, kind: e.outcome, moduleId: e.moduleId, text: s }); }
+    for (const e of active.filter((x) => x.type === 'moved_forward')) { const s = lightReviewSentences(mine(e.moduleId, e.at), name, 1, { enabledIds, besideIds })[0] || neverMovedSentence(events, e, name); if (s) out.push({ at: e.at, kind: 'moved', moduleId: e.moduleId, text: s }); }
+    return out;
+  };
+  const stuck = [];
+  for (const id of neverMasteredStuckIds(events)) { const st = neverMasteredStuck(events, id); const s = neverStuckSentence(events, id, name, { action: false }); if (s) stuck.push({ at: st.at, kind: 'stuck', moduleId: id, text: s }); }
+  for (const id of stuckAfterReviewIds(events)) { const last = active.filter((x) => x.type === 'attempt_completed' && x.moduleId === id).pop(); const s = stuckSentence(events, id, name, { action: false }); if (s) stuck.push({ at: last ? last.at : null, kind: 'stuck', moduleId: id, text: s }); }
+  // The lessons the card names are named beside one another, as the weekly note names its own (round one's code read, SHOULD CONSIDER 2):
+  // every entry's own lesson and, where its sentence tells a loop back, the lessons it looped back to (loopBacksTold). With only grade 7's
+  // course assigned, a stuck line named grade 7's The first Texans and the grade 4 lesson of that title it looped back to, each with its
+  // course, and the practice review line under it named grade 7's lesson by its title alone. A lesson beside only adds a course, never a
+  // loop back to a sentence, so one more reading of the practice review and Move Forward entries is enough, and it is made only when one
+  // of their lessons has a lesson of its title beside it. Like the assigned courses, these are read from the whole log: a course after a
+  // title tells two lessons apart on the card as it stands, and every other word of an entry stays as it read on its day.
+  const first = reviewed([]);
+  const beside = [...new Set([...first, ...stuck].flatMap((h) => [h.moduleId, ...loopBacksTold(events, h)]))];
+  const entries = first.some((h) => sharesTitle(h.moduleId, [], beside)) ? reviewed(beside) : first;
+  return [...entries, ...stuck].sort((x, y) => String(y.at).localeCompare(String(x.at)));
 }
-export function lightReviewSentences(events, name = 'This student', limit = 3, { action = false } = {}) {
-  const active = activeEvents(events);
+// The lessons a history entry's sentence loops back to (round one's code read, SHOULD CONSIDER 2): when its words tell a loop back, every
+// lesson its own lesson looped back to (its active looped_back events), so a lesson of the same title named beside it takes its course.
+// The Practice Reviews card (lightReviewHistory) and the weekly note read it here.
+export function loopBacksTold(events, entry) {
+  return /\bloop(?:ing)? back to\b/.test(entry.text || '') ? activeEvents(events || []).filter((e) => e.type === 'looped_back' && e.moduleId === entry.moduleId).map((e) => e.toModuleId) : [];
+}
+// `besideIds` are lessons the page names beside these sentences (since round one's code read, the lessons the Practice Reviews card
+// names, lightReviewHistory: each entry's own and those its lines loop back to), so a lesson of the same title is followed by its course
+// here too (fromCourse).
+export function lightReviewSentences(events, name = 'This student', limit = 3, { action = false, enabledIds = null, besideIds = [] } = {}) {
+  const active = activeEvents(events); const assigned = enabledIds || enabledCourseIds(events);   // pass NR: see stuckSentence
   const reviews = active.filter((e) => e.type === 'light_review_completed');
   const moved = new Map(); for (const e of active) if (e.type === 'moved_forward') moved.set(e.moduleId, e);
   const latestPer = new Map();
@@ -49611,7 +50508,7 @@ export function lightReviewSentences(events, name = 'This student', limit = 3, {
   const sentences = [];
   for (const e of items) {
     const mod = getModule(e.moduleId); if (!mod) continue;
-    const title = `*${titleCase(mod.title)}*`;
+    const title = `*${titleCase(mod.title)}*${fromCourse(mod.id, assigned, besideIds)}`;   // its course after it when another assigned lesson, or one the page names beside it, shares its title (pass NR)
     const st = lightReviewState(events, e.moduleId);
     const gap = gapWords(st.masteredAt || e.at, e.at);
     const gapCap = gap.charAt(0).toUpperCase() + gap.slice(1);
@@ -49626,12 +50523,12 @@ export function lightReviewSentences(events, name = 'This student', limit = 3, {
     }
     if (st.stage === 'moved') {
       const loop = [...active].filter((x) => x.type === 'looped_back' && x.moduleId === e.moduleId && String(x.at) > String(e.at)).pop();
-      const back = loop ? getModule(loop.toModuleId) : null; const named = stuckTitles(e.moduleId, back ? back.id : null);   // pass NQ, F3: a shared title
+      const back = loop ? getModule(loop.toModuleId) : null; const named = stuckTitles(e.moduleId, back ? back.id : null, assigned);   // pass NQ, F3: a shared title; pass NR: an assigned one
       const loopNote = back ? ', including a loop back to ' + named.back + ',' : '';
       sentences.push(`You moved ${name} forward on ${named.title} on ${describeDay(st.movedAt)}. Their practice review had come back ${ofFive(e.correct)} out of five, and the rounds that followed${loopNote} did not get it to hold. The lesson keeps its star and the lesson material will continue to flow through infrequent memory checks.`);
       continue;
     }
-    if (stuck) { sentences.push(stuckSentence(events, e.moduleId, name, { action })); continue; }
+    if (stuck) { sentences.push(stuckSentence(events, e.moduleId, name, { action, enabledIds: assigned })); continue; }
     if (e.outcome === 'clear') {
       sentences.push(`${name} took a short five-question practice review of ${title} ${gap} after mastering it, without any warning, and scored ${countWords(e.correct)} out of five. That lesson is holding, so no further review is planned.`);
     } else if (e.outcome === 'bare') {
@@ -49721,7 +50618,9 @@ export function placementDone(events, subject) {
 // ---------------------------------------------------------------------
 export const QUICK_CHECK_QUESTIONS = 5;
 const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-function niceDate(iso) { const d = new Date(iso); return isNaN(d) ? String(iso).slice(0, 10) : `${MONTHS_LONG[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`; }
+// A date in words, "October 2, 2026", by the device's own day (describeDay's comment above, pass NR); a day written without a time
+// ("2026-09-14", MASTERY_V2_FROM in the report's definitions) stays that day.
+function niceDate(iso) { const day = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso)); const d = day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(iso); return isNaN(d) ? String(iso).slice(0, 10) : `${MONTHS_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; }
 export function buildQuickCheck(moduleId, seed) {
   const m = getModule(moduleId); if (!m) return null;
   const rng = makeRng(seed);
@@ -51292,10 +52191,13 @@ export function changesSince(events, sinceIso) {
   const attempts = recent.filter((e) => e.type === 'attempt_completed');
   const per = deriveProgress(events).perModule;
   // A title two lessons in the list share has its course beside it, as in the weekly note (pass NQ, F2): both More and fewer
-  // lessons mastered since the last look read "mastered More and fewer, More and fewer".
+  // lessons mastered since the last look read "mastered More and fewer, More and fewer". Since pass NR by the one rule (fromCourse): a
+  // title another lesson in the list or in the student's assigned courses shares is followed by "from pre-K 3 math". Each title is in
+  // title case, as the weekly note, Who Needs Help and Practice so far write the lessons they list (round one's screen read, SHOULD
+  // CONSIDER 6): the line read "mastered More and fewer from pre-K 3 math" on a report whose other lists said "More and Fewer".
   const masteredIds = Object.entries(per).filter(([, p]) => p.mastered && p.masteredAt && new Date(p.masteredAt).getTime() >= since).map(([id]) => id).filter((id) => (getModule(id) || {}).title);
-  const twin = (id) => masteredIds.some((other) => other !== id && getModule(other).title === getModule(id).title);
-  const mastered = masteredIds.map((id) => (twin(id) ? `${getModule(id).title} in ${courseLabel(getCourse(getModule(id).courseId))}` : getModule(id).title));
+  const enabled = enabledCourseIds(events || []);
+  const mastered = masteredIds.map((id) => `${titleCase(getModule(id).title)}${fromCourse(id, enabled, masteredIds)}`);
   return { attempts: attempts.length, questions: attempts.reduce((n, e) => n + ((e.core || []).length), 0), mastered, stories: storiesRead(events).filter((r) => new Date(r.at).getTime() >= since).length, colored: recent.filter((e) => e.type === 'colored').length, played: recent.filter(isGameBreak).length };
 }
 export function setCertificateState(roster, id, grade, state) {
@@ -51322,7 +52224,7 @@ export const CONFIDENCE_RULES = [
   '+1 if the most recent practice set was perfect.',
   '+1 if the last 8 or more core answers in this module were all correct, OR at least 2 review questions from this module have been asked and 80% or more were correct.',
   '-1 if questions from this module have come back (in memory checks, checkpoints and practice reviews, all counted together) and half or more of those answers were wrong.',
-  'The score stays between 1 and 5. Who needs help names a module under signs of guessing when 2 or more answers in its latest set were wrong in under 4 seconds each.',
+  'The score stays between 1 and 5. Who Needs Help names a module under signs of guessing when 2 or more answers in its latest set were wrong in under 4 seconds each.',
 ];
 
 function median(numbers) {
@@ -51388,7 +52290,7 @@ export const EXPLANATIONS = [
   },
   {
     term: 'What holds a confidence score down',
-    plain: 'A score stays low when a student has practiced a module one or more times without passing it. A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row. The goal is to ensure that the information sticks. If two or more wrong answers in the latest round come in under four seconds each, Who needs help says there are signs of guessing in that module. This is because answering quickly usually indicates tapping rather than thinking. Getting half or more of the module\'s questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point, because the score is meant to say whether it stuck.',
+    plain: 'A score stays low when a student has practiced a module one or more times without passing it. A reliable way of keeping confidence down is scoring lower on consecutive attempts or not answering enough questions correctly in a row. The goal is to ensure that the information sticks. If two or more wrong answers in the latest round come in under four seconds each, Who Needs Help says there are signs of guessing in that module. This is because answering quickly usually indicates tapping rather than thinking. Getting half or more of the module\'s questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point, because the score is meant to say whether it stuck.',
   },
   {
     term: 'Answered correctly',
@@ -51480,10 +52382,20 @@ export function encouragementFor(events, moduleId, mastered) {
 // The story of one module for an educator, in plain conversational sentences: how many
 // times it was read and practiced, how each attempt went, whether the timing suggests
 // guessing, what the platform will do about it, and where confidence stands now.
-export function moduleStory(learnerName, events, moduleId) {
+// `now` is the moment the story is read (the screen leaves it to the clock); since round one's code read it decides only whether a
+// fresh try's day has come yet (SHOULD CONSIDER 5, below), and a test hands it a fixed moment.
+export function moduleStory(learnerName, events, moduleId, now = new Date().toISOString()) {
   const mod = getModule(moduleId);
   if (!mod) return '';
   const active = activeEvents(events);
+  // The lesson's own name inside a sentence, by the house's rule for a title inside a sentence (lessonInSentence; round one's screen
+  // read, SHOULD CONSIDER 6), as every other lesson this story names already is: lowercased but for a name's capital, and followed by
+  // its course when another lesson in the student's assigned courses has its title, or when the story names the other lesson of its
+  // title beside it (besideId: grade 7's The first Texans sent back to grade 4's, only grade 7's course assigned). Until then it was
+  // lowerTitle's words alone, so a story told "Sam was sent back to the first Texans from fourth grade history" and ended "Sam's
+  // confidence score in the first Texans", its own lesson, by the title alone.
+  const assignedHere = enabledCourseIds(events);
+  const ownName = (besideId = null) => lessonInSentence(moduleId, besideId, assignedHere);
   // The lesson's own reset, read as the report's row reads it (lessonResetTimes, since pass NQ): only what came after it is this
   // lesson's story now, and so is the confidence score below, which reads it the same way.
   const resets = lessonResetTimes(active);
@@ -51503,18 +52415,18 @@ export function moduleStory(learnerName, events, moduleId) {
     const backPart = marked.length - met.length ? `, ${marked.length - met.length} sent back to try again` : '';
     const waitPart = waiting ? `, and ${waiting} ${waiting === 1 ? 'is' : 'are'} waiting for a mark` : '';
     const sizes = pieces.map((w) => `${w.words} words`).join(', ');
-    return `${name} has sent ${pieces.length} ${pieces.length === 1 ? 'piece' : 'pieces'} of writing for ${lowerTitle(mod.title)} (${sizes}). ${metPart}${backPart}${waitPart}. Writing is marked by the educator, not the app, and the pieces themselves are kept in the record so they can be read again.`;
+    return `${name} has sent ${pieces.length} ${pieces.length === 1 ? 'piece' : 'pieces'} of writing for ${ownName()} (${sizes}). ${metPart}${backPart}${waitPart}. Writing is marked by the educator, not the app, and the pieces themselves are kept in the record so they can be read again.`;
   }
   const quick = active.filter((e) => e.type === 'quick_check' && e.moduleId === moduleId && kept(e)).pop();
   // A quick check passed with no round since: placed past, its star still to earn. Once rounds follow, the story tells them as it tells
   // any lesson's, the quick check in a sentence of its own (pass NQ, F3): a lesson skipped by a quick check is mastered later by two
   // passes on different days, and until then this sentence said its star was still to be earned after it was earned.
-  if (quick && quick.passed && attempts.length === 0) return `${name} took the quick check on ${lowerTitle(mod.title)} on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}, so the module was placed past without the lesson. It is not counted as mastered; the star is still to be earned, and memory checks will visit it.`;
+  if (quick && quick.passed && attempts.length === 0) return `${name} took the quick check on ${ownName()} on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}, so the module was placed past without the lesson. It is not counted as mastered; the star is still to be earned, and memory checks will visit it.`;
   const quickNote = !quick ? '' : quick.passed ? `${name} passed the quick check on ${niceDate(quick.at)} with ${quick.right} of ${quick.total}, so the module was placed past without the lesson.`
     : `${name} first tried the quick check on ${niceDate(quick.at)} and got ${quick.right} of ${quick.total}${quick.guessed ? ', too fast to count' : ''}, so the lesson came next.`;
-  if (attempts.length === 0 && reads === 0 && placedPast) return `The placement check placed past ${lowerTitle(mod.title)}, so it is unlocked without a practice round. It is not counted as mastered; the star still has to be earned, and memory checks will visit it.`;
-  if (attempts.length === 0 && reads === 0) return `${name} has not opened ${lowerTitle(mod.title)} yet. There is nothing to report until they do.`;
-  if (attempts.length === 0) return `${name} has read the ${lowerTitle(mod.title)} lesson ${reads === 1 ? 'once' : reads + ' times'} but has not practiced it yet. Nothing counts until a practice round is finished.`;
+  if (attempts.length === 0 && reads === 0 && placedPast) return `The placement check placed past ${ownName()}, so it is unlocked without a practice round. It is not counted as mastered; the star still has to be earned, and memory checks will visit it.`;
+  if (attempts.length === 0 && reads === 0) return `${name} has not opened ${ownName()} yet. There is nothing to report until they do.`;
+  if (attempts.length === 0) return `${name} has read the ${ownName()} lesson ${reads === 1 ? 'once' : reads + ' times'} but has not practiced it yet. Nothing counts until a practice round is finished.`;
 
   const times = (n) => (n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`);
   // The quick check is told first, as it came first (it is offered only before any round of its lesson, quickCheckAllowed), and a
@@ -51524,7 +52436,8 @@ export function moduleStory(learnerName, events, moduleId) {
   const practiced = reads ? `${name} read through this lesson ${times(reads)} and practiced it ${times(attempts.length)}.` : `${name} practiced this lesson ${times(attempts.length)}.`;
   const parts = [[quickNote, practiced].filter(Boolean).join(' ')];
   const loops = mine.filter((e) => e.type === 'looped_back');
-  if (loops.length) { const back = getModule(loops[loops.length - 1].toModuleId); parts.push(`After repeated misses, ${name} was sent back to ${back ? lessonInSentence(back.id, moduleId) : 'the module before'} for a quick check of the groundwork, then brought forward again.`); }
+  const backId = loops.length ? loops[loops.length - 1].toModuleId : null;   // the lesson named beside this one, below
+  if (loops.length) { const back = getModule(loops[loops.length - 1].toModuleId); parts.push(`After repeated misses, ${name} was sent back to ${back ? lessonInSentence(back.id, moduleId, enabledCourseIds(events)) : 'the module before'} for a quick check of the groundwork, then brought forward again.`); }
 
   // Each attempt in order, without turning into a table. A pass is called a pass; the star is
   // mentioned once, below, because mastery takes two passes on different days.
@@ -51568,7 +52481,44 @@ export function moduleStory(learnerName, events, moduleId) {
   const p = progress.perModule[moduleId];
   const conf = computeConfidence(moduleId, events);
   const suspiciouslyQuick = hereSec !== null && usualSec !== null && hereSec < usualSec * 0.6;
-  if (p && p.passed && (fastWrong >= 2 || suspiciouslyQuick || (p.mastered && attempts.length >= 3))) {
+  // A lesson moved past and a lesson a practice review reopened are told what comes next too (pass NR, the screen read's SHOULD CONSIDER
+  // 3): View progress had said nothing of a Move Forward, and told a reopened lesson its questions "will reappear again later as a memory
+  // check". A lesson moved past stays on the list as not yet mastered and comes back as a practice review for a fresh try, due on the day
+  // its schedule gives (lightReviewState: three weeks after the move, a week after a bare fresh try); a reopened lesson is back for a full
+  // round, its story offered, the lessons it builds on come back in memory checks, and passing it again starts its practice reviews over.
+  const schedule = p ? lightReviewState(events, moduleId) : null;
+  if (p && !p.mastered && p.movedPast) {
+    // What the move did for the lessons that need this one, read from the gate itself (round one's code read, MUST FIX 1). A lesson opens
+    // when every lesson that gates it in the assigned courses is passed or moved past (moduleStatuses, gatingPrerequisites), so each
+    // lesson that needs this one is read as the gate reads it now and as it reads with the move taken out. When one is still locked
+    // behind another lesson, the move is said to count for them as a pass does; when the move opened them, they are said to be open; and
+    // nothing is said of them when no lesson needs this one, when this one was passed or placed past before the move (which counts for
+    // the gate as the move does), or when they were open without the move (an educator opened them by hand). Until round one every
+    // lesson moved past heard "so the lessons that need it are open": of a lesson still locked behind a second one (90 such pairs in the
+    // courses: Writing numbers waits on Bigger and smaller to 100 after Teen numbers is moved past), and of lessons that do not exist.
+    const enabledNow = enabledCourseIds(events);
+    const gateOf = (prog) => new Map(moduleStatuses(prog, enabledNow).map((x) => [x.id, x.status]));
+    const needing = MODULES.filter((m) => enabledNow.includes(m.courseId) && gatingPrerequisites(m.id, enabledNow).includes(moduleId));
+    const them = needing.length === 1 ? 'lesson that needs it' : 'lessons that need it';
+    let gate = '';
+    if (needing.length && !p.passed) {
+      const gateNow = gateOf(progress);
+      if (needing.some((m) => gateNow.get(m.id) === 'locked')) gate = `, which counts for the ${them} as a pass does`;
+      else {   // the gate with the move taken out, read only here, since each read walks every lesson
+        const gateWithout = gateOf({ ...progress, perModule: { ...progress.perModule, [moduleId]: { ...p, movedPast: false } } });
+        if (needing.some((m) => gateWithout.get(m.id) === 'locked')) gate = `, so the ${them} ${needing.length === 1 ? 'is' : 'are'} open`;
+      }
+    }
+    // The fresh try's day, by the queue's own rule (reviewIsDue; round one's code read, SHOULD CONSIDER 5): a day still to come is the day
+    // it comes back from, a day gone is the day it has been due since, where "from November 1" was read on November 16 with the review
+    // waiting in that day's queue, and the very day is today (reviewDueToday; round two's read, SHOULD CONSIDER 8), where "which has been
+    // due since November 16" was read on November 16.
+    const day = schedule && schedule.dueAt ? describeDay(schedule.dueAt) : '';
+    const freshFrom = !day ? '' : reviewDueToday(schedule.dueAt, now) ? ', which is due today' : reviewIsDue(schedule.dueAt, now) ? `, which has been due since ${day}` : ` from ${day}`;
+    parts.push(`${name} was moved past this lesson before mastering it${gate}. It stays on ${name}'s list as not yet mastered and comes back as a practice review for a fresh try${freshFrom}.`);
+  } else if (p && p.mastered && schedule && schedule.stage === 'reopened') {
+    parts.push(`A practice review reopened this lesson, so it is back for a full round, its story offered again. The lessons it builds on come back in the next rounds' memory checks, and passing it again starts its practice reviews over. The star stays.`);
+  } else if (p && p.passed && (fastWrong >= 2 || suspiciouslyQuick || (p.mastered && attempts.length >= 3))) {
     parts.push('To be sure this is true mastery, questions from this module will be introduced again at a later time for further evaluation, which also refines the confidence score.');
   } else if (p && p.mastered) {
     parts.push('Questions from this module will reappear again later as a memory check which not only helps to improve retention, it refines the confidence score.');
@@ -51577,12 +52527,13 @@ export function moduleStory(learnerName, events, moduleId) {
     const waiting = MODULES.filter((m) => enabled.includes(m.courseId) && status.get(m.id) === 'locked' && gatingPrerequisites(m.id, enabled).includes(moduleId));
     const mark = `${rules.toMaster} out of ${rules.questions}`;
     // One lesson waiting is "the lesson picture graphs" (pass NQ, F4, after round three's code read): a lowercased plural title read with
-    // its singular verb as a slip ("Until 4 out of 5 is reached, picture graphs stays locked").
-    parts.push(waiting.length === 1 ? `Until ${mark} is reached, the lesson ${lessonInSentence(waiting[0].id, moduleId)} stays locked, and every new practice round brings a fresh set of questions.`
+    // its singular verb as a slip ("Until 4 out of 5 is reached, picture graphs stays locked"). Since pass NR its course follows when
+    // another assigned lesson has its title: "the lesson Spanish and Mexican Texas from seventh grade history stays locked" (sharesTitle).
+    parts.push(waiting.length === 1 ? `Until ${mark} is reached, the lesson ${lessonInSentence(waiting[0].id, moduleId, enabled)} stays locked, and every new practice round brings a fresh set of questions.`
       : waiting.length ? `Until ${mark} is reached, the ${waiting.length} modules that need this one stay locked, and every new practice round brings a fresh set of questions.`
       : `A round of ${mark} passes this one, and every new practice round brings a fresh set of questions.`);
   }
-  if (conf.score !== null) parts.push(`${name}'s confidence score in ${lowerTitle(mod.title)} currently stands at ${conf.score} out of 5.`);
+  if (conf.score !== null) parts.push(`${name}'s confidence score in ${ownName(backId)} currently stands at ${conf.score} out of 5.`);
   if (p && refresherIds(events).includes(moduleId)) parts.push('A question from this module was missed in the last checkpoint, so a quick refresher round is suggested before moving on. The pass and the star are kept either way.');
   // Placed past by the placement check; a lesson the quick check placed says so in its own sentence above (pass NQ, F3).
   if (p && p.placed && !p.mastered && p.passes === 0 && !(quick && quick.passed)) parts.push('The placement check placed past this module earlier, so it was unlocked without a pass. The star still has to be earned.');
@@ -51629,20 +52580,31 @@ export function goalPhrase(title) {
   return `about ${lowerTitle(t)}`;
 }
 // The lesson a student does next (pass NQ, round one's code reads). In plain terms: the first lesson of an assigned course, in the
-// report's order (course by course, each course's lessons in their own order), that is not mastered and that moduleStatuses calls
-// available: open now and not yet passed, since a lesson passed once waits for its star on another day and the lesson it opened
-// comes next. Who Needs Help's row and the weekly note both say Next up from this one rule, so the two never disagree. Until pass NQ
+// report's order (course by course, as the report draws them since pass NR, below; each course's lessons in their own order), that is
+// not mastered and that moduleStatuses calls available: open now and not yet passed, since a lesson passed once waits for its star on
+// another day and the lesson it opened comes next. Who Needs Help's row and the weekly note both say Next up from this one rule, so the two never disagree. Until pass NQ
 // the weekly note took the first unmastered lesson of every course in the app, sorted by course id, so a kindergartner given only
 // Counting read "Next up: Farms feed us." Null when no assigned lesson is open and unpassed. A lesson the educator moved the student
 // past (Move Forward) is not next (pass NQ, F4, after round three's code read): the child's overview says of it "You moved on from
 // this one for now. It will come back later for a fresh try." and opens the lessons waiting on it (moved past counts for their gate),
 // and the fresh try comes back as a practice review. Until F4 a row could say "Sam was moved past Count to 10" beside "Next up: Count
 // to 10".
+// The report's order (pass NR, the screen read's SHOULD CONSIDER 1) is the one its Assigned now list draws, by the same rule the list
+// sorts with (byGradeOrder, since round one's code read, SHOULD CONSIDER 4): grade by grade, beginner first (GRADES), then subject, then
+// the course's title (two courses alike in all three keep the course list's order, as the list's sort does), each course's lessons in
+// their order. Until pass NR this walked buildReport's rows, which are sorted by course id, so a child given pre-K 3 and pre-K 4 Math
+// read "Next up: Colors", a pre-K 4 lesson, while seventeen pre-K 3 lessons were open ("first-steps-pk" sorts before
+// "very-first-steps-pk3"); and until round one it took the course list's order inside a grade and subject, so in grade 12 History and
+// grade 9 Health Next up came from the course the Assigned now list shows second (United States government, listed after Economics and
+// personal finance).
 export function nextUpModule(report, events) {
   const enabled = report.enabledCourseIds || [];
   const progress = deriveProgress(events);
   const status = new Map(moduleStatuses(progress, enabled).map((x) => [x.id, x.status]));
-  return (report.modules || []).find((m) => enabled.includes(m.courseId) && !m.mastered && !(progress.perModule[m.id] || {}).movedPast && status.get(m.id) === 'available') || null;
+  const place = (m) => ({ m, course: getCourse(m.courseId), order: (getModule(m.id) || {}).order || 0 });
+  const inOrder = (report.modules || []).filter((m) => enabled.includes(m.courseId) && getCourse(m.courseId)).map(place)
+    .sort((a, b) => byGradeOrder(a.course, b.course) || COURSES.indexOf(a.course) - COURSES.indexOf(b.course) || a.order - b.order).map((x) => x.m);
+  return inOrder.find((m) => !m.mastered && !(progress.perModule[m.id] || {}).movedPast && status.get(m.id) === 'available') || null;
 }
 // The weekly note: one plain paragraph about the last seven days, the same on the report and in the
 // class printout. Nothing about the student beyond what the log already holds.
@@ -51669,22 +52631,33 @@ export function weeklyNote(shownName, events, now) {
   // more, one less as two lessons, and the same lessons appeared twice, once as worked on and again as mastered. Now the
   // week splits into mastered this week, still practicing, and what comes next, and no lesson is named twice. A lesson practiced this
   // week is still practicing only while its row has rounds (pass NQ, F4): one reset on its own after this week's rounds shows 0 attempts
-  // on its row, and was listed as still practicing beside it; it can be Next up now, as on the row.
-  const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0);
+  // on its row, and was listed as still practicing beside it; it can be Next up now, as on the row. And it is never a lesson the educator
+  // moved the student past (pass NR, EARMARKS A156), which Next up never is either (nextUpModule): Move Forward means the student moves
+  // on from it for now, the child's overview saying "You moved on from this one for now", and it stays on the list as not yet mastered
+  // and comes back as a practice review for a fresh try, as its Move Forward sentence says under Practice reviews in the week of the
+  // move. The moved-past lessons are movedPastIds', the ones the overview and Who Needs Help name, read since the lesson's own reset.
+  // Until pass NR a lesson practiced this week and then moved past was still practicing beside that sentence. Its rounds still count in
+  // the week's questions, the student's history.
+  const movedPast = movedPastIds(events);
+  const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0 && !movedPast.includes(id));
   const upNext = nextUpModule(rep, events);
   const next = upNext && !practicing.includes(upNext.id) ? upNext : null;
   const assigned = rows.filter((m) => (rep.enabledCourseIds || []).includes(m.courseId));
   // Practice reviews and Move Forward this week (Mikey, pass LP), so one printed note carries everything.
   const reviews = lightReviewHistory(events, shownName).filter((h) => h.at && new Date(h.at).getTime() >= week);
-  // A title two lessons share (pass NQ, F2): ten titles belong to two lessons each (More and fewer is a pre-K 3 lesson and a pre-K 4
-  // one), so a week with both printed the same title twice for two lessons. A lesson's title has its course beside it, in the
-  // standard wording (courseLabel), only when another lesson the note prints has the same title: those listed as mastered or still
-  // practicing (as many as are shown), Next up, and each practice review's own lesson. Any other title stands alone, as before.
-  const named = [...masteredNow.slice(0, 8), ...practicing.slice(0, 5), ...(next ? [next.id] : []), ...reviews.map((h) => h.moduleId)];
-  const titleOf = (id) => (getModule(id) || {}).title || '';
-  const twinNamed = (id) => named.some((other) => other !== id && titleOf(other) && titleOf(other) === titleOf(id));
-  const courseOf = (id) => courseLabel(getCourse(getModule(id).courseId));
-  const nameOf = (id) => (twinNamed(id) ? `**${titleOf(id)}** in ${courseOf(id)}` : `**${titleOf(id)}**`);
+  // A title two lessons share (pass NQ, F2; the one rule since pass NR): ten titles belong to two lessons each (More and fewer is a
+  // pre-K 3 lesson and a pre-K 4 one), so a week with both printed the same title twice for two lessons. A lesson's title is followed by
+  // its course, "from pre-K 3 math" (fromCourse), when another lesson of that title is in the student's assigned courses or among the
+  // lessons the note names: those listed as mastered or still practicing (as many as are shown), Next up, each practice review's own
+  // lesson and, where its sentence tells a loop back, the lesson it looped back to (loopBacksTold, which the Practice Reviews card reads
+  // too). Any other title stands alone, but for a practice review's own sentence, which comes from the history as the card shows it
+  // (lightReviewHistory) and so names its lesson as the card does: with its course beside a lesson of its title the card names, even in
+  // an entry from before this week. Since pass NR every title is in title case, as the review sentences write theirs: "The first Texans"
+  // stood in a bullet above "The First Texans".
+  const enabled = rep.enabledCourseIds || [];
+  const named = [...masteredNow.slice(0, 8), ...practicing.slice(0, 5), ...(next ? [next.id] : []), ...reviews.flatMap((h) => [h.moduleId, ...loopBacksTold(events, h)])];
+  const titleOf = (id) => titleCase((getModule(id) || {}).title || '');
+  const nameOf = (id) => `**${titleOf(id)}**${fromCourse(id, enabled, named)}`;
   const bullets = (xs, cap) => [...xs.slice(0, cap).map((t) => `\n• ${t}`), xs.length > cap ? `\n• and ${xs.length - cap} more` : ''].join('');
   const parts = [];
   // One question is "1 question" (pass NQ): a week of one read "answered 1 questions", where the coloring line says "a picture".
@@ -51696,9 +52669,10 @@ export function weeklyNote(shownName, events, now) {
   if (met.length) parts.push([shownName, ' read:', ...met.map((m) => ['\n• **', m.title, '**', m.about ? [', a story about ', m.about].join('') : '', '.', m.goal ? [' Through this story, the goal was to learn ', goalPhrase(m.goal), '.'].join('') : ''].join(''))].join(''));
   // Each entry is its own plain paragraph with the lesson in bold (the card bolds whole bullets, which suits lesson names only). A
   // review's sentence names its own lesson first, so that first name takes the course beside it when its title is shared (above),
-  // unless the sentence already gives it (since pass NQ's F3 a stuck sentence names both lessons of a shared title with their courses).
-  const reviewLines = reviews.map((h) => { const line = h.text.replace(/\*([^*]+)\*/g, '**$1**'); const own = `**${titleCase(titleOf(h.moduleId))}**`; const given = `${own} in ${courseOf(h.moduleId)}`;
-    return twinNamed(h.moduleId) && line.includes(own) && !line.includes(given) ? line.replace(own, () => given) : line; });
+  // unless the sentence already gives it (since pass NQ's F3 a stuck sentence names both lessons of a shared title with their courses,
+  // and since pass NR every review sentence gives it where another assigned lesson shares the title).
+  const reviewLines = reviews.map((h) => { const line = h.text.replace(/\*([^*]+)\*/g, '**$1**'); const own = `**${titleOf(h.moduleId)}**`; const given = nameOf(h.moduleId);
+    return given !== own && line.includes(own) && !line.includes(given) ? line.replace(own, () => given) : line; });
   if (reviewLines.length) { parts.push('Practice reviews:'); for (const line of reviewLines) parts.push(line); }
   if (next) parts.push(`Next up: ${nameOf(next.id)}.`); else if (assigned.length && assigned.every((m) => m.mastered)) parts.push('Every assigned module is mastered.');
   return parts.join('\n\n');
@@ -51716,54 +52690,74 @@ export function classView(students, now) {
     const daysIdle = lastAt ? Math.floor((new Date(now) - new Date(lastAt)) / 86400000) : null;
     const reasons = [];
     let score = 0;
+    const who = label || id;
+    const bold = (m) => `**${titleCase(m.title)}**`;
 
+    // The lessons the row names, each list worked out before any reason is written (pass NR), so every lesson is named knowing every
+    // other lesson the row names (one way to name a lesson, below).
     // Stuck: a module with two or more misses in a row and no pass since.
     const movedPastNow = movedPastIds(events);
     const stuck = assigned.filter((m) => !m.mastered && failedStreak(events, m.id) >= 2 && !movedPastNow.includes(m.id));
-    const who = label || id;
-    const bold = (m) => `**${titleCase(m.title)}**`;
-    // A stuck lesson whose loop back goes to a lesson of its own title has its course beside it (pass NQ, F4, after round three's code
-    // read), as the loop back reason below names the lesson it went to: grade 7's The first Texans loops back to grade 4's, and the row
-    // read "stuck on **The First Texans**" and "sent back once ..., to **The First Texans**".
-    const stuckName = (m) => { const f = fundamentalsOf(m.id); return f && f.id !== m.id && f.title === m.title ? bold(m) + ' in ' + courseLabel(getCourse(m.courseId)) : bold(m); };
-    if (stuck.length) { score += 3 * stuck.length; reasons.push(`${who} is stuck on ${stuck.map((m) => `${stuckName(m)} (${failedStreak(events, m.id)} misses in a row, best score ${outOf(m.bestScore)})`).join('; ')}`); }
-
     // A mastered lesson a practice review reopened (pass LP): stuck after the app's own work weighs like any stuck lesson;
     // still being worked through weighs like a single miss.
     const reviewStuck = stuckAfterReviewIds(events).map((id) => getModule(id)).filter(Boolean);
-    if (reviewStuck.length) { score += 3 * reviewStuck.length; reasons.push(`${who} cannot seem to get past ${reviewStuck.map(bold).join(' and ')} since a practice review reopened it`); }
     const reopenedOnly = reviewingIds(events).filter((id) => !reviewStuck.some((m) => m.id === id)).map((id) => getModule(id)).filter(Boolean);
-    if (reopenedOnly.length) { score += 1; reasons.push(`${who} is going back through ${reopenedOnly.map(bold).join(' and ')} after a practice review`); }
     const movedPastMods = movedPastNow.map((id) => getModule(id)).filter(Boolean);
-    if (movedPastMods.length) { score += 1; reasons.push(`${who} was moved past ${movedPastMods.map(bold).join(' and ')} before mastering it, and it comes back as a practice review for a fresh try`); }
-    // One miss is not a crisis, but it is not nothing either: the educator sees it, and sees what a second miss would bring.
+    // One miss is not a crisis, but it is not nothing either: the educator sees it, and sees what a second miss would bring. A second
+    // miss routes back to fundamentalsOf's lesson, loopBackTarget's own, and a lesson with no prerequisite never loops back, so then no
+    // route is named (pass NQ, F3).
     const missedOnce = assigned.filter((m) => !m.passed && !m.mastered && m.attempts > 0 && failedStreak(events, m.id) === 1);
-    // A second miss routes back to fundamentalsOf's lesson, loopBackTarget's own, and a lesson with no prerequisite never loops back, so
-    // then no route is named; when the two lessons share a title, each has its course beside it (pass NQ, F3).
-    if (missedOnce.length) { score += 1; reasons.push(missedOnce.map((m) => { const f = fundamentalsOf(m.id); const twin = !!(f && f.id !== m.id && f.title === m.title);
-      const named = (x) => (twin ? `**${titleCase(x.title)}** in ${courseLabel(getCourse(getModule(x.id).courseId))}` : `**${titleCase(x.title)}**`);
-      const route = f ? `; a second miss would route them back to the fundamentals, ${named(f)}` : '';
-      const tries = m.attempts === 1 ? 'attempt' : 'attempts'; return `${who} failed the last round of ${named(m)} (${m.bestScore} right, ${m.attempts} ${tries})${route}`; }).join('. ')); }
-
-    // Loop backs in the last while mean the platform already had to step in.
-    // The lesson a loop back went to has its course beside it when it has the title of the lesson the loop came from (pass NQ, F4).
-    const loops = active.filter((e) => e.type === 'looped_back').length;
-    const backName = (e) => { const to = getModule(e.toModuleId); const from = getModule(e.moduleId); if (!to) return null; return from && from.id !== to.id && from.title === to.title ? bold(to) + ' in ' + courseLabel(getCourse(to.courseId)) : bold(to); };
-    if (loops) { const backTo = [...new Set(active.filter((e) => e.type === 'looped_back').map(backName).filter(Boolean))]; const howOften = loops === 1 ? 'once' : `${loops} times`; score += 2 * loops; reasons.push(`${who} was sent back ${howOften} after repeated misses, to ${backTo.join(' and ')}`); }
-
+    const routes = missedOnce.map((m) => fundamentalsOf(m.id)).filter(Boolean);
+    // Loop backs in the last while mean the platform already had to step in. Each lesson a loop back went to is named once.
+    const loopBacks = active.filter((e) => e.type === 'looped_back');
+    const loops = loopBacks.length;
+    const backTo = [...new Set(loopBacks.map((e) => e.toModuleId))].map((x) => getModule(x)).filter(Boolean);
     // Guessing flags.
     const guessing = assigned.filter((m) => m.confidence.signals.some((x) => /guessing/.test(x)));
-    if (guessing.length) { score += 2 * guessing.length; reasons.push(`There are signs of guessing in ${guessing.map(bold).join(', ')} (quick and incorrect answers, under four seconds each)`); }
-
     // Low confidence on mastered work suggests it may not hold.
     const shaky = assigned.filter((m) => m.mastered && m.confidence.score !== null && m.confidence.score <= 2);
     const refresh = assigned.filter((m) => m.refresher);
-    if (refresh.length) { score += refresh.length; reasons.push(`Missed in the last checkpoint: ${refresh.map(bold).join(', ')} (a refresher round is suggested)`); }
-    if (shaky.length) { score += shaky.length; reasons.push(`Mastered but shaky: ${shaky.map((m) => `${bold(m)} at confidence ${m.confidence.score} out of 5`).join(', ')}`); }
+    // Next up is nextUpModule's (pass NQ), the rule the weekly note uses too, so the row and the note never name different lessons.
+    const next = nextUpModule(report, events);
+    // The practice line's own lessons, tried but not passed and skipped by a quick check (practiceLine, which the report summary reads
+    // too), read here for the list below; the line is made again with the row's names further down.
+    const practiced = practiceLine(report);
+
+    // One way to name a lesson anywhere on the row (pass NR, EARMARKS A156 and the screen read's MUST FIX 4), by the one rule
+    // (sharesTitle): the lesson's title in bold, followed by its course, "from fourth grade history" (fromCourse), when another lesson of
+    // that title is in the student's assigned courses or is one the row speaks of, and its title alone otherwise. The row names lessons
+    // in its reasons (stuck, stuck or reopened after a practice review, moved past, missed once and the lesson a second miss routes back
+    // to, the lessons loop backs went to, guessing, a refresher, mastered but shaky), in Next up and in its practice line (tried but not
+    // passed, skipped by a quick check), and it speaks of two more, as engineer F4 had them: the lesson a stuck lesson's loop back goes
+    // to and the lesson a loop back came from, named or not, which may lie in a course not assigned. So each lesson is named one way
+    // wherever the row names it, and two lessons of one title never the same way. Until pass NR only the stuck, loop back and missed-once
+    // reasons gave the course, and only for a lesson and the lesson of its own title it loops back to: a child given both pre-K Math
+    // courses and stuck on each More and fewer read "stuck on **More and Fewer** (...); **More and Fewer** (...)", and the other reasons,
+    // Next up and the practice line named lessons by title alone. The course was the list label then, "**The First Texans** in Texas
+    // history (Grade 7 - History) (2 misses in a row ...)", two parentheses in a row.
+    const onRow = [...stuck, ...reviewStuck, ...reopenedOnly, ...movedPastMods, ...missedOnce, ...routes, ...backTo, ...guessing, ...refresh, ...shaky,
+      ...(next ? [next] : []), ...practiced.tried.map((t) => getModule(t.id)), ...practiced.skipped.map((x) => getModule(x)),
+      ...stuck.map((m) => fundamentalsOf(m.id)), ...loopBacks.map((e) => getModule(e.moduleId))].filter(Boolean);
+    const onRowIds = onRow.map((x) => x.id);
+    const courseBeside = (m) => fromCourse(m.id, report.enabledCourseIds, onRowIds);
+    const named = (m) => `${bold(m)}${courseBeside(m)}`;
+
+    if (stuck.length) { score += 3 * stuck.length; reasons.push(`${who} is stuck on ${stuck.map((m) => `${named(m)} (${failedStreak(events, m.id)} misses in a row, best score ${outOf(m.bestScore)})`).join('; ')}`); }
+    if (reviewStuck.length) { score += 3 * reviewStuck.length; reasons.push(`${who} cannot seem to get past ${reviewStuck.map(named).join(' and ')} since a practice review reopened it`); }
+    if (reopenedOnly.length) { score += 1; reasons.push(`${who} is going back through ${reopenedOnly.map(named).join(' and ')} after a practice review`); }
+    if (movedPastMods.length) { score += 1; reasons.push(`${who} was moved past ${movedPastMods.map(named).join(' and ')} before mastering it, and it comes back as a practice review for a fresh try`); }
+    if (missedOnce.length) { score += 1; reasons.push(missedOnce.map((m) => { const f = fundamentalsOf(m.id);
+      const route = f ? `; a second miss would route them back to the fundamentals, ${named(f)}` : '';
+      const tries = m.attempts === 1 ? 'attempt' : 'attempts'; return `${who} failed the last round of ${named(m)} (${m.bestScore} right, ${m.attempts} ${tries})${route}`; }).join('. ')); }
+    if (loops) { const howOften = loops === 1 ? 'once' : `${loops} times`; score += 2 * loops; reasons.push(`${who} was sent back ${howOften} after repeated misses, to ${backTo.map(named).join(' and ')}`); }
+    if (guessing.length) { score += 2 * guessing.length; reasons.push(`There are signs of guessing in ${guessing.map(named).join(', ')} (quick and incorrect answers, under four seconds each)`); }
+    if (refresh.length) { score += refresh.length; reasons.push(`Missed in the last checkpoint: ${refresh.map(named).join(', ')} (a refresher round is suggested)`); }
+    if (shaky.length) { score += shaky.length; reasons.push(`Mastered but shaky: ${shaky.map((m) => `${named(m)} at confidence ${m.confidence.score} out of 5`).join(', ')}`); }
 
     // Not practicing at all.
-    if (attempts.length === 0 && assigned.length) { score += 2; reasons.push(`${who} has not started`); }
-    else if (daysIdle !== null && daysIdle >= 7) { score += 1 + Math.min(3, Math.floor(daysIdle / 7)); reasons.push(`It has been ${daysIdle} days since ${who} last practiced`); }
+    let away = 0;   // one reason that names no lesson, counted in the why line below (pass NR)
+    if (attempts.length === 0 && assigned.length) { score += 2; away = 1; reasons.push(`${who} has not started`); }
+    else if (daysIdle !== null && daysIdle >= 7) { score += 1 + Math.min(3, Math.floor(daysIdle / 7)); away = 1; reasons.push(`It has been ${daysIdle} days since ${who} last practiced`); }
 
     const mastered = assigned.filter((m) => m.mastered).length;
     const passedOnce = assigned.filter((m) => m.passed && !m.mastered).length;
@@ -51774,20 +52768,23 @@ export function classView(students, now) {
     // counted every round, and after a lesson's reset a row read "Practice so far: 2 rounds, 2 passed." beside "about 4.0 rounds per module".
     const effort = mastered > 0 ? report.totalAttempts / mastered : 0;
     if (score === 0 && mastered > 0) reasons.push(effort >= 2 ? `${who} is on track, but it took about ${effort.toFixed(1)} rounds per module to get there` : `${who} is on track and quick about it: about ${effort.toFixed(1)} rounds per module`);
-    // Every row carries the same practice line the report summary shows, so a row never reads as if nothing happened.
-    const practice = practiceLine(report);
-    const triedText = practice.tried.length ? `Tried but not passed yet: ${practice.tried.map((t) => `**${t.title}** (${t.short})`).join('; ')}.` : '';
+    // Every row carries the same practice line the report summary shows, so a row never reads as if nothing happened; since pass NR its
+    // lessons are named by the row's rule above, so a title another lesson on the row shares has its course beside it here too.
+    const practice = practiceLine(report, (m) => `${titleCase(m.title)}${courseBeside(m)}`);
+    const triedText = practice.tried.length ? `Tried but not passed yet: ${practice.tried.map((t) => `${named(getModule(t.id))} (${t.short})`).join('; ')}.` : '';
     const practiceText = practice.line ? practice.line + (triedText ? `\n${triedText}` : '') : '';
-    // Next up is nextUpModule's (pass NQ), the rule the weekly note uses too, so the row and the note never name different lessons.
-    const next = nextUpModule(report, events);
     // One sentence that squares the good news with the flags: a student who has mastered a lot
-    // can still top the list, and the educator should see why without decoding it.
-    const flagged = stuck.length + guessing.length + shaky.length + (loops ? 1 : 0);
+    // can still top the list, and the educator should see why without decoding it. It counts everything the reasons under it flag (pass
+    // NR, the screen read's SHOULD CONSIDER 2): each lesson a reason names as stuck, stuck or reopened after a practice review, moved past,
+    // missed once, guessing, missed in a checkpoint or shaky, the loop backs once, and the days away once. It counted stuck, guessing and
+    // shaky lessons and loop backs only, so a row read "1 thing needs attention" above five reasons.
+    const flagged = stuck.length + reviewStuck.length + reopenedOnly.length + movedPastMods.length + missedOnce.length + guessing.length + refresh.length + shaky.length + (loops ? 1 : 0) + away;
     const why = score >= 5
       ? `${masteredPhrase}, but ${flagged} ${flagged === 1 ? 'thing needs' : 'things need'} attention right now, which is why ${label || id} is near the top.`
       : score >= 2 ? `${mastered} mastered so far; a couple of small flags, nothing urgent.` : '';
     return {
-      id, label: label || id, score, reasons, why, practice: practiceText, nextTitle: next ? titleCase(next.title) : '', stage: currentGrade(events) ? gradeLabel(currentGrade(events)) : bandTitle(events),
+      // Next up as the row names it (pass NR), the screen drawing it after "Next up:"; it was the title alone (nextTitle).
+      id, label: label || id, score, reasons, why, practice: practiceText, nextNamed: next ? named(next) : '', stage: currentGrade(events) ? gradeLabel(currentGrade(events)) : bandTitle(events),
       missedQuickChecks: assigned.filter((m) => m.quickCheck && !m.quickCheck.passed).length,
       note: report.notes.length ? report.notes[0].text.split('\n')[0].slice(0, 120) : '',
       weekly: weeklyNote(label || id, events, now),
@@ -51994,8 +52991,9 @@ export function summaryParagraph(report) {
   if (!strong.length && !building.length && groups.some((g) => g.confidences.length)) text += ' Confidence is steady across the board so far.';
   if (!groups.some((g) => g.confidences.length)) text += ' There has not been enough practice yet to say much about confidence.';
 
-  // Practice so far: rounds, passes, and anything tried but not passed yet, named with its best score.
-  const practice = practiceLine(report);
+  // Practice so far: rounds, passes, and anything tried but not passed yet, named with its best score. A title another lesson in the
+  // student's assigned courses shares is followed by its course (the one rule, pass NR): two More and fewer lessons tried read the same.
+  const practice = practiceLine(report, (m) => `${titleCase(m.title)}${fromCourse(m.id, report.enabledCourseIds)}`);
   if (practice.line) text += ` ${practice.line}`;
   if (practice.tried.length) text += ` Tried but not passed yet: ${practice.tried.map((t) => `${t.title} (${t.detail})`).join('; ')}.`;
   parts.tried = practice.tried;
@@ -52043,18 +53041,21 @@ export function fundamentalsOf(moduleId) {
   return target ? { id: target.id, title: target.title } : null;
 }
 const outOf = (score) => String(score).replace(' of ', ' out of ');
-export function practiceLine(report) {
+// Practice so far, for the report's summary and Who Needs Help's rows. nameOf (pass NR) names each lesson it lists, tried but not passed
+// and skipped by a quick check: its title alone by default; the report's summary passes the one rule (sharesTitle), and Who Needs Help
+// its row's, so a title another lesson shares is followed by its course. skipped gives the skipped lessons' ids, which the row reads.
+export function practiceLine(report, nameOf = (m) => titleCase(m.title)) {
   const assigned = report.modules.filter((m) => report.enabledCourseIds.includes(m.courseId));
-  if (report.totalAttempts === 0 && !assigned.some((m) => m.quickCheck)) return { line: '', tried: [] };
+  if (report.totalAttempts === 0 && !assigned.some((m) => m.quickCheck)) return { line: '', tried: [], skipped: [] };
   // The rounds passed are counted from the very rounds the line counts (buildReport's passedRounds, pass NQ).
   const passedRounds = report.passedRounds;
   const line = report.totalAttempts ? `Practice so far: ${report.totalAttempts} ${report.totalAttempts === 1 ? 'round' : 'rounds'}, ${passedRounds} passed.` : 'No practice rounds yet.';
   const subjectOf = (m) => { const c = getCourse(m.courseId); return c ? c.subject : ''; };
-  const tried = assigned.filter((m) => m.attempts > 0 && !m.passed && !m.mastered).map((m) => ({ id: m.id, title: titleCase(m.title), subject: subjectOf(m), detail: `best attempt ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'try' : 'tries'}`, short: `best score ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'attempt' : 'attempts'}` }));
+  const tried = assigned.filter((m) => m.attempts > 0 && !m.passed && !m.mastered).map((m) => ({ id: m.id, title: nameOf(m), subject: subjectOf(m), detail: `best attempt ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'try' : 'tries'}`, short: `best score ${outOf(m.bestScore)}, ${m.attempts} ${m.attempts === 1 ? 'attempt' : 'attempts'}` }));
   // Quick checks too: a missed one is a try to skip that did not work, and a passed one is a module skipped.
-  for (const m of assigned.filter((m) => m.quickCheck && !m.quickCheck.passed && !m.passed && !m.mastered && !tried.some((t) => t.id === m.id))) { const d = `quick check ${m.quickCheck.right} out of ${m.quickCheck.total}${m.quickCheck.guessed ? ', too fast to count' : ''}`; tried.push({ id: m.id, title: titleCase(m.title), subject: subjectOf(m), detail: d, short: d }); }
-  const skipped = assigned.filter((m) => m.quickCheck && m.quickCheck.passed).map((m) => titleCase(m.title));
-  return { line: skipped.length ? `${line} Skipped by quick check: ${skipped.join(', ')}.` : line, tried };
+  for (const m of assigned.filter((m) => m.quickCheck && !m.quickCheck.passed && !m.passed && !m.mastered && !tried.some((t) => t.id === m.id))) { const d = `quick check ${m.quickCheck.right} out of ${m.quickCheck.total}${m.quickCheck.guessed ? ', too fast to count' : ''}`; tried.push({ id: m.id, title: nameOf(m), subject: subjectOf(m), detail: d, short: d }); }
+  const skipped = assigned.filter((m) => m.quickCheck && m.quickCheck.passed);
+  return { line: skipped.length ? `${line} Skipped by quick check: ${skipped.map((m) => nameOf(m)).join(', ')}.` : line, tried, skipped: skipped.map((m) => m.id) };
 }
 
 // The summary as a bulleted list plus the sentences that follow it.

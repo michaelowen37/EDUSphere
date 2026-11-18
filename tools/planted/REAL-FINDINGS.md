@@ -6,6 +6,8 @@ The next lesson pass applies them first (A154), each fix read as any fix is, aga
 
 Each finding gives its item, what is wrong, the reads that found it (each report is in the pass's scratch folder, reports/sc-<brief>-<model>.md and critic-lesson-fable.md) and the fix a read gave, where one gave a fix.
 
+**Applied in pass NR (November 16 and 17, 2026; EARMARKS A154, done).** Every finding below was fixed in pass NR before its new lessons: the three lessons' banks of the lesson brief (K01 to K03) by the lead, the stories and the two early Wonder questions (K05 to K07, K09, P09, P10, P12, P16) by the pass's Fable writer, each fix read again in the pass's rounds of reads; each entry of the set whose item a fix changed was rewritten (its correct words, known list and history), and node tools/planted-set.mjs --check found all 50 entries landing, with --selftest passing on every frozen copy of the pass. The findings are kept below as found.
+
 ## The lesson brief
 
 **K01, Talking with a friend (pre-K 3, talk-with-a-friend).** Not yet on K01's known list.

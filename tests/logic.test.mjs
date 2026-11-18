@@ -78,7 +78,7 @@ const MR_TALK_ROOM = { 'How close can you stand when you talk with a friend?': '
 const MR_TALK_TOPIC = { 'Your friend says, I have a new puppy dog!': 'icon:dog', 'Your friend says, I made a tower!': 'icon:tower', 'Your friend says, I have a new hat!': 'icon:hat' };
 const MR_TALK_ABOUT = { 'I have a new puppy dog!': ['the puppy', 'What is its name?'], 'I made a tower!': ['the tower', 'I like your tower!'], 'I went to the park!': ['the park', 'What did you play?'], 'I have a new hat!': ['the hat', 'I like your hat!'] };
 const mrTalkReply = (story) => { const m = /^Your friend says, (.+?!) You say, (.+)$/.exec(story || ''); return m && MR_TALK_ABOUT[m[1]] ? { topic: MR_TALK_ABOUT[m[1]][0], about: MR_TALK_ABOUT[m[1]][1] === m[2] } : null; };
-const MQ_TALK_YESNO = { 'Is it kind to talk at the same time as your friend?': 'No', 'Is it kind to wait until your friend stops talking?': 'Yes', 'Is it kind to listen while your friend talks?': 'Yes', 'Can you take turns talking with your teacher too?': 'Yes', "Is it kind to stand very close, right in your friend's face?": 'No', 'Is it kind to shout while your friend is talking?': 'No' };
+const MQ_TALK_YESNO = { 'When your friend is talking, do you talk at the same time?': 'No', 'Is it kind to wait until your friend stops talking?': 'Yes', 'Is it kind to listen while your friend talks?': 'Yes', 'Can you take turns talking with your teacher too?': 'Yes', "Is right in your friend's face too close?": 'Yes', 'Is it kind to shout while your friend is talking?': 'No', 'When your friend is talking, is it your turn to talk?': 'No', 'Do you say bye to start talking with a friend?': 'No' };   // pass NR (EARMARKS A154): the close row asks too close, and two No rows keep the bank even
 const MQ_RHYME_END = { cat: 'at', hat: 'at', dog: 'og', log: 'og', frog: 'og', moon: 'oon', spoon: 'oon', bear: 'air', chair: 'air', sock: 'ock', block: 'ock', rock: 'ock', ball: 'all', wall: 'all' };
 const MQ_MEANS = { 'Your teacher says, count the blocks.': 'Say one number for each block', 'Your teacher says, sort the blocks by color.': 'Put them into groups by color', 'Your teacher says, find a sock that matches.': 'Find a sock just like it', 'Your teacher says, trace the letter.': 'Go over its lines with your finger', 'Your teacher says, find a pair of socks.': 'Find two socks that match' };
 const MQ_SHAPE_WORDS = { 'Which shape has three corners?': 'triangle', 'Which shape has no corners?': 'circle', 'Which shape has two long sides and two short sides?': 'rectangle', 'Which shape has four sides that are all the same length?': 'square' };
@@ -823,6 +823,293 @@ const npWayNextOf = (q) => { const two = npWayTwoOf(q); if (!two || q.story !== 
 const npWayArrowOf = (q) => { const w = NP_WAY4_ARROWS[q.prompt]; if (!w || q.visual) return null;
   if (!nmSame(q, w)) return null;
   return mqOne(q, (c) => c === w[0]); };
+// Words all around us and Print tells us something (pass NR): the test's own tables, copied from the lessons' lines and read by no code
+// but the check that the code's tables are these. Each thing with a word that pre-K 3's lines draw: its look, its name as the lines say
+// it, its word, what its word tells us as a choice and as the words after "it tells us", the reason a wrong tap on that meaning hears
+// after its own words, and the name a wrong thing has in which one tells us (the lead's looks, rounds one and two);
+// the things with no words; each which question and the thing it asks for; each place a word is seen, with the word it says there, its
+// explanation and its reason; and each yes or no with its answer, explanation and reason, and the picture it shows where it asks about one.
+const NR_P3 = {
+  stop: ['icon:sign~stop', 'stop sign', 'stop', 'To stop', 'to stop', 'is what the word on a stop sign tells us.', 'The word on the stop sign'],
+  milk: ['icon:milk~carton', 'milk carton', 'milk', 'What is inside', 'what is inside', 'is what the word on a milk carton tells us.', 'The word on the milk carton'],
+  cubby: ['icon:cubby~name', 'cubby', 'Sam', 'Who it is for', 'who it is for', 'is what a name on a cubby tells us.', 'The name on the cubby'],
+  door: ['icon:door~open', 'shop\'s door', 'open', 'That we can go in', 'that we can go in', 'is what the sign on a shop\'s door tells us.', 'The word on the shop\'s door'],
+};
+const NR_P3_THINGS = ['tree', 'ball', 'dog'];
+// The look each thing with no words is drawn by on a tile (since round three's screen read of pass NR the dog sits up, dog~sit, as line 2
+// draws it, where its face stood 36 pixels tall in a 69-pixel tile beside print drawings 55 to 63 tall).
+const NR_P3_LOOKS = { tree: 'icon:tree', ball: 'icon:ball', dog: 'icon:dog~sit' };
+const NR_P3_WHICH = { 'Which one tells us what is inside?': 'milk', 'Which word tells us what is inside?': 'milk', 'Which one can tell us what is inside?': 'milk', 'Which one tells cars to stop?': 'stop', 'Which word tells cars to stop?': 'stop', 'Which one can tell us to stop?': 'stop',
+  'Which one tells us who it is for?': 'cubby', 'Which word tells us who it is for?': 'cubby', 'Which one can tell us who it is for?': 'cubby', 'Which one tells us that we can go in?': 'door', 'Which word tells us that we can go in?': 'door', 'Which one can tell us that we can go in?': 'door' };
+const NR_P3_SAYS = { 'A red sign with eight sides stands at the corner.': ['Stop', 'Stop. A red sign with eight sides says stop, and it tells cars to stop.', 'is what the word on a red sign with eight sides says.'], 'You see a word on a carton.': ['Milk', 'Milk. The word on a milk carton says milk, and it tells us what is inside.', 'is what the word on a milk carton says.'],
+  'You see a sign on a shop\'s door.': ['Open', 'Open. When the sign on a shop\'s door says open, it tells us that we can go in.', 'is what the word on a shop\'s door can say.'] };
+const NR_P3_YESNO = {
+  'Are words only in books?': ['No', 'No. Words are all around us, on signs, on boxes and on doors.', 'would mean words are only in books, but words are all around us.'],
+  'Does a stop sign have a word on it?': ['Yes', 'Yes. Its word says stop, and it tells cars to stop.', 'would mean a stop sign has no word, but its word says stop.'],
+  'Does this tree have words on it?': ['No', 'No. This tree has no words on it.', 'would mean this tree has words, but this tree has no words on it.', 'tree'],
+  'Can a grown-up read words to you?': ['Yes', 'Yes. Ask a grown-up, What does this say? A grown-up can read the words to you.', 'would mean a grown-up cannot read words to you, but a grown-up can.'],
+  'Does the word on a milk carton tell us what is inside?': ['Yes', 'Yes. Its word says milk, and it tells us what is inside.', 'would mean it does not, but it tells us what is inside.'],
+  'Does a name on a cubby tell us who it is for?': ['Yes', 'Yes. The name says Sam, so the cubby is for Sam.', 'would mean it does not, but a name tells us who it is for.'],
+  'Does the sign on a shop\'s door tell cars to stop?': ['No', 'No. When the sign on a shop\'s door says open, it tells us that we can go in.', 'would mean it tells cars to stop, but its word can say open.'],
+  'Does the word on a milk carton tell us who it is for?': ['No', 'No. It tells us what is inside.', 'would mean it tells us who it is for, but it tells us what is inside.'],
+};
+// Pre-K 4's: the people a note is written and read by, as a sentence starts with them and as it says them later, with the picture shown; each picture with print,
+// with its look, its name, what its print says, what it tells us as a choice, the explanation and the reason a wrong tap on that choice
+// hears; each which question and the picture it asks for; the pairs of sentences and of friends talk
+// written down is asked with; and each yes or no.
+const NR_P4_PEOPLE = { grandma: ['Grandma', 'Grandma', 'icon:grandma'], grandpa: ['Grandpa', 'Grandpa', 'icon:grandpa'], teacher: ['Your teacher', 'your teacher', 'icon:teacher~hands'] };
+const NR_P4 = {
+  stop: ['icon:sign~stop', 'stop sign', 'says stop', 'To stop', 'To stop. A stop sign\'s print tells cars to stop.', 'is what a stop sign tells us.'],
+  box: ['icon:box~crayons', 'crayon box', 'says crayons', 'What is inside', 'What is inside. The box\'s print says crayons.', 'is what a box\'s print tells us.'],
+  note: ['icon:note~love', 'note', 'says, I love you', 'I love you', 'I love you. Mom wrote it to tell Ana, I love you.', 'is what Mom\'s note says.'],
+};
+const NR_P4_WHICH = { 'Which one tells us what is inside?': 'box', 'Which print tells us what is inside?': 'box', 'Which one can tell us what is inside?': 'box', 'Which print can tell us what is inside?': 'box',
+  'Which one tells cars to stop?': 'stop', 'Which print tells cars to stop?': 'stop', 'Which one can tell cars to stop?': 'stop', 'Which print can tell cars to stop?': 'stop',
+  'Which one tells Ana, I love you?': 'note', 'Which print tells Ana, I love you?': 'note', 'Which one can tell Ana, I love you?': 'note', 'Which print can tell Ana, I love you?': 'note' };
+const NR_P4_TALK = [['I like dogs', 'I like cats'], ['I can jump', 'I can hop'], ['I see the moon', 'I see the sun'], ['I have a red hat', 'I have a blue hat']];
+const NR_P4_FRIENDS = [['Leo', 'Mia'], ['Ana', 'Ben']];
+const NR_P4_YESNO = {
+  'Does all print say something?': ['Yes', 'Yes. All print says something, on a sign, a box, a page or a note.', 'would mean print does not say something, but all print says something.'],
+  'Does Mom\'s note tell Ana, I love you, even though Mom is not there?': ['Yes', 'Yes. Mom is not there, but her note still tells Ana, I love you.', 'would mean the note does not tell Ana, but it still tells her, I love you.'],
+  'Does Leo\'s teacher write his words down on a note?': ['Yes', 'Yes. Leo says, I like dogs, and his teacher writes his words down on a note.', 'would mean his teacher does not write his words down, but the teacher writes them down.'],
+  'Does the box\'s print tell us what is inside?': ['Yes', 'Yes. The crayon box\'s print says crayons. It tells us what is inside.', 'would mean it does not, but it tells us what is inside.'],
+  'Is Mom there when a grown-up reads the note to Ana?': ['No', 'No. Mom is not there, but a grown-up reads her note to Ana.', 'would mean Mom is there, but Mom is not there when the note is read.'],
+  'Does Leo\'s note say what Mia says?': ['No', 'No. The teacher wrote down Leo\'s words, and it still says, I like dogs.', 'would mean Leo\'s note says what Mia says, but it says what Leo says.'],
+  'Does a stop sign\'s print tell us what is inside?': ['No', 'No. A stop sign\'s print says stop, and it tells cars to stop.', 'would mean it tells us what is inside, but it tells cars to stop.'],
+  'Does Mom\'s note say, I like dogs?': ['No', 'No. Mom\'s note says, I love you.', 'would mean the note says, I like dogs, but it says, I love you.'],
+};
+// A thing with a word, or one with none, by its choice.
+const nrIsPrint = (c) => Object.values(NR_P3).some((p) => p[0] === c);
+const nrIsThing = (c) => NR_P3_THINGS.some((t) => c === NR_P3_LOOKS[t]);
+// Which one has a word on it, or which one has none: the one picture of the kind asked for, among three that each have a word or have none.
+const nrHasOf = (q) => { const word = q.prompt === 'Which one has a word on it?'; if ((!word && q.prompt !== 'Which one has no words on it?') || q.story || q.visual) return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 3 || new Set(ch).size !== 3) return null;
+  if (!ch.every((c) => nrIsPrint(c) || nrIsThing(c))) return null;
+  return mqOne(q, word ? nrIsPrint : nrIsThing); };
+// What does this word tell us: what the shown thing's word tells, among three of the four meanings.
+const nrTellsOf = (q) => { const v = q.visual || {}; const k = Object.keys(NR_P3).find((x) => v.kind === 'icon' && NR_P3[x][0] === `icon:${v.name}`); if (!k || q.story || q.prompt !== 'What does this word tell us?') return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 3 || new Set(ch).size !== 3) return null;
+  if (!ch.every((c) => Object.values(NR_P3).some((p) => p[3] === c))) return null;
+  return mqOne(q, (c) => c === NR_P3[k][3]); };
+// Which one tells us something: the thing the question asks for, among three things with a word.
+const nrWhich3Of = (q) => { const k = NR_P3_WHICH[q.prompt]; if (!k || q.story || q.visual) return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 3 || new Set(ch).size !== 3) return null;
+  if (!ch.every(nrIsPrint)) return null;
+  return mqOne(q, (c) => c === NR_P3[k][0]); };
+// What does its word say: the word of the place the story names, among the three words, heard.
+const nrSaysOf = (q) => { const s = NR_P3_SAYS[q.story]; if (!s || q.visual || q.prompt !== 'What does its word say?') return null;
+  if (!q.heardChoices) return null;
+  if (!nmSame(q, Object.values(NR_P3_SAYS).map((x) => x[0]))) return null;
+  return mqOne(q, (c) => c === s[0]); };
+// Yes or no: the row's own answer, with Yes and No the only choices, and the picture the row asks about shown, or none.
+const nrYesNoOf = (T) => (q) => { const row = T[q.prompt]; if (!row || q.story) return null;
+  if ((q.visual ? `${q.visual.kind}:${q.visual.name}` : null) !== (row[3] ? `icon:${row[3]}` : null)) return null;
+  if (!nmSame(q, ['Yes', 'No'])) return null;
+  return row[0]; };
+// Who wrote the note, or who read it to you: the story's writer or its reader, two different people, among the three.
+const nrWhoOf = (q) => { const m = /^(Grandma|Grandpa|Your teacher) wrote a note for you, and (Grandma|Grandpa|your teacher) read it to you\.$/.exec(q.story || ''); if (!m || q.visual) return null;
+  const id = (n) => Object.keys(NR_P4_PEOPLE).find((x) => NR_P4_PEOPLE[x].includes(n)); const w = id(m[1]); const r = id(m[2]);
+  if (w === r) return null;
+  if (!nmSame(q, Object.values(NR_P4_PEOPLE).map((p) => p[2]))) return null;
+  return q.prompt === 'Who wrote the note?' ? NR_P4_PEOPLE[w][2] : q.prompt === 'Who read the note to you?' ? NR_P4_PEOPLE[r][2] : null; };
+// What does this print tell us: what the shown picture's print tells, among the three, heard and not printed since round one's screen read
+// (pass NR: the note's words were on the note and on the answer's button).
+const nrTells4Of = (q) => { const v = q.visual || {}; const k = Object.keys(NR_P4).find((x) => v.kind === 'icon' && NR_P4[x][0] === `icon:${v.name}`); if (!k || q.story || q.prompt !== 'What does this print tell us?') return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 3 || new Set(ch).size !== 3) return null;
+  if (!q.heardChoices) return null;
+  if (!ch.every((c) => Object.values(NR_P4).some((p) => p[3] === c))) return null;
+  return mqOne(q, (c) => c === NR_P4[k][3]); };
+// Talk written down: two friends of one pair, each saying a sentence of one pair, and the print says the words of the friend the teacher
+// writes down, of the two sentences offered.
+const nrTalkOf = (q) => { const m = /^(\w+) says, (.+?)! (\w+) says, (.+?)! The teacher writes down (\w+)'s words\.$/.exec(q.story || ''); if (!m || q.visual || q.prompt !== 'What does the print say?') return null;
+  if (!q.heardChoices) return null;
+  if (!NR_P4_TALK.some((p) => p.includes(m[2]) && p.includes(m[4]) && m[2] !== m[4])) return null;
+  if (!NR_P4_FRIENDS.some((p) => p.includes(m[1]) && p.includes(m[3]) && m[1] !== m[3])) return null;
+  const said = m[5] === m[1] ? m[2] : m[5] === m[3] ? m[4] : null; if (!said) return null;
+  if (!nmSame(q, [`${m[2]}.`, `${m[4]}.`])) return null;
+  return `${said}.`; };
+// Which one tells us something: the picture the question asks for, among the three pictures with print.
+const nrWhich4Of = (q) => { const k = NR_P4_WHICH[q.prompt]; if (!k || q.story || q.visual) return null;
+  if (!nmSame(q, Object.values(NR_P4).map((p) => p[0]))) return null;
+  return mqOne(q, (c) => c === NR_P4[k][0]); };
+// That is like me! and That reminds me! (pass NR's second wave): the test's own tables, copied from the lessons' words and read by no
+// code but the check that the code's tables are these. Pre-K 3's: each of Ben's stories, with the three comments that are connections
+// to it and the words after "because" that say why; the comments about other things, with what a story has none of; each yes or no row
+// (its story, the friend, the words, the answer, the explanation and the reason); each feel row (its event, its feeling, its sentence, the
+// friend and the friend's words, and its moment); and each story of two parts, with each part's picture and what Ben did.
+const NR2_P3 = {
+  teddy: ['Ben lost his teddy bear, and then he found it.', [['I have a teddy bear!', 'Ben has a teddy bear too'], ['I lost my teddy bear once!', 'Ben lost his teddy bear too'], ['I like to hug my teddy bear!', 'Ben has a teddy bear too']]],
+  puppy: ['Ben got a new puppy, and it licked his face.', [['I have a puppy!', 'Ben has a puppy too'], ['A puppy licked my face once!', 'a puppy licked Ben\'s face too'], ['I can play with my puppy!', 'Ben has a puppy too']]],
+  cake: ['Ben had a birthday cake, and he blew out the candles.', [['I had a birthday cake!', 'Ben had a birthday cake too'], ['I can blow out birthday candles!', 'Ben blew out candles too'], ['I like to eat birthday cake!', 'Ben had a birthday cake too']]],
+  rain: ['It rained, and Ben splashed in the puddles.', [['I can splash in the rain puddles!', 'Ben splashed in the puddles too'], ['I jump in the big puddles when it rains!', 'Ben splashed in the puddles too'], ['I like to play in the rain!', 'Ben played in the rain too']]],
+  park: ['Ben went to the park, and he went down the slide.', [['I go to the park!', 'Ben went to the park too'], ['I can go down the slide!', 'Ben went down the slide too'], ['I like the swings at the park!', 'Ben went to the park too']]],
+  tower: ['Ben made a tall tower, and then it fell down.', [['My tower fell down once!', 'Ben\'s tower fell down too'], ['I can make a tall tower!', 'Ben made a tall tower too'], ['My blocks fall down all the time!', 'Ben\'s tower fell down too']]],
+  night: ['Ben felt scared in the dark, so he turned on his night-light.', [['I have a night-light in my room!', 'Ben has a night-light too'], ['I feel scared in the dark sometimes!', 'Ben felt scared in the dark too'], ['I can turn on my night-light!', 'Ben turned on his night-light too']]],
+};
+const NR2_P3_NOT = [['I like pizza!', 'there is no pizza in it'], ['My shoes are sky blue!', 'there are no shoes in it'], ['I have a red ball!', 'there is no ball in it'], ['I can ride my bike fast!', 'there is no bike in it'], ['I can clap my hands loudly!', 'there is no clapping in it'], ['I can hop on one foot!', 'there is no hopping in it'],
+  ['I drew a big round circle!', 'there is no drawing in it'], ['I have a green crayon in my bag!', 'there is no crayon in it'], ['I like to sing songs with my dad!', 'there is no song in it'], ['I picked a big red apple today!', 'there is no apple in it'], ['I can count up to ten!', 'there is no counting in it'], ['I like to paint pictures of the sun!', 'there is no painting in it']];
+const NR2_P3_YESNO = [
+  ['puppy', 'Mia', 'I have a puppy!', 'Yes', 'Yes. Ben got a new puppy, and Mia has a puppy too.', 'would mean it is not a connection, but Mia has a puppy, like Ben.'],
+  ['puppy', 'Leo', 'I go to the park!', 'No', 'No. Ben\'s story has no park in it, so that is not a connection.', 'would mean it is a connection, but there is no park in Ben\'s story.'],
+  ['park', 'Leo', 'I go to the park!', 'Yes', 'Yes. Ben went to the park, and Leo goes to the park too.', 'would mean it is not a connection, but Leo goes to the park, like Ben.'],
+  ['park', 'Sam', 'My tower fell down once!', 'No', 'No. Ben\'s story has no tower in it, so that is not a connection.', 'would mean it is a connection, but there is no tower in Ben\'s story.'],
+  ['tower', 'Sam', 'My tower fell down once!', 'Yes', 'Yes. Ben\'s tower fell down, and Sam\'s tower fell down once too.', 'would mean it is not a connection, but Sam\'s tower fell down, like Ben\'s.'],
+  ['tower', 'Ana', 'I had a birthday cake!', 'No', 'No. Ben\'s story has no cake in it, so that is not a connection.', 'would mean it is a connection, but there is no cake in Ben\'s story.'],
+  ['cake', 'Ana', 'I had a birthday cake!', 'Yes', 'Yes. Ben had a birthday cake, and Ana had one too.', 'would mean it is not a connection, but Ana had a birthday cake, like Ben.'],
+  ['cake', 'Mia', 'I have a puppy!', 'No', 'No. Ben\'s story has no puppy in it, so that is not a connection.', 'would mean it is a connection, but there is no puppy in Ben\'s story.'],
+];
+const NR2_P3_FEELS = [
+  ['tower', 'sad', 'Ben made a tall tower, and it fell down, and he felt sad.', 'Sam', 'My tower fell down once too, and I felt just like Ben!', 'when his tall tower fell down'],
+  ['tower', 'happy', 'Ben\'s tower fell down with a big crash, and he laughed and felt happy!', 'Sam', 'My tower fell down once too, and I felt just like Ben!', 'when his tower fell down with a big crash'],
+  ['rain', 'sad', 'It rained all day, so Ben could not go outside, and he felt sad.', 'Mia', 'It rained at my house too, and I felt just like Ben!', 'when he could not go outside'],
+  ['rain', 'happy', 'It rained, and Ben jumped in the puddles, and he felt happy!', 'Mia', 'It rained at my house too, and I felt just like Ben!', 'when he jumped in the puddles'],
+  ['park', 'sad', 'Ben went to the park, but then it was time to go home, and he felt sad.', 'Leo', 'I went to the park too, and I felt just like Ben!', 'when it was time to go home'],
+  ['park', 'happy', 'Ben went to the park, and he went down the slide, and he felt happy!', 'Leo', 'I went to the park too, and I felt just like Ben!', 'when he went down the slide'],
+];
+const NR2_P3_LIKED = { 'book slide': ['Ben read a book, and then he went down the slide.', [['book', 'read a book'], ['slide', 'went down the slide']]], 'slide book': ['Ben went down the slide, and then he read a book.', [['slide', 'went down the slide'], ['book', 'read a book']]],
+  'hat book': ['Ben put on his hat, and then he read a book.', [['hat', 'put on his hat'], ['book', 'read a book']]], 'teddy bed': ['Ben hugged his teddy bear, and then he went to bed.', [['teddy', 'hugged his teddy bear'], ['bed', 'went to bed']]] };
+// Pre-K 4's: each story with its friend's name and its two comments (who says it, its words, its kind, what it tells of when it tells of
+// another story, the words after "because", and the kind question's explanation); each yes or no row; the ten stories of three things,
+// each with its friend's name, its sentence, what it has (a problem, a feeling and a place) and its problem as a friend says it; what each
+// choice says; and the twelve pairs that share one thing.
+const NR2_P4 = {
+  owl: ['Owl', 'Owl could not sleep in the day, so she counted the clouds.', [['Mia', 'I could not sleep last night either!', 'own', null, 'Owl could not sleep either', 'Mia could not sleep last night, and that is her own life.'], ['Ana', 'That reminds me of the story about the bear who could not sleep!', 'another', 'the bear who could not sleep', 'Owl and the bear both could not sleep', 'Ana thought of a story about a bear, who could not sleep either.']]],
+  rabbit: ['Rabbit', 'Rabbit lost his red mitten in the snow.', [['Ana', 'I lost my mitten in the snow once too!', 'own', null, 'Rabbit lost his mitten in the snow too', 'Ana lost her mitten in the snow once, and that is her own life.'], ['Mia', 'That reminds me of a story about a monkey who lost his banana!', 'another', 'a monkey who lost his banana', 'Rabbit and the monkey both lost something', 'Mia thought of a story about a monkey, who lost something too.']]],
+  fox: ['Fox', 'Fox flew her kite at the park, and it went up high.', [['Mia', 'I fly my kite at the park too!', 'own', null, 'Fox flew her kite at the park too', 'Mia flies her kite at the park, and that is her own life.'], ['Ana', 'That reminds me of a story about a ball that bounced up high!', 'another', 'a ball that bounced up high', 'Fox\'s kite and the ball both went up high', 'Ana thought of a story about a ball that went up high too.']]],
+  penguin: ['Penguin', 'Penguin baked cookies with her grandma.', [['Ana', 'I bake cookies with my grandma too!', 'own', null, 'Penguin baked cookies with her grandma too', 'Ana bakes cookies with her grandma, and that is her own life.'], ['Mia', 'That reminds me of a story about a pig who baked a cake!', 'another', 'a pig who baked a cake', 'Penguin and the pig both baked something', 'Mia thought of a story about a pig, who baked something too.']]],
+  turtle: ['Turtle', 'Turtle made a sandcastle at the beach.', [['Mia', 'I made a sandcastle at the beach too!', 'own', null, 'Turtle made a sandcastle at the beach too', 'Mia made a sandcastle at the beach, and that is her own life.'], ['Ana', 'That reminds me of a story about a crab who dug in the sand!', 'another', 'a crab who dug in the sand', 'Turtle and the crab both played in the sand', 'Ana thought of a story about a crab, who played in the sand too.']]],
+  snail: ['Snail', 'Snail planted a seed, and it grew into a flower.', [['Ana', 'I planted a seed at school too!', 'own', null, 'Snail planted a seed too', 'Ana planted a seed at school, and that is her own life.'], ['Mia', 'That reminds me of a story about a pumpkin seed that grew into a big pumpkin!', 'another', 'a pumpkin seed that grew into a big pumpkin', 'Snail\'s seed and the pumpkin seed both grew', 'Mia thought of a story about a pumpkin seed that grew too.']]],
+};
+// What each pre-K 4 story and each of its comments holds, by the ideas a child hears in it: its things, its actions and its kind of animal
+// (Owl and Penguin are birds), for the check that no wrong comment shares one with the story it is dealt beside (round one's lesson
+// reads, pass NR), and since round two's read the sky, where Owl's clouds, Fox's kite, a bird that flew, a bean that grew up to it and a
+// balloon that floated up high all are (a ball that bounced up high comes straight back down). The bird's and the bean's comments as first
+// built, and the balloon's as round one's fix had it, are here too, for the plants.
+const NR2_P4_IDEAS = {
+  story: { owl: ['bird', 'sleep', 'count', 'cloud', 'day', 'sky'], rabbit: ['rabbit', 'lose', 'mitten', 'snow'], fox: ['fox', 'fly', 'kite', 'park', 'go up high', 'sky'], penguin: ['bird', 'bake', 'cookies', 'grandma'],
+    turtle: ['turtle', 'make', 'sandcastle', 'sand', 'beach'], snail: ['snail', 'plant', 'seed', 'grow', 'flower'] },
+  comment: {
+    'I could not sleep last night either!': ['sleep', 'night'], 'That reminds me of the story about the bear who could not sleep!': ['bear', 'sleep'],
+    'I lost my mitten in the snow once too!': ['lose', 'mitten', 'snow'], 'That reminds me of a story about a monkey who lost his banana!': ['monkey', 'lose', 'banana'],
+    'I fly my kite at the park too!': ['fly', 'kite', 'park'], 'That reminds me of a story about a ball that bounced up high!': ['ball', 'bounce', 'go up high'],
+    'I bake cookies with my grandma too!': ['bake', 'cookies', 'grandma'], 'That reminds me of a story about a pig who baked a cake!': ['pig', 'bake', 'cake'],
+    'I made a sandcastle at the beach too!': ['make', 'sandcastle', 'sand', 'beach'], 'That reminds me of a story about a crab who dug in the sand!': ['crab', 'dig', 'sand'],
+    'I planted a seed at school too!': ['plant', 'seed', 'school'], 'That reminds me of a story about a pumpkin seed that grew into a big pumpkin!': ['seed', 'grow', 'pumpkin'],
+    'That reminds me of a story about a bird who flew up high!': ['bird', 'fly', 'go up high', 'sky'], 'That reminds me of a story about a bean that grew up to the sky!': ['bean', 'grow', 'go up high', 'sky'],
+    'That reminds me of a story about a balloon that floated up high!': ['balloon', 'float', 'go up high', 'sky'],
+  },
+};
+const NR2_P4_YESNO = [
+  ['owl', 'Ana', 'That reminds me of the story about the bear who could not sleep!', 'Yes', 'Yes. Owl and the bear both could not sleep, so that is a connection to another story.', 'would mean it is not a connection, but Owl and the bear both could not sleep.'],
+  ['owl', 'Ana', 'I lost my mitten in the snow once too!', 'No', 'No. Owl\'s story has no snow and no mitten in it, so that is not a connection.', 'would mean it is a connection, but Owl\'s story has no mitten in it.'],
+  ['rabbit', 'Ana', 'I lost my mitten in the snow once too!', 'Yes', 'Yes. Rabbit lost his mitten in the snow, and Ana did too, a connection to her own life.', 'would mean it is not a connection, but Ana lost her mitten too, like Rabbit.'],
+  ['rabbit', 'Ana', 'That reminds me of a story about a ball that bounced up high!', 'No', 'No. Nothing in Rabbit\'s story went up high, so that is not a connection.', 'would mean it is a connection, but nothing in Rabbit\'s story went up high.'],
+  ['fox', 'Ana', 'That reminds me of a story about a ball that bounced up high!', 'Yes', 'Yes. Fox\'s kite went up high, like the ball, so that is a connection to another story.', 'would mean it is not a connection, but Fox\'s kite went up high, like the ball.'],
+  ['fox', 'Mia', 'I made a sandcastle at the beach too!', 'No', 'No. Fox\'s story has no beach and no sandcastle in it, so that is not a connection.', 'would mean it is a connection, but Fox\'s story has no sandcastle in it.'],
+  ['turtle', 'Mia', 'I made a sandcastle at the beach too!', 'Yes', 'Yes. Turtle made a sandcastle at the beach, and Mia did too, a connection to her own life.', 'would mean it is not a connection, but Mia made a sandcastle too, like Turtle.'],
+  ['turtle', 'Ana', 'That reminds me of the story about the bear who could not sleep!', 'No', 'No. Turtle\'s story has nothing about sleep in it, so that is not a connection.', 'would mean it is a connection, but Turtle\'s story has nothing about sleep in it.'],
+  ['penguin', 'Mia', 'That reminds me of a story about a pig who baked a cake!', 'Yes', 'Yes. Penguin and the pig both baked something, so that is a connection to another story.', 'would mean it is not a connection, but Penguin and the pig both baked something.'],
+  ['penguin', 'Ana', 'I planted a seed at school too!', 'No', 'No. Penguin\'s story has no seed in it, so that is not a connection.', 'would mean it is a connection, but Penguin\'s story has no seed in it.'],
+  ['snail', 'Ana', 'I planted a seed at school too!', 'Yes', 'Yes. Snail planted a seed, and Ana did too, a connection to her own life.', 'would mean it is not a connection, but Ana planted a seed too, like Snail.'],
+  ['snail', 'Mia', 'That reminds me of a story about a pig who baked a cake!', 'No', 'No. Nobody in Snail\'s story baked a cake, so that is not a connection.', 'would mean it is a connection, but nobody in Snail\'s story baked a cake.'],
+];
+const NR2_P4_GRID = {
+  cat: ['Cat', 'Cat lost her ball at the park, and she felt sad.', { problem: 'lost', feel: 'sad', place: 'park' }, 'lost her ball'],
+  mouse: ['Mouse', 'Mouse lost his hat at the lake, and he felt mad.', { problem: 'lost', feel: 'mad', place: 'lake' }, 'lost his hat'],
+  bunny: ['Bunny', 'Bunny got stuck in the snow at the farm, and he felt sad.', { problem: 'stuck', feel: 'sad', place: 'farm' }, 'got stuck in the snow'],
+  otter: ['Otter', 'Otter got stuck in the sand at the beach, and she felt scared.', { problem: 'stuck', feel: 'scared', place: 'beach' }, 'got stuck in the sand'],
+  zebra: ['Zebra', 'Zebra lost her shovel at the beach, and she felt mad.', { problem: 'lost', feel: 'mad', place: 'beach' }, 'lost her shovel'],
+  lamb: ['Lamb', 'Lamb got stuck in the fence at the farm, and she felt scared.', { problem: 'stuck', feel: 'scared', place: 'farm' }, 'got stuck in the fence'],
+  hippo: ['Hippo', 'Hippo lost her toy boat at the lake, and she felt sad.', { problem: 'lost', feel: 'sad', place: 'lake' }, 'lost her toy boat'],
+  puppy: ['Puppy', 'Puppy got stuck in the mud at the lake, and he felt mad.', { problem: 'stuck', feel: 'mad', place: 'lake' }, 'got stuck in the mud'],
+  chick: ['Chick', 'Chick lost her flashlight at the farm, and she felt scared.', { problem: 'lost', feel: 'scared', place: 'farm' }, 'lost her flashlight'],
+  turkey: ['Turkey', 'Turkey got stuck in the bushes at the park, and he felt mad.', { problem: 'stuck', feel: 'mad', place: 'park' }, 'got stuck in the bushes'],
+};
+const NR2_P4_BOTH = { problem: { lost: 'Both friends lost something.', stuck: 'Both friends got stuck.' }, feel: { sad: 'Both friends felt sad.', mad: 'Both friends felt mad.', scared: 'Both friends felt scared.' }, place: { park: 'Both friends were at the park.', lake: 'Both friends were at the lake.', beach: 'Both friends were at the beach.', farm: 'Both friends were at the farm.' } };
+const NR2_P4_PAIRS = [['lamb', 'puppy', 'problem'], ['otter', 'turkey', 'problem'], ['zebra', 'hippo', 'problem'], ['mouse', 'chick', 'problem'], ['otter', 'chick', 'feel'], ['cat', 'bunny', 'feel'], ['mouse', 'turkey', 'feel'], ['zebra', 'turkey', 'feel'], ['cat', 'turkey', 'place'], ['bunny', 'chick', 'place'], ['hippo', 'puppy', 'place'], ['otter', 'zebra', 'place']];
+// What a grid story's friend did, felt or was, for one kind of thing, in the lesson's words.
+const nr2Did = (k, kind) => { const [, , has, did] = NR2_P4_GRID[k]; return kind === 'problem' ? did : kind === 'feel' ? `felt ${has.feel}` : `was at the ${has.place}`; };
+// A story of each table by its sentence, and a comment of a story by its words.
+const nr2Story3 = (told) => Object.keys(NR2_P3).find((k) => NR2_P3[k][0] === told);
+const nr2Story4 = (told) => Object.keys(NR2_P4).find((k) => NR2_P4[k][1] === told);
+const nr2Grid = (told) => Object.keys(NR2_P4_GRID).find((k) => NR2_P4_GRID[k][1] === told);
+const nr2IsNot3 = (c) => NR2_P3_NOT.some(([s]) => s === c);
+const nr2Of3 = (k, c) => !!k && NR2_P3[k][1].some(([s]) => s === c);
+const nr2Of4 = (k, c) => !!k && NR2_P4[k][2].some(([, s]) => s === c);
+// What two grid stories share: the one kind of thing they both have alike, or null when they share none or more than one.
+const nr2Shared = (a, b) => { if (!a || !b || a === b) return null; const A = NR2_P4_GRID[a][2]; const B = NR2_P4_GRID[b][2]; const kinds = ['problem', 'feel', 'place'].filter((d) => A[d] === B[d]);
+  return kinds.length === 1 ? kinds[0] : null; };
+// The three choices a pair of stories may offer: what both share, and the first story's thing of one other kind beside the second's of the
+// last, either way about; the kind the second story gives, for the friend's words in the same question.
+const nr2Threes = (a, b, kind) => { const A = NR2_P4_GRID[a][2]; const B = NR2_P4_GRID[b][2]; const [k1, k2] = ['problem', 'feel', 'place'].filter((d) => d !== kind);
+  return [[k1, k2], [k2, k1]].map(([ka, kb]) => ({ kb, set: [NR2_P4_BOTH[kind][A[kind]], NR2_P4_BOTH[ka][A[ka]], NR2_P4_BOTH[kb][B[kb]]] })); };
+// Which one is a connection (pre-K 3): the story's own comment, beside one about other things.
+const nr2Which3Of = (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const k = m && nr2Story3(m[1]); if (!k || q.visual || q.prompt !== 'Which one is a connection to the story?' || !q.heardChoices) return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 2 || new Set(ch).size !== 2) return null;
+  if (!ch.some(nr2IsNot3)) return null;
+  return mqOne(q, (c) => nr2Of3(k, c)); };
+// Is that a connection to the story (pre-K 3): Yes when the friend's words are one of the story's own comments, No when they are another's.
+const nr2YesNo3Of = (q) => { const m = /^Listen\. (.+?) (Mia|Leo|Ana|Sam) said, (.+)$/.exec(q.story || ''); const k = m && nr2Story3(m[1]); if (!k || q.visual || q.prompt !== 'Is that a connection to the story?') return null;
+  if (!nmSame(q, ['Yes', 'No'])) return null;
+  return nr2Of3(k, m[3]) ? 'Yes' : Object.keys(NR2_P3).some((x) => nr2Of3(x, m[3])) ? 'No' : null; };
+// How did they both feel: the feeling the story says Ben felt, when the friend says the same thing happened and names no feeling.
+const nr2FeelOf = (q) => { const m = /^Listen\. (.+?) (Mia|Leo|Sam) said, (.+)$/.exec(q.story || ''); const row = m && NR2_P3_FEELS.find((r) => r[2] === m[1] && r[3] === m[2]); if (!row || q.visual || q.prompt !== 'How did they both feel?') return null;
+  if (/\b(sad|happy|mad|scared)\b/.test(m[3])) return null;
+  if (!/, and I felt just like Ben!$/.test(m[3])) return null;
+  if (!nmSame(q, ['face:sad', 'face:happy'])) return null;
+  const said = /\bfelt (sad|happy)\b/.exec(m[1]); return said ? `face:${said[1]}` : null; };
+// Which part did Mia like best: the picture of the part Mia's words name, among the story's own two parts.
+const nr2LikedOf = (q) => { const m = /^Listen\. (.+?) Mia said, My favorite part was when Ben (.+)!$/.exec(q.story || ''); const k = m && Object.keys(NR2_P3_LIKED).find((x) => NR2_P3_LIKED[x][0] === m[1]); if (!k || q.visual || q.prompt !== 'Which part did Mia like best?') return null;
+  const parts = NR2_P3_LIKED[k][1];
+  if (!nmSame(q, parts.map(([p]) => `icon:${p}`))) return null;
+  const part = parts.find(([, did]) => did === m[2]); return part ? `icon:${part[0]}` : null; };
+// Which one is not about the story: the one comment about other things, beside two of the story's own.
+const nr2Not3Of = (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const k = m && nr2Story3(m[1]); if (!k || q.visual || q.prompt !== 'Which one is not about the story?' || !q.heardChoices) return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 3 || new Set(ch).size !== 3) return null;
+  if (ch.filter((c) => nr2Of3(k, c)).length !== 2) return null;
+  return mqOne(q, nr2IsNot3); };
+// Her own life, or another story: a comment that tells of another story says That reminds me of; one that tells of the friend's own life
+// does not; and either is one of its own story's comments, a connection.
+const nr2KindOf = (q) => { const m = /^Listen\. (.+?) (Mia|Ana) said, (.+)$/.exec(q.story || ''); const k = m && nr2Story4(m[1]); if (!k || q.visual || q.prompt !== 'Is that a connection to her own life, or to another story?') return null;
+  if (!nr2Of4(k, m[3])) return null;
+  if (!nmSame(q, ['Her own life', 'Another story'])) return null;
+  return /^That reminds me of /.test(m[3]) ? 'Another story' : 'Her own life'; };
+// How are the two stories alike: what both stories have, when they share one thing, among what both share and one other thing of each.
+const nr2AlikeOf = (q) => { const m = /^Listen\. (.+?[.!]) ([A-Z].+)$/.exec(q.story || ''); const a = m && nr2Grid(m[1]); const b = m && nr2Grid(m[2]); if (!a || !b || q.visual || q.prompt !== 'How are the two stories alike?') return null;
+  const kind = nr2Shared(a, b); if (!kind) return null;
+  if (!nr2Threes(a, b, kind).some((t) => nmSame(q, t.set))) return null;
+  return NR2_P4_BOTH[kind][NR2_P4_GRID[a][2][kind]]; };
+// Which one is a connection (pre-K 4): the one comment of the story's own, beside comments of other stories.
+const nr2Which4Of = (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const k = m && nr2Story4(m[1]); if (!k || q.visual || q.prompt !== 'Which one is a connection to the story?' || !q.heardChoices) return null; const ch = (q.choices || []).map(String);
+  if (ch.length !== 3 || new Set(ch).size !== 3) return null;
+  const own = ch.filter((c) => nr2Of4(k, c));
+  if (own.length !== 1) return null;
+  return own[0]; };
+// Is that a connection (pre-K 4): Yes when the friend's words are one of the story's own comments, No when they are another story's.
+const nr2YesNo4Of = (q) => { const m = /^Listen\. (.+?) (Mia|Ana) said, (.+)$/.exec(q.story || ''); const k = m && nr2Story4(m[1]); if (!k || q.visual || q.prompt !== 'Is that a connection?') return null;
+  if (!nmSame(q, ['Yes', 'No'])) return null;
+  return nr2Of4(k, m[3]) ? 'Yes' : Object.keys(NR2_P4).some((x) => nr2Of4(x, m[3])) ? 'No' : null; };
+// What is the same in both stories: what the story and the story the friend tells of both have, when they share one thing; the friend
+// names the other story and tells it whole in two short sentences, its problem, its place and its feeling, in the first story's own
+// shape and the lesson's words (since round one's lesson reads, pass NR), the second opening on its animal by name (since round two's
+// read: The zebra lost her shovel, where She after Mia or Ana spoke had three owners), and the choices are what both share and one other
+// thing of each, as the alike bank's are.
+const nr2He = (b) => /, and (he|she) felt /.exec(NR2_P4_GRID[b][1])[1];
+const nr2About = (b) => { const [, , has, did] = NR2_P4_GRID[b]; return `The ${b} ${did} at the ${has.place}, and ${nr2He(b)} felt ${has.feel}.`; };
+// The friend's telling with one of the other story's three things left out, as the friend's words were first built (two of the three
+// things, what both share and the thing a wrong choice says): a reason after a wrong tap then names the third, which the friend never
+// said. Kept for the near miss and the plant that prove the story is told whole.
+const nr2PartAbout = (b, kinds) => { const [, , has, did] = NR2_P4_GRID[b]; const he = nr2He(b);
+  const first = kinds.includes('problem') ? `The ${b} ${did}` : `The ${b} was`; const at = kinds.includes('place') ? ` at the ${has.place}` : ''; const felt = kinds.includes('feel') ? `, and ${he} felt ${has.feel}` : '';
+  return `${first}${at}${felt}.`; };
+// A same question with the friend's telling cut to two things: what both share, and the other story's own thing among its choices.
+const nr2PartWords = (x) => { const m = /^(Listen\. (.+?[.!]) (?:Mia|Ana) said, That reminds me of the story about the ([a-z]+)! )(.+)$/.exec(x.story); const a = nr2Grid(m[2]); const b = m[3]; const kind = nr2Shared(a, b); const B = NR2_P4_GRID[b][2];
+  const kb = ['problem', 'feel', 'place'].find((d) => d !== kind && x.choices.includes(NR2_P4_BOTH[d][B[d]])); return { ...x, story: `${m[1]}${nr2PartAbout(b, [kind, kb])}` }; };
+const nr2SameOf = (q) => { const m = /^Listen\. (.+?[.!]) (Mia|Ana) said, That reminds me of the story about the ([a-z]+)! (.+)$/.exec(q.story || ''); const a = m && nr2Grid(m[1]); const b = m && NR2_P4_GRID[m[3]] ? m[3] : null; if (!a || !b || q.visual || q.prompt !== 'What is the same in both stories?') return null;
+  const kind = nr2Shared(a, b); if (!kind) return null;
+  if (m[4] !== nr2About(b)) return null;
+  if (!nr2Threes(a, b, kind).some((t) => nmSame(q, t.set))) return null;
+  return NR2_P4_BOTH[kind][NR2_P4_GRID[a][2][kind]]; };
 const PREK_DERIVE = {
   // Learning words (pre-K 3): the one just like the picture shown; the one not like the two alike; whether the counted row holds the
   // number asked; the one in the group's color; and the shape the lesson says has those sides or corners.
@@ -857,7 +1144,7 @@ const PREK_DERIVE = {
   // Let's play together and Play with a plan (pass MR, Q70), from the lessons' own lines.
   'p4-play-face': (q) => { const f = q.prompt === 'You grab your friend\'s toy. Which face may your friend show?' ? 'face:mad' : ['Which face can say, I am happy to play with you?', 'You say, I like your tower! Which face shows how your friend may feel?', 'Which face can you show a new friend when you say hi?'].includes(q.prompt) ? 'face:happy' : null; return f && q.choices.includes(f) ? f : null; },
   'p4-play-next': (q) => ({ 'You smiled and waved at a new friend. What can you do next?': 'Say hi', 'You said hi to a new friend. What can you do next?': 'Tell your name', 'Your new friend said no thanks. What can you do next?': 'Play on the slide' })[q.prompt] || null,
-  'p4-plan-yesno': (q) => ({ 'Can a plan say who does each part?': 'Yes', 'Is it playing together if one friend does every part?': 'No', 'Can pretend play have a plan too?': 'Yes', 'Can you talk while you play together?': 'Yes', 'When you have a new idea, can you ask, is that okay?': 'Yes' })[q.prompt] || null,
+  'p4-plan-yesno': (q) => ({ 'Does a plan say who does each part?': 'Yes', 'Is it playing together if one friend does every part?': 'No', 'Can pretend play have a plan too?': 'Yes', 'Is it okay to talk while you play together?': 'Yes', 'When you have a new idea, can you ask, is that okay?': 'Yes', 'When the plan says your friend builds the roof, do you build the roof too?': 'No', 'When you have a new idea, can you change the plan without asking?': 'No', 'Is a plan only for building with blocks?': 'No' })[q.prompt] || null,   // pass NR (EARMARKS A154): three No rows keep the bank even; since round one's lesson reads no one word tells, can was in every Yes row
   'p4-plan-together': (q) => ({ 'When you and your friend finish the house together, how can you show you had fun?': 'Give a high five', 'The house is done. What can you and your friend say?': 'We did it!', 'You ask, can you pass me a block? What is a kind thing your friend might say?': 'Here you go!' })[q.prompt] || null,
   'p4-plan-what': (q) => { const w = ({ "You and your friend say, let's build a house with blocks. What will you make?": 'house', "You and your friend say, let's play pizza shop! What will you make?": 'pizza', 'You ask your friend, can you pass me a block? What will your friend pass you?': 'block' })[q.prompt]; return w && q.choices.includes(`icon:${w}`) ? `icon:${w}` : null; },
   'p3-talk-listen': (q) => MQ_TALK_LISTEN[q.prompt] || null,
@@ -1186,6 +1473,12 @@ const PREK_DERIVE = {
   'p3-book-start': (q) => npBookPickOf('Look at these two pages.', ['Where do we start reading?', 'Where do we stop reading?'])(q), 'p3-book-isfront': (q) => npBookIsOf(/^Is this the (front|back) of the book\?$/, NP_BOOK3_FRONT)(q),
   'p3-book-isstart': (q) => npBookIsOf(/^Is this where we (start|stop) reading\?$/, NP_BOOK3_START)(q), 'p4-way-up': (q) => npBookIsOf(/^Is this book (right side up|upside down)\?$/, NP_WAY4_IS)(q),
   'p4-way-word': (q) => npWayWordOf(q), 'p4-way-line': (q) => npWayLineFirstOf(q), 'p4-way-next': (q) => npWayNextOf(q), 'p4-way-arrow': (q) => npWayArrowOf(q),
+  // Words all around us and Print tells us something (pass NR), each from the test's own tables (NR_P3*, NR_P4*).
+  'p3-around-has': (q) => nrHasOf(q), 'p3-around-tells': (q) => nrTellsOf(q), 'p3-around-which': (q) => nrWhich3Of(q), 'p3-around-says': (q) => nrSaysOf(q), 'p3-around-yesno': (q) => nrYesNoOf(NR_P3_YESNO)(q),
+  'p4-print-who': (q) => nrWhoOf(q), 'p4-print-tells': (q) => nrTells4Of(q), 'p4-print-talk': (q) => nrTalkOf(q), 'p4-print-which': (q) => nrWhich4Of(q), 'p4-print-yesno': (q) => nrYesNoOf(NR_P4_YESNO)(q),
+  // That is like me! and That reminds me! (pass NR's second wave), each from the test's own tables (NR2_P3*, NR2_P4*).
+  'p3-link-which': (q) => nr2Which3Of(q), 'p3-link-yesno': (q) => nr2YesNo3Of(q), 'p3-link-feel': (q) => nr2FeelOf(q), 'p3-link-liked': (q) => nr2LikedOf(q), 'p3-link-not': (q) => nr2Not3Of(q),
+  'p4-link-kind': (q) => nr2KindOf(q), 'p4-link-alike': (q) => nr2AlikeOf(q), 'p4-link-which': (q) => nr2Which4Of(q), 'p4-link-yesno': (q) => nr2YesNo4Of(q), 'p4-link-same': (q) => nr2SameOf(q),
   'p4-mark-name': (q) => nkMarkNameOf(q), 'p4-mark-means': (q) => nkMarkMeansOf(q), 'p4-mark-heard': (q) => nkMarkHeardOf(q), 'p4-mark-yesno': (q) => nkMarkIsOf(q), 'p4-mark-start': (q) => nkMarkStartOf(q),
   'p4-space-kind': (q) => { const m = /^Which one is (a letter|a word|a picture)\?$/.exec(q.prompt || ''); const ch = q.choices || []; if (!m || q.story !== 'Look at these three.' || ch.length !== 3) return null;
     const isLetter = (c) => ND_KIND.letters.includes(ndPrinted(c)); const isWord = (c) => ND_KIND.words.includes(ndPrinted(c)); const isPicture = (c) => /^icon:/.test(c) && ND_KIND.pictures.includes(myName(c));
@@ -1876,10 +2169,13 @@ const PREK_DERIVE = {
   // screen fixes check pins that), so its site here is read in that form.
   { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
     // Since pass NM a pre-reader's voice card holds its last two words together too (lastTwoTogether, EARMARKS A142), so its site reads so.
+    // Since pass NR's second fix round of the educator's report (EARMARKS A142) the educator's Wonder sheet holds its last two words together
+    // too, its question, a pre-reader's and a reader's voices and its closing line, so their four sites read so (round three's fix engineer
+    // found the four plants no longer finding their text).
     const SITES = [["{'\\u201C'}{lastTwoTogether(wholeHyphens(v.says), v.says)}{'\\u201D'}", "{'\\u201C'}{v.says}{'\\u201D'}"], ["{wholeHyphens(String(text).replace(/ (\\S+)$/, '\\u00A0$1'))}</p>", '{text}</p>'],
       ["{'\\u201C'}{wholeHyphens(p.says)}{'\\u201D'}", "{'\\u201C'}{p.says}{'\\u201D'}"], ['lineHeight: 1.4 }}>{wholeHyphens(w.prompt)}</span>', 'lineHeight: 1.4 }}>{w.prompt}</span>'],
-      ['{wholeHyphens(reviewingQuestion.prompt)}', '{reviewingQuestion.prompt}'], ['fontSize: 14 }}>{wholeHyphens(v.says)}</p>', 'fontSize: 14 }}>{v.says}</p>'],
-      ["textAlign: 'center' }}>{wholeHyphens(p.says)}</p>", "textAlign: 'center' }}>{p.says}</p>"], ['{wholeHyphens(reviewingQuestion.closing)}', '{reviewingQuestion.closing}'],
+      ['{lastTwoTogether(wholeHyphens(reviewingQuestion.prompt), reviewingQuestion.prompt)}', '{reviewingQuestion.prompt}'], ["fontSize: 14, textWrap: 'balance' }}>{lastTwoTogether(wholeHyphens(v.says), v.says)}</p>", "fontSize: 14, textWrap: 'balance' }}>{v.says}</p>"],
+      ["textAlign: 'center', textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphens(p.says), p.says)}</p>", "textAlign: 'center', textWrap: 'pretty' }}>{p.says}</p>"], ['{lastTwoTogether(wholeHyphens(reviewingQuestion.closing), reviewingQuestion.closing)}', '{reviewingQuestion.closing}'],
       ["textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>", "textWrap: 'balance' }}>{wonder.prompt}</p>"],
       // Since the third read, a reader's options and the review's option chips.
       ['size={24} /></span>{wholeHyphens(o)}</span> : wholeHyphens(o)}</button>', 'size={24} /></span>{o}</span> : o}</button>'], ['size={18} />}{wholeHyphens(o)}</span>', 'size={18} />}{o}</span>']];
@@ -2069,13 +2365,14 @@ const PREK_DERIVE = {
   // on larger paper, what they show drawn larger (the lead's look).
   { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
     const litOk = (src) => /const LIT_WORDS = \{ borderRadius: 5, boxShadow: '-1px 0 0 1px #AAD8C5, 1px 0 0 1px #AAD8C5' \};/.test(src) && !/const LIT_WORDS = \{[^}]*(?:padding|clone)/.test(src);
-    const matchOk = (src) => /const MATCH_SIZE = \{ pic: 72, art: 84, item: 64, icon: 64 \};/.test(src) && src.includes("const matchSize = (v) => (v && v.kind === 'icon' && /^drawing~/.test(String(v.name)) ? 84 : MATCH_SIZE[v && v.kind]);") && src.includes('matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual') && src.includes('drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)}') && src.includes('size={at(typeof visual.size === \'number\' ? visual.size : 120)} thing') && src.includes('size={at(visual.size || 110)}')
+    const matchOk = (src) => /const MATCH_SIZE = \{ pic: 72, art: 84, item: 64, icon: 64 \};/.test(src) && src.includes("const matchSize = (v, printTiles = false) => (v && v.kind === 'icon' && (printTiles || /^drawing~/.test(String(v.name)) || DRAWN_WORDS[v.name]) ? 84 : MATCH_SIZE[v && v.kind]);") && src.includes('matchSize(q.visual, printTiles) ? { ...shownVisual, size: matchSize(q.visual, printTiles) } : shownVisual') && src.includes('drawing~/.test(c) || (printTiles && /^icon:/.test(c)) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)}') && src.includes('size={at(typeof visual.size === \'number\' ? visual.size : 120)} thing') && src.includes('size={at(visual.size || 110)}')
       && /StudentPicture name=\{c\.slice\(4\)\.split\('#'\)\[0\]\} size=\{Math\.round\(72 \* k\)\}/.test(src) && /ColorThumb picture=\{c\.slice\(4\)\.split\('#'\)\[0\]\} size=\{Math\.round\(84 \* k\)\}/.test(src) && /<Item spec=\{c\.slice\(5\)\} size=\{Math\.round\(64 \* k\)\}/.test(src);
     const paperOk = (src) => ['outside', 'rain', 'bedtime'].every((d) => new RegExp("'drawing~" + d + "': \\(\\{ dk \\}\\) => <g><rect x=\"6\" y=\"6\" width=\"88\" height=\"88\" rx=\"5\" [^\\n]*<g transform=\"translate\\(50 50\\) scale\\(1\\.12\\) translate\\(-50 -50\\)\">").test(src));
     const oldLit = ui.replace(/const LIT_WORDS = \{[^}]*\};/, "const LIT_WORDS = { borderRadius: 5, padding: '1px 2px', margin: '0 -2px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' };");
-    const oldMatch = ui.replace('matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual', 'shownVisual');
-    // A child's drawing to match at an icon's 64, where its tiles draw it at 84 (round one's code check).
-    const oldDrawing = ui.replace("v && v.kind === 'icon' && /^drawing~/.test(String(v.name)) ? 84 : ", '');
+    const oldMatch = ui.replace('matchSize(q.visual, printTiles) ? { ...shownVisual, size: matchSize(q.visual, printTiles) } : shownVisual', 'shownVisual');
+    // A child's drawing to match at an icon's 64, where its tiles draw it at 84 (round one's code check); since pass NR a drawing that prints
+    // a word is drawn at 84 on its tile and to match, as a child's drawing is (round one's screen read).
+    const oldDrawing = ui.replace("v && v.kind === 'icon' && (printTiles || /^drawing~/.test(String(v.name)) || DRAWN_WORDS[v.name]) ? 84 : ", '');
     const oldPaper = ui.replace("'drawing~rain': ({ dk }) => <g><rect x=\"6\" y=\"6\" width=\"88\" height=\"88\" rx=\"5\"", "'drawing~rain': ({ dk }) => <g><rect x=\"12\" y=\"12\" width=\"76\" height=\"76\" rx=\"4\"");
     ok('the screen read\'s fixes stand in the screen code: the reading light\'s room a shadow, never padding or cloned ends (EARMARKS A86), the picture to match at its answers\' tile size (A84), a child\'s drawing at a drawing tile\'s, and the children\'s drawings on larger paper (pass NC; each old text caught)', litOk(ui) && matchOk(ui) && paperOk(ui) && !litOk(oldLit) && !matchOk(oldMatch) && oldDrawing !== ui && !matchOk(oldDrawing) && !paperOk(oldPaper), JSON.stringify({ lit: litOk(ui), match: matchOk(ui), paper: paperOk(ui) })); }
   // EARMARKS A88 (pass ND, the screen read): in the screen code a lesson's pair grows on a wide screen when a drawing sits beside a group
@@ -2157,7 +2454,8 @@ const PREK_DERIVE = {
       prompt15: ["fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>", "fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic' }}>{wholeHyphens(wonder.prompt)}</p>"],
       prompt20: ["<p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>", "<p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px' }}>{wholeHyphens(wonder.prompt)}</p>"],
       prompt17: ["<p style={{ margin: 0, fontSize: 17, fontWeight: 600, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>", '<p style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>{wholeHyphens(wonder.prompt)}</p>'],
-      wholeHyphens: ["function wholeHyphens(text) { return String(text).split(/(\\S+-\\S+)/).map((w, i) => (i % 2 ? <span key={i} data-whole-word=\"\" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w)); }", "function wholeHyphens(text) { return String(text).split(/(\\S+-\\S+)/).map((w, i) => (i % 2 ? <span key={i} data-whole-word=\"\">{w}</span> : w)); }"],
+      // Since round three's screen read of pass NR it splits by WHOLE_WORD, which keeps a pre-K grade with its number whole too (pinned below).
+      wholeHyphens: ["function wholeHyphens(text) { return String(text).split(WHOLE_WORD).map((w, i) => (i % 2 ? <span key={i} data-whole-word=\"\" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w)); }", "function wholeHyphens(text) { return String(text).split(WHOLE_WORD).map((w, i) => (i % 2 ? <span key={i} data-whole-word=\"\">{w}</span> : w)); }"],
       moreInfoAnswer: ["<p data-more-info-answer=\"\" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700, textWrap: 'balance' }}>", "<p data-more-info-answer=\"\" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700 }}>"],
       tiles: ["hyphens: 'none', textWrap: 'balance' }}>{words}</span>;", "hyphens: 'none' }}>{words}</span>;"],
       tall: ['if ((shrink(spans) < 16 || tall(spans)) && spans.length > 1', 'if (shrink(spans) < 16 && spans.length > 1'],
@@ -4679,6 +4977,853 @@ const PREK_DERIVE = {
   const bad = orders.filter(([, , q]) => twice(L.preReaderWrongWords(q, q.choices[0]))).map(([g, i]) => `${g} seed ${i}`);
   const asWas = (q) => `Let's listen again. ${[q.story, q.prompt].filter(Boolean).join(' ')}`;
   ok(`a retried order question whose story begins "Listen." does not say "Listen." again after "Let's listen again." (${orders.length} order questions with a story, ${listens.length} of them beginning "Listen."; the line as it was, planted, caught)`, listens.length > 40 && bad.length === 0 && twice(asWas(listens[0][2])), bad.slice(0, 5)); }
+// Words all around us and Print tells us something (pass NR): their ten banks worked out from what each question says and shows by the
+// test's own tables (NR_P3*, NR_P4*), each near miss caught by the guard it names and no other: with that guard taken out of its
+// derivation's own text it gets an answer at every seed from 1 to 400, and with it in, none. The near misses: a book, which has words,
+// among the things with a word and the things with none; pre-K 4's I love you among pre-K 3's meanings and pre-K 3's who it is for among
+// pre-K 4's; a tree among the things with a word; the three words printed and not heard; a third choice beside Yes and No; one person
+// as both the writer and the reader; a friend's sentence from another pair; and the note that says I like dogs beside Mom's note. Since
+// round one's lesson reads (pass NR) two more: a picture beside a yes or no that asks about none, or a stop sign beside the one that asks
+// about this tree; and talk written down printed and not heard. Since round one's screen read, one more: what this print tells printed
+// and not heard.
+{ const D = PREK_DERIVE; const NR = ['words-all-around', 'print-tells-us'].flatMap((id) => L.getModule(id).generators);
+  const swap = (c) => (x) => { const w = x.choices.find((y) => y !== x.answer); return { ...x, choices: x.choices.map((y) => (y === w ? c : y)) }; };
+  const NEAR = [
+    ['p3-around-has', 'book', swap('icon:book')], ['p3-around-tells', 'p4', swap('I love you')], ['p3-around-which', 'tree', swap('icon:tree')],
+    ['p3-around-says', 'printed', (x) => ({ ...x, heardChoices: false })], ['p3-around-yesno', 'three', (x) => ({ ...x, choices: [...x.choices, 'Not sure'] })],
+    ['p4-print-who', 'one', (x) => { const m = /^(.+?) wrote a note for you, and/.exec(x.story); return { ...x, story: `${m[1]} wrote a note for you, and ${m[1] === 'Your teacher' ? 'your teacher' : m[1]} read it to you.` }; }],
+    ['p4-print-tells', 'p3', swap('Who it is for')],
+    ['p4-print-talk', 'pair', (x) => { const m = /^(\w+) says, (.+?)! (\w+) says, (.+?)! /.exec(x.story); const other = NR_P4_TALK.find((p) => !p.includes(m[2]) && !p.includes(m[4]))[0];
+      return { ...x, story: x.story.replace(`${m[3]} says, ${m[4]}!`, `${m[3]} says, ${other}!`), choices: x.choices.map((c) => (c === `${m[4]}.` ? `${other}.` : c)), answer: x.answer === `${m[4]}.` ? `${other}.` : x.answer }; }],
+    ['p4-print-which', 'notes', swap('icon:note~dogs')], ['p4-print-yesno', 'three', (x) => ({ ...x, choices: [...x.choices, 'Not sure'] })],
+    ['p3-around-yesno', 'picture', (x) => ({ ...x, visual: { kind: 'icon', name: x.visual ? 'sign~stop' : 'tree' } })], ['p4-print-talk', 'printed', (x) => ({ ...x, heardChoices: false })],
+    ['p4-print-tells', 'printed', (x) => ({ ...x, heardChoices: false })],
+  ];
+  const GUARDS = {
+    'p3-around-has book': ['nrHasOf', '\n  if (!ch.every((c) => nrIsPrint(c) || nrIsThing(c))) return null;'], 'p3-around-tells p4': ['nrTellsOf', '\n  if (!ch.every((c) => Object.values(NR_P3).some((p) => p[3] === c))) return null;'],
+    'p3-around-which tree': ['nrWhich3Of', '\n  if (!ch.every(nrIsPrint)) return null;'], 'p3-around-says printed': ['nrSaysOf', '\n  if (!q.heardChoices) return null;'], 'p3-around-yesno three': ['nrYesNoOf', '\n  if (!nmSame(q, [\'Yes\', \'No\'])) return null;'],
+    'p4-print-who one': ['nrWhoOf', '\n  if (w === r) return null;'], 'p4-print-tells p3': ['nrTells4Of', '\n  if (!ch.every((c) => Object.values(NR_P4).some((p) => p[3] === c))) return null;'],
+    'p4-print-talk pair': ['nrTalkOf', '\n  if (!NR_P4_TALK.some((p) => p.includes(m[2]) && p.includes(m[4]) && m[2] !== m[4])) return null;'], 'p4-print-which notes': ['nrWhich4Of', '\n  if (!nmSame(q, Object.values(NR_P4).map((p) => p[0]))) return null;'],
+    'p4-print-yesno three': ['nrYesNoOf', '\n  if (!nmSame(q, [\'Yes\', \'No\'])) return null;'],
+    'p3-around-yesno picture': ['nrYesNoOf', '\n  if ((q.visual ? `${q.visual.kind}:${q.visual.name}` : null) !== (row[3] ? `icon:${row[3]}` : null)) return null;'], 'p4-print-talk printed': ['nrTalkOf', '\n  if (!q.heardChoices) return null;'],
+    'p4-print-tells printed': ['nrTells4Of', '\n  if (!q.heardChoices) return null;'],
+  };
+  const HELPERS = { nrHasOf, nrTellsOf, nrWhich3Of, nrSaysOf, nrYesNoOf, nrWhoOf, nrTells4Of, nrTalkOf, nrWhich4Of };
+  const without = (g, [where, from]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join('');
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  // Plant: a near miss a second guard also catches (the book beside a question the bank never asks) fails its proof.
+  const plantCaught = !!prove('p3-around-has', 'book', (x) => ({ ...swap('icon:book')(x), prompt: 'Which one has a picture on it?' }));
+  ok('Words all around us\'s and Print tells us something\'s ten banks are worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    NR.length === 10 && NR.every((g) => typeof D[g] === 'function') && NR.every((g) => NEAR.some(([x]) => x === g)) && NEAR.length === 13 && NEAR.every(([g]) => NR.includes(g)) && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What the two print lessons' banks may and may not do, read over seeds 1 to 400 by the test's own tables.
+{ const W3 = L.getModule('words-all-around'); const P4 = L.getModule('print-tells-us');
+  const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const BANKS = [...W3.generators, ...P4.generators]; const lessonOf = (g) => (/^p3-/.test(g) ? W3 : P4);
+  const lineText = (m) => m.lesson.script.map((l) => l.say).join(' ');
+  // 1. Every picture a bank shows (a choice, or the picture above a question) is drawn by a line of its lesson, and every word a bank
+  //    offers to hear (says' three words) is said by its lines. Plant: the lines without the cubby, caught.
+  const drawnIn = (m) => { const out = new Set(); const walk = (v) => { if (!v) return; if (v.kind === 'pair') { walk(v.a); walk(v.b); } else if (v.kind === 'row') (v.items || []).forEach(walk); else if (v.kind === 'pic' || v.kind === 'icon') out.add(v.kind + ':' + v.name); };
+    m.lesson.script.forEach((l) => walk(l.show)); return out; };
+  const notDrawnIn = (m, g) => { const d = drawnIn(m); return gen(g, 400).flatMap((x) => [...x.choices, ...(x.visual && x.visual.kind === 'icon' ? [`icon:${x.visual.name}`] : [])].filter((c) => /^(?:pic|icon):/.test(String(c)) && !d.has(String(c))).map((c) => g + ' ' + c)); };
+  const notDrawn = BANKS.flatMap((g) => notDrawnIn(lessonOf(g), g));
+  const unheard = gen('p3-around-says', 400).flatMap((x) => x.choices.filter((c) => !new RegExp('\\b' + c.toLowerCase() + '\\b').test(lineText(W3).toLowerCase())));
+  const cubbyPlant = notDrawnIn({ lesson: { script: W3.lesson.script.map((l) => (JSON.stringify(l.show || null).includes('cubby~name') ? { ...l, show: null } : l)) } }, 'p3-around-which').length > 0;
+  ok('every picture Words all around us\'s and Print tells us something\'s banks show is drawn by a line of its lesson, and every word the says bank offers is said by its lines (the lines without the cubby, planted, caught)', notDrawn.length === 0 && unheard.length === 0 && cubbyPlant, JSON.stringify({ notDrawn: [...new Set(notDrawn)].slice(0, 5), unheard: [...new Set(unheard)] }));
+  // 2. Every reason and explanation is the one the test's tables give, in the lessons' words, and every wrong choice has its reason.
+  //    Plants: the milk carton's reason given to the stop sign, and a who explanation that swaps the writer and the reader, each caught.
+  const P3K = (look) => Object.keys(NR_P3).find((k) => NR_P3[k][0] === look); const P4K = (look) => Object.keys(NR_P4).find((k) => NR_P4[k][0] === look);
+  const N4 = (id, start) => NR_P4_PEOPLE[id][start ? 0 : 1];
+  const reasonTrue = (g, x, c, e) => {
+    if (g === 'p3-around-has') { if (nrIsThing(c)) return e.name === `The ${myName(c)}` && e.why === 'has no words on it.'; const p = NR_P3[P3K(c)]; return !!p && e.name === `The ${p[1]}` && e.why === `has a word on it. Its word says ${p[2]}.`; }
+    if (g === 'p3-around-tells') { const p = Object.values(NR_P3).find((y) => y[3] === c); return !!p && e.name === c && e.why === p[5]; }
+    if (g === 'p3-around-which') { const p = NR_P3[P3K(c)]; return !!p && e.name === p[6] && e.why === `says ${p[2]}, and it tells us ${p[4]}.`; }
+    if (g === 'p3-around-says') { const s = Object.values(NR_P3_SAYS).find((y) => y[0] === c); return !!s && e.name === c && e.why === s[2]; }
+    if (g === 'p3-around-yesno' || g === 'p4-print-yesno') { const row = (g === 'p3-around-yesno' ? NR_P3_YESNO : NR_P4_YESNO)[x.prompt]; return !!row && c === (row[0] === 'Yes' ? 'No' : 'Yes') && e.name === c && e.why === row[2]; }
+    if (g === 'p4-print-who') { const m = /^(.+?) wrote a note for you, and (.+?) read it to you\.$/.exec(x.story); const id = (n) => Object.keys(NR_P4_PEOPLE).find((k) => NR_P4_PEOPLE[k].includes(n)); const w = id(m[1]); const r = id(m[2]); const t = myName(c);
+      if (t !== w && t !== r) return e.name === N4(t, true) && e.why === 'is not in this story.';
+      return t === r ? e.name === N4(r, true) && e.why === `read the note to you, and ${N4(w)} wrote it.` : e.name === N4(w, true) && e.why === `wrote the note, and ${N4(r)} read it to you.`; }
+    if (g === 'p4-print-tells') { const p = Object.values(NR_P4).find((y) => y[3] === c); return !!p && e.name === c && e.why === p[5]; }
+    if (g === 'p4-print-talk') { const m = /^(\w+) says, (.+?)! (\w+) says, (.+?)! The teacher writes down (\w+)'s words\.$/.exec(x.story); const other = m[5] === m[1] ? [m[3], m[4]] : [m[1], m[2]];
+      return c === `${other[1]}.` && e.name === other[1] && e.why === `is what ${other[0]} said, and the teacher wrote down ${m[5]}'s words.`; }
+    if (g === 'p4-print-which') { const p = NR_P4[P4K(c)]; return !!p && e.name === `The ${p[1]}'s print` && e.why === `${p[2]}.`; }
+    return false; };
+  const explainTrue = (g, x) => { const e = x.explain;
+    if (g === 'p3-around-has') { if (nrIsThing(x.answer)) { const t = myName(x.answer); return e === `The ${t}. This ${t} has no words on it.`; } const p = NR_P3[P3K(x.answer)]; return e === `The ${p[1]}. Its word says ${p[2]}, and it tells us ${p[4]}.`; }
+    if (g === 'p3-around-tells') { const p = NR_P3[P3K(`icon:${x.visual.name}`)]; return e === `Its word says ${p[2]}, so it tells us ${p[4]}.`; }
+    if (g === 'p3-around-which') { const p = NR_P3[P3K(x.answer)]; return e === `The ${p[1]}. Its word says ${p[2]}.`; }
+    if (g === 'p3-around-says') return e === NR_P3_SAYS[x.story][1];
+    if (g === 'p3-around-yesno') return e === NR_P3_YESNO[x.prompt][1];
+    if (g === 'p4-print-yesno') return e === NR_P4_YESNO[x.prompt][1];
+    if (g === 'p4-print-who') { const m = /^(.+?) wrote a note for you, and (.+?) read it to you\.$/.exec(x.story); const id = (n) => Object.keys(NR_P4_PEOPLE).find((k) => NR_P4_PEOPLE[k].includes(n)); const w = id(m[1]); const r = id(m[2]);
+      return e === `${N4(w, true)} wrote the note, so ${N4(w)} is the writer. ${N4(r, true)} read it to you.`; }
+    if (g === 'p4-print-tells') return e === NR_P4[P4K(`icon:${x.visual.name}`)][4];
+    if (g === 'p4-print-talk') { const m = /^(\w+) says, (.+?)! (\w+) says, (.+?)! The teacher writes down (\w+)'s words\.$/.exec(x.story); const said = m[5] === m[1] ? m[2] : m[4]; return e === `${said}. The teacher wrote down ${m[5]}'s words, so the print says what ${m[5]} said.`; }
+    if (g === 'p4-print-which') { const p = NR_P4[P4K(x.answer)]; return e === `The ${p[1]}. Its print ${p[2]}.`; }
+    return false; };
+  // A case the tables cannot read (a story or a question they do not hold, as round one's "fridge" put back makes) is a false reason or
+  // explanation, reported with the rest, never a throw that stops the test before its summary (round two's read, pass NR).
+  const sure = (f) => (...a) => { try { return f(...a); } catch (err) { return false; } };
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !sure(reasonTrue)(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.name + ' ' + e.why)));
+  const missingReasons = BANKS.flatMap((g) => gen(g, 400).filter((x) => x.choices.some((c) => c !== x.answer && !(x.whyNot || {})[c])).map(() => g));
+  const falseExplains = BANKS.flatMap((g) => gen(g, 400).filter((x) => !sure(explainTrue)(g, x)).map((x) => g + ': ' + x.explain));
+  const qm = gen('p3-around-which', 400).find((x) => x.choices.includes('icon:sign~stop') && x.answer !== 'icon:sign~stop'); const reasonPlant = !reasonTrue('p3-around-which', qm, 'icon:sign~stop', { name: 'The word on the stop sign', why: 'says milk, and it tells us what is inside.' });
+  const qw = gen('p4-print-who', 40)[0]; const explainPlant = !explainTrue('p4-print-who', { ...qw, explain: qw.explain.replace(/^(.+?) wrote the note, so (.+?) is the writer\. (.+?) read it to you\.$/, '$3 wrote the note, so $3 is the writer. $1 read it to you.') });
+  // The fridge plant: the milk carton's story as round one first wrote it, which the tables do not hold, read as a false explanation by
+  // sure, where the reader alone throws (with the fridge put back the test stopped there, before its summary; round two's read).
+  const qf = { ...gen('p3-around-says', 40).find((x) => x.answer === 'Milk'), story: 'You see a word on a carton from the fridge.' };
+  let threw = false; try { explainTrue('p3-around-says', qf); } catch (err) { threw = true; }
+  const fridgeReported = threw && sure(explainTrue)('p3-around-says', qf) === false;
+  ok('every reason and every explanation Words all around us\'s and Print tells us something\'s banks give is the one the test\'s own tables give, in the lessons\' words, and every wrong choice has its reason (seeds 1 to 400; the milk carton\'s reason given to the stop sign, and a who explanation with the writer and the reader swapped, planted, each caught; a story the tables do not hold, round one\'s fridge, reported as a false explanation and never a throw, planted, caught)', falseReasons.length === 0 && missingReasons.length === 0 && falseExplains.length === 0 && reasonPlant && explainPlant && fridgeReported, [...falseReasons.slice(0, 3), ...falseExplains.slice(0, 3), ...missingReasons.slice(0, 3)].join(' | '));
+  // 3. Every kind each bank asks is modeled by a line of its lesson that asks it in the bank's own words and answers it, as Hold a book's
+  //    lines do: each yes or no since the lead's look in round one, and what this word tells, what its word says, what this print tells
+  //    and what the print says since round one's lesson reads (pass NR; until then a line that only worked each stood in). Plant: each
+  //    kind's model line taken out, caught. Since then each model line says one of its bank's own questions word for word, as dealt at
+  //    seeds 1 to 400. Plant: the four lines that only worked a kind and never asked it (the shop's door's word, stop at the corner, the
+  //    stop sign's print and the note that says I like dogs) as the models of tells, says, print tells and talk written down, each caught.
+  const KIND_LINES = { 'p3-around-has': /Which one has a word on it\? The stop sign! And which one has no words on it\? The tree\./, 'p3-around-tells': /What does this word tell us\? It tells us what is inside\./, 'p3-around-which': /Which one tells us what is inside\? The milk carton!/, 'p3-around-says': /A red sign with eight sides stands at the corner\. What does its word say\? Stop!/, 'p3-around-yesno': /Does this tree have words on it\? No! /,
+    'p4-print-who': /Who wrote the note\? Grandma! And who read the note to you\? Grandpa!/, 'p4-print-tells': /What does this print tell us\? It tells us what is inside/, 'p4-print-talk': /What does the print say\? It still says, I like dogs\./, 'p4-print-which': /Which one tells us what is inside\? The crayon box!/, 'p4-print-yesno': /Does all print say something\? Yes! / };
+  const linesOf = (m, drop) => m.lesson.script.map((l) => l.say).filter((s) => !(drop && drop.test(s)));
+  const unmodeled = BANKS.filter((g) => !linesOf(lessonOf(g)).some((s) => KIND_LINES[g].test(s)));
+  const caught = BANKS.filter((g) => !linesOf(lessonOf(g), KIND_LINES[g]).some((s) => KIND_LINES[g].test(s)));
+  const askedBy = Object.fromEntries(BANKS.map((g) => [g, [...new Set(gen(g, 400).map((x) => x.prompt.toLowerCase()))]]));
+  const asksOwn = (g, re) => linesOf(lessonOf(g)).some((s) => re.test(s) && askedBy[g].some((p) => s.toLowerCase().includes(p)));
+  const notAsked = BANKS.filter((g) => !asksOwn(g, KIND_LINES[g]));
+  const ONLY_WORKED = { 'p3-around-tells': /Its word says open, and it tells us that we can go in\./, 'p3-around-says': /Its word says stop, and stop starts with the letter S/, 'p4-print-tells': /This stop sign's print tells cars to stop\./, 'p4-print-talk': /Now the print on this note says, I like dogs\./ };
+  const workedCaught = Object.entries(ONLY_WORKED).filter(([g, re]) => linesOf(lessonOf(g)).some((s) => re.test(s)) && !asksOwn(g, re)).length;
+  ok('every kind of question Words all around us\'s and Print tells us something\'s banks ask is modeled by a line of its lesson that asks it in the bank\'s own words, word for word, and answers it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + '; the four lines that only worked a kind, planted as its model, caught: ' + workedCaught + ' of 4)', BANKS.length === 10 && unmodeled.length === 0 && caught.length === 10 && notAsked.length === 0 && workedCaught === 4, [...unmodeled, ...notAsked.map((g) => g + ' not asked')].join(', '));
+  // 4. The code's tables are the test's, every question either way is asked and every picture, story and row is met at seeds 1 to 400,
+  //    and each lesson opens after the lesson its ideas build on, with its reason. Plant: a table with a meaning the lines never say, caught.
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const tablesOk = (C) => same(Object.fromEntries(Object.entries(C.AROUND3_PRINT).map(([k, p]) => [k, [p.look, p.name, p.word, p.tells, p.clause, p.meant, p.whichName]])), NR_P3) && same(C.AROUND3_THINGS, NR_P3_THINGS) && same(C.AROUND3_LOOKS, NR_P3_LOOKS)
+    && same(Object.fromEntries(Object.entries(C.AROUND3_WHICH).flatMap(([k, v]) => v.map((p) => [p, k]))), NR_P3_WHICH) && same(Object.fromEntries(Object.values(C.AROUND3_SAYS).map((s) => [s.told, [s.word, s.explain, s.why]])), NR_P3_SAYS)
+    && same(Object.fromEntries(C.AROUND3_YESNO.map((r) => [r[0], r[5] ? [r[1], r[2], r[3], r[5]] : [r[1], r[2], r[3]]])), NR_P3_YESNO) && same(C.PRINT4_PEOPLE, NR_P4_PEOPLE)
+    && same(Object.fromEntries(Object.entries(C.PRINT4_TELLS).map(([k, p]) => [k, [p.look, p.name, p.says, p.tells, p.explain, p.meant]])), NR_P4) && same(Object.fromEntries(Object.entries(C.PRINT4_WHICH).flatMap(([k, v]) => v.map((p) => [p, k]))), NR_P4_WHICH)
+    && same(C.PRINT4_TALK, NR_P4_TALK) && same(C.PRINT4_FRIENDS, NR_P4_FRIENDS) && same(Object.fromEntries(C.PRINT4_YESNO.map((r) => [r[0], [r[1], r[2], r[3]]])), NR_P4_YESNO);
+  const tablePlant = !tablesOk({ ...L, AROUND3_PRINT: { ...L.AROUND3_PRINT, door: { ...L.AROUND3_PRINT.door, tells: 'Come in' } } });
+  const seen = new Set(); for (const g of BANKS) for (const x of gen(g, 400)) { seen.add(x.prompt); if (x.story) seen.add(x.story); if (x.visual) seen.add(`icon:${x.visual.name}`); for (const c of x.choices) seen.add(String(c)); }
+  const wantSeen = [...Object.keys(NR_P3_WHICH), ...Object.keys(NR_P3_SAYS), ...Object.keys(NR_P3_YESNO), ...Object.keys(NR_P4_WHICH), ...Object.keys(NR_P4_YESNO), 'Which one has a word on it?', 'Which one has no words on it?', 'Who wrote the note?', 'Who read the note to you?',
+    ...Object.values(NR_P3).flatMap((p) => [p[0], p[3]]), ...NR_P3_THINGS.map((t) => NR_P3_LOOKS[t]), ...Object.values(NR_P4).flatMap((p) => [p[0], p[3]]), ...Object.values(NR_P4_PEOPLE).map((p) => p[2]), ...NR_P4_TALK.flat().map((s) => `${s}.`)];
+  const friends = new Set(gen('p4-print-talk', 400).flatMap((x) => [/^(\w+) says/.exec(x.story)[1], /! (\w+) says/.exec(x.story)[1]]));
+  const pairs = new Set(gen('p4-print-who', 400).map((x) => /^(.+?) wrote a note/.exec(x.story)[1] + ' > ' + /and (.+?) read it/.exec(x.story)[1]));
+  const opens = [['words-all-around', ['pictures-and-words']], ['print-tells-us', ['write-to-tell']]].every(([id, req]) => { const m = L.getModule(id); return same(m.requires, req) && typeof m.requiresWhy === 'string' && m.requiresWhy.length > 40; });
+  ok('the code\'s tables for the two print lessons are the test\'s own, every question, picture, story, row, meaning, sentence and friend is met at seeds 1 to 400, the six ways a note is written and read among them, and each lesson opens after the lesson its ideas build on, with its reason (a table with a meaning the lines never say, planted, caught)',
+    tablesOk(L) && tablePlant && wantSeen.every((w) => seen.has(w)) && NR_P4_FRIENDS.flat().every((f) => friends.has(f)) && pairs.size === 6 && opens, JSON.stringify({ missing: wantSeen.filter((w) => !seen.has(w)), friends: [...friends], pairs: pairs.size }));
+}
+// The two print lessons' banks scored blind, alone at seeds 1 to 2,000 and in rounds as built (1,500 first rounds, later rounds, triple
+// doses and Quick Reviews each): always the same button or the same choice, a yes or no's Yes share, and in later rounds a which bank's
+// answer read by the things not asked about lately (pass NM's rule: a later round leaves out the last two rounds' questions, so it rules
+// out a question and never an answer; the lead's one question to an answer read 53.7 and 71.9 percent, planted, caught). Bounds: two
+// choices under 56 percent (chance 50), three under 42 (chance 33.3), Yes between 40 and 60, not asked lately under 42. By the lead's design
+// which one has a word on it, or none, is always the one picture of its kind among three (one thing with a word beside two with none, or
+// the reverse), so a child who taps the picture unlike the other two is right every time; it is read and recorded here, at 100 percent,
+// for the lead to see beside the reads a habit of one picture gets (pass NR, the engineer's blind read).
+{ const genN = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const worst = (R, g, f) => Math.max(f(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length).map(f));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const firstBtn = (qs) => qs.filter((q) => String(q.choices[0]) === String(q.answer)).length / qs.length;
+  const oneChoice = (qs) => { const all = [...new Set(qs.flatMap((q) => q.choices.map(String)))]; return Math.max(...all.map((w) => qs.reduce((n, q) => n + (q.choices.includes(w) ? (q.answer === w ? 1 : 0) : 1 / q.choices.length), 0) / qs.length)); };
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const RW = ofModule('words-all-around', 1500); const RP = ofModule('print-tells-us', 1500);
+  const CH3 = [[RW, 'p3-around-has'], [RW, 'p3-around-tells'], [RW, 'p3-around-which'], [RW, 'p3-around-says'], [RP, 'p4-print-who'], [RP, 'p4-print-tells'], [RP, 'p4-print-which']];
+  const CH2 = [[RP, 'p4-print-talk'], [RW, 'p3-around-yesno'], [RP, 'p4-print-yesno']];
+  const three = Math.max(...CH3.flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice)]));
+  const two = Math.max(...CH2.flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice)]));
+  const YN = [[RW, 'p3-around-yesno'], [RP, 'p4-print-yesno']];
+  const shares = YN.flatMap(([R, g]) => [yesShare(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length).map(yesShare)]); const yesLo = Math.min(...shares); const yesHi = Math.max(...shares);
+  const notLately = (later, g) => { let n = 0, s = 0; for (let i = 2; i < later.length; i++) { const q = later[i].find((x) => x.genId === g); if (!q) continue;
+    const prev = [later[i - 1], later[i - 2]].flatMap((r) => r.filter((x) => x.genId === g).map((x) => x.answer)); const c = q.choices.filter((x) => !prev.includes(x)); n += 1; s += c.includes(q.answer) ? 1 / c.length : 0; } return n ? s / n : 0; };
+  const lately = Math.max(notLately(RW.later, 'p3-around-which'), notLately(RP.later, 'p4-print-which'));
+  // Plant: the lead's one question to an answer, read the same way over 300 later rounds of each lesson.
+  const firstOnly = (T) => { const kept = Object.fromEntries(Object.entries(T).map(([k, v]) => [k, [...v]])); for (const k of Object.keys(T)) T[k].splice(1); return () => { for (const [k, v] of Object.entries(kept)) T[k].splice(0, T[k].length, ...v); }; };
+  let latelyPlant; { const undo3 = firstOnly(L.AROUND3_WHICH); const undo4 = firstOnly(L.PRINT4_WHICH);
+    try { latelyPlant = Math.min(notLately(ofModule('words-all-around', 300).later, 'p3-around-which'), notLately(ofModule('print-tells-us', 300).later, 'p4-print-which')); } finally { undo3(); undo4(); } }
+  // The picture unlike the other two, by design; and a plant: a has bank that asks only which one has no words, read by always tapping the
+  // dog, caught.
+  const unlike = (qs) => qs.filter((q) => { const k = q.choices.map((c) => nrIsPrint(c)); const lone = q.choices.filter((c, i) => k.filter((x) => x === k[i]).length === 1); return lone.length === 1 && lone[0] === q.answer; }).length / qs.length;
+  const oddOne = Math.min(unlike(genN('p3-around-has', 2000)), ...groupsOf(RW, 'p3-around-has').filter((qs) => qs.length).map(unlike));
+  const plant = oneChoice(genN('p3-around-has', 4000).filter((q) => q.prompt === 'Which one has no words on it?')) >= 0.42;
+  ok(`the two print lessons' banks scored blind, alone and in rounds as built, stay under their bounds (three choices by the first button or one choice at most ${pct(three)}%, two at most ${pct(two)}%; Yes ${pct(yesLo)} to ${pct(yesHi)}%; a which bank's answer by the things not asked lately in later rounds at most ${pct(lately)}%, one question to an answer, planted, ${pct(latelyPlant)}%; which one has a word on it, or none, answered by the picture unlike the other two ${pct(oddOne)}% by design; a has bank that asks only for none, planted, caught)`,
+    three < 0.42 && two < 0.56 && yesLo >= 0.4 && yesHi <= 0.6 && lately < 0.42 && latelyPlant >= 0.45 && oddOne === 1 && plant, JSON.stringify({ three, two, yesLo, yesHi, lately, latelyPlant, oddOne })); }
+// The print lessons' story banks read by a child who heard only the story or only the question, and their picture banks by a child who
+// saw only the picture (seeds 1 to 2,000). By the lead's design: who wrote or read the note names both people in its story, so the story
+// alone leaves two of three, right half the time, as by chance, and the person it names first, the writer, is the answer of about half its
+// questions; talk written down says both sentences in its story, so the story alone is right half the time, chance for two; what does
+// its word say names only the place, never its word, so the story alone leaves each place's three words at chance (the design's milk story,
+// 'You see a word on a milk carton.', said the answer, and a child who heard only it was right every time: planted, caught; the engineer's
+// build says a carton, pass NR); and what this word or this print tells is the one meaning of the picture shown, the
+// lesson's own fact. The question alone answers none of the story banks.
+{ const genN = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const named = (text, c) => { const x = String(c); const n = /^(?:pic|icon):/.test(x) ? myName(x) : x.includes(':') ? null : x.replace(/[.!?]$/, ''); return !!n && new RegExp('\\b' + esc(n) + '\\b', 'i').test(text || ''); };
+  const storyOnly = (qs) => qs.reduce((n, q) => { const c = q.choices.filter((x) => named(q.story, x)); const pool = c.length ? c : q.choices; return n + (pool.includes(q.answer) ? 1 / pool.length : 0); }, 0) / qs.length;
+  const questionOnly = (qs) => { const t = {}; for (const q of qs) { t[q.prompt] = t[q.prompt] || {}; t[q.prompt][q.answer] = (t[q.prompt][q.answer] || 0) + 1; }
+    return qs.reduce((n, q) => { const score = (c) => (t[q.prompt][c] || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const pictureOnly = (qs) => { const t = {}; for (const q of qs) { const k = q.visual.name; t[k] = t[k] || {}; t[k][q.answer] = (t[k][q.answer] || 0) + 1; }
+    return qs.reduce((n, q) => { const score = (c) => (t[q.visual.name][c] || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const who = genN('p4-print-who', 2000); const talk = genN('p4-print-talk', 2000); const says = genN('p3-around-says', 2000);
+  const writerFirst = who.filter((q) => q.answer === Object.values(NR_P4_PEOPLE).find((p) => p[0] === /^(.+?) wrote/.exec(q.story)[1])[2]).length / who.length;
+  const byPlace = Object.fromEntries(Object.keys(NR_P3_SAYS).map((s) => [NR_P3_SAYS[s][0], storyOnly(says.filter((q) => q.story === s))]));
+  const pics = Math.min(pictureOnly(genN('p3-around-tells', 2000)), pictureOnly(genN('p4-print-tells', 2000)));
+  const milkPlant = storyOnly(says.filter((q) => q.answer === 'Milk').map((q) => ({ ...q, story: 'You see a word on a milk carton.' })));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const S = { who: storyOnly(who), talk: storyOnly(talk), says: storyOnly(says) }; const Q = { who: questionOnly(who), talk: questionOnly(talk), says: questionOnly(says) };
+  ok(`the print lessons' story banks read by a child who heard only the story or only the question: by design the story alone is right half the time on who wrote or read the note (${pct(S.who)}%, both people named; the writer, named first, the answer ${pct(writerFirst)}% of the time) and on talk written down (${pct(S.talk)}%, both sentences said), and leaves what each place's word says at chance (stop ${pct(byPlace.Stop)}%, milk ${pct(byPlace.Milk)}% and open ${pct(byPlace.Open)}%; the design's milk story, which says milk, planted, ${pct(milkPlant)}%, caught); the question alone at most ${pct(Math.max(...Object.values(Q)))}%; and what this word or this print tells is the picture's own meaning (${pct(pics)}% by the picture alone, by design)`,
+    Math.abs(S.who - 0.5) < 0.02 && Math.abs(writerFirst - 0.5) < 0.04 && Math.abs(S.talk - 0.5) < 0.02 && Object.values(byPlace).length === 3 && Object.values(byPlace).every((v) => v < 0.4) && milkPlant > 0.95 && Q.who < 0.42 && Q.says < 0.42 && Q.talk < 0.56 && pics === 1, JSON.stringify({ S, Q, writerFirst, byPlace, milkPlant, pics })); }
+// Each kind once a round where it can (aboutWords, as pass NM's and NP's banks do; the lead's design): Print tells us something's five
+// kinds each come once in every first and later round. Words all around us's four things with a word are what four of its five kinds ask
+// about, and a question about a thing is kept from a round that asked about it already (its explanation would answer the second), so
+// where the four things leave no question for a kind, it hands its turn on, mostly to which one has a word on it, first in the lesson's
+// list: a kind twice in about one round in six, what does its word say, which asks about three of the four, dropped from about one in
+// ten. That is the echo rule's price here, recorded with its bound (pass NR, the engineer's read: as first built, which one has a
+// word on it keyed on its thing both ways and the last yes or no on the milk carton and the cubby, a kind came twice in 21 percent of
+// rounds, planted, caught). One round in seven and one in thirteen: round two's fix of the shop's door's yes or no told the stop sign's
+// meaning and was keyed to keep it from a stop question (a kind twice in 17.6 percent of rounds, what does its word say 90.0 a round), and
+// since round three's final read (pass NR) the row says only what its own sign can say, so the key and its price are gone (bound 15).
+{ const kinds = (mid, n) => { const G = L.getModule(mid).generators; let twice = 0; const per = Object.fromEntries(G.map((g) => [g, 0])); let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { for (const core of [L.buildAttempt(mid, s, []).core, (() => { const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); p2 = p1; p1 = a.core.map((q) => q.prompt); return a.core; })()]) {
+      const c = {}; for (const q of core) c[q.genId] = (c[q.genId] || 0) + 1; for (const g of G) per[g] += (c[g] || 0); if (Object.values(c).some((v) => v > 1)) twice += 1; } }
+    return { per: Object.fromEntries(Object.entries(per).map(([g, v]) => [g, v / (2 * n)])), twice: twice / (2 * n) }; };
+  const p4 = kinds('print-tells-us', 1000); const p3 = kinds('words-all-around', 1000);
+  const keep = {}; const asFirst = { 'p3-around-has': (q) => (q.prompt === 'Which one has a word on it?' ? { ...q, aboutWords: [q.saysFirstOf[0]], saysFirstOf: undefined } : q),
+    'p3-around-yesno': (q) => ({ ...q, aboutWords: q.prompt === 'Does the word on a milk carton tell us who it is for?' ? ['milk', 'cubby'] : q.aboutWords, asksFirstOf: undefined }) };
+  for (const g of ['p3-around-tells', 'p3-around-which', 'p3-around-says']) asFirst[g] = (q) => ({ ...q, asksFirstOf: undefined });
+  for (const g of Object.keys(asFirst)) { keep[g] = L.GENERATORS[g]; L.GENERATORS[g] = (rng) => asFirst[g](keep[g](rng)); }
+  let planted; try { planted = kinds('words-all-around', 500); } finally { for (const g of Object.keys(keep)) L.GENERATORS[g] = keep[g]; }
+  const pct = (v) => Math.round(v * 1000) / 10; const P = p3.per;
+  ok(`each kind once a round where it can: Print tells us something's five kinds once in every first and later round (${Object.values(p4.per).map(pct).join(', ')} a round, twice in ${pct(p4.twice)}% of 2,000 rounds); Words all around us's, where its four things with a word leave a question (has ${pct(P['p3-around-has'])}, tells ${pct(P['p3-around-tells'])}, which ${pct(P['p3-around-which'])}, says ${pct(P['p3-around-says'])} and yes or no ${pct(P['p3-around-yesno'])} a round, a kind twice in ${pct(p3.twice)}% of rounds, the echo rule's price; keyed as first built, planted, ${pct(planted.twice)}%, caught)`,
+    Object.values(p4.per).every((v) => v === 1) && p4.twice === 0 && P['p3-around-tells'] >= 0.95 && P['p3-around-which'] >= 0.95 && P['p3-around-says'] >= 0.9 && P['p3-around-yesno'] >= 0.98 && P['p3-around-has'] <= 1.2 && p3.twice <= 0.15 && planted.twice > 0.15, JSON.stringify({ p4, p3, planted: planted.twice })); }
+// Held for the two print lessons from the start, as round one's code read of pass NP found its blocks did not (pass NR): every question
+// carries a key for the round builder (aboutWords); the six new looks are named as the lead's design names them, by what they show and
+// never by a word a question of theirs asks for, as describeChoice and the screen reader say them; the two notes never stand on one row,
+// in a line or a question (seeds 1 to 2,000); what does its word say's three words are heard and never printed while the voice can speak
+// (heardChoices, Tap to hear), and since round one's lesson reads (pass NR) talk written down's two sentences too, its setup printing
+// neither (printedStory: a heard question prints none of the words it asks about); the teacher with empty hands is named the teacher;
+// and no reason or other right answer is empty. Each near miss planted, caught: the says bank's words printed, and the talk bank's
+// sentences printed on its buttons or in its setup. Since round one's screen read (pass NR) what this print tells is heard too, its
+// three meanings on no button and in neither its setup nor its printed question (the note's words were on its button beside the note);
+// planted printed, caught.
+{ const BANKS = ['words-all-around', 'print-tells-us'].flatMap((id) => L.getModule(id).generators);
+  const qs = BANKS.flatMap((g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1)));
+  const keyed = (list) => list.every((x) => Array.isArray(x.aboutWords) && x.aboutWords.length > 0 && x.aboutWords.every((w) => typeof w === 'string' && w));
+  const keysOk = keyed(qs) && !keyed(qs.map((x, i) => (i === 0 ? { ...x, aboutWords: undefined } : x)));
+  const NAMES = { 'milk~carton': 'milk carton', 'cubby~name': 'cubby with Sam\'s name', 'door~open': 'shop\'s door', 'box~crayons': 'crayon box', 'note~love': 'note', 'note~dogs': 'note that says I like dogs' };
+  const ASKED = { 'milk~carton': ['inside'], 'cubby~name': ['who it is for'], 'door~open': ['go in'], 'box~crayons': ['inside'], 'note~love': ['love'], 'note~dogs': ['love'] };
+  const namesOk = (T) => Object.entries(NAMES).every(([look, name]) => T[look] === name && !ASKED[look].some((w) => T[look].includes(w)));
+  const looksOk = namesOk(L.LOOK_NAMES) && Object.keys(NAMES).every((look) => L.describeChoice(`icon:${look}`) === `the ${NAMES[look]}`) && L.describeChoice('icon:teacher~hands') === 'the teacher' && !namesOk({ ...L.LOOK_NAMES, 'milk~carton': 'carton that tells what is inside' }) && !namesOk(Object.fromEntries(Object.entries(L.LOOK_NAMES).filter(([k]) => k !== 'note~dogs')));
+  const both = (row) => row.map(String).includes('icon:note~love') && row.map(String).includes('icon:note~dogs');
+  const rowsOf = (show) => (!show ? [] : show.kind === 'pair' ? [[show.a, show.b], ...rowsOf(show.a), ...rowsOf(show.b)] : show.kind === 'row' ? [show.items] : []).map((r) => (Array.isArray(r) ? r : []));
+  const lineRows = ['words-all-around', 'print-tells-us'].flatMap((id) => L.getModule(id).lesson.script.flatMap((l) => rowsOf(l.show))).map((r) => r.filter(Boolean).map((v) => `${v.kind}:${v.name}`));
+  const apart = !BANKS.some((g) => Array.from({ length: 2000 }, (_, i) => L.generateQuestion(g, i + 1)).some((q) => both(q.choices || []))) && !lineRows.some(both) && both(['icon:note~dogs', 'icon:box~crayons', 'icon:note~love']);
+  const heard = (q) => q.heardChoices === true && q.choices.every((c) => L.printedChoice(q, c, true) === L.HEARD_CHOICE);
+  const plain = (t) => String(t || '').toLowerCase().replace(/[^a-z' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const setupHidden = (q) => { const p = L.printedQuestion(q, true); const shown = plain(`${p.story || ''} ${p.prompt || ''}`); return q.choices.every((c) => !shown.includes(plain(c))); };
+  const heardWhole = (q) => heard(q) && setupHidden(q);
+  const says = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p3-around-says', i + 1)); const talk = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p4-print-talk', i + 1));
+  const tells = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p4-print-tells', i + 1));
+  const heardOk = says.every(heardWhole) && talk.every(heardWhole) && tells.every(heardWhole) && !heardWhole({ ...says[0], heardChoices: false }) && !heardWhole({ ...talk[0], heardChoices: false }) && !heardWhole({ ...talk[0], printedStory: undefined }) && !heardWhole({ ...tells[0], heardChoices: false });
+  const emptyIn = (x) => Object.values(x.whyNot || {}).some((e) => !e || !String(e.why || '').trim() || !String(e.name || '').trim()) || (x.alsoRight || []).some((a) => typeof a !== 'string' || !a.trim());
+  const empties = qs.filter(emptyIn).length; const emptyPlant = emptyIn({ whyNot: { a: { name: 'The tree', why: ' ' } } });
+  ok(`the print lessons held from the start (pass NR): every question keyed for the round builder, the six new looks named as the design names them and never by a word their questions ask for (as describeChoice says them), the two notes never on one row (${lineRows.length} rows of the lines, ten banks at seeds 1 to 2,000), the says bank's words, talk written down's sentences and what this print tells heard and never printed, on a button, in a setup or in a printed question, the teacher with empty hands named the teacher, and no empty reason; each near miss planted, caught`,
+    keysOk && looksOk && apart && heardOk && empties === 0 && emptyPlant, JSON.stringify({ keysOk, looksOk, apart, heardOk, empties })); }
+// A first wrong tap hears its own reason in every one of the print lessons' banks with three choices (which one has a word on it, what
+// this word or this print tells, which one tells us something, what its word says and who wrote or read the note), every wrong choice at
+// seeds 1 to 400: none names the answer or another choice still open, which would hold it back (whyNotNamesAnswer, whyNotNamesOpenWrong).
+// The milk carton's look was first named milk~word, as the lead's design names it, and a picture's look is heard as its words, so every
+// reason of which one tells us something, each saying its own word, named the answer's look whenever the milk carton was the answer, and
+// held every first tap's reason back there; the look is milk~carton since (pass NR, the engineer's build). Plant: the look as the design
+// named it, held back, caught. Since the lead's look in round one the which bank names a wrong thing by its print, "The word on the stop
+// sign", and the shop's door's as "The word on the shop's door": named as the lead wrote it, "The sign on the shop's door", its reason
+// says sign, which names the stop sign on the same screen (pictureName), and is held back. Plant: that name, held back, caught.
+{ const WIDE = ['p3-around-has', 'p3-around-tells', 'p3-around-which', 'p3-around-says', 'p4-print-who', 'p4-print-tells', 'p4-print-which'];
+  const HELD = 'Not that one. Have another try.'; let taps = 0; const held = [];
+  for (const g of WIDE) for (let s = 1; s <= 400; s++) { const q = L.generateQuestion(g, s); for (const c of q.choices.filter((x) => x !== q.answer)) { taps += 1; const w = L.preReaderWrongWords(q, c, [c]); if (w === HELD || !w.startsWith(L.whyNotSentence(q.whyNot[c]))) held.push(`${g} seed ${s} ${c}`); } }
+  const asDesigned = (q) => { const r = (c) => String(c).replace('icon:milk~carton', 'icon:milk~word'); return { ...q, choices: q.choices.map(r), answer: r(q.answer), whyNot: Object.fromEntries(Object.entries(q.whyNot).map(([c, e]) => [r(c), e])) }; };
+  const qm = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p3-around-which', i + 1)).find((q) => q.answer === 'icon:milk~carton'); const pm = asDesigned(qm); const tap = pm.choices.find((c) => c !== pm.answer);
+  const plantHeld = L.preReaderWrongWords(pm, tap, [tap]) === HELD;
+  const qd = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p3-around-which', i + 1)).find((q) => q.answer !== 'icon:door~open' && q.choices.includes('icon:door~open') && q.choices.includes('icon:sign~stop'));
+  const signHeld = L.preReaderWrongWords(qd, 'icon:door~open', ['icon:door~open']) !== HELD && L.preReaderWrongWords({ ...qd, whyNot: { ...qd.whyNot, 'icon:door~open': { ...qd.whyNot['icon:door~open'], name: 'The sign on the shop\'s door' } } }, 'icon:door~open', ['icon:door~open']) === HELD;
+  ok(`a first wrong tap hears its own reason in every one of the print lessons' banks with three choices (${WIDE.length} banks, ${taps} first taps at seeds 1 to 400; the milk carton's look as the design named it, milk~word, and the shop's door's reason named the sign on it, planted, each held back and caught)`, held.length === 0 && taps === WIDE.length * 800 && plantHeld && signHeld, held.slice(0, 5).join(' | ')); }
+// The six new drawings (pass NR), read from src/ui.jsx: each in ICON_LOOKS; every outline its look draws in the light theme and on the dark
+// theme's paper reads 3 to 1 or better on the light theme's resting, right, wrong and ruled-out tiles and on that paper (#D9E6DC), and its
+// dark-tile outline (dk) 3 to 1 or better on the dark theme's four tiles, as tests/e2e/tile-edges.mjs and paper-edges.mjs read the drawn
+// pixels in check.sh; and every word set in the app's own type (inherit), bold, at 14 units or more. Plants: the milk carton's dark-tile
+// outline turned the dark tile's own color, and a word at 9 units, each caught. Since round one's screen read (pass NR) every drawing that
+// prints a word (DRAWN_WORDS, the stop sign and the word card too) takes each word from that table, fitted to its room (textLength,
+// lengthAdjust spacingAndGlyphs) at least two units inside its outline on each side, by the test's own table of each word's room read
+// from the drawing's lines, so a wider face than the test browser's cannot run it into its outline (in DejaVu Sans Bold MILK is 47.2
+// units in the carton's 45); and an answer tile draws these drawings at a drawing's size (choiceFace, 84 pixels, 69 on a short phone),
+// where at 64 their type was 7 to 9 pixels on a short phone, and every other picture of a question that has one at that size too
+// (printTiles), so no answer stands out by its size (which one has no words on it puts the tree beside two of them, and Draw and tell's
+// and Write to tell's which job the stop sign beside a book, a card and a list). Plants: MILK at DejaVu's width, MILK with no
+// textLength, the note's words written in the drawing, choiceFace's old line, and each print drawing alone at 84, each caught. Since round
+// one's lesson reads, the teacher with empty hands (teacher~hands) is every line of the teacher's own drawing but the book's, so his outline
+// is the one the edge checks read on the teacher everywhere, and holds no book. Plants: his sweater's edge left out, and the book put
+// back, each caught.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const lum = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
+  const ratio = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const token = (theme, name) => { const at = ui.indexOf(`  ${theme}: {`); const m = at >= 0 ? ui.slice(at, at + 6000).match(new RegExp(`\\b${name}: '(#[0-9A-F]{6})'`)) : null; return m ? m[1] : null; };
+  const ruled = /if \(ruledOut\) \{ bg = C\.mode === 'dark' \? '(#[0-9A-F]{6})' : '(#[0-9A-F]{6})';/.exec(ui) || [];
+  const LIGHT = [token('light', 'surface'), token('light', 'greenSoft'), token('light', 'claySoft'), ruled[2], token('dark', 'paperBoard')];
+  const DARK = [token('dark', 'surface'), token('dark', 'greenSoft'), token('dark', 'claySoft'), ruled[1]];
+  const LOOKS = ['milk~carton', 'cubby~name', 'door~open', 'box~crayons', 'note~love', 'note~dogs'];
+  const lineOf = (src, look) => { const at = src.indexOf(`  '${look}': `); return at < 0 ? '' : src.slice(at, src.indexOf('\n', at)); };
+  const lookOk = (line) => { if (!line) return false; const edges = [...line.matchAll(/stroke=\{dk \? '(#[0-9A-F]{6})' : '(#[0-9A-F]{6})'\}/g)]; const words = [...line.matchAll(/<text [^>]*fontSize="([\d.]+)" fontWeight="(\d+)"[^>]*style=\{\{ fontFamily: 'inherit' \}\}>/g)];
+    const texts = (line.match(/<text /g) || []).length;
+    return edges.length >= 1 && edges.every(([, dk, light]) => DARK.every((t) => ratio(dk, t) >= 3) && LIGHT.every((t) => ratio(light, t) >= 3)) && texts >= 1 && words.length === texts && words.every(([, size, weight]) => Number(size) >= 14 && Number(weight) >= 700); };
+  const allOk = (src) => LOOKS.every((look) => lookOk(lineOf(src, look)));
+  const melted = ui.replace(lineOf(ui, 'milk~carton'), lineOf(ui, 'milk~carton').replace(/#B9D3E6/g, DARK[1]));
+  const small = ui.replace(lineOf(ui, 'note~dogs'), lineOf(ui, 'note~dogs').replace('fontSize="18"', 'fontSize="9"'));
+  ok(`the six new drawings are in ICON_LOOKS, every outline reads 3 to 1 or better on the light theme's four tiles and the dark theme's paper and, on a dark tile, on the dark theme's four (${LIGHT.length + DARK.length} grounds read from src/ui.jsx), and every word is in the app's own type, bold, at 14 units or more (a dark-tile outline melted into the tile and a word at 9 units, planted, each caught)`,
+    LIGHT.every(Boolean) && DARK.every(Boolean) && allOk(ui) && melted !== ui && !allOk(melted) && small !== ui && !allOk(small), JSON.stringify(LOOKS.map((look) => [look, lookOk(lineOf(ui, look))]))); 
+  // Each drawn word's room, in units, read from its drawing: the stop sign's white rim at the word's height, the carton's outline, the
+  // name card's, the door sign's, the crayon box's, the note's, and the note's you, set at 41, twice its way to the heart's left edge (60.5).
+  const ROOM = { 'sign~stop': [48.5], 'milk~carton': [45], 'cubby~name': [39], 'door~open': [47.8], 'box~crayons': [79], 'note~love': [73, 39], 'note~dogs': [73, 73], word: [65] };
+  const drawnLine = (src, look) => (look === 'word' ? ((/\n    word: <g>[^\n]*/.exec(src) || [''])[0]) : lineOf(src, look));
+  const fitted = (src) => Object.entries(L.DRAWN_WORDS).every(([look, lines]) => { const line = drawnLine(src, look); const texts = [...line.matchAll(/<text ([^>]*)>([^<]*)<\/text>/g)];
+    const read = look === 'word' ? lines.map((_, i) => `{DRAWN_WORDS.word[${i}]}`) : lines.map((_, i) => `{DRAWN_WORDS['${look}'][${i}]}`);
+    return !!ROOM[look] && texts.length === lines.length && texts.every(([, attrs, body], i) => { const m = /textLength="([\d.]+)" lengthAdjust="spacingAndGlyphs"/.exec(attrs); return body === read[i] && !!m && Number(m[1]) <= ROOM[look][i] - 4; }); });
+  const milkLine = lineOf(ui, 'milk~carton');
+  const wide = ui.replace(milkLine, milkLine.replace('textLength="40"', 'textLength="47.2"'));
+  const loose = ui.replace(milkLine, milkLine.replace(' textLength="40" lengthAdjust="spacingAndGlyphs"', ''));
+  const loveLine = lineOf(ui, 'note~love'); const written = ui.replace(loveLine, loveLine.replace("{DRAWN_WORDS['note~love'][0]}", 'I love'));
+  const FACE_NOW = "/^icon:drawing~/.test(c) || (printTiles && /^icon:/.test(c)) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)}";
+  const PRINT_TILES = "const printTiles = q.type === 'choice' && Array.isArray(q.choices) && q.choices.some((c) => /^icon:/.test(String(c)) && !!DRAWN_WORDS[String(c).slice(5)]);";
+  const faceOk = (src) => src.split(FACE_NOW).length === 2 && src.split(PRINT_TILES).length === 2;
+  const faceOld = ui.replace(FACE_NOW, "/^icon:drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)}");
+  // Each print drawing alone at 84, its tree, book, card or list at 64: the size alone told which one has no words on it, and which
+  // one does a stop sign's job.
+  const faceAlone = ui.replace(FACE_NOW, "/^icon:drawing~/.test(c) || (/^icon:/.test(c) && DRAWN_WORDS[c.slice(5)]) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)}");
+  ok(`every drawing that prints a word (${Object.keys(L.DRAWN_WORDS).length}, by DRAWN_WORDS) takes each word from that table, fitted to its room at least two units inside its outline, and an answer tile draws it at a drawing's size, 84 pixels (MILK at DejaVu Sans Bold's 47.2 units, MILK with no textLength, the note's words written in its drawing, and choiceFace's old line, planted, each caught), every other picture of such a question at that size too, so none stands out by its size (each print drawing alone at 84, planted, caught)`,
+    Object.keys(L.DRAWN_WORDS).length === 8 && fitted(ui) && !fitted(wide) && !fitted(loose) && !fitted(written) && faceOk(ui) && !faceOk(faceOld) && !faceOk(faceAlone), JSON.stringify(Object.keys(L.DRAWN_WORDS).map((look) => [look, drawnLine(ui, look).length]))); 
+  const tA = ui.indexOf('    teacher: (\n'); const base = ui.slice(tA, ui.indexOf('\n    ),\n', tA)).split('\n'); const bookAt = base.findIndex((l) => l.includes('{/* The book, open toward us'));
+  const person = base.slice(2, bookAt).map((l) => l.trim()).filter(Boolean); const book = base.slice(bookAt, -1).map((l) => l.trim()).filter(Boolean);
+  const hA = ui.indexOf("  'teacher~hands': "); const handsLines = hA < 0 ? [] : ui.slice(hA, ui.indexOf('\n  ),\n', hA)).split('\n').map((l) => l.trim());
+  const teacherOk = (lines) => { const has = new Set(lines); return person.length > 30 && person.every((l) => has.has(l)) && !book.some((l) => has.has(l)); };
+  const edgeLine = person.find((l) => /L11\.6 99\.3L88\.4 99\.3/.test(l));
+  ok(`the teacher with empty hands is every line of the teacher's own drawing but the book's (${person.length} lines, his outline his own), and holds no book (his sweater's edge left out, and the book put back, planted, each caught)`,
+    bookAt > 0 && teacherOk(handsLines) && !!edgeLine && !teacherOk(handsLines.filter((l) => l !== edgeLine)) && !teacherOk([...handsLines, ...book]), JSON.stringify({ bookAt, person: person.length, edge: !!edgeLine })); }
+// The read-along's marks on every new line (pass NR): each line of the two print lessons splits, by the rule the screen's read-along and
+// the voice both use (SENTENCE_BREAK, ui's sentencesOf), into whole sentences, each starting with a capital and ending in its mark, that
+// make up the whole line, so each sentence wears data-read-lit as the voice begins it and data-read-ahead until then; a quoted question
+// inside a sentence ("ask a grown-up, What does this say?") stays in its sentence; and every sentence a line's voices name is one of its
+// own. Plant: the closing line without its last end mark, caught.
+{ const lines = ['words-all-around', 'print-tells-us'].flatMap((id) => L.readAloudScript(L.getModule(id)).map((l, i) => ({ id, i, l })));
+  const splits = (say) => String(say).split(L.SENTENCE_BREAK).filter((x) => x.trim());
+  const whole = ({ l }) => { const ss = splits(l.say); return ss.length > 0 && ss.every((s) => /^[A-Z].*[.!?]$/.test(s.trim())) && ss.join(' ') === l.say.trim() && (l.voices || []).every((v) => ss.map((s) => s.trim()).includes(String(v[0]).trim())); };
+  const bad = lines.filter((x) => !whole(x)).map((x) => `${x.id} line ${x.i}`);
+  const sentences = lines.reduce((n, x) => n + splits(x.l.say).length, 0);
+  const last = lines[lines.length - 1]; const planted = { ...last, l: { ...last.l, say: last.l.say.replace(/\.$/, '') } };
+  ok(`every line of the two print lessons is whole sentences by the read-along's own rule, each wearing its mark in turn (${lines.length} lines, ${sentences} sentences), and its voices name its own sentences (the closing line without its last end mark, planted, caught)`, lines.length === 26 && bad.length === 0 && !whole(planted), bad.join(', ')); }
+// No question of a round asks what an earlier one has told (pass NR, round one's code read: p3-around-tells' asksFirstOf, the key that keeps
+// it from following a question that explained its thing, was held by no check, since part 52 plants all the keys at once and counts kinds
+// a round, never their order; without it a tells question followed a has question that had told its thing in 136 of 1,500 first rounds).
+// Over 1,500 first rounds and 1,500 later rounds of Words all around us no question asks about a thing whose meaning an earlier question's
+// explanation told, read by the test's own tables: what a question asks about (the picture shown, the answer's picture, the story's place,
+// or the thing a yes or no names) and what an explanation tells (each thing whose meaning it says, "what is inside", "who it is for").
+// Since this check was written the last yes or no row says only what the milk carton tells us: its second sentence told the cubby's
+// meaning before a cubby question in 150 of 3,000 rounds. The shop's door's yes or no, since round three's final read, explains only what
+// its own sign can say (round two's fix, which told the stop sign's meaning and needed a key, is gone with its key).
+// Plants: each bank's one-way key taken out alone, has's saysFirstOf, and tells', which's, says' and yes or no's
+// asksFirstOf, each caught. In a triple dose, fifteen questions about four things, the rule cannot hold,
+// and a question follows one that told its thing in every dose or nearly (1,499 of 1,500 by round one's code read): that is the echo
+// rule's price, read here and not failed.
+{ const P = NR_P3; const K = Object.keys(P);
+  const placeOf = Object.fromEntries(Object.entries(NR_P3_SAYS).map(([told, s]) => [told, K.find((k) => P[k][2].toLowerCase() === s[0].toLowerCase())]));
+  const asked = (q) => { const g = q.genId;
+    if (g === 'p3-around-tells') return K.filter((k) => P[k][0] === `icon:${q.visual.name}`);
+    if (g === 'p3-around-which') return K.filter((k) => P[k][0] === q.answer);
+    if (g === 'p3-around-says') return [placeOf[q.story]];
+    if (g === 'p3-around-yesno') return K.filter((k) => q.prompt.includes(P[k][1]));
+    return []; };
+  const told = (q) => K.filter((k) => String(q.explain || '').includes(P[k][4]));
+  const echoes = (core) => core.some((q, j) => core.slice(0, j).some((p) => asked(q).some((k) => told(p).includes(k))));
+  const rounds = (n) => { let bad = 0; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { if (echoes(L.buildAttempt('words-all-around', s, []).core)) bad += 1; const a = L.buildAttempt('words-all-around', s, [], { avoid: [...p1, ...p2] }); if (echoes(a.core)) bad += 1; p2 = p1; p1 = a.core.map((q) => q.prompt); }
+    return bad; };
+  const asBuilt = rounds(1500);
+  const doses = Array.from({ length: 1500 }, (_, i) => L.buildAttempt('words-all-around', i + 90001, [], { dose: 3, avoid: [] }).core).filter(echoes).length;
+  const KEYS = [['p3-around-has', 'saysFirstOf'], ['p3-around-tells', 'asksFirstOf'], ['p3-around-which', 'asksFirstOf'], ['p3-around-says', 'asksFirstOf'], ['p3-around-yesno', 'asksFirstOf']];
+  const planted = KEYS.map(([g, key]) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = (rng) => { const q = keep(rng); const { [key]: gone, ...rest } = q; return rest; };
+    try { return [`${g} ${key}`, rounds(500)]; } finally { L.GENERATORS[g] = keep; } });
+  ok(`no first or later round of Words all around us asks what an earlier question told (${asBuilt} of 3,000 rounds; each bank's one-way key taken out alone, planted, each caught: ${planted.map(([k, n]) => `${k} ${n} of 1,000`).join(', ')}; in a triple dose a question follows one that told its thing in ${doses.toLocaleString('en-US')} of 1,500 doses, the echo rule's price)`,
+    asBuilt === 0 && planted.every(([, n]) => n > 0), JSON.stringify(planted)); }
+// No one word tells a yes or no answer (pass NR, round one's lesson reads: every Yes row of Play with a plan's yes or no said can and no No
+// row did, so a child who answered Yes when it said can was right every time). In each yes or no bank this pass built or changed, no word
+// is in every Yes question and in no No question, or the other way about, over seeds 1 to 2,000, the story read with the question. Plant:
+// Play with a plan's rows as round one read them, caught. The older pre-K yes or no banks the rule would mark are named, for an earmark,
+// and left as they are: a child who answers by that word is right every time. Since round two's read (pass NR) a bound too, since the
+// rule holds only a perfect tell: in each of the six banks the best one-word rule (Yes when the question says a word, else No, or the
+// other way about, read over the questions as dealt) is right under 80 percent of the time. Plant: round one's two only rows ("Does a
+// plan say only what one friend will do?" and "When the house is done, did only one friend make it?") put back in place of the roof
+// and new idea rows, which the strict rule passes and the bound catches (87.5 percent, on only or one).
+{ const words = (t) => new Set(String(t || '').toLowerCase().replace(/[^a-z' ]+/g, ' ').split(/\s+/).filter(Boolean));
+  const tellsOf = (qs) => { const heard = (q) => words(`${q.story || ''} ${q.prompt}`); const yes = qs.filter((q) => q.answer === 'Yes').map(heard); const no = qs.filter((q) => q.answer === 'No').map(heard);
+    if (!yes.length || !no.length) return []; const all = new Set([...yes, ...no].flatMap((s) => [...s]));
+    return [...all].filter((w) => (yes.every((s) => s.has(w)) && no.every((s) => !s.has(w))) || (no.every((s) => s.has(w)) && yes.every((s) => !s.has(w)))); };
+  const gen = (g) => Array.from({ length: 2000 }, (_, i) => L.generateQuestion(g, i + 1));
+  const yesNo = (q) => q && q.type === 'choice' && Array.isArray(q.choices) && q.choices.length === 2 && q.choices.includes('Yes') && q.choices.includes('No');
+  const PASS_NR = ['p3-around-yesno', 'p4-print-yesno', 'p3-link-yesno', 'p4-link-yesno', 'p3-talk-yesno', 'p4-plan-yesno'];
+  const marked = PASS_NR.map((g) => [g, tellsOf(gen(g))]).filter(([, t]) => t.length);
+  const ROUND_ONE = [['Can a plan say who does each part?', 'Yes'], ['Is it playing together if one friend does every part?', 'No'], ['Can pretend play have a plan too?', 'Yes'], ['Can you talk while you play together?', 'Yes'], ['When you have a new idea, can you ask, is that okay?', 'Yes'], ['Does a plan say only what one friend will do?', 'No'], ['When the house is done, did only one friend make it?', 'No'], ['Is a plan only for building with blocks?', 'No']];
+  const plant = tellsOf(ROUND_ONE.map(([prompt, answer]) => ({ prompt, answer }))).includes('can');
+  const bestWord = (qs) => { const heard = qs.map((q) => words(`${q.story || ''} ${q.prompt}`)); let best = [0, ''];
+    for (const w of new Set(heard.flatMap((h) => [...h]))) { const right = qs.filter((q, i) => (heard[i].has(w) ? 'Yes' : 'No') === q.answer).length; const acc = Math.max(right, qs.length - right) / qs.length; if (acc > best[0]) best = [acc, w]; }
+    return best; };
+  const reads = PASS_NR.map((g) => [g, ...bestWord(gen(g))]);
+  const planRows = [...new Map(gen('p4-plan-yesno').map((q) => [q.prompt, q.answer]))];
+  const ONLY = { 'When the plan says your friend builds the roof, do you build the roof too?': 'Does a plan say only what one friend will do?', 'When you have a new idea, can you change the plan without asking?': 'When the house is done, did only one friend make it?' };
+  const onlyRows = planRows.map(([prompt, answer]) => ({ prompt: ONLY[prompt] || prompt, answer }));
+  const [onlyRead, onlyWord] = bestWord(onlyRows);
+  const onlyPlant = planRows.length === 8 && onlyRows.filter((q) => Object.values(ONLY).includes(q.prompt)).length === 2 && tellsOf(onlyRows).length === 0 && onlyRead >= 0.8;
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const prek = [...new Set(L.COURSES.filter((c) => ['PK3', 'PK4'].includes(c.grade)).flatMap((c) => c.modules.flatMap((m) => m.generators)))].filter((g) => !PASS_NR.includes(g));
+  const older = prek.filter((g) => { try { return yesNo(L.generateQuestion(g, 1)); } catch (e) { return false; } }).map((g) => [g, tellsOf(gen(g).filter(yesNo))]).filter(([, t]) => t.length);
+  ok(`no one word tells the answer in a yes or no bank this pass built or changed (${PASS_NR.length} banks, seeds 1 to 2,000: no word in every Yes question and no No question, or the other way about; Play with a plan's rows as round one read them, every Yes row saying can, planted, caught), and the best one-word rule is right under 80 percent of the time in each (${reads.map(([g, v, w]) => `${g} ${pct(v)} on ${w}`).join(', ')}; round one's two only rows in place of the roof and new idea rows, planted, ${pct(onlyRead)} on ${onlyWord}, caught); ${older.length} older pre-K yes or no banks the rule would mark, each answered every time by its word, left as they are for an earmark: ${older.map(([g, t]) => `${g} (${t.join(', ')})`).join('; ')}`,
+    PASS_NR.every((g) => yesNo(L.generateQuestion(g, 1))) && marked.length === 0 && plant && reads.every(([, v]) => v < 0.8) && onlyPlant, JSON.stringify({ marked, reads })); }
+// Who does which part, dealt either way (pass NR, EARMARKS A154): either of a plan's two parts may be yours, so the question alone, "Who builds
+// the roof?", never tells whose it is. Read by a child who heard only the question (the answer each question had most often at the other
+// seeds), at seeds 1 to 2,000, it is right no more than chance allows (under 56 percent, chance 50). Plant: the old line put back, the
+// plan's first part always yours, as in pass NQ's tree, caught (round one's code read: 100 percent then).
+{ const qOnly = (qs) => { const t = {}; for (const q of qs) { t[q.prompt] = t[q.prompt] || {}; t[q.prompt][q.answer] = (t[q.prompt][q.answer] || 0) + 1; }
+    return qs.reduce((n, q) => { const score = (c) => (t[q.prompt][c] || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const NEW_LINE = 'const [scene, a, b] = pick(rng, P4_PLAY_PARTS); const [mine, theirs] = rng() < 0.5 ? [a, b] : [b, a];';
+  const OLD_LINE = 'const [scene, mine, theirs] = pick(rng, P4_PLAY_PARTS);';
+  const srcNow = L.GENERATORS['p4-play-part'].toString(); const once = srcNow.split(NEW_LINE).length === 2;
+  const old = once ? new Function('pick', 'shuffle', 'P4_PLAY_PARTS', 'return ' + srcNow.split(NEW_LINE).join(OLD_LINE))(L.pick, L.shuffle, L.P4_PLAY_PARTS) : null;
+  const now = qOnly(Array.from({ length: 2000 }, (_, i) => L.generateQuestion('p4-play-part', i + 1)));
+  const was = old ? qOnly(Array.from({ length: 2000 }, (_, i) => old(L.makeRng(i + 1)))) : 0;
+  const pct = (v) => Math.round(v * 1000) / 10;
+  ok(`who does which part, dealt either way, is right ${pct(now)}% of the time by the question alone at seeds 1 to 2,000 (chance 50; the old line put back, the plan's first part always yours, planted, ${pct(was)}%, caught)`, once && now < 0.56 && was > 0.95, JSON.stringify({ once, now, was })); }
+// The even yes or no rows (pass NR, EARMARKS A154; round one's code read): Play with a plan's yes or no answered Yes 80.5 percent of the
+// time in pass NQ's tree, and no check read its Yes share, or Talking with a friend's, since the tables at this test's top hold answers
+// only. Each bank's Yes share, alone at seeds 1 to 2,000 and in rounds as built (1,500 first rounds, later rounds, triple doses and Quick
+// Reviews), stays between 40 and 60 percent. Plants, each dealt in place of its bank: Play with a plan's rows as pass NQ had them, four Yes
+// to one No, and Talking with a friend's with its close row asking too close, a Yes, but without the two No rows the lead added to even
+// it, four Yes to two No; each caught (pass NQ's own talking rows were even, three and three, so its plant is the step between).
+{ const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const shares = (mid, g, n) => { const R = ofModule(mid, n); return [yesShare(Array.from({ length: 2000 }, (_, i) => L.generateQuestion(g, i + 1))), ...['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g))).filter((qs) => qs.length).map(yesShare)]; };
+  const even = (v) => v.every((x) => x >= 0.4 && x <= 0.6);
+  const BANKS = [['play-with-a-plan', 'p4-plan-yesno'], ['talk-with-a-friend', 'p3-talk-yesno']];
+  const now = BANKS.map(([mid, g]) => [g, shares(mid, g, 1500)]);
+  const NQ_PLAN = [['Can a plan say who does each part?', 'Yes'], ['Is it playing together if one friend does every part?', 'No'], ['Can pretend play have a plan too?', 'Yes'], ['Can you talk while you play together?', 'Yes'], ['When you have a new idea, can you ask, is that okay?', 'Yes']];
+  const STEP_TALK = [['Is it kind to talk at the same time as your friend?', 'No'], ['Is it kind to wait until your friend stops talking?', 'Yes'], ['Is it kind to listen while your friend talks?', 'Yes'], ['Can you take turns talking with your teacher too?', 'Yes'], ["Is right in your friend's face too close?", 'Yes'], ['Is it kind to shout while your friend is talking?', 'No']];
+  const dealt = (rows) => (rng) => { const [prompt, answer] = L.pick(rng, rows); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt, choices: L.shuffle(rng, ['Yes', 'No']), answer, explain: `${answer}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why: 'is not the answer here.' } }, alsoRight: [] }; };
+  const plants = [['play-with-a-plan', 'p4-plan-yesno', NQ_PLAN], ['talk-with-a-friend', 'p3-talk-yesno', STEP_TALK]].map(([mid, g, rows]) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = dealt(rows);
+    try { return [g, shares(mid, g, 300)]; } finally { L.GENERATORS[g] = keep; } });
+  const pct = (v) => Math.round(v * 1000) / 10; const span = (v) => `${pct(Math.min(...v))} to ${pct(Math.max(...v))}%`;
+  ok(`Play with a plan's and Talking with a friend's yes or no answer Yes ${now.map(([g, v]) => `${span(v)} (${g})`).join(' and ')} of the time, alone and in rounds (between 40 and 60; pass NQ's plan rows, four Yes to one No, and the talking rows' step between, four Yes to two No, planted, ${plants.map(([g, v]) => `${span(v)}`).join(' and ')}, each caught)`,
+    now.every(([, v]) => v.length === 5 && even(v)) && plants.every(([, v]) => !even(v)), JSON.stringify({ now, plants })); }
+// No question prints a word a drawing on its screen prints (pass NR, round one's screen read, its MUST FIX 1: the note's I love you was
+// on the note and on the answer's button in a third of p4-print-tells, and on the note's tile and in the printed question in a third of
+// p4-print-which, so a pre-reader who matched letter shapes tapped the right one without the print read, and what the print says was the
+// question; pass NE's A91 was the first such give-away). Over every bank of every read-aloud course, seeds 1 to 300, no word of the
+// question as it prints while a voice can speak (printedQuestion: its setup and its question) or of a choice its button prints
+// (printedChoice null, a choice of words) is a word that a drawing on the same screen prints: the picture above the question and each
+// picture choice, by DRAWN_WORDS, the one table the drawings read their words from. The stop sign's rows are let off by name: in what
+// this word tells (To stop) and which one tells cars to stop, the sign's eight sides and its red give the answer before its print does,
+// and in Draw and tell's and Write to tell's yes or no ("This is a stop sign." above "Does a stop sign help Dad remember what to buy?")
+// the words name the sign the question shows, and the answer, Yes or No, is no word it prints; each let-off is met, so none stands
+// for a row that is gone. Plants: p4-print-tells printed and not heard, and p4-print-which's note asked in its printed question, each
+// as it stood before round one's screen read, each caught.
+// Since round three's screen read (pass NR, its MUST FIX 1) the check reads the screen a device with no voice shows as well: the question
+// as printedQuestion prints it with no voice, and each choice as its button prints with no voice (every choice of words, since a heard
+// choice prints its own words when nothing can say them), where p4-print-which printed "Which print tells Ana, I love you?" above the
+// note's tile on 643 of seeds 1 to 2,000, the device with a voice printing "Which print tells Ana what Mom wrote?". Its four note rows
+// print those words with no voice too (unvoicedPrompt). With no voice p4-print-tells prints its choices under its picture: its stop
+// sign's row, To stop under the sign, is let off by name as the stop sign's rows are (it meets nothing with a voice, its choices heard);
+// its note's row, I love you under the note, waits for Mikey's answer to Q122 (whether the grown-up's card should cover it), kept out by
+// name in a list of its own and met, so it never stands for a row that is gone. Plants: printedQuestion as it stood, its no-voice returns
+// printing the prompt, and p4-print-which's note rows without their no-voice prompt, each caught.
+{ const vm = await import('node:vm');
+  const words = (t) => String(t || '').toLowerCase().replace(/[^a-z' ]+/g, ' ').split(/\s+/).filter(Boolean);
+  const drawn = Object.fromEntries(Object.entries(L.DRAWN_WORDS).map(([k, v]) => [k, new Set(v.flatMap(words))]));
+  const icons = (v, out = []) => { if (!v) return out; if (v.kind === 'icon') out.push(v.name); else if (v.kind === 'pair') { icons(v.a, out); icons(v.b, out); } else if (v.kind === 'row') (v.items || []).forEach((x) => icons(x, out)); return out; };
+  const LET_OFF = { 'p3-around-tells': ['sign~stop', 'stop'], 'p3-around-which': ['sign~stop', 'stop'], 'p4-print-which': ['sign~stop', 'stop'], 'p3-draw-yesno': ['sign~stop', 'stop'], 'p4-tell-yesno': ['sign~stop', 'stop'], 'p4-print-tells': ['sign~stop', 'stop'] };
+  // Waiting for Mikey's answer to Q122 (round three's screen read of pass NR): with no voice p4-print-tells prints I love you on a button
+  // under the note that prints it, and whether the grown-up's card should cover it is his to say; until he answers, its note's row is kept
+  // out of the no-voice reading by name. Nothing else of p4-print-tells waits, and with a voice it is read whole.
+  const WAITS_Q122 = { 'p4-print-tells': ['note~love'] };
+  const printedOf = (q, voice, print = L.printedQuestion) => { const p = print(q, voice); return new Set([...words(p.story), ...words(p.prompt), ...(Array.isArray(q.choices) ? q.choices : []).filter((c) => typeof c === 'string' && !c.includes(':') && L.printedChoice(q, c, voice) === null).flatMap(words)]); };
+  const shared = (g, q, voice = true, print = L.printedQuestion) => { const shown = [...new Set([...icons(q.visual), ...(Array.isArray(q.choices) ? q.choices : []).filter((c) => typeof c === 'string' && c.startsWith('icon:')).map((c) => c.slice(5))])].filter((x) => drawn[x]);
+    if (!shown.length) return [];
+    const printed = printedOf(q, voice, print);
+    return shown.flatMap((d) => [...drawn[d]].filter((w) => printed.has(w)).map((w) => [d, w])); };
+  const banks = [...new Set(L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules.flatMap((m) => m.generators)))];
+  const met = new Set(); const waited = new Set(); let read = 0; const found = [];
+  for (const g of banks) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s);
+    for (const voice of [true, false]) { read += 1;
+      for (const [d, w] of shared(g, q, voice)) { if (LET_OFF[g] && LET_OFF[g][0] === d && LET_OFF[g][1] === w) met.add(g); else if (!voice && WAITS_Q122[g] && WAITS_Q122[g].includes(d)) waited.add(g); else found.push(`${g} seed ${s}${voice ? '' : ' with no voice'}: ${w} (${d})`); } } }
+  const unmet = Object.keys(LET_OFF).filter((g) => !met.has(g)); const unwaited = Object.keys(WAITS_Q122).filter((g) => !waited.has(g));
+  const asStood = { 'p4-print-tells': (q) => { const { heardChoices, printed, ...rest } = q; return rest; }, 'p4-print-which': (q) => { const { printed, ...rest } = q; return rest; } };
+  const plants = Object.entries(asStood).map(([g, f]) => [g, Array.from({ length: 300 }, (_, i) => f(L.generateQuestion(g, i + 1))).filter((q) => shared(g, q).some(([d]) => d === 'note~love')).length]);
+  // The no-voice plants: printedQuestion as it stood, from its own source with its no-voice returns printing the prompt again, and the note
+  // rows of p4-print-which dealt without their no-voice prompt, each read with no voice over seeds 1 to 300.
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const pa = lsrc.indexOf('\nexport function printedQuestion('); const pb = pa < 0 ? -1 : lsrc.indexOf('\n}\n', pa + 1);
+  const PQ = pa < 0 || pb < 0 ? '' : lsrc.slice(pa + '\nexport '.length, pb + 2); const OLD_PQ = PQ.split('q.unvoicedPrompt || q.prompt').length === 3 ? PQ.split('q.unvoicedPrompt || q.prompt').join('q.prompt') : '';
+  const oldPrinted = OLD_PQ ? vm.runInNewContext(`(${OLD_PQ})`, { ...L }) : null;
+  const noteRows = (f, print) => Array.from({ length: 300 }, (_, i) => f(L.generateQuestion('p4-print-which', i + 1))).filter((q) => shared('p4-print-which', q, false, print).some(([d]) => d === 'note~love')).length;
+  const oldPQ = oldPrinted ? noteRows((q) => q, oldPrinted) : 0; const noPrompt = noteRows((q) => { const { unvoicedPrompt, ...rest } = q; return rest; });
+  ok(`no question of a read-aloud course prints a word a drawing on its screen prints, with a voice or with none (${banks.length} banks, ${read.toLocaleString('en-US')} screens at seeds 1 to 300, each seed read with a voice and with none; the stop sign's rows let off by name, each met: ${[...met].join(', ')}; p4-print-tells's note row with no voice waiting for Q122 by name, met; ${plants.map(([g, n]) => `${g} as it stood, planted, the note's words twice on ${n} of 300 screens`).join(', ')}; with no voice, printedQuestion as it stood, planted, the note's words twice on ${oldPQ} of 300 p4-print-which screens, and its note rows without their no-voice prompt on ${noPrompt}; each caught)`,
+    banks.length > 500 && found.length === 0 && unmet.length === 0 && unwaited.length === 0 && plants.every(([, n]) => n > 0) && oldPQ > 0 && noPrompt > 0, [...found.slice(0, 5), ...unmet.map((g) => `${g} let off but never met`), ...unwaited.map((g) => `${g} waits for Q122 but never met`), `old printedQuestion ${oldPQ}, no prompt ${noPrompt}`].join(' | ')); }
+// That is like me! and That reminds me! (pass NR's second wave): their ten banks worked out from what each question says and shows by the
+// test's own tables (NR2_P3*, NR2_P4*), each near miss caught by the guard it names and no other: with that guard taken out of its
+// derivation's own text it gets an answer at every seed from 1 to 400, and with it in, none. The near misses: another story's comment
+// where the which bank offers words about other things; a third choice beside Yes and No (both yes or no banks); the friend's words
+// naming a feeling, which the lead's design keeps out of the feel bank; a picture of neither part beside Mia's favorite; another story's
+// comment in place of one of the story's own in the not bank; another story's comment as the kind bank's friend's words; a choice of
+// a thing neither story has in the alike and same banks; two of the story's own comments in pre-K 4's which bank; and, since the lead's
+// look, the friend's words in the same bank telling only part of the other story, two of its three things, as first built.
+{ const D = PREK_DERIVE; const NR2 = ['that-is-like-me', 'that-reminds-me'].flatMap((id) => L.getModule(id).generators);
+  const storyOf3 = (x) => nr2Story3(/^Listen\. (.+?[.!])(?: (?:Mia|Leo|Ana|Sam) said, .+)?$/.exec(x.story)[1]);
+  const otherComment3 = (x) => NR2_P3[Object.keys(NR2_P3).find((k) => k !== storyOf3(x))][1][0][0];
+  const swapWrong = (f) => (x) => { const w = x.choices.find((y) => y !== x.answer); return { ...x, choices: x.choices.map((y) => (y === w ? f(x) : y)) }; };
+  const told4 = (x) => { const m = /^Listen\. (.+?[.!])(?: |$)/.exec(x.story); return m && m[1]; };
+  const neither = (x) => { const [a, b] = (x.story.match(/[A-Z][a-z]+(?= (?:lost|got))/g) || []).map((n) => n.toLowerCase()); const grid = [a, b].filter((k) => NR2_P4_GRID[k]);
+    const kb = /the story about the ([a-z]+)!/.exec(x.story); const keys = [...grid, ...(kb ? [kb[1]] : [])]; const has = (p) => keys.some((k) => Object.entries(NR2_P4_BOTH).some(([d, v]) => v[NR2_P4_GRID[k][2][d]] === p));
+    return Object.values(NR2_P4_BOTH).flatMap((v) => Object.values(v)).find((p) => !x.choices.includes(p) && !has(p)); };
+  const NEAR = [
+    ['p3-link-which', 'another', swapWrong(otherComment3)], ['p3-link-yesno', 'three', (x) => ({ ...x, choices: [...x.choices, 'Not sure'] })],
+    ['p3-link-feel', 'named', (x) => ({ ...x, story: x.story.replace(', and I felt just like Ben!', ', and I was sad, and I felt just like Ben!') })],
+    ['p3-link-liked', 'neither', swapWrong((x) => ['icon:hat', 'icon:pizza', 'icon:bed'].find((c) => !x.choices.includes(c)))],
+    ['p3-link-not', 'another', (x) => { const own = x.choices.find((c) => c !== x.answer); return { ...x, choices: x.choices.map((c) => (c === own ? otherComment3(x) : c)) }; }],
+    ['p4-link-kind', 'another', (x) => { const k = nr2Story4(told4(x)); const o = NR2_P4[Object.keys(NR2_P4).find((y) => y !== k)][2][0][1]; const said = /said, (.+)$/.exec(x.story)[1]; return { ...x, story: x.story.replace(said, o) }; }],
+    ['p4-link-alike', 'neither', swapWrong(neither)],
+    ['p4-link-which', 'two', swapWrong((x) => NR2_P4[nr2Story4(told4(x))][2].map((c) => c[1]).find((c) => c !== x.answer))],
+    ['p4-link-yesno', 'three', (x) => ({ ...x, choices: [...x.choices, 'Not sure'] })], ['p4-link-same', 'neither', swapWrong(neither)],
+    ['p4-link-same', 'part', nr2PartWords],
+  ];
+  const GUARDS = {
+    'p3-link-which another': ['nr2Which3Of', '\n  if (!ch.some(nr2IsNot3)) return null;'], 'p3-link-yesno three': ['nr2YesNo3Of', '\n  if (!nmSame(q, [\'Yes\', \'No\'])) return null;'],
+    'p3-link-feel named': ['nr2FeelOf', '\n  if (/\\b(sad|happy|mad|scared)\\b/.test(m[3])) return null;'], 'p3-link-liked neither': ['nr2LikedOf', '\n  if (!nmSame(q, parts.map(([p]) => `icon:${p}`))) return null;'],
+    'p3-link-not another': ['nr2Not3Of', '\n  if (ch.filter((c) => nr2Of3(k, c)).length !== 2) return null;'], 'p4-link-kind another': ['nr2KindOf', '\n  if (!nr2Of4(k, m[3])) return null;'],
+    'p4-link-alike neither': ['nr2AlikeOf', '\n  if (!nr2Threes(a, b, kind).some((t) => nmSame(q, t.set))) return null;'], 'p4-link-which two': ['nr2Which4Of', '\n  if (own.length !== 1) return null;'],
+    'p4-link-yesno three': ['nr2YesNo4Of', '\n  if (!nmSame(q, [\'Yes\', \'No\'])) return null;'], 'p4-link-same neither': ['nr2SameOf', '\n  if (!nr2Threes(a, b, kind).some((t) => nmSame(q, t.set))) return null;'],
+    'p4-link-same part': ['nr2SameOf', '\n  if (m[4] !== nr2About(b)) return null;'],
+  };
+  const HELPERS = { nr2Which3Of, nr2YesNo3Of, nr2FeelOf, nr2LikedOf, nr2Not3Of, nr2KindOf, nr2AlikeOf, nr2Which4Of, nr2YesNo4Of, nr2SameOf };
+  const without = (g, [where, from]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join('');
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  // Plant: a near miss a second guard also catches (the friend naming a feeling and no longer saying she felt just like Ben) fails its proof.
+  const plantCaught = !!prove('p3-link-feel', 'named', (x) => ({ ...x, story: x.story.replace(', and I felt just like Ben!', ', and I felt sad!') }));
+  ok('That is like me!\'s and That reminds me!\'s ten banks are worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    NR2.length === 10 && NR2.every((g) => typeof D[g] === 'function') && NEAR.length === NR2.length + 1 && NR2.every((g) => NEAR.some(([x]) => x === g)) && NEAR.every(([g]) => NR2.includes(g)) && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What That is like me!'s and That reminds me!'s banks may and may not do, read over seeds 1 to 400 by the test's own tables.
+{ const P3 = L.getModule('that-is-like-me'); const P4 = L.getModule('that-reminds-me');
+  const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const BANKS = [...P3.generators, ...P4.generators]; const lessonOf = (g) => (/^p3-/.test(g) ? P3 : P4);
+  // 1. Every picture a bank shows is drawn by a line of its lesson, and every comment a bank offers is a kind its lines model: a connection
+  //    that names what its own story names (a word of the story, or a word inside one, the sand in a sandcastle), as Leo's, Mia's, Sam's and
+  //    Ana's do in the lines, or words about other things that name nothing any story or connection names, as Ana's pizza does. Plants: the
+  //    lines without the slide, which the liked bank shows, and the apple eaten, as first built, beside the cake a connection eats, each
+  //    caught.
+  const drawnIn = (m) => { const out = new Set(); const walk = (v) => { if (!v) return; if (v.kind === 'pair') { walk(v.a); walk(v.b); } else if (v.kind === 'row') (v.items || []).forEach(walk); else if (v.kind === 'pic' || v.kind === 'icon') out.add(v.kind + ':' + v.name); else if (v.kind === 'face') out.add('face:' + v.feeling); };
+    m.lesson.script.forEach((l) => walk(l.show)); return out; };
+  const notDrawnIn = (m, g) => { const d = drawnIn(m); return gen(g, 400).flatMap((x) => x.choices.filter((c) => /^(?:pic|icon|face):/.test(String(c)) && !d.has(String(c))).map((c) => g + ' ' + c)); };
+  const notDrawn = BANKS.flatMap((g) => notDrawnIn(lessonOf(g), g));
+  const slidePlant = notDrawnIn({ lesson: { script: P3.lesson.script.map((l) => (JSON.stringify(l.show || null).includes('"slide"') ? { ...l, show: null } : l)) } }, 'p3-link-liked').length > 0;
+  // A comment's words are read as the echo check reads them (its little words, and a few these lessons say of every story, left out; -ing,
+  //    -ed, -es and -s cut), a word inside another counting when it is four letters or more (the sand in a sandcastle).
+  const STOP2 = new Set('the and you your can say what which one this that with for are was not has have does did may please its they them she her his him our who how when where will there here then than too very just some all out yes now get got put let use any like reminds story about once big way'.split(' '));
+  const stems = (t) => String(t).toLowerCase().replace(/[^a-z' -]+/g, ' ').split(/[\s-]+/).map((w) => w.replace(/'s$/, '').replace(/'/g, '')).filter((w) => w.length >= 3 && !STOP2.has(w)).map((w) => w.replace(/(ing|ed|es|s)$/, ''));
+  const meets = (a, b) => { const t = stems(b); return stems(a).some((w) => t.some((u) => u === w || (w.length >= 4 && u.includes(w)) || (u.length >= 4 && w.includes(u)))); };
+  const shares = (comment, told) => meets(comment, told);
+  const conn3 = Object.values(NR2_P3).flatMap(([told, cs]) => cs.map(([c]) => [c, told])); const conn4 = Object.values(NR2_P4).flatMap(([, told, cs]) => cs.map(([, c]) => [c, told]));
+  const unnamed = [...conn3, ...conn4].filter(([c, told]) => !shares(c, told)).map(([c]) => c);
+  const allTold = Object.values(NR2_P3).map(([t]) => t).join(' ') + ' ' + conn3.map(([c]) => c).join(' ');
+  const notOff = NR2_P3_NOT.filter(([c]) => meets(c, allTold)).map(([c]) => c);
+  // Plant: an apple eaten, as the first build had it, beside the cake a connection eats (I like to eat birthday cake!), caught.
+  const atePlant = meets('I like to eat a big red apple!', allTold);
+  // PK4's comments are each a connection to their own story and to no other: a comment of one story shares nothing with another story.
+  const crossed = conn4.filter(([c, told]) => Object.values(NR2_P4).some(([, t]) => t !== told && shares(c, t))).map(([c]) => c);
+  ok('every picture That is like me!\'s and That reminds me!\'s banks show is drawn by a line of its lesson, every connection they offer names what its own story names and no other story\'s, and every comment about other things names nothing a story or a connection names (the lines without the slide, and an apple eaten beside the cake a connection eats, planted, each caught)', notDrawn.length === 0 && unnamed.length === 0 && notOff.length === 0 && crossed.length === 0 && slidePlant && atePlant, JSON.stringify({ notDrawn: [...new Set(notDrawn)].slice(0, 5), unnamed, notOff, crossed, atePlant }));
+  // 1b. No wrong comment shares a thing, an action, a kind of animal or the sky with the story it is dealt beside, in pre-K 4's which bank
+  //    (seeds 1 to 2,000, every wrong choice) or as a yes or no bank's No (every row), each read by the ideas it holds (NR2_P4_IDEAS), and
+  //    every comment is read; the kind bank deals each story only its own comments. Plants: the bird who flew up high, dealt beside Owl, a
+  //    bird, and the bean that grew up to the sky, dealt beside Fox's kite that went up high, as first built (round one's lesson reads, pass
+  //    NR), and the balloon that floated up high, dealt beside Owl's clouds, both in the sky, as round one's fix had it (round two's read),
+  //    each put back in the code's table, caught.
+  const heldIn = (c) => NR2_P4_IDEAS.comment[c];
+  const shared4 = (k, c) => (heldIn(c) ? heldIn(c).filter((w) => NR2_P4_IDEAS.story[k].includes(w)) : ['a comment the ideas table does not read']);
+  const whichClashes = () => gen('p4-link-which', 2000).flatMap((x) => { const k = nr2Story4(/^Listen\. (.+)$/.exec(x.story)[1]); return x.choices.filter((c) => c !== x.answer).flatMap((c) => shared4(k, c).map((w) => `${k} | ${c} | ${w}`)); });
+  const noClashes = L.LINK4_YESNO.filter((r) => r[3] === 'No').flatMap((r) => shared4(r[0], r[2]).map((w) => `${r[0]} | ${r[2]} | ${w}`));
+  const nowClashes = whichClashes();
+  const putBack = (k, said) => { const row = L.LINK4_STORIES[k].comments.find((c) => c.kind === 'another'); const kept = row.said; row.said = said; try { return whichClashes(); } finally { row.said = kept; } };
+  const birdBack = putBack('fox', 'That reminds me of a story about a bird who flew up high!'); const beanBack = putBack('snail', 'That reminds me of a story about a bean that grew up to the sky!');
+  const balloonBack = putBack('fox', 'That reminds me of a story about a balloon that floated up high!');
+  ok(`no wrong comment in That reminds me!'s which bank shares a thing, an action, a kind of animal or the sky with the story it is dealt beside (seeds 1 to 2,000, every wrong choice), nor any yes or no No row's comment with its story; the bird who flew up high, put back beside Owl, a bird, the bean that grew up to the sky, put back beside Fox's kite that went up high, and the balloon that floated up high, put back beside Owl's clouds in the sky, planted, ${birdBack.length}, ${beanBack.length} and ${balloonBack.length} clashes, each caught`,
+    nowClashes.length === 0 && noClashes.length === 0 && birdBack.some((w) => /^owl \| .* \| bird$/.test(w)) && beanBack.some((w) => /^fox \| .* \| go up high$/.test(w)) && balloonBack.some((w) => /^owl \| .* \| sky$/.test(w)), [...nowClashes.slice(0, 3), ...noClashes.slice(0, 3)].join(' | '));
+  // 2. Every reason and explanation is the one the test's tables give, in the lessons' words, every wrong choice has its reason, and no
+  //    reason runs past eighteen words with its name. Plants: the feel bank's reason naming the face tapped, and an alike explanation
+  //    naming a kind the two stories do not share, each caught.
+  const cut = (c) => String(c).replace(/[.!?]+$/, ''); const saying = (c) => { const t = cut(c); return `Saying, ${/^I\b/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1)}`; };
+  const lined = (x) => /^Listen\. (.+?[.!]) (Mia|Leo|Ana|Sam) said, (.+)$/.exec(x.story);
+  const pairOf = (x) => { const two = /^Listen\. (.+?[.!]) ([A-Z].+)$/.exec(x.story); const same = /^Listen\. (.+?[.!]) (?:Mia|Ana) said, That reminds me of the story about the ([a-z]+)! /.exec(x.story);
+    const a = nr2Grid((same || two)[1]); const b = same ? same[2] : nr2Grid(two[2]); return { a, b, kind: nr2Shared(a, b), named: !!same }; };
+  const kindOfPhrase = (p) => Object.keys(NR2_P4_BOTH).find((d) => Object.values(NR2_P4_BOTH[d]).includes(p));
+  const reasonTrue = (g, x, c, e) => {
+    if (g === 'p3-link-which') return nr2IsNot3(c) && e.name === saying(c) && e.why === 'is not about Ben\'s story.';
+    if (g === 'p3-link-not') return nr2Of3(nr2Story3(/^Listen\. (.+)$/.exec(x.story)[1]), c) && e.name === saying(c) && e.why === 'is about Ben\'s story.';
+    if (g === 'p3-link-yesno' || g === 'p4-link-yesno') { const m = lined(x); const row = (g === 'p3-link-yesno' ? NR2_P3_YESNO : NR2_P4_YESNO).find((r) => r[1] === m[2] && r[2] === m[3] && (g === 'p3-link-yesno' ? NR2_P3[r[0]][0] : NR2_P4[r[0]][1]) === m[1]); return !!row && c === (row[3] === 'Yes' ? 'No' : 'Yes') && e.name === c && e.why === row[5]; }
+    if (g === 'p3-link-feel') { const f = /\bfelt (sad|happy)\b/.exec(lined(x)[1])[1]; const other = f === 'sad' ? 'happy' : 'sad'; return c === `face:${other}` && e.name === other[0].toUpperCase() + other.slice(1) && e.why === `is not how Ben felt, because the story says he felt ${f}.`; }
+    if (g === 'p3-link-liked') { const parts = Object.values(NR2_P3_LIKED).find(([t]) => x.story.startsWith(`Listen. ${t} `))[1]; const pic = myName(c); return parts.some(([p]) => p === pic) && c !== x.answer && e.name === `The ${pic}` && e.why === 'is the other part of Ben\'s story, not the part Mia liked best.'; }
+    if (g === 'p4-link-kind') { const m = lined(x); const own = !/^That reminds me of /.test(m[3]); return c === (own ? 'Another story' : 'Her own life') && e.name === c && e.why === `is not what ${m[2]} told about. She told about ${own ? 'her own life' : 'another story'}.`; }
+    if (g === 'p4-link-which') { const k = nr2Story4(/^Listen\. (.+)$/.exec(x.story)[1]); const row = Object.values(NR2_P4).flatMap(([, , cs]) => cs).find((r) => r[1] === c); if (!row || nr2Of4(k, c)) return false;
+      return row[2] === 'own' ? e.name === saying(c) && e.why === `is not like ${NR2_P4[k][0]}'s story.` : e.name === `The story about ${row[3]}` && e.why === `is not like ${NR2_P4[k][0]}'s story.`; }
+    if (g === 'p4-link-alike' || g === 'p4-link-same') { const { a, b, named } = pairOf(x); const d = kindOfPhrase(c); const A = NR2_P4_GRID[a][2]; const B = NR2_P4_GRID[b][2];
+      const ofA = NR2_P4_BOTH[d][A[d]] === c; const other = ofA ? b : a; const who = ofA && named ? `the ${b}` : NR2_P4_GRID[other][0];
+      return (ofA || NR2_P4_BOTH[d][B[d]] === c) && e.name === cut(c) && e.why === `is not true, because ${who} ${nr2Did(other, d)}.`; }
+    return false; };
+  const explainTrue = (g, x) => { const e = x.explain;
+    if (g === 'p3-link-which') { const k = nr2Story3(/^Listen\. (.+)$/.exec(x.story)[1]); const row = NR2_P3[k][1].find(([c]) => c === x.answer); return !!row && e === `${row[0]} That is a connection, because ${row[1]}.`; }
+    if (g === 'p3-link-not') { const n = NR2_P3_NOT.find(([c]) => c === x.answer); return !!n && e === `${n[0]} That is not about Ben's story, because ${n[1]}.`; }
+    if (g === 'p3-link-yesno' || g === 'p4-link-yesno') { const m = lined(x); const row = (g === 'p3-link-yesno' ? NR2_P3_YESNO : NR2_P4_YESNO).find((r) => r[1] === m[2] && r[2] === m[3] && (g === 'p3-link-yesno' ? NR2_P3[r[0]][0] : NR2_P4[r[0]][1]) === m[1]); return !!row && e === row[4]; }
+    if (g === 'p3-link-feel') { const m = lined(x); const row = NR2_P3_FEELS.find((r) => r[2] === m[1]); return !!row && e === `They both felt ${row[1]}. Ben felt ${row[1]} ${row[5]}, and ${row[3]} felt just like Ben.`; }
+    if (g === 'p3-link-liked') { const [, parts] = Object.values(NR2_P3_LIKED).find(([t]) => x.story.startsWith(`Listen. ${t} `)); const part = parts.find(([p]) => `icon:${p}` === x.answer); return !!part && e === `The ${part[0]}. Mia said her favorite part was when Ben ${part[1]}.`; }
+    if (g === 'p4-link-kind') { const m = lined(x); const row = NR2_P4[nr2Story4(m[1])][2].find((r) => r[1] === m[3]); return !!row && e === `${row[2] === 'own' ? 'Her own life' : 'Another story'}. ${row[5]}`; }
+    if (g === 'p4-link-which') { const k = nr2Story4(/^Listen\. (.+)$/.exec(x.story)[1]); const row = NR2_P4[k][2].find((r) => r[1] === x.answer); return !!row && e === `${row[1]} That is a connection, because ${row[4]}.`; }
+    if (g === 'p4-link-alike') { const { a, b, kind } = pairOf(x); return e === `${x.answer} ${NR2_P4_GRID[a][0]} ${nr2Did(a, kind)}, and ${NR2_P4_GRID[b][0]} ${nr2Did(b, kind)} too.`; }
+    if (g === 'p4-link-same') { const { a, b, kind } = pairOf(x); return e === `${x.answer} ${NR2_P4_GRID[a][0]} ${nr2Did(a, kind)}, and in the other story, the ${b} ${nr2Did(b, kind)} too.`; }
+    return false; };
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.name + ' ' + e.why)));
+  const missingReasons = BANKS.flatMap((g) => gen(g, 400).filter((x) => x.choices.some((c) => c !== x.answer && !(x.whyNot || {})[c])).map(() => g));
+  const longReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.values(x.whyNot || {}).filter((e) => `${e.name} ${e.why}`.split(/\s+/).length > 18).map((e) => g + ': ' + e.name)));
+  const falseExplains = BANKS.flatMap((g) => gen(g, 400).filter((x) => !explainTrue(g, x)).map((x) => g + ': ' + x.explain));
+  const qf = gen('p3-link-feel', 40)[0]; const wrongFace = qf.choices.find((c) => c !== qf.answer); const reasonPlant = !reasonTrue('p3-link-feel', qf, wrongFace, { ...qf.whyNot[wrongFace], why: `is not how Ben felt, because the story says he felt ${myName(wrongFace)}.` });
+  const qa = gen('p4-link-alike', 40)[0]; const explainPlant = !explainTrue('p4-link-alike', { ...qa, explain: qa.explain.replace(/^Both friends [a-z ]+\./, (m) => m === 'Both friends felt sad.' ? 'Both friends felt mad.' : 'Both friends felt sad.') });
+  ok('every reason and every explanation That is like me!\'s and That reminds me!\'s banks give is the one the test\'s own tables give, in the lessons\' words, every wrong choice has its reason, and none runs past eighteen words with its name (seeds 1 to 400; the feel bank\'s reason naming the face tapped, and an alike explanation naming what the stories do not share, planted, each caught)', falseReasons.length === 0 && missingReasons.length === 0 && longReasons.length === 0 && falseExplains.length === 0 && reasonPlant && explainPlant, [...falseReasons.slice(0, 3), ...falseExplains.slice(0, 3), ...missingReasons.slice(0, 3), ...longReasons.slice(0, 3)].join(' | '));
+  // 2b. Every wrong choice's reason in the alike and same banks names only what the question's own words say: the friend it names, and what
+  //    that friend did, felt or was in the words the question told of that friend (the first story, or the other story as the alike bank
+  //    tells it or as the friend tells of it), since a child is told she is wrong only by what she heard (the lead's look, pass NR). Plant:
+  //    the same bank's friend telling two of the other story's three things, as its words were first built, one reason in every question
+  //    naming the third, caught.
+  const toldOf = (x) => { const same = /^Listen\. (.+?[.!]) (?:Mia|Ana) said, That reminds me of the story about the ([a-z]+)! (.+)$/.exec(x.story);
+    if (same) return { [nr2Grid(same[1])]: same[1], [same[2]]: same[3] };
+    const two = /^Listen\. (.+?[.!]) ([A-Z].+)$/.exec(x.story); return { [nr2Grid(two[1])]: two[1], [nr2Grid(two[2])]: two[2] }; };
+  const heardWhy = (x, e) => { const m = /^is not true, because (?:the ([a-z]+)|([A-Z][a-z]+)) (.+)\.$/.exec(e.why); const k = m && (m[1] || m[2].toLowerCase()); const said = m && toldOf(x)[k];
+    return !!said && said.includes(m[3].replace(/^was /, '')); };
+  const unheard = (qs) => qs.flatMap((x) => Object.values(x.whyNot || {}).filter((e) => !heardWhy(x, e)).map((e) => `${x.story} | ${e.name} ${e.why}`));
+  const unheardNow = ['p4-link-alike', 'p4-link-same'].flatMap((g) => unheard(gen(g, 400)));
+  const firstBuilt = unheard(gen('p4-link-same', 400).map(nr2PartWords));
+  ok(`every wrong choice's reason in the alike and same banks names only what that question's own words say, each friend's thing in the words told of that friend (seeds 1 to 400 of each; the same bank's friend telling two of the three things, as first built, planted, leaves ${firstBuilt.length} reasons in 400 questions naming what the friend never said, caught)`,
+    unheardNow.length === 0 && firstBuilt.length === 400, [...unheardNow.slice(0, 3), `first built ${firstBuilt.length}`].join(' | '));
+  // 2c. A friend who tells of a story the child never heard names its animal before telling it (round two's read, pass NR: in "Mia said,
+  //    That reminds me of the story about the zebra! She lost her shovel at the beach", a voice that cannot say quotation marks left She to
+  //    Mia, the first story's friend or the zebra): in every same question at seeds 1 to 400 and every line of That reminds me!, the
+  //    sentence after "the story about the zebra!" opens "The zebra". Plants: the same bank's telling and line 9 as round one built them,
+  //    each opening on He or She, caught.
+  const tellings = (t) => [...String(t).matchAll(/the story about the ([a-z]+)! ([A-Z][a-z]+(?: [a-z]+)?)/g)].map((m) => [m[1], m[2]]);
+  const unnamedIn = (texts) => texts.flatMap((t) => tellings(t).filter(([b, opens]) => opens !== `The ${b}`).map(([b, opens]) => `${b}: ${opens}`));
+  const sameStories = gen('p4-link-same', 400).map((x) => x.story); const p4Lines = P4.lesson.script.map((l) => l.say);
+  const toldCount = [...sameStories, ...p4Lines].flatMap(tellings).length; const unnamedNow = unnamedIn([...sameStories, ...p4Lines]);
+  const pronounFirst = (t) => t.replace(/(the story about the ([a-z]+)! )The \2 (.+?), and (he|she) felt /, (m0, pre, b, rest, he) => `${pre}${he[0].toUpperCase()}${he.slice(1)} ${rest}, and ${he} felt `);
+  const bankPlant = unnamedIn(sameStories.map(pronounFirst)).length;
+  const linePlant = unnamedIn(p4Lines.map((t) => t.replace('the story about the whale! The whale could not sleep', 'the story about the whale! She could not sleep'))).length;
+  ok(`a friend who tells of a story the child never heard names its animal before telling it, in every same question at seeds 1 to 400 and every line of That reminds me! (${toldCount} tellings; the same bank's telling and line 9 as round one built them, opening on He or She, planted, ${bankPlant} of 400 and ${linePlant} of 1, caught)`,
+    unnamedNow.length === 0 && toldCount === 401 && bankPlant === 400 && linePlant === 1, [...unnamedNow.slice(0, 3), `tellings ${toldCount}`].join(' | '));
+  // 3. Every kind each bank asks is modeled by a line of its lesson that asks it in its bank's words and works it. Plant: each kind's model
+  //    line taken out, caught. Since round two's read (pass NR), as the print lessons' check does, each model line says one of its bank's
+  //    own questions word for word, as dealt at seeds 1 to 400. Plant: the two which lines as round one left them, a connection to Ben's
+  //    story and to Owl's story where their banks ask a connection to the story, each put back as its bank's model, caught.
+  const KIND_LINES = { 'p3-link-which': /Which one is a connection to the story\? I lost my teddy once too!/, 'p3-link-yesno': /Is that a connection to the story\? Yes!/, 'p3-link-feel': /How did they both feel\? They both felt sad\./, 'p3-link-liked': /Ben hugged his teddy bear, and then he went to bed\. Mia said, My favorite part was when Ben went to bed! Which part did Mia like best\? The bed\./, 'p3-link-not': /And which one is not about the story\? I like pizza\./,
+    'p4-link-kind': /Is that a connection to her own life, or to another story\? Another story!/, 'p4-link-alike': /How are the two stories alike\? Both friends could not sleep/, 'p4-link-which': /Which one is a connection to the story\? I could not sleep last night either, or, I fly my kite at the park too\? I could not sleep last night either!/, 'p4-link-yesno': /Is that a connection\? No!/, 'p4-link-same': /What is the same in both stories\? Both Duck and the whale could not sleep/ };
+  const linesOf = (m, drop) => m.lesson.script.map((l) => l.say).filter((s) => !(drop && drop.test(s)));
+  const unmodeled = BANKS.filter((g) => !linesOf(lessonOf(g)).some((s) => KIND_LINES[g].test(s)));
+  const caught = BANKS.filter((g) => !linesOf(lessonOf(g), KIND_LINES[g]).some((s) => KIND_LINES[g].test(s)));
+  const askedBy = Object.fromEntries(BANKS.map((g) => [g, [...new Set(gen(g, 400).map((x) => x.prompt.toLowerCase()))]]));
+  const asksIn = (lines, g, re) => lines.some((s) => re.test(s) && askedBy[g].some((p) => s.toLowerCase().includes(p)));
+  const notAsked = BANKS.filter((g) => !asksIn(linesOf(lessonOf(g)), g, KIND_LINES[g]));
+  const ROUND_ONE_WHICH = {
+    'p3-link-which': ['Which one is a connection to Ben\'s story? I lost my teddy once too! And which one is not about the story? I like pizza.', /Which one is a connection to Ben's story\? I lost my teddy once too!/],
+    'p4-link-which': ['Which one is a connection to Owl\'s story? I could not sleep last night either, or, I fly my kite at the park too? I could not sleep last night either! Owl\'s story has no kite in it, so that one is not like Owl\'s story.', /Which one is a connection to Owl's story\? I could not sleep last night either, or, I fly my kite at the park too\? I could not sleep last night either!/] };
+  const roundOneCaught = Object.entries(ROUND_ONE_WHICH).filter(([g, [said, re]]) => { const lines = [...linesOf(lessonOf(g), KIND_LINES[g]), said]; return lines.some((t) => re.test(t)) && !asksIn(lines, g, re); }).length;
+  ok('every kind of question That is like me!\'s and That reminds me!\'s banks ask is modeled by a line of its lesson that asks it in its bank\'s own words, word for word, and works it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + '; the two which lines as round one left them, a connection to Ben\'s story and to Owl\'s story, planted as their models, caught: ' + roundOneCaught + ' of 2)', BANKS.length === 10 && unmodeled.length === 0 && caught.length === 10 && notAsked.length === 0 && roundOneCaught === 2, [...unmodeled, ...notAsked.map((g) => g + ' not asked')].join(', '));
+  // 4. The code's tables are the test's, every story, comment, row and pair is met at seeds 1 to 400, both ways where a question asks either
+  //    way, and each lesson opens after the lesson its ideas build on, with its reason. Plant: a comment about other things the lines never
+  //    model (a comment about a puppy among them, which a story names), caught.
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const tablesOk = (C) => same(Object.fromEntries(Object.entries(C.LINK3_STORIES).map(([k, s]) => [k, [s.told, s.comments.map((c) => [c.said, c.because])]])), NR2_P3) && same(C.LINK3_NOT.map((n) => [n.said, n.none]), NR2_P3_NOT)
+    && same(C.LINK3_YESNO, NR2_P3_YESNO) && same(C.LINK3_FEELS.map((f) => [f.key, f.feel, f.told, f.who, f.said, f.moment]), NR2_P3_FEELS) && same(Object.fromEntries(Object.entries(C.LINK3_LIKED).map(([k, s]) => [k, [s.told, s.parts]])), NR2_P3_LIKED)
+    && same(Object.fromEntries(Object.entries(C.LINK4_STORIES).map(([k, s]) => [k, [s.name, s.told, s.comments.map((c) => [c.who, c.said, c.kind, c.story || null, c.because, c.kindWhy])]])), NR2_P4) && same(C.LINK4_YESNO, NR2_P4_YESNO)
+    && same(Object.fromEntries(Object.entries(C.LINK4_GRID).map(([k, s]) => [k, [s.name, s.told, s.has, s.did]])), NR2_P4_GRID) && same(C.LINK4_BOTH, NR2_P4_BOTH) && same(C.LINK4_PAIRS, NR2_P4_PAIRS);
+  const tablePlant = !tablesOk({ ...L, LINK3_NOT: L.LINK3_NOT.map((n, i) => (i === 0 ? { ...n, said: 'I have a puppy!' } : n)) });
+  const seen = new Set(); for (const g of BANKS) for (const x of gen(g, 400)) { seen.add(x.prompt); seen.add(`${g}|${x.story}`); seen.add(`${g}|answer|${x.answer}`); for (const c of x.choices) seen.add(String(c)); if (/^p4-link-(alike|same)$/.test(g)) { const { a, b } = pairOf(x); seen.add(`${g}|${a}>${b}`); } }
+  const wantSeen = [...Object.values(NR2_P3).flatMap(([t, cs]) => [`p3-link-which|Listen. ${t}`, `p3-link-not|Listen. ${t}`, ...cs.map(([c]) => c)]), ...NR2_P3_NOT.map(([c]) => c), ...NR2_P3_NOT.map(([c]) => `p3-link-not|answer|${c}`),
+    ...NR2_P3_YESNO.map((r) => `p3-link-yesno|Listen. ${NR2_P3[r[0]][0]} ${r[1]} said, ${r[2]}`), ...NR2_P3_FEELS.map((r) => `p3-link-feel|Listen. ${r[2]} ${r[3]} said, ${r[4]}`),
+    ...Object.values(NR2_P3_LIKED).flatMap(([t, parts]) => parts.map(([, did]) => `p3-link-liked|Listen. ${t} Mia said, My favorite part was when Ben ${did}!`)),
+    ...Object.values(NR2_P4).flatMap(([, t, cs]) => [`p4-link-which|Listen. ${t}`, ...cs.map((r) => `p4-link-kind|Listen. ${t} ${r[0]} said, ${r[1]}`), ...cs.map((r) => `p4-link-which|answer|${r[1]}`)]),
+    ...NR2_P4_YESNO.map((r) => `p4-link-yesno|Listen. ${NR2_P4[r[0]][1]} ${r[1]} said, ${r[2]}`), ...NR2_P4_PAIRS.flatMap(([a, b]) => ['p4-link-alike', 'p4-link-same'].flatMap((g) => [`${g}|${a}>${b}`, `${g}|${b}>${a}`])),
+    ...Object.values(NR2_P4_BOTH).flatMap((v) => Object.values(v)), 'face:sad', 'face:happy'];
+  const opens = [['that-is-like-me', ['listen-to-the-story']], ['that-reminds-me', ['story-questions']]].every(([id, req]) => { const m = L.getModule(id); return same(m.requires, req) && typeof m.requiresWhy === 'string' && m.requiresWhy.length > 40; });
+  ok('the code\'s tables for the two connection lessons are the test\'s own, every story, comment, row and pair is met at seeds 1 to 400, both ways where a question asks either way, and each lesson opens after the lesson its ideas build on, with its reason (a comment about a puppy among the comments about other things, planted, caught)',
+    tablesOk(L) && tablePlant && wantSeen.every((w) => seen.has(w)) && opens, JSON.stringify({ missing: wantSeen.filter((w) => !seen.has(w)).slice(0, 6) }));
+}
+// The two connection lessons' banks scored blind, alone at seeds 1 to 2,000 and in rounds as built (1,500 first rounds, later rounds,
+// triple doses and Quick Reviews each): always the same button or the same choice, the longer or the shorter choice (which tools/blind-read.mjs
+// does not read: with pre-K 3's comments about other things shorter than its connections, the longer one was right 73 percent of the time),
+// and a yes or no bank's share of Yes. Bounds: two choices under 56 percent (chance 50), three under 42 (chance 33.3), Yes between 40 and 60.
+// By the lead's design pre-K 3's which and not banks always offer a comment about other things, a table that names nothing any story names,
+// so it is never the which bank's answer and always the not bank's: a child who heard only the question and had learned every such
+// comment by heart is right every time (the tool's heard-only-the-question read, 100 percent), recorded here at 100. Pre-K 4's alike and
+// same banks are fair to that child: each choice is the answer a third of the times it is shown, as recorded; with the first grid, whose
+// choices were not, the tool's one read of them rose and fell with which pairs its seeds dealt most (52.5 percent at 2,000 seeds, 19.8 at
+// 1,000, 51.6 at 3,000 and 38.5 at 4,000, the engineer's read, pass NR), since each pair's questions share their three choices; with the
+// twelve pairs it reads 33.5 to 35.2 at those counts, and here it is read as the mean of ten such reads.
+{ const genN = (g, n, from = 1) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, from + i));
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groupsOf = (R, g) => ['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)));
+  const worst = (R, g, f) => Math.max(f(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length >= 30).map(f));
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const firstBtn = (qs) => qs.filter((q) => String(q.choices[0]) === String(q.answer)).length / qs.length;
+  const oneChoice = (qs) => { const all = [...new Set(qs.flatMap((q) => q.choices.map(String)))]; return Math.max(...all.map((w) => qs.reduce((n, q) => n + (q.choices.includes(w) ? (q.answer === w ? 1 : 0) : 1 / q.choices.length), 0) / qs.length)); };
+  const byLength = (long) => (qs) => qs.reduce((n, q) => { const len = (c) => String(c).split(/\s+/).length; const best = (long ? Math.max : Math.min)(...q.choices.map(len)); const tied = q.choices.filter((c) => len(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length;
+  // A child who keys on a choice's first one, two or three words, always tapping a choice that opens one way or never tapping one (round
+  // one's lesson read, pass NR: never tapping I can read 72.0 percent in the which bank).
+  const byOpening = (qs) => { const open = (c, n) => String(c).split(/\s+/).slice(0, n).join(' '); let best = 0;
+    for (const n of [1, 2, 3]) for (const o of new Set(qs.flatMap((q) => q.choices.map((c) => open(c, n))))) for (const tap of [true, false]) {
+      const v = qs.reduce((t, q) => { const pool = q.choices.filter((c) => (open(c, n) === o) === tap); const p = pool.length ? pool : q.choices; return t + (p.includes(q.answer) ? 1 / p.length : 0); }, 0) / qs.length; if (v > best) best = v; }
+    return best; };
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const questionOnly = (qs) => { const t = {}; for (const q of qs) { t[q.prompt] = t[q.prompt] || {}; t[q.prompt][q.answer] = (t[q.prompt][q.answer] || 0) + 1; }
+    return qs.reduce((n, q) => { const score = (c) => (t[q.prompt][c] || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const rightShare = (qs) => { const shown = {}, right = {}; for (const q of qs) for (const c of q.choices) { shown[c] = (shown[c] || 0) + 1; if (c === q.answer) right[c] = (right[c] || 0) + 1; } return Object.keys(shown).map((c) => (right[c] || 0) / shown[c]); };
+  const R3 = ofModule('that-is-like-me', 1500); const R4 = ofModule('that-reminds-me', 1500);
+  const CH3 = [[R3, 'p3-link-not'], [R4, 'p4-link-alike'], [R4, 'p4-link-which'], [R4, 'p4-link-same']];
+  const CH2 = [[R3, 'p3-link-which'], [R3, 'p3-link-yesno'], [R3, 'p3-link-feel'], [R3, 'p3-link-liked'], [R4, 'p4-link-kind'], [R4, 'p4-link-yesno']];
+  const three = Math.max(...CH3.flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice), worst(R, g, byLength(true)), worst(R, g, byLength(false))]));
+  const two = Math.max(...CH2.flatMap(([R, g]) => [worst(R, g, firstBtn), worst(R, g, oneChoice), worst(R, g, byLength(true)), worst(R, g, byLength(false))]));
+  const openings = { which: worst(R3, 'p3-link-which', byOpening), not: worst(R3, 'p3-link-not', byOpening), which4: worst(R4, 'p4-link-which', byOpening) };
+  // Plant: the openings as first built, five comments about other things starting I can and no connection, read by the which and not banks.
+  let openPlant; { const conns = Object.values(L.LINK3_STORIES).flatMap((x) => x.comments); const keptC = conns.map((c) => c.said); const keptN = L.LINK3_NOT.map((n) => n.said);
+    conns.forEach((c) => { c.said = c.said.replace(/^I can /, 'I '); }); L.LINK3_NOT.forEach((n) => { if (/^I drew /.test(n.said)) n.said = n.said.replace(/^I drew /, 'I can draw '); });
+    try { openPlant = [byOpening(genN('p3-link-which', 2000)), byOpening(genN('p3-link-not', 2000))]; } finally { conns.forEach((c, i) => { c.said = keptC[i]; }); L.LINK3_NOT.forEach((n, i) => { n.said = keptN[i]; }); } }
+  const YN = [[R3, 'p3-link-yesno'], [R4, 'p4-link-yesno']];
+  const shares = YN.flatMap(([R, g]) => [yesShare(genN(g, 2000)), ...groupsOf(R, g).filter((qs) => qs.length >= 30).map(yesShare)]); const yesLo = Math.min(...shares); const yesHi = Math.max(...shares);
+  const memorized = Math.min(questionOnly(genN('p3-link-which', 2000)), questionOnly(genN('p3-link-not', 2000)));
+  const tenReads = (g) => Array.from({ length: 10 }, (_, i) => questionOnly(genN(g, 2000, 1 + 2000 * i))).reduce((a, b) => a + b, 0) / 10;
+  const asked4 = Math.max(tenReads('p4-link-alike'), tenReads('p4-link-same'), questionOnly(genN('p4-link-which', 2000))); const askedKind = questionOnly(genN('p4-link-kind', 2000));
+  const thirds = [...rightShare(genN('p4-link-alike', 4000)), ...rightShare(genN('p4-link-same', 4000))]; const thirdLo = Math.min(...thirds); const thirdHi = Math.max(...thirds);
+  // Plant: pre-K 3's first comments about other things, four of them and shorter than the connections, read by the longer choice and by one
+  // comment always tapped.
+  const four = [{ said: 'I like pizza!', none: 'x' }, { said: 'I can hop on one foot!', none: 'x' }, { said: 'I ate an apple today!', none: 'x' }, { said: 'I have a red ball!', none: 'x' }];
+  let plant; { const kept = L.LINK3_NOT.splice(0, L.LINK3_NOT.length, ...four); try { plant = [byLength(true)(genN('p3-link-which', 2000)), oneChoice(genN('p3-link-not', 2000))]; } finally { L.LINK3_NOT.splice(0, L.LINK3_NOT.length, ...kept); } }
+  ok(`the two connection lessons' banks scored blind, alone and in rounds as built, stay under their bounds (three choices by the first button, one choice, the longer or the shorter at most ${pct(three)}%, two at most ${pct(two)}%; a choice's first words, the which banks ${pct(openings.which)}% and ${pct(openings.which4)}% and the not bank ${pct(openings.not)}%, where five comments about other things starting I can and no connection, as first built, planted, read ${pct(openPlant[0])}% and ${pct(openPlant[1])}%, caught; Yes ${pct(yesLo)} to ${pct(yesHi)}%; pre-K 4's banks by the question alone at most ${pct(asked4)}% with three choices, the alike and same banks' as the mean of ten reads, and ${pct(askedKind)}% with two, the kind bank's, each of their choices the answer ${pct(thirdLo)} to ${pct(thirdHi)}% of the times it is shown; pre-K 3's which and not banks by the question alone, the comments about other things learned by heart, ${pct(memorized)}% by the lead's design; four shorter comments about other things, planted, read ${pct(plant[0])}% by the longer choice and ${pct(plant[1])}% by one comment, caught)`,
+    three < 0.42 && two < 0.56 && openings.which < 0.56 && openings.not < 0.42 && openings.which4 < 0.42 && openPlant[0] > 0.6 && openPlant[1] > 0.45 && yesLo >= 0.4 && yesHi <= 0.6 && asked4 < 0.42 && askedKind < 0.56 && thirdLo > 0.25 && thirdHi < 0.42 && memorized > 0.95 && plant[0] > 0.6 && plant[1] > 0.45, JSON.stringify({ three, two, openings, openPlant, yesLo, yesHi, asked4, askedKind, thirdLo, thirdHi, memorized, plant })); }
+// The connection lessons' story banks read by a child who heard only one part of a question (seeds 1 to 2,000), as one who has met the bank's
+// questions before: only the story, only the friend's words, or only the question, each child tapping the choice most often right after
+// the same words. By the lead's design pre-K 3's feel question asks for the feeling the story says Ben felt (the story alone, 100 percent)
+// and is fair to a child who heard only the friend, whose words name no feeling and are the same beside a sad and a happy story; Mia's words
+// name the part she liked, P-LIT 5's likes (the friend alone, 100 percent), and the story names both parts; and a comment that tells of
+// another story says so, the kind question's answer (the friend alone, 100 percent), each story told with both kinds. The alike and same
+// banks are read by a child who heard one story alone, as the lead's design asks (right half the time): the one story, told or told of
+// (whole, since the lead's look), names what both share and one wrong thing, its third thing no choice, so each such child is right half
+// the time, and one who heard both stories and not the question a third of the time. Every other part alone reads near chance.
+{ const genN = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const split = (q) => { const m = /^Listen\. (.+?[.!]) ((?:Mia|Leo|Ana|Sam) said, .+)$/.exec(q.story || ''); return m ? { story: m[1], friend: m[2] } : { story: (q.story || '').replace(/^Listen\. /, ''), friend: '' }; };
+  const byPart = (part) => (qs) => { const key = (q) => (part === 'question' ? q.prompt : split(q)[part]); const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || {}; t[k][q.answer] = (t[k][q.answer] || 0) + 1; }
+    return qs.reduce((n, q) => { const score = (c) => (t[key(q)][c] || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const R = (g) => { const qs = genN(g, 2000); return { story: byPart('story')(qs), friend: byPart('friend')(qs), question: byPart('question')(qs) }; };
+  const yes3 = R('p3-link-yesno'); const yes4 = R('p4-link-yesno'); const feel = R('p3-link-feel'); const liked = R('p3-link-liked'); const kind = R('p4-link-kind');
+  // The alike and same banks: a child taps among the choices the one story heard names, the shared thing and one other thing, or among all
+  // three when it heard both stories (each child the same over every question).
+  const thing = (c) => { const m = /^Both friends (?:felt (\w+)|were at the (\w+)|lost something|got stuck)\.$/.exec(c); return m ? (m[1] || m[2] || (/lost/.test(c) ? 'lost' : 'stuck')) : null; };
+  const hasThing = (text, t) => (t === 'lost' ? /\blost\b/ : t === 'stuck' ? /\bstuck\b/ : new RegExp(`\\b${t}\\b`)).test(text);
+  const oneStory = (g, which) => { const qs = genN(g, 2000); return qs.reduce((n, q) => { const parts = g === 'p4-link-alike' ? /^Listen\. (.+?[.!]) ([A-Z].+)$/.exec(q.story).slice(1) : /^Listen\. (.+?[.!]) ((?:Mia|Ana) said, .+)$/.exec(q.story).slice(1);
+    const heard = which === 'both' ? parts.join(' ') : parts[which]; const pool = q.choices.filter((c) => hasThing(heard, thing(c))); const p = pool.length ? pool : q.choices; return n + (p.includes(q.answer) ? 1 / p.length : 0); }, 0) / qs.length; };
+  const alike = [oneStory('p4-link-alike', 0), oneStory('p4-link-alike', 1), oneStory('p4-link-alike', 'both')]; const samed = [oneStory('p4-link-same', 0), oneStory('p4-link-same', 1), oneStory('p4-link-same', 'both')];
+  // Plant: the feel bank's friend's words as the lead's example gives them, the same thing happened and no feeling or friend's feeling
+  // named (I lost my hat once!), with one story to each thing that happens, a lost thing sad and a found one happy: the friend alone answers.
+  const plantFriend = byPart('friend')(genN('p3-link-feel', 2000).map((q) => { const sad = q.answer === 'face:sad'; return { ...q, story: `Listen. Ben ${sad ? 'lost' : 'found'} his teddy. Sam said, I ${sad ? 'lost' : 'found'} my hat once!` }; }));
+  const fair2 = [yes3.story, yes3.friend, yes3.question, yes4.story, yes4.friend, yes4.question, feel.friend, feel.question, liked.story, liked.question, kind.story, kind.question];
+  ok(`the connection lessons' story banks read by a child who heard only one part: the yes or no banks by the story, the friend or the question alone at most ${pct(Math.max(yes3.story, yes3.friend, yes3.question, yes4.story, yes4.friend, yes4.question))}%; the feel bank by the friend alone ${pct(feel.friend)}% (by the story alone ${pct(feel.story)}%, by design; the lead's own friend's words, planted, ${pct(plantFriend)}%, caught); the liked bank by the story alone ${pct(liked.story)}% (by Mia's words ${pct(liked.friend)}%, by design); the kind bank by the story alone ${pct(kind.story)}% (by the friend ${pct(kind.friend)}%, by design, since telling a comment about one's own life from one about another story is the idea the bank asks about); a child who heard one story alone right ${pct(Math.min(alike[0], alike[1], samed[0], samed[1]))} to ${pct(Math.max(alike[0], alike[1], samed[0], samed[1]))}% of the time in the alike and same banks, as the lead's design asks, and one who heard both and not the question ${pct(Math.max(alike[2], samed[2]))}%`,
+    fair2.every((v) => v < 0.56) && feel.story > 0.99 && liked.friend > 0.99 && kind.friend > 0.99 && plantFriend > 0.95 && [alike[0], alike[1], samed[0], samed[1]].every((v) => Math.abs(v - 0.5) < 0.03) && Math.max(alike[2], samed[2]) < 0.36, JSON.stringify({ yes3, yes4, feel, liked, kind, alike, samed, plantFriend })); }
+// Each kind once a round where it can (aboutWords, as pass NM's, NP's and the first wave's banks do): That reminds me!'s five kinds each come
+// once in every first and later round, and That is like me!'s too where its stories leave a question (three of its kinds ask about Ben's
+// seven stories, which a round asks about once each, since a question's explanation would answer a later one about the same story).
+// Plant: the which and not banks' questions all keyed on one word, so the second of them in a round echoes the first and hands its turn
+// to another kind, caught.
+{ const kinds = (mid, n) => { const G = L.getModule(mid).generators; let twice = 0; const per = Object.fromEntries(G.map((g) => [g, 0])); let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { for (const core of [L.buildAttempt(mid, s, []).core, (() => { const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); p2 = p1; p1 = a.core.map((q) => q.prompt); return a.core; })()]) {
+      const c = {}; for (const q of core) c[q.genId] = (c[q.genId] || 0) + 1; for (const g of G) per[g] += (c[g] || 0); if (Object.values(c).some((v) => v > 1)) twice += 1; } }
+    return { per: Object.fromEntries(Object.entries(per).map(([g, v]) => [g, v / (2 * n)])), twice: twice / (2 * n) }; };
+  const p3 = kinds('that-is-like-me', 1000); const p4 = kinds('that-reminds-me', 1000);
+  const G3 = ['p3-link-which', 'p3-link-not']; const keep = {}; for (const g of G3) { keep[g] = L.GENERATORS[g]; L.GENERATORS[g] = (rng) => ({ ...keep[g](rng), aboutWords: ['one'] }); }
+  let planted; try { planted = kinds('that-is-like-me', 300); } finally { for (const g of G3) L.GENERATORS[g] = keep[g]; }
+  const pct = (v) => Math.round(v * 1000) / 10;
+  ok(`each kind once a round where it can: That is like me!'s five kinds (${Object.values(p3.per).map(pct).join(', ')} a round, twice in ${pct(p3.twice)}% of 2,000 rounds) and That reminds me!'s (${Object.values(p4.per).map(pct).join(', ')} a round, twice in ${pct(p4.twice)}%); the which and not banks keyed on one word, planted, a kind twice in ${pct(planted.twice)}% of rounds, caught`,
+    Object.values(p3.per).every((v) => v >= 0.97 && v <= 1.03) && p3.twice <= 0.03 && Object.values(p4.per).every((v) => v >= 0.97 && v <= 1.03) && p4.twice <= 0.03 && planted.twice > 0.5, JSON.stringify({ p3, p4, planted: planted.twice })); }
+// Held for the two connection lessons from the start, as round one's code read of pass NP found its blocks did not (pass NR's second wave):
+// every question carries a key for the round builder (aboutWords); a comment or a both choice is heard and never printed while the voice can
+// speak (heardChoices, Tap to hear), since a printed comment's length is a cue a pre-reader can see; no reason or other right answer is
+// empty; and no name a lesson uses is within two letters of another it uses (the lead's design), but for the course's own Ben, Mia, Leo,
+// Ana and Sam, which the lessons around them use as they stand (a Panda beside Ana, as first built, planted, caught). Each near miss
+// planted, caught.
+{ const BANKS = ['that-is-like-me', 'that-reminds-me'].flatMap((id) => L.getModule(id).generators);
+  const qs = BANKS.flatMap((g) => Array.from({ length: 400 }, (_, i) => ({ g, ...L.generateQuestion(g, i + 1) })));
+  const keyed = (list) => list.every((x) => Array.isArray(x.aboutWords) && x.aboutWords.length > 0 && x.aboutWords.every((w) => typeof w === 'string' && w));
+  const keysOk = keyed(qs) && !keyed(qs.map((x, i) => (i === 0 ? { ...x, aboutWords: undefined } : x)));
+  const HEARD = ['p3-link-which', 'p3-link-not', 'p4-link-which', 'p4-link-alike', 'p4-link-same'];
+  const heard = (q) => q.heardChoices === true && q.choices.every((c) => L.printedChoice(q, c, true) === L.HEARD_CHOICE);
+  const heardOk = qs.filter((q) => HEARD.includes(q.g)).every(heard) && !heard({ ...qs.find((q) => q.g === 'p3-link-which'), heardChoices: false });
+  const emptyIn = (x) => Object.values(x.whyNot || {}).some((e) => !e || !String(e.why || '').trim() || !String(e.name || '').trim()) || (x.alsoRight || []).some((a) => typeof a !== 'string' || !a.trim());
+  const empties = qs.filter(emptyIn).length; const emptyPlant = emptyIn({ whyNot: { a: { name: 'Saying, I like pizza', why: ' ' } } });
+  const lev = (a, b) => { a = a.toLowerCase(); b = b.toLowerCase(); const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; };
+  const FIVE = ['Ben', 'Mia', 'Leo', 'Ana', 'Sam'];
+  const NAMES = ['Ben', 'Mia', 'Leo', 'Ana', 'Sam', 'Owl', 'Bear', 'Duck', ...Object.values(NR2_P4).map(([n]) => n), ...Object.values(NR2_P4_GRID).map(([n]) => n)];
+  const namesIn = (id) => { const text = [...L.getModule(id).lesson.script.map((l) => l.say), ...BANKS.filter((g) => g.startsWith(id === 'that-is-like-me' ? 'p3-' : 'p4-')).flatMap((g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1).story || ''))].join(' ');
+    return [...new Set(NAMES)].filter((n) => new RegExp(`\\b${n}\\b`).test(text)); };
+  const close = (ns) => ns.flatMap((a, i) => ns.slice(i + 1).filter((b) => lev(a, b) <= 2 && !(FIVE.includes(a) && FIVE.includes(b))).map((b) => `${a} ${b}`));
+  const n3 = namesIn('that-is-like-me'); const n4 = namesIn('that-reminds-me');
+  const namesOk = close(n3).length === 0 && close(n4).length === 0 && close([...n4, 'Panda']).length > 0 && n3.length === 5 && n4.length >= 17;
+  ok(`the two connection lessons held from the start (pass NR's second wave): every question keyed for the round builder, every comment and every both choice heard and never printed while the voice can speak, no empty reason, and no name within two letters of another its lesson uses but the course's five (${n3.length} names in That is like me!, ${n4.length} in That reminds me!); each near miss planted, caught`,
+    keysOk && heardOk && empties === 0 && emptyPlant && namesOk, JSON.stringify({ keysOk, heardOk, empties, close3: close(n3), close4: close(n4), n3, n4 })); }
+// A first wrong tap hears its own reason in every one of the connection lessons' banks with three choices (which one is not about the
+// story, how the two stories are alike, which one is a connection and what is the same in both), every wrong choice at seeds 1 to 400:
+// none names the answer or another choice still open, which would hold it back (whyNotNamesAnswer, whyNotNamesOpenWrong). Plant: a not
+// bank reason that says a word of the answer the question never said (pizza), held back and caught.
+{ const WIDE = ['p3-link-not', 'p4-link-alike', 'p4-link-which', 'p4-link-same'];
+  const HELD = 'Not that one. Have another try.'; let taps = 0; const held = [];
+  for (const g of WIDE) for (let s = 1; s <= 400; s++) { const q = L.generateQuestion(g, s); for (const c of q.choices.filter((x) => x !== q.answer)) { taps += 1; const w = L.preReaderWrongWords(q, c, [c]); if (w === HELD || !w.startsWith(L.whyNotSentence(q.whyNot[c]))) held.push(`${g} seed ${s} ${c}`); } }
+  const qp = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p3-link-not', i + 1)).find((q) => q.answer === 'I like pizza!'); const tap = qp.choices.find((c) => c !== qp.answer);
+  const plantHeld = L.preReaderWrongWords({ ...qp, whyNot: { ...qp.whyNot, [tap]: { name: qp.whyNot[tap].name, why: 'is about Ben\'s story, and pizza is not.' } } }, tap, [tap]) === HELD;
+  ok(`a first wrong tap hears its own reason in every one of the connection lessons' banks with three choices (${WIDE.length} banks, ${taps} first taps at seeds 1 to 400; a not bank reason that names the pizza, planted, held back and caught)`, held.length === 0 && taps === WIDE.length * 800 && plantHeld, held.slice(0, 5).join(' | ')); }
+// The read-along's marks on every new line (pass NR's second wave): each line of the two connection lessons splits, by the rule the screen's
+// read-along and the voice both use (SENTENCE_BREAK, ui's sentencesOf), into whole sentences, each starting with a capital and ending in its
+// mark, that make up the whole line, so each sentence wears data-read-lit as the voice begins it and data-read-ahead until then; a quoted
+// sentence inside one ("Then say, That is like me!") ends where its mark is; and every sentence a line's voices name is one of its own.
+// Plant: the turn as the lead's design gave it, "Then say, that is like me! and tell how.", whose second sentence starts in lower case, caught.
+{ const lines = ['that-is-like-me', 'that-reminds-me'].flatMap((id) => L.readAloudScript(L.getModule(id)).map((l, i) => ({ id, i, l })));
+  const splits = (say) => String(say).split(L.SENTENCE_BREAK).filter((x) => x.trim());
+  const whole = ({ l }) => { const ss = splits(l.say); return ss.length > 0 && ss.every((s) => /^[A-Z].*[.!?]$/.test(s.trim())) && ss.join(' ') === l.say.trim() && (l.voices || []).every((v) => ss.map((s) => s.trim()).includes(String(v[0]).trim())); };
+  const bad = lines.filter((x) => !whole(x)).map((x) => `${x.id} line ${x.i}`);
+  const sentences = lines.reduce((n, x) => n + splits(x.l.say).length, 0);
+  const turn = lines.find((x) => x.id === 'that-is-like-me' && /^Now you try\./.test(x.l.say)); const planted = { ...turn, l: { ...turn.l, say: 'Now you try. Listen to a story with a grown-up. Then say, that is like me! and tell how.', voices: [['Listen to a story with a grown-up.', 'tell']] } };
+  ok(`every line of the two connection lessons is whole sentences by the read-along's own rule, each wearing its mark in turn (${lines.length} lines, ${sentences} sentences), and its voices name its own sentences (the turn as the design gave it, planted, caught)`, lines.length === 26 && bad.length === 0 && !whole(planted), bad.join(', ')); }
 // The five consonant blends the onset lessons say (pass NB, BLEND_PARTS): one piece each, made by the app from its own two sounds: the
 // first part's sound where the blend starts and the second's where it ends, measured by the bands the rules above measure each sound by
 // (a hiss high, fff flat and spread, t's and p's bursts high and low, lll and rrr voiced and low, rrr's third resonance low), quick
@@ -5192,7 +6337,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'page', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box', 'net', 'jellyfish', 'zipper', 'goat', 'guitar', 'watermelon', 'hat', 'house', 'window', 'cup', 'queen', 'quilt', 'van', 'volcano', 'yo-yo', 'yarn', 'apple', 'ant', 'elephant', 'elf', 'igloo', 'insect', 'octopus', 'otter'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'page', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box', 'net', 'jellyfish', 'zipper', 'goat', 'guitar', 'watermelon', 'hat', 'house', 'window', 'cup', 'queen', 'quilt', 'van', 'volcano', 'yo-yo', 'yarn', 'apple', 'ant', 'elephant', 'elf', 'igloo', 'insect', 'octopus', 'otter', 'cubby', 'note'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); } // cubby and note: pass NR's drawn print
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD; worried and embarrassed since pass MN
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
@@ -5572,8 +6717,11 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           // says); it names no sign, so it cannot give the face another, and the pass NM block derives its words from the story.
           // Since pass NP's round one lesson read What happens next?'s and Story clues' feel questions do the same, "Sad is not a good guess,
           // because Mia's mom got her a new ice cream.", since neither lesson's lines say a face's sign.
+          // Since pass NR's second wave That is like me!'s feel question does the same by the story's own words, "Sad is not how Ben felt,
+          // because the story says he felt happy.", since no line of it says a face's sign either.
           const taleFeel = (genId === 'p3-tale-feel' && /^is how the [a-z]+ felt when the [a-z]+ (?:found the [a-z]+|was lost)\.$/.test(e.why))
-            || (/^p(?:3-next|4-clue)-feel$/.test(genId) && /^is not a good guess, because (?:Mia|Ava|a tear)[^.]* [a-z]+\.$/.test(e.why));
+            || (/^p(?:3-next|4-clue)-feel$/.test(genId) && /^is not a good guess, because (?:Mia|Ava|a tear)[^.]* [a-z]+\.$/.test(e.why))
+            || (genId === 'p3-link-feel' && /^is not how Ben felt, because the story says he felt (?:sad|happy)\.$/.test(e.why));
           if (face) { if (!wnHas(e.name, face[1])) off('name is not its own feeling'); if (!e.why.startsWith(WN_FACE[face[1]]) && !taleFeel) off('why gives the face another sign'); }
           for (const m of e.why.matchAll(/\b(?:a|the) (happy|sad|mad|scared|worried|embarrassed) face has ([^,.]+)/g)) if (m[2] !== WN_SIGN[m[1]]) off(`why gives a ${m[1]} face another sign`);
           // The face shown is the question's own picture where it has one (the calm rows say I feel sad, so the answer cannot
@@ -6710,6 +7858,13 @@ ok(`every pre-K 3 and First Steps choice question says why each wrong choice doe
   // voice), and feel in the feeling questions (the lesson's fourth reason is "to say how you feel", and every feeling it teaches
   // starts I feel).
   const ECHO_KEPT = { 'p4-fit-voice': ['voice'], 'p4-fit-why': ['feel'], 'p4-fit-say': ['feel'] };
+  // Pass NR's second wave: a connection names what its story names, the skill itself (the lesson's own Leo says, I have a teddy bear too!,
+  // after Ben's teddy bear), so the which banks of That is like me! and That reminds me! keep the words a story and its own comments share,
+  // each a thing, a place, something that happened or a feeling of that story, as their stems are read here; and That reminds me!'s story,
+  // which a comment that tells of another story says, as the prompt does ("a connection to the story"), and which a wrong choice says as
+  // often as the answer does. Any other echo in them fails, as one in pass MS's banks does.
+  const NR2_ECHO_KEPT = { 'p3-link-which': ['bear', 'birthday', 'cake', 'candl', 'dark', 'down', 'face', 'fell', 'had', 'lick', 'light', 'lost', 'night', 'park', 'puddl', 'puppy', 'rain', 'scar', 'slide', 'splash', 'tall', 'teddy', 'tower', 'turn'],
+    'p4-link-which': ['bak', 'beach', 'cooki', 'could', 'grandma', 'grew', 'high', 'into', 'kite', 'lost', 'made', 'mitten', 'park', 'plant', 'sandcastle', 'se', 'sleep', 'snow', 'story'] };
   const MS_BANKS = ['p4-act-thing', 'p4-act-word', 'p4-act-when', 'p4-act-yesno', 'p4-act-use', 'p3-need-say', 'p3-need-pic', 'p3-need-enough', 'p3-need-who', 'p3-need-yesno', 'p4-fit-voice', 'p4-fit-why', 'p4-fit-say', 'p4-fit-enough', 'p4-fit-yesno'];
   // The older banks' echoes, by distinct question over 2,000 seeds, as pass MS found them (26 in 16 banks, several the skill
   // itself, such as "I like your hat!" said back to a friend's new hat); a bank's count may fall, never rise.
@@ -6719,17 +7874,19 @@ ok(`every pre-K 3 and First Steps choice question says why each wrong choice doe
     const pics = MS_BANKS.includes(b);
     for (let s = 1; s <= 2000; s++) { let q; try { q = L.generateQuestion(b, s); } catch (e) { continue; } if (!wordy(q) && !(pics && pictured(q))) continue; read += 1; if (pics && pictured(q)) readPics += 1; const e = echoOf(q, pics); if (!e.length) continue;
       const k = `${q.story || ''}|${q.prompt}|${q.answer}`; if (seen.has(k)) continue; seen.add(k);
-      if (MS_BANKS.includes(b) && e.some((w) => !(ECHO_KEPT[b] || []).includes(w))) unkept.push(`${b}: ${q.story || ''} ${q.prompt} -> ${q.answer} [${e}]`); }
-    if (!MS_BANKS.includes(b) && seen.size > (ECHO_WAITS[b] || 0)) grown.push(`${b} ${seen.size} > ${ECHO_WAITS[b] || 0}`); }
+      if ((MS_BANKS.includes(b) || NR2_ECHO_KEPT[b]) && e.some((w) => !(ECHO_KEPT[b] || NR2_ECHO_KEPT[b] || []).includes(w))) unkept.push(`${b}: ${q.story || ''} ${q.prompt} -> ${q.answer} [${e}]`); }
+    if (!MS_BANKS.includes(b) && !NR2_ECHO_KEPT[b] && seen.size > (ECHO_WAITS[b] || 0)) grown.push(`${b} ${seen.size} > ${ECHO_WAITS[b] || 0}`); }
   const ask = (story, prompt, answer, ...wrong) => ({ type: 'choice', story, prompt, choices: [answer, ...wrong], answer });
   const caught = echoOf(ask('You want more of this.', 'What can you say?', 'May I have some more, please?', 'May I have a glass of water, please?')).includes('more')
     && echoOf(ask('You want a turn on the slide.', 'What can you say?', 'May I have a turn on the slide, please?', 'May I have some more, please?', 'May I have a glass of water, please?')).includes('slide')
     && echoOf(ask('You feel sad.', 'What can you say?', 'I feel sad.', 'I made a tall tower!')).includes('feel')
     && echoOf(ask('You cut paper with scissors.', 'Which one do you cut with?', 'icon:scissors', 'icon:cup', 'icon:bed'), true).length > 0
-    && echoOf(ask(null, 'Who did you play with?', 'My friend and I played tag.', 'I went down the slide.')).includes('play');
+    && echoOf(ask(null, 'Who did you play with?', 'My friend and I played tag.', 'I went down the slide.')).includes('play')
+    // Since pass NR's second wave: a which bank's echo outside its kept words, a kite its stories never name, is still caught.
+    && echoOf(ask('Listen. Ben flew a kite.', 'Which one is a connection to the story?', 'I fly a kite!', 'I like pizza!')).some((w) => !NR2_ECHO_KEPT['p3-link-which'].includes(w));
   const passed = [ask('You want more of this.', 'What can you say?', 'May I have some more, please?', 'I want more juice.'), ask('Listen. Leo feels happy, and Kai feels mad.', 'Who feels happy?', 'Leo', 'Kai'),
     ask('You and your friend play bus. You drive the bus, and your friend rings the bell.', 'Who rings the bell?', 'Your friend', 'You'), ask(null, 'You want to ask a question. What can you say?', 'What is your name?', 'I made a tall tower!', 'I feel happy!')].every((q) => echoOf(q).length === 0);
-  ok(`no pre-K question's own words give its answer away: pass MS's fifteen banks keep only their listed echoes, no older bank's echoes grow, the echoes passes MD, MS and MW found are caught (since pass MW a stem drops -ed too) and four near misses pass (${read} questions read, ${readPics} of them pass MS's picture questions read by their pictures' names; pass MS, round three's alignment read and round four's code read)`, unkept.length === 0 && grown.length === 0 && caught && passed && read > 200000 && readPics >= 6000, [...unkept.slice(0, 4), ...grown.slice(0, 4), `caught ${caught}`, `near misses pass ${passed}`, `read ${read}`, `pictures ${readPics}`].join(' | ')); }
+  ok(`no pre-K question's own words give its answer away: pass MS's fifteen banks and pass NR's two which banks keep only their listed echoes, no older bank's echoes grow, the echoes passes MD, MS and MW found are caught (since pass MW a stem drops -ed too) and four near misses pass (${read} questions read, ${readPics} of them pass MS's picture questions read by their pictures' names; pass MS, round three's alignment read and round four's code read)`, unkept.length === 0 && grown.length === 0 && caught && passed && read > 200000 && readPics >= 6000, [...unkept.slice(0, 4), ...grown.slice(0, 4), `caught ${caught}`, `near misses pass ${passed}`, `read ${read}`, `pictures ${readPics}`].join(' | ')); }
 { // More Info's smart words (pass MH, Mikey: "Maybe the explanation text can be "smart text" and show that it knows which wrong
   // answer was selected.  In a future visit to the module it can slightly change to "which you've chosen once before""). The words
   // follow what was tapped now and how often the same wrong answer to the same question was tapped on earlier visits.
@@ -7297,14 +8454,19 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     // surely as the word outside, and a grown-up is named by name as often as by the word, so the check reads both; a closing's place is
     // read alone and its grown-up in its prompt too (a storm outside in a prompt sends nobody out). The time-to-go artist's old short voice is planted (caught), and the same with
     // my dad (passed).
-    const OUTDOOR_PLACE = /\boutside\b(?! the lines)|\boutdoors\b|\bpark\b|\bplayground\b|\bbeach\b|\bstreet\b|\bsidewalk\b|\b(?:way|walk|walked|walking) (?:home|to school)\b/i;
+    const OUTDOOR_PLACE = /\boutside\b(?! the lines)|\boutdoors\b|\bpark\b|\bplayground\b|\bbeach\b|\bstreet\b|\bsidewalk\b|\b(?:way|walk|walked|walking) (?:home|to school)\b|\b(?:to|at|on) the swings\b/i;
     const GROWN_UP_NAMED = /\bgrown-?ups?\b|\bmom\b|\bdad\b|\bmother\b|\bfather\b|\bparents?\b|\bgrand(?:ma|pa|mother|father|parent)s?\b|\bgrand(?:children|child|son|daughter)\b|\bteacher\b|\baunt\b|\buncle\b/i;
     const leftAlone = (t) => OUTDOOR_PLACE.test(t) && !GROWN_UP_NAMED.test(t);
     const closingAlone = (w) => OUTDOOR_PLACE.test(String(w.closing)) && !GROWN_UP_NAMED.test(String(w.prompt) + ' ' + String(w.closing));
     const outdoorIds = earlyAll.filter((w) => closingAlone(w) || (w.simple || []).some((v) => leftAlone(v.says))).map((w) => w.id);
     const oldTreasure = 'On the way home, I look for one treasure, like a snail on a wall. Leaving has its own pictures!';
-    ok('an early short voice or closing that puts a child in a park, at a playground, on a beach or a street, or on a walk home names a grown-up with them (pass ND; the old treasure hunt caught, the same with my dad passed)',
-      earlyAll.length >= 120 && outdoorIds.length === 0 && leftAlone(oldTreasure) && !leftAlone(oldTreasure.replace('On the way home,', 'On the way home with my dad,')), outdoorIds.join(', '));
+    // Pass NR (round one's Wonder read): swings stand in a playground, so a child who gets to the swings, or is at or on them, is
+    // outdoors too. The last-in-line skeptic's first short voice is planted (caught: its teacher was only in the long voice), and the
+    // same with my teacher holding the door passes. A voice that only names swings (two friends who both love the swings) puts no child there.
+    const oldSwings = 'I thought first in line was best. Then I was first. I held the door for everyone, and I got to the swings last!';
+    ok('an early short voice or closing that puts a child in a park, at a playground, on a beach or a street, or on a walk home names a grown-up with them (pass ND; the old treasure hunt caught, the same with my dad passed; since pass NR at the swings too, the old first-in-line voice caught)',
+      earlyAll.length >= 120 && outdoorIds.length === 0 && leftAlone(oldTreasure) && !leftAlone(oldTreasure.replace('On the way home,', 'On the way home with my dad,'))
+      && leftAlone(oldSwings) && !leftAlone(oldSwings.replace('I held the door for everyone,', 'My teacher had me hold the door,')) && !leftAlone('You might both love the swings and go to bed at different times.'), outdoorIds.join(', '));
     ok('every Wonder question has its own id', new Set(L.WONDER.map((w) => w.id)).size === L.WONDER.length);
     ok('every Wonder question carries a theme the rotation knows', L.WONDER.every((w) => Object.keys(L.WONDER_THEMES).includes(w.theme || 'world')));
   }
@@ -8257,7 +9419,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const missRow = L.classView([oneMiss], '2026-09-10T12:00:00.000Z')[0];
   ok('one missed round is named, with its score, and what a second miss would bring', missRow.reasons.some((r) => r.includes('S-4 failed the last round of **Count to 5** (2 of 5 right, 1 attempt)') && r.includes('second miss')));
   ok('a class row names the stage the student is working in, without disturbing its attention band', rows.every((r) => typeof r.stage === 'string') && rows.every((r) => ['needs help now', 'keep an eye on', 'on track'].includes(r.band)));
-  ok('the next module is named, not stringified', rows.every((r) => !r.nextTitle.includes('[object')) && rows.some((r) => r.nextTitle.length > 0));
+  ok('the next module is named, not stringified', rows.every((r) => !r.nextNamed.includes('[object')) && rows.some((r) => r.nextNamed.length > 0));   // nextNamed since pass NR, where it was nextTitle
   ok('every class row carries the practice line the report summary shows', missRow.practice === 'Practice so far: 1 round, 0 passed.\nTried but not passed yet: **Count to 5** (best score 2 out of 5, 1 attempt).' && rows.find((r) => r.label === 'S-3').practice === '');
   const quickEvents = [L.makeCoursesEnabledEvent(['history-8'], '2026-09-09T09:00:00.000Z'), L.makeQuickCheckEvent('founding-documents', Array.from({ length: 5 }, (_, i) => ({ correct: i < 2, timeMs: 9000 })), '2026-09-09T10:00:00.000Z')];
   const quickRow = L.classView([{ id: 's_5', label: 'S-5', events: quickEvents }], '2026-09-10T12:00:00.000Z')[0];
@@ -10190,7 +11352,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 230)   // 230 since pass NP's second wave, Hold a book and Which way we read; 228 since pass NP's What happens next?, Act it out, Story clues and Tell it again; 224 since pass NM's Listen to the story, Pictures and words and Questions about a story; 221 since pass NL's Almost the same and More small letters; 219 since pass NK's second wave, Small letters and End marks; 217 since pass NK's A, E and I, O and U, Any size, any turn and Rectangles; 213 since pass NI's Q, V and Y and Write your name; 211 since pass NF's Hear it in a word and Look and write; 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 234)   // 234 since pass NR's second wave, That is like me! and That reminds me!; 232 since pass NR's Words all around us and Print tells us something; 230 since pass NP's second wave, Hold a book and Which way we read; 228 since pass NP's What happens next?, Act it out, Story clues and Tell it again; 224 since pass NM's Listen to the story, Pictures and words and Questions about a story; 221 since pass NL's Almost the same and More small letters; 219 since pass NK's second wave, Small letters and End marks; 217 since pass NK's A, E and I, O and U, Any size, any turn and Rectangles; 213 since pass NI's Q, V and Y and Write your name; 211 since pass NF's Hear it in a word and Look and write; 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
@@ -10837,8 +11999,9 @@ const moreRightProblems = (L) => { const r = {};
     // (BEAT_RUNS): a count and a pattern of short words are left alone, and the first rule, every list of short words, is planted.
     const listsAlone = (fn) => !!fn && fn('One, two, three, four, five, six, seven.', 'k') === 'One, two, three, four, five, six, seven.' && fn('Circle, circle, square, circle, square, square.', 'k') === 'Circle, circle, square, circle, square, square.' && wholes(fn, 'Sss, oh, puh.').includes('Sss, oh, puh.') && wholes(fn, 'Bah, nan, nuh.').includes('Bah, nan, nuh.');
     const oldAlone = plant('function runAlone(s) { if (!RUN_ALONE.test(s)) return false;', 'function runAlone(s) { return RUN_ALONE.test(s);');
-    // Since pass NE: the hyphen rule taken out (the plain words split by a pattern that never matches), planted.
-    const noHyphens = plant('String(t).split(/(\\S+-\\S+)/)', 'String(t).split(/(?!)/)');
+    // Since pass NE: the hyphen rule taken out (the plain words split by a pattern that never matches), planted. Since round three's screen
+    // read of pass NR the plain words split by WHOLE_WORD, a hyphenated word or a pre-K grade with its number, so the plant reads that text.
+    const noHyphens = plant('String(t).split(WHOLE_WORD)', 'String(t).split(/(?!)/)');
     // Since pass NI (round one's screen read): a find called out after its sounds is one span ("Yuh, yuh, yarn!", "Kwuh, quilt!"), a name
     // spelled aloud is one ("H, e, c, t, o, r" inside its sentence), and so is the game I spy, while a count and a list stay as they are;
     // the chant rule and the spelled-run rule, each taken out, planted, caught.
@@ -11952,7 +13115,7 @@ const moreRightProblems = (L) => { const r = {};
   const OLD = {
     'the unfiltered rows': plant(NOTE, 'const upNext = nextUpModule(rep, events);', 'const upNext = rows.find((m) => !m.mastered && !practicing.includes(m.id)) || null;'),
     'the raw log': plant(NOTE, 'const recent = activeEvents(events || []).filter(', 'const recent = (events || []).filter('),
-    'the lessons matched by title': plant(NOTE, 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0);', 'const practicing = touched.filter((id) => !rows.some((m) => m.title === byId.get(id).title && m.mastered) && byId.get(id).attempts > 0);'),
+    'the lessons matched by title': plant(NOTE, 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0 && !movedPast.includes(id));', 'const practicing = touched.filter((id) => !rows.some((m) => m.title === byId.get(id).title && m.mastered) && byId.get(id).attempts > 0);'),   // the line as pass NR has it, its old one put back
     'one question as "questions"': plant(NOTE, "asked === 1 ? ' question' : ' questions'", "' questions'"),
     'every assigned module mastered when nothing is still practicing': plant(NOTE, 'else if (assigned.length && assigned.every((m) => m.mastered))', 'else if (!practicing.length)'),
     'a lesson the student was moved past as next': OLD_NEXT && plant(NOTE, 'const upNext = nextUpModule(rep, events);', `const upNext = (${OLD_NEXT})(rep, events);`),
@@ -11963,6 +13126,7 @@ const moreRightProblems = (L) => { const r = {};
   const full = (id) => L.moduleRules(id).questions;
   const rnd = (id, at, right, n = full(id)) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: n }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: n });
   const K = L.getCourse('counting-k').modules.map((m) => m.id); const title = (id) => L.getModule(id).title;
+  const shown = (id) => L.titleCase(title(id));   // how the note writes a title, in title case since pass NR (the screen read's SHOULD CONSIDER 6)
   // The lessons listed under a head of the note (Still practicing:, Sam mastered:), each by its title: the bold words a line opens with,
   // since a title two printed lessons share has its course after it (pass NQ, F2; F2's block on a shared title, below, holds that).
   const listed = (text, head) => { const block = text.split('\n\n').find((b) => b.startsWith(head)); return block ? [...block.matchAll(/^• \*\*(.+?)\*\*/gm)].map((m) => m[1]) : []; };
@@ -11970,7 +13134,7 @@ const moreRightProblems = (L) => { const r = {};
   // One course assigned, another sorted ahead of it: Next up is the lesson the student opens next in Counting, the class row's own.
   const onlyCounting = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd(K[0], ago(2), full(K[0]))];
   const caseAhead = (note) => { const text = note('Sam', onlyCounting, now);
-    return L.COURSES.some((c) => c.id.localeCompare('counting-k') < 0 && c.modules.length > 0) && text.includes(`Next up: **${title(K[1])}**.`) && rowOf(onlyCounting).next === title(K[1]); };
+    return L.COURSES.some((c) => c.id.localeCompare('counting-k') < 0 && c.modules.length > 0) && text.includes(`Next up: **${shown(K[1])}**.`) && rowOf(onlyCounting).next === title(K[1]); };
   // Every lesson of the assigned course mastered (two passes on different days, weeks ago): the note says so, and names no Next up.
   const allMastered = [L.makeCoursesEnabledEvent(['counting-k'], ago(40)), ...K.map((id, i) => rnd(id, ago(30, i / 10), full(id))), ...K.map((id, i) => rnd(id, ago(29, i / 10), full(id)))];
   const caseMastered = (note) => { const text = note('Sam', allMastered, now);
@@ -11986,14 +13150,14 @@ const moreRightProblems = (L) => { const r = {};
     rnd(K[0], ago(2), full(K[0])), L.makeColoredEvent('star', ago(2, 1)), L.makeColoredEvent('ball', ago(1))];
   const caseReset = (note) => { const text = note('Sam', reset, now); const rep = L.buildReport('Sam', reset);
     return rep.totalAttempts === 1 && rep.coloringBreaks === 2 && text.includes(`answered ${full(K[0])} questions and got ${full(K[0])} right.`) && text.includes('Sam colored 2 pictures.')
-      && JSON.stringify(listed(text, 'Still practicing:')) === JSON.stringify([title(K[0])]); };
+      && JSON.stringify(listed(text, 'Still practicing:')) === JSON.stringify([shown(K[0])]); };
   const caseResetSince = (since) => { const s = since(reset, ago(6)); return s.attempts === 1 && s.questions === full(K[0]) && s.colored === 2; };
   // Two lessons with one title (More and fewer, in pre-K 3 and in pre-K 4): the pre-K 3 one mastered this week, the pre-K 4 one
   // practiced and missed. Both are listed, each under its own head.
   const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5';
   const twoOfOne = [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P3, ago(10), full(P3)), rnd(P3, ago(3), full(P3)), rnd(P4, ago(2), 1)];
   const caseTitles = (note) => { const text = note('Sam', twoOfOne, now); const pm = L.deriveProgress(twoOfOne).perModule;
-    return !!L.getModule(P3) && !!L.getModule(P4) && title(P3) === title(P4) && pm[P3].mastered && !pm[P4].mastered && listed(text, 'Sam mastered:').includes(title(P3)) && listed(text, 'Still practicing:').includes(title(P4)); };
+    return !!L.getModule(P3) && !!L.getModule(P4) && title(P3) === title(P4) && pm[P3].mastered && !pm[P4].mastered && listed(text, 'Sam mastered:').includes(shown(P3)) && listed(text, 'Still practicing:').includes(shown(P4)); };
   // A week of one question says "1 question"; more say "questions".
   const oneQuestion = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd(K[0], ago(2), 1, 1)];
   const caseOne = (note) => note('Sam', oneQuestion, now).includes('This week Sam answered 1 question and got 1 right.') && note('Sam', onlyCounting, now).includes(`answered ${full(K[0])} questions and got`);
@@ -12003,7 +13167,7 @@ const moreRightProblems = (L) => { const r = {};
   const movedPast = [L.makeCoursesEnabledEvent(['counting-k'], ago(40)), rnd(K[0], ago(30), full(K[0])), rnd(K[0], ago(29), full(K[0])), rnd(K[1], ago(20), 1), rnd(K[1], ago(19), 1),
     L.makeLoopBackEvent(K[1], K[0], ago(19, 1)), rnd(K[1], ago(18), 1), rnd(K[1], ago(17), 1), L.makeMovedForwardEvent(K[1], ago(16))];
   const caseMoved = (note) => { const text = note('Sam', movedPast, now); const st = new Map(L.moduleStatuses(L.deriveProgress(movedPast), ['counting-k']).map((x) => [x.id, x.status]));
-    return L.movedPastIds(movedPast).includes(K[1]) && st.get(K[1]) === 'available' && st.get(K[2]) === 'available' && text.includes(`Next up: **${title(K[2])}**.`) && rowOf(movedPast).next === title(K[2]); };
+    return L.movedPastIds(movedPast).includes(K[1]) && st.get(K[1]) === 'available' && st.get(K[2]) === 'available' && text.includes(`Next up: **${shown(K[2])}**.`) && rowOf(movedPast).next === title(K[2]); };
   const CASES = [['one course assigned and another sorted ahead of it', caseAhead, 'the unfiltered rows'], ['every assigned module mastered', caseMastered, 'the unfiltered rows'],
     ['every assigned lesson passed once and none mastered', casePassed, 'every assigned module mastered when nothing is still practicing'], ['a reset in the middle of the week', caseReset, 'the raw log'],
     ['two lessons with one title, one mastered', caseTitles, 'the lessons matched by title'], ['a week of one question', caseOne, 'one question as "questions"'],
@@ -12070,7 +13234,7 @@ const moreRightProblems = (L) => { const r = {};
     const b = /It comes either from (\w+) correct answers in a row, the module's latest (\w+), or from continuing to reliably answer its questions correctly as they reappear over time: at least (\w+) back, and (\d+) percent or more of them right\./.exec(conf);
     if (!b || num(b[1]) !== num(b[2]) || !streakAt(num(b[1])) || !strongAt(num(b[3]), Number(b[4]))) out.push('Key Words: the last point');
     if (!/without passing it\./.test(down)) out.push('Key Words: what holds a score down without a pass');
-    const c = /If (\w+) or more wrong answers in the latest round come in under (\w+) seconds each, Who needs help says there are signs of guessing in that module\./.exec(down);
+    const c = /If (\w+) or more wrong answers in the latest round come in under (\w+) seconds each, Who Needs Help says there are signs of guessing in that module\./.exec(down);
     if (!c || !guessAt(num(c[1]), num(c[2]))) out.push('Key Words: guessing');
     const d = /Getting (\w+) or more of the module's questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point,/.exec(down);
     if (!d || !weakAt(num(d[1]))) out.push('Key Words: the point taken when questions come back');
@@ -12086,7 +13250,7 @@ const moreRightProblems = (L) => { const r = {};
     if (!i || !streakAt(Number(i[1])) || !strongAt(Number(i[2]), Number(i[3]))) out.push('rules: the last point');
     const j = /^-1 if questions from this module have come back \(in memory checks, checkpoints and practice reviews, all counted together\) and (\w+) or more of those answers were wrong\.$/m.exec(r);
     if (!j || !weakAt(num(j[1]))) out.push('rules: the point taken when questions come back');
-    const k = /^The score stays between (\d+) and (\d+)\. Who needs help names a module under signs of guessing when (\d+) or more answers in its latest set were wrong in under (\d+) seconds each\.$/m.exec(r);
+    const k = /^The score stays between (\d+) and (\d+)\. Who Needs Help names a module under signs of guessing when (\d+) or more answers in its latest set were wrong in under (\d+) seconds each\.$/m.exec(r);
     if (!k || !boundsAt(Number(k[1]), Number(k[2])) || !guessAt(Number(k[3]), Number(k[4]))) out.push('rules: the bounds and guessing');
     return out; };
   // The old words, and a wrong number in the new ones, each planted in a copy of the definitions; each must be caught.
@@ -12097,7 +13261,7 @@ const moreRightProblems = (L) => { const r = {};
     'a wrong number for a pass': [swap('Confidence, scored 1 to 5', /(Passing a module adds )(\w+)/, (m, w, n) => w + (num(n) + 1)), RULES],
     'the old last point ("eight correct answers in a row or ... as it reappears over time")': [swap('Confidence, scored 1 to 5', /It comes either from \w+ correct answers in a row, the module's latest \w+, or from continuing to reliably answer its questions correctly as they reappear over time: at least \w+ back, and \d+ percent or more of them right\./, 'It comes either from eight correct answers in a row or from continuing to reliably answer material correctly as it reappears over time.'), RULES],
     'the old "without mastering it"': [swap('What holds a confidence score down', /without passing it\./, 'without mastering it.'), RULES],
-    'the old guessing note on the report': [swap('What holds a confidence score down', /If \w+ or more wrong answers in the latest round come in under \w+ seconds each, Who needs help says there are signs of guessing in that module\./, 'If two or more wrong answers come back in under four seconds, the progress report adds a note that says "guessing?"'), RULES],
+    'the old guessing note on the report': [swap('What holds a confidence score down', /If \w+ or more wrong answers in the latest round come in under \w+ seconds each, Who Needs Help says there are signs of guessing in that module\./, 'If two or more wrong answers come back in under four seconds, the progress report adds a note that says "guessing?"'), RULES],
     'the old point for any miss': [swap('What holds a confidence score down', /Getting \w+ or more of the module's questions wrong when they come back, in memory checks, checkpoints and practice reviews all counted together, also costs a point,/, 'Missing a question from the module when it comes back, in a memory check or a checkpoint, also costs a point,'), RULES],
     'a share other than half': [swap('What holds a confidence score down', /Getting half or more/, 'Getting most or more'), RULES],
     'the old "significantly faster or slower"': [swap('Typical answering time', /then watch for a latest round much faster than usual: under \d+ percent of the time per question they usually take in their other modules\. When that happens, View progress for this module says so\. A slower round is not called out\./, 'then watch for answers that arrive significantly faster or slower.'), RULES],
@@ -12107,7 +13271,7 @@ const moreRightProblems = (L) => { const r = {};
   };
   const now = problems(E, RULES);
   const uncaught = Object.entries(PLANTS).filter(([, [ex, rules]]) => !ex || !rules || problems(ex, rules).length === 0).map(([name]) => name);
-  ok(`the confidence score's Key Words and CONFIDENCE_RULES say what computeConfidence does, every number and condition read from the sentences and the code run at it and just past it: a pass adds 2 before its star, a flawless latest round 1, eight in a row or two back at 80 percent the last point, half or more wrong when questions come back costs a point, guessing named on Who needs help, a latest round under 60 percent of the usual called out and a slower one not (pass NQ, round one's code reads; ${Object.keys(PLANTS).length} old wordings and wrong numbers planted, each caught)`,
+  ok(`the confidence score's Key Words and CONFIDENCE_RULES say what computeConfidence does, every number and condition read from the sentences and the code run at it and just past it: a pass adds 2 before its star, a flawless latest round 1, eight in a row or two back at 80 percent the last point, half or more wrong when questions come back costs a point, guessing named on Who Needs Help, a latest round under 60 percent of the usual called out and a slower one not (pass NQ, round one's code reads; ${Object.keys(PLANTS).length} old wordings and wrong numbers planted, each caught)`,
     now.length === 0 && uncaught.length === 0 && RULES.length === 6, JSON.stringify({ now, uncaught })); }
 // Pass NQ, engineer F2: what F's code fixes left undone (F's report, its seven items), in five blocks: a lesson's own reset read alike
 // by every reader of a lesson's current progress, Since you last looked's words, View progress for this module's pace, the
@@ -12116,7 +13280,10 @@ const moreRightProblems = (L) => { const r = {};
 // Since you last looked, in words (pass NQ, F2; F's report, items 1 and 5). sinceLine, in src/ui.jsx, said "1 questions answered" for
 // one question, where the line's stories, pictures and games already said one in the singular; and its list of lessons mastered printed
 // a title two lessons share twice ("mastered More and fewer, More and fewer"). sinceLine is run from ui.jsx's own source on
-// changesSince's counts; its old words are put back in that source and caught, and so is changesSince's old list of bare titles.
+// changesSince's counts; its old words are put back in that source and caught, and so is changesSince's old list of bare titles. Since
+// round one's screen read of pass NR (SHOULD CONSIDER 6) the list writes each title in title case, as the weekly note, Who Needs Help and
+// Practice so far write theirs ("mastered More and Fewer from pre-K 3 math"), where it printed the stored title, "More and fewer"; the
+// stored title put back is caught too.
 { const vm = await import('node:vm');
   const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
   const a = ui.indexOf('\nfunction sinceLine(since) {'); const b = a < 0 ? -1 : ui.indexOf('\n}\n', a + 1); const LINE = a < 0 || b < 0 ? '' : ui.slice(a + 1, b + 2);
@@ -12129,21 +13296,63 @@ const moreRightProblems = (L) => { const r = {};
   const oneQ = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd('count-to-5', ago(2), 1, 1)]; const fiveQ = [L.makeCoursesEnabledEvent(['counting-k'], ago(20)), rnd('count-to-5', ago(2), 3)];
   const words = (line, since, ev) => line(since(ev, ago(6)));
   const singular = (line, since) => words(line, since, oneQ) === '1 question answered' && words(line, since, fiveQ) === '5 questions answered';
-  // Both More and fewer lessons mastered since the last look (two passes on different days each), then only one of them.
+  // Both More and fewer lessons mastered since the last look (two passes on different days each), then only one of them, with both
+  // pre-K Math courses assigned and with only its own (since pass NR, the one rule: a title another assigned lesson shares has its
+  // course after it, "More and fewer from pre-K 3 math", where it was the list label, "in Very first steps (Pre-K 3 - Math)").
   const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5'; const both = ['very-first-steps-pk3', 'first-steps-pk'];
-  const mastered = (ids) => [L.makeCoursesEnabledEvent(both, ago(40)), ...ids.map((id) => rnd(id, ago(5), L.moduleRules(id).questions)), ...ids.map((id) => rnd(id, ago(4), L.moduleRules(id).questions))];
-  const withCourse = (id) => `${L.getModule(id).title} in ${L.courseLabel(L.getCourse(L.getModule(id).courseId))}`;
+  const mastered = (ids, courses = both) => [L.makeCoursesEnabledEvent(courses, ago(40)), ...ids.map((id) => rnd(id, ago(5), L.moduleRules(id).questions)), ...ids.map((id) => rnd(id, ago(4), L.moduleRules(id).questions))];
+  const TT = (id) => L.titleCase(L.getModule(id).title);   // "More and Fewer", as the weekly note and Who Needs Help write it
+  const withCourse = (id) => `${TT(id)} from ${L.courseInSentence(L.getCourse(L.getModule(id).courseId))}`;
   const inOrder = L.MODULES.map((m) => m.id).filter((id) => id === P3 || id === P4);   // the list keeps the app's order of lessons
-  const twins = (line, since) => L.getModule(P3).title === L.getModule(P4).title && words(line, since, mastered([P3, P4])).startsWith(`mastered ${inOrder.map(withCourse).join(', ')}; `)
-    && words(line, since, mastered([P3])).startsWith(`mastered ${L.getModule(P3).title}; `);
+  const twins = (line, since) => L.getModule(P3).title === L.getModule(P4).title && TT(P3) !== L.getModule(P3).title && words(line, since, mastered([P3, P4])).startsWith(`mastered ${inOrder.map(withCourse).join(', ')}; `)
+    && words(line, since, mastered([P3])).startsWith(`mastered ${withCourse(P3)}; `) && words(line, since, mastered([P3], ['very-first-steps-pk3'])).startsWith(`mastered ${TT(P3)}; `);
   const OLD_LINE = swap(LINE, "since.questions === 1 ? ' question answered' : ' questions answered'", "' questions answered'");
-  const OLD_SINCE = swap(SINCE, 'const mastered = masteredIds.map((id) => (twin(id) ? `${getModule(id).title} in ${courseLabel(getCourse(getModule(id).courseId))}` : getModule(id).title));',
+  const OLD_SINCE = swap(SINCE, 'const mastered = masteredIds.map((id) => `${titleCase(getModule(id).title)}${fromCourse(id, enabled, masteredIds)}`);',
     'const mastered = Object.entries(per).filter(([, p]) => p.mastered && p.masteredAt && new Date(p.masteredAt).getTime() >= since).map(([id]) => (getModule(id) || {}).title).filter(Boolean);');
+  const STORED_TITLE = swap(SINCE, 'const mastered = masteredIds.map((id) => `${titleCase(getModule(id).title)}${fromCourse(id, enabled, masteredIds)}`);',
+    'const mastered = masteredIds.map((id) => `${getModule(id).title}${fromCourse(id, enabled, masteredIds)}`);');   // pass NR's line
   const line = LINE ? asLine(LINE) : null; const since = SINCE ? asSince(SINCE) : null;
   ok('Since you last looked says "1 question answered" for one question and "5 questions answered" for five (pass NQ, F2; sinceLine run from ui.jsx\'s own source on changesSince\'s counts, its old words put back and caught)',
     !!line && !!since && singular(line, since) && !!OLD_LINE && !singular(asLine(OLD_LINE), since), JSON.stringify({ one: line && since ? words(line, since, oneQ) : null }));
-  ok("Since you last looked names a lesson's course beside its title only when another lesson in its list has the same title (pass NQ, F2; changesSince's old list of bare titles put back, caught)",
-    !!line && !!since && twins(line, since) && !!OLD_SINCE && !twins(line, asSince(OLD_SINCE)), JSON.stringify({ both: line && since ? words(line, since, mastered([P3, P4])) : null })); }
+  ok("Since you last looked names a lesson's course after its title when another lesson in its list or in the student's assigned courses has the same title, and only then, each title in title case as the report's other lists write it (pass NQ, F2; the one rule since pass NR; round one's screen read of pass NR, SHOULD CONSIDER 6; changesSince's old list of bare titles and pass NR's stored titles put back, each caught)",
+    !!line && !!since && twins(line, since) && !!OLD_SINCE && !twins(line, asSince(OLD_SINCE)) && !!STORED_TITLE && !twins(line, asSince(STORED_TITLE)), JSON.stringify({ both: line && since ? words(line, since, mastered([P3, P4])) : null }));
+  // A pre-K grade with its number is one kept word wherever an educator's sentence prints it (round three's screen read of pass NR, its
+  // SHOULD CONSIDER 3: Since you last looked read "pre- / K 4 math" at 320 by 568 in both themes). WHOLE_WORD, read from ui.jsx's own
+  // source, is the pattern partsWhole (every RichText: Who Needs Help's lines) and wholeHyphens split by; every "pre-K 3" and "pre-K 4" the
+  // report's sentences print for a child given both pre-K math courses (Since you last looked, View progress, the Practice Reviews card,
+  // the stuck sentence an Action Item shows, the weekly note, the summary and Who Needs Help) must lie whole inside one of its kept words,
+  // and every place that prints those sentences draws them through it. The old pattern, a hyphenated word alone, and the old Since you
+  // last looked line are each put back and caught.
+  { const WW = /^const WHOLE_WORD = (\/.+\/);$/m.exec(ui); const whole = WW ? vm.runInNewContext(WW[1]) : null; const oldWhole = /(\S+-\S+)/;
+    const keptIn = (text, re) => { const pieces = String(text).split(re); const spans = []; let at = 0; pieces.forEach((p, i) => { spans.push([at, at + p.length, i % 2 === 1]); at += p.length; });
+      return [...String(text).matchAll(/[Pp]re-K \d+/g)].map((m) => spans.some(([a, b, kept]) => kept && m.index >= a && m.index + m[0].length <= b)); };
+    const nowIso = new Date(NOW).toISOString(); const four = (id) => [9, 8, 7, 6].map((d) => rnd(id, ago(d), 1));
+    const triedBoth = [L.makeCoursesEnabledEvent(both, ago(40)), ...L.prerequisitesOf(P4).flatMap((id) => [rnd(id, ago(30), L.moduleRules(id).questions), rnd(id, ago(29), L.moduleRules(id).questions)]), rnd(P3, ago(3), 1), rnd(P4, ago(2), 1)];
+    const reviewedP3 = [L.makeCoursesEnabledEvent(both, ago(60)), rnd(P3, ago(40), L.moduleRules(P3).questions), rnd(P3, ago(39), L.moduleRules(P3).questions), { type: 'light_review_completed', at: ago(3), startedAt: ago(3), moduleId: P3, stage: 'first', results: [0, 0, 0, 1, 1].map((x) => ({ correct: !!x, genId: 'g', prompt: 'p' })), correct: 2, total: 5, outcome: 'fail' }];
+    const stuckP3 = [L.makeCoursesEnabledEvent(both, ago(20)), ...four(P3)];
+    const texts = [['Since you last looked', line ? line(L.changesSince(mastered([P3, P4]), ago(6))) : ''],
+      ...[triedBoth, reviewedP3, stuckP3].flatMap((log) => { const rep = L.buildReport('P-2', log); const parts = L.summaryParts(rep); const row = L.classView([{ id: 'P-2', label: 'P-2', events: log }], nowIso)[0];
+        return [...[P3, P4].map((id) => ['View progress', L.moduleStory('P-2', log, id, nowIso)]), ['the Practice Reviews card', L.lightReviewHistory(log, 'P-2').map((h) => h.text).join(' ')],
+          ['an Action Item', String(L.neverStuckSentence(log, P3, 'P-2', { action: false }) || '')], ['the weekly note', L.weeklyNote('P-2', log, nowIso)],
+          ['the summary', [...parts.items, parts.rest, ...(parts.tried || []).map((t) => t.title)].join(' ')], ['Who Needs Help', [...row.reasons, row.practice].join(' ')]]; })];
+    const read = (re) => texts.map(([where, t]) => [where, re ? keptIn(t, re) : []]); const now = read(whole); const found = now.reduce((n, [, k]) => n + k.length, 0);
+    const broken = now.filter(([, k]) => k.some((x) => !x)).map(([w]) => w); const places = [...new Set(now.filter(([, k]) => k.length).map(([w]) => w))];
+    const oldBroken = read(oldWhole).filter(([, k]) => k.some((x) => !x)).length;
+    // Every place an educator's sentence is printed, as it reads now: each through wholeHyphens, or RichText, whose partsWhole splits by WHOLE_WORD.
+    const SITES = { 'Since you last looked': 'Since you last looked: {wholeHyphens(sinceLine(since))}.', 'View progress, printed': '{wholeHyphens(moduleStory(shownName, educatorRecord.events, m.id))}',
+      'View progress (WholeNames)': '<WholeNames text={moduleStory(shownName, educatorRecord.events, storyModule)} names={[shownName]} />', 'WholeNames': ": <React.Fragment key={i}>{wholeHyphens(part)}</React.Fragment>))}</>;",
+      'the Practice Reviews card': '<Emphasized text={h.text} />', 'an Action Item': '<Emphasized text={item.sentence} />', 'Emphasized': "<strong key={i}>{wholeHyphens(p.slice(1, -1))}</strong> : <span key={i}>{wholeHyphens(p)}</span>",
+      'the weekly note': '<WeeklyNoteBody text={shown} />', "the weekly note's bold": "<strong key={i}>{wholeHyphens(x)}</strong> : <React.Fragment key={i}>{wholeHyphens(x)}</React.Fragment>",
+      "the weekly note's item": "{wholeHyphens(rest.charAt(0).toUpperCase() + rest.slice(1))}", "the summary's list": "<li key={it} style={{ display: 'list-item' }}>{wholeHyphens(it)}</li>",
+      "the summary's lines": "textWrap: 'balance' }}>{wholeHyphens(line)}</p>)}</div>}", "the summary's lessons tried": 'onClick={() => setStoryModule(t.id)}>{wholeHyphens(t.title)}</button>',
+      "Who Needs Help's lines": '<RichText text={[...lines, tally + next].join(\'\\n\')} size={15} lineGap={4} />', "Who Needs Help's practice": '<RichText text={r.practice} size={14} lineGap={4} />',
+      'RichText, by partsWhole': 'const hyphens = (t) => String(t).split(WHOLE_WORD).forEach((w, i) => {', 'wholeHyphens': 'function wholeHyphens(text) { return String(text).split(WHOLE_WORD).map(' };
+    const SITE_COUNTS = { "the summary's lines": 2 };
+    const unsited = (src) => Object.entries(SITES).filter(([k, t]) => src.split(t).length !== (SITE_COUNTS[k] || 1) + 1).map(([k]) => k);
+    const oldSince = swap(ui, 'Since you last looked: {wholeHyphens(sinceLine(since))}.', 'Since you last looked: {sinceLine(since)}.');
+    ok(`a pre-K grade with its number is one kept word wherever an educator's sentence prints it (round three's screen read of pass NR, SHOULD CONSIDER 3: ${found} grades in ${texts.length} sentences of ${places.length} kinds, ${places.join(', ')}, each whole in WHOLE_WORD, read from ui.jsx; ${Object.keys(SITES).length} places that print them each draw them through it; the old pattern, a hyphenated word alone, put back, leaves a grade to break in ${oldBroken}; the old Since you last looked line put back, caught)`,
+      !!whole && found >= 35 && places.length >= 7 && broken.length === 0 && oldBroken > 0 && unsited(ui).length === 0 && !!oldSince && unsited(oldSince).join() === 'Since you last looked',
+      JSON.stringify({ broken: broken.slice(0, 4), found, places, oldBroken, unsited: unsited(ui) })); } }
 // A lesson's own reset (pass NQ, F2). An educator can reset one lesson ("Reset progress for this module"), and its row then shows 0
 // attempts. Until pass NQ the confidence score still read that lesson's rounds and returning questions from before the reset, so the
 // row kept its score and Who Needs Help its "signs of guessing"; so did the misses in a row (failedStreak) and the loop back they
@@ -12254,7 +13463,7 @@ const moreRightProblems = (L) => { const r = {};
     "a piece handed in before the reset stayed among the lesson's": ['writingsFor', ' && !clearedByLessonReset(resets, moduleId, e.at)).map', ').map', "the lesson's pieces of writing"],
     'a mark on a piece handed in before the reset passed the lesson': ['deriveProgress', '      if (clearedByLessonReset(moduleResetAt, e.moduleId, e.submittedAt)) continue;\n', '', "the row's progress"],
     'the rounds per module counted the rounds before a reset': ['classView', 'const effort = mastered > 0 ? report.totalAttempts / mastered : 0;', 'const effort = mastered > 0 ? attempts.length / mastered : 0;', "Who Needs Help's practice line and rounds per module"],
-    "Still practicing listed a lesson reset after this week's rounds": ['weeklyNote', 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0);', 'const practicing = touched.filter((id) => !byId.get(id).mastered);', 'the weekly note'],
+    "Still practicing listed a lesson reset after this week's rounds": ['weeklyNote', 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0 && !movedPast.includes(id));', 'const practicing = touched.filter((id) => !byId.get(id).mastered);', 'the weekly note'],   // the line as pass NR has it
   };
   const missed = Object.entries(PLANTS).filter(([, [name, from, to, reader]]) => { const fn = plant(name, from, to); return !fn || CASES.every((c) => differs({ ...L, [name]: fn }, c, [reader]).length === 0); }).map(([what]) => what);
   // The lesson reset is read in one place: every line of code naming the module reset event sits in its maker or in lessonResetTimes.
@@ -12365,11 +13574,20 @@ const moreRightProblems = (L) => { const r = {};
   const uncaught = Object.entries(PLANTS).filter(([, [mastered, retention]]) => !mastered || problems(mastered, retention).length === 0).map(([name]) => name);
   ok(`the report's definitions say what Mastered and Retention are today: the star with passes on two different days, the pass marks by grade band and the share of a longer or shorter set, a writing mark, no pass day from a placement or a quick check, a moved-past lesson's fresh-try review, the first day of Mastery v2, and memory checks from modules passed, every number read from the words and the code run at it and just past it (pass NQ, F2; ${Object.keys(PLANTS).length} old lines and wrong numbers planted, each caught)`,
     now.length === 0 && uncaught.length === 0, JSON.stringify({ now, uncaught })); }
-// A title two lessons share, in the weekly note (pass NQ, F2; F's report, item 5). Ten titles belong to two lessons each (More and fewer
-// is a pre-K 3 lesson and a pre-K 4 one), and in a week that named both, the note printed the same title twice. A lesson's title has its
-// course beside it (courseLabel) only when another lesson the note prints has the same title: in its lists, as Next up, and as a
-// practice review's own lesson; a title printed once stands alone. The note's source with its old bare titles put back, and with a
-// course beside every title, is run in node:vm on the module's exports, and each is caught.
+// A title two lessons share, in the weekly note (pass NQ, F2; F's report, item 5; the one rule since pass NR). Ten titles belong to two
+// lessons each (More and fewer is a pre-K 3 lesson and a pre-K 4 one), and in a week that named both, the note printed the same title
+// twice. A lesson's title is followed by its course (fromCourse, "from pre-K 3 math", where until pass NR it was the list label, "in Very
+// first steps (Pre-K 3 - Math)") when another lesson of that title is in the student's assigned courses or is one the note names: in its
+// lists, as Next up, and as a practice review's own lesson; a title with neither stands alone. Since pass NR the note writes every title
+// in title case. Six cases: both lessons in its lists; one alone, its twin's course not assigned; one alone with its twin's course
+// assigned (named with its course though the twin is not printed); one practiced and the other next up, the practiced one's course not
+// assigned; and one practiced and the other's practice review, with both courses assigned (the sentence gives the course itself) and
+// with the practiced one's course switched off (the note gives it). The note's source with its old bare titles put back, with a course
+// beside every title, with the course only for a lesson the note prints, and with bare titles in the practice reviews, is run in
+// node:vm on the module's exports, and each is caught. Since round one's code read (SHOULD CONSIDER 3) a seventh case holds the lessons a
+// practice review's line loops back to among those the note names (loopBacksTold): grade 7's The first Texans practiced and stuck, never
+// mastered, after looping back to grade 4's lesson of that title, only grade 7's course assigned, is named with its course under Still
+// practicing, as the stuck line under it names it; the note's source without those lessons in its names is caught.
 { const vm = await import('node:vm');
   const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
   const a = lsrc.indexOf('\nexport function weeklyNote('); const b = a < 0 ? -1 : lsrc.indexOf('\n}\n', a + 1); const NOTE = a < 0 || b < 0 ? '' : lsrc.slice(a + '\nexport '.length, b + 2);
@@ -12378,36 +13596,52 @@ const moreRightProblems = (L) => { const r = {};
   const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const now = new Date(NOW).toISOString(); const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
   const full = (id) => L.moduleRules(id).questions;
   const rnd = (id, at, right) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: full(id) });
-  const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5'; const T = L.getModule(P3).title;
-  const named = (id) => `**${T}** in ${L.courseLabel(L.getCourse(L.getModule(id).courseId))}`;
+  const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5'; const T = L.getModule(P3).title; const TT = L.titleCase(T);
+  const fromWords = (id) => ` from ${L.courseInSentence(L.getCourse(L.getModule(id).courseId))}`;
+  const named = (id) => `**${TT}**${fromWords(id)}`;
+  const C3 = L.getModule(P3).courseId; const C4 = L.getModule(P4).courseId;
   // The note's parts under a head, and its Next up and practice review lines.
   const block = (text, head) => text.split('\n\n').find((x) => x.startsWith(head)) || '';
   // Pre-K 3's mastered this week and pre-K 4's practiced: each list names its lesson with its course.
-  const masteredAndPracticing = [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P3, ago(10), full(P3)), rnd(P3, ago(3), full(P3)), rnd(P4, ago(2), 1)];
+  const masteredAndPracticing = [L.makeCoursesEnabledEvent([C3, C4], ago(40)), rnd(P3, ago(10), full(P3)), rnd(P3, ago(3), full(P3)), rnd(P4, ago(2), 1)];
   const lists = (note) => { const text = note('Sam', masteredAndPracticing, now); return block(text, 'Sam mastered:') === `Sam mastered:\n• ${named(P3)}` && block(text, 'Still practicing:') === `Still practicing:\n• ${named(P4)}`; };
-  // Only pre-K 4's practiced: its title stands alone.
-  const alone = (note) => { const text = note('Sam', [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P4, ago(2), 1)], now); return block(text, 'Still practicing:') === `Still practicing:\n• **${T}**` && !text.includes(' in Very first steps') && !text.includes(' in First steps'); };
+  // Only pre-K 4's practiced and only its course assigned: its title stands alone.
+  const alone = (note) => { const text = note('Sam', [L.makeCoursesEnabledEvent([C4], ago(40)), rnd(P4, ago(2), 1)], now); return block(text, 'Still practicing:') === `Still practicing:\n• **${TT}**` && !text.includes(' from pre-K'); };
+  // Only pre-K 4's practiced, both courses assigned: pre-K 3's lesson of that title could be met too, so the course follows.
+  const assigned = (note) => { const text = note('Sam', [L.makeCoursesEnabledEvent([C3, C4], ago(40)), rnd(P4, ago(2), 1)], now); return block(text, 'Still practicing:') === `Still practicing:\n• ${named(P4)}`; };
   // Pre-K 4's lesson is Next up (only its course assigned, every lesson before it in the report's order mastered weeks ago, and the
-  // lesson it needs passed), while pre-K 3's is practiced this week: Still practicing and Next up each name theirs with its course.
-  const fs = L.buildReport('Sam', []).modules.filter((m) => m.courseId === 'first-steps-pk').map((m) => m.id);   // the report's order, Next up's
+  // lesson it needs passed), while pre-K 3's is practiced this week, its course not assigned: Still practicing and Next up each name
+  // theirs with its course.
+  const fs = L.buildReport('Sam', []).modules.filter((m) => m.courseId === C4).map((m) => m.id);   // the report's order, Next up's
   const before = [...new Set([...fs.slice(0, fs.indexOf(P4)), ...L.prerequisitesOf(P4)])];
-  const nextUpLog = [L.makeCoursesEnabledEvent(['first-steps-pk'], ago(40)), ...before.map((id, i) => rnd(id, ago(30, i / 10), full(id))), ...before.map((id, i) => rnd(id, ago(29, i / 10), full(id))), rnd(P3, ago(2), 1)];
+  const nextUpLog = [L.makeCoursesEnabledEvent([C4], ago(40)), ...before.map((id, i) => rnd(id, ago(30, i / 10), full(id))), ...before.map((id, i) => rnd(id, ago(29, i / 10), full(id))), rnd(P3, ago(2), 1)];
   const nextUp = (note) => { const text = note('Sam', nextUpLog, now); return L.classView([{ id: 's', label: 'Sam', events: nextUpLog }], now)[0].next === T && text.includes(`\n\nNext up: ${named(P4)}.`) && block(text, 'Still practicing:') === `Still practicing:\n• ${named(P3)}`; };
   // Pre-K 3's lesson mastered weeks ago and given its practice review this week, pre-K 4's practiced: the review's sentence names its
-  // own lesson with its course at its first mention.
+  // own lesson with its course at its first mention, both courses assigned and with pre-K 4's switched off the day after its round.
   const review = { type: 'light_review_completed', at: ago(1), startedAt: ago(1), moduleId: P3, stage: 'first', results: [1, 1, 1, 1, 1].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 5, total: 5, outcome: 'clear' };
-  const reviewLog = [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(40)), rnd(P3, ago(30), full(P3)), rnd(P3, ago(29), full(P3)), rnd(P4, ago(2), 1), review];
-  const reviewed = (note) => { const text = note('Sam', reviewLog, now); const line = text.split('\n\n').find((x) => x.includes('practice review of')) || '';
-    return line.includes(`practice review of **${L.titleCase(T)}** in ${L.courseLabel(L.getCourse(L.getModule(P3).courseId))} `) && block(text, 'Still practicing:') === `Still practicing:\n• ${named(P4)}`; };
-  const CASES = { 'both lessons in its lists': lists, 'one lesson alone': alone, 'one practiced and the other next up': nextUp, "one practiced and the other's practice review": reviewed };
+  const reviewLog = [L.makeCoursesEnabledEvent([C3, C4], ago(40)), rnd(P3, ago(30), full(P3)), rnd(P3, ago(29), full(P3)), rnd(P4, ago(2), 1), review];
+  const offLog = [L.makeCoursesEnabledEvent([C3, C4], ago(40)), rnd(P3, ago(30), full(P3)), rnd(P3, ago(29), full(P3)), rnd(P4, ago(2), 1), L.makeCoursesEnabledEvent([C3], ago(1, -6)), review];
+  const reviewed = (log) => (note) => { const text = note('Sam', log, now); const line = text.split('\n\n').find((x) => x.includes('practice review of')) || '';
+    return line.includes(`practice review of ${named(P3)} `) && block(text, 'Still practicing:') === `Still practicing:\n• ${named(P4)}`; };
+  // Grade 7's The first Texans practiced this week and stuck, never mastered, after a loop back to grade 4's lesson of that title, only
+  // grade 7's course assigned: the stuck line names both with their courses, and Still practicing names grade 7's with its course.
+  const T4 = 'first-texans'; const T7 = 'the-first-texans'; const TX = L.titleCase(L.getModule(T7).title);
+  const stuckLog = [L.makeCoursesEnabledEvent([L.getModule(T7).courseId], ago(40)), rnd(T7, ago(5), 1), rnd(T7, ago(4), 1), L.makeLoopBackEvent(T7, T4, ago(4, 1)), rnd(T7, ago(3), 1), rnd(T7, ago(2), 1)];
+  const loopedBack = (note) => { const text = note('Sam', stuckLog, now); return block(text, 'Still practicing:') === `Still practicing:\n• **${TX}** from seventh grade history` && text.includes(`looping back to **${TX}** from fourth grade history.`); };
+  const CASES = { 'both lessons in its lists': lists, "one lesson alone, its twin's course not assigned": alone, "one lesson alone, its twin's course assigned": assigned, 'one practiced and the other next up': nextUp,
+    "one practiced and the other's practice review": reviewed(reviewLog), "one practiced, its course since switched off, and the other's practice review": reviewed(offLog),
+    'one practiced and stuck, its line looping back to its twin': loopedBack };
+  const NAME = 'const nameOf = (id) => `**${titleOf(id)}**${fromCourse(id, enabled, named)}`;';
   const OLD = {
-    'bare titles': swap(NOTE, 'const nameOf = (id) => (twinNamed(id) ? `**${titleOf(id)}** in ${courseOf(id)}` : `**${titleOf(id)}**`);', 'const nameOf = (id) => `**${titleOf(id)}**`;'),
-    'a course beside every title': swap(NOTE, 'const nameOf = (id) => (twinNamed(id) ? `**${titleOf(id)}** in ${courseOf(id)}` : `**${titleOf(id)}**`);', 'const nameOf = (id) => `**${titleOf(id)}** in ${courseOf(id)}`;'),
-    "practice reviews' bare titles": swap(NOTE, "return twinNamed(h.moduleId) && line.includes(own) && !line.includes(given) ?", 'return false ?'),
+    'bare titles': swap(NOTE, NAME, 'const nameOf = (id) => `**${titleOf(id)}**`;'),
+    'a course beside every title': swap(NOTE, NAME, 'const nameOf = (id) => `**${titleOf(id)}** from ${courseInSentence(getCourse(getModule(id).courseId))}`;'),
+    'the course only beside a title another lesson the note prints shares (F2, in the new words)': swap(NOTE, NAME, 'const nameOf = (id) => `**${titleOf(id)}**${fromCourse(id, [], named)}`;'),
+    "practice reviews' bare titles": swap(NOTE, 'return given !== own && line.includes(own) && !line.includes(given) ?', 'return false ?'),
+    "the lessons the practice reviews loop back to left out of the note's names": swap(NOTE, '...reviews.flatMap((h) => [h.moduleId, ...loopBacksTold(events, h)])]', '...reviews.map((h) => h.moduleId)]'),
   };
   const failsNow = Object.entries(CASES).filter(([, c]) => !c(L.weeklyNote)).map(([name]) => name);
   const uncaught = Object.entries(OLD).filter(([, src]) => !src || Object.values(CASES).every((c) => c(asFn(src)))).map(([name]) => name);
-  ok(`the weekly note names a lesson's course beside its title only when another lesson it prints has the same title, in its lists, as Next up and in a practice review's sentence, and a title printed once stands alone (pass NQ, F2; ${Object.keys(CASES).length} cases; the old bare titles, a course beside every title and bare titles in the practice reviews put back, each caught)`,
+  ok(`the weekly note follows a title with its course when another lesson in the student's assigned courses or another lesson it prints has the same title, in its lists, as Next up, in a practice review's sentence and beside the lesson a practice review's line loops back to, and a title with neither stands alone (pass NQ, F2; the one rule since pass NR; round one's code read, SHOULD CONSIDER 3; ${Object.keys(CASES).length} cases; the old bare titles, a course beside every title, the course only for a title the note prints twice, bare titles in the practice reviews and the note's names without the lessons its practice reviews loop back to put back, each caught)`,
     !!NOTE && failsNow.length === 0 && uncaught.length === 0, JSON.stringify({ failsNow, uncaught, lists: L.weeklyNote('Sam', masteredAndPracticing, now) })); }
 // Pass NQ, engineer F3: the five things F2 verified and left, in three blocks: View progress for this module's words, a lesson named in
 // a sentence (a name's capital and a title two lessons share), and the practice review history after a full reset. In each, the old
@@ -12468,7 +13702,7 @@ const moreRightProblems = (L) => { const r = {};
   };
   const OLD = {
     'the old what comes next': plant("  } else if (p && !p.passed && !p.movedPast) {\n", "  } else {\n    parts.push(`Until ${rules.toMaster} out of ${rules.questions} is reached, the modules after this one stay locked, and every new practice round brings a fresh set of questions.`);\n  } if (false) {\n"),
-    'the old memory check promise for any lesson': plant("  if (p && p.passed && (fastWrong >= 2 || suspiciouslyQuick || (p.mastered && attempts.length >= 3))) {", "  if (fastWrong >= 2 || suspiciouslyQuick || (p && p.mastered && attempts.length >= 3)) {"),
+    'the old memory check promise for any lesson': plant("} else if (p && p.passed && (fastWrong >= 2 || suspiciouslyQuick || (p.mastered && attempts.length >= 3))) {", "} else if (fastWrong >= 2 || suspiciouslyQuick || (p && p.mastered && attempts.length >= 3)) {"),   // an else if since pass NR, after the moved-past and reopened sentences
     'the old pass by the round\'s usual mark': plant('    const passed = isMasteredAttempt(a);', '    const passed = a.coreCorrect >= rules.toMaster;'),
     'the old "were" for one': plant("    const were = a.coreCorrect === 1 ? 'was' : 'were';", "    const were = 'were';"),
     'a mark of 4 of 5 for every grade': plant('    const mark = `${rules.toMaster} out of ${rules.questions}`;', '    const mark = `${CONFIG.MASTERY_MIN_CORRECT} out of ${CONFIG.CORE_QUESTIONS_PER_ATTEMPT}`;'),
@@ -12476,7 +13710,7 @@ const moreRightProblems = (L) => { const r = {};
     'the placement sentence for a quick check': plant(' && p.passes === 0 && !(quick && quick.passed)) parts.push(', ' && p.passes === 0) parts.push('),
     'the quick check told after the rounds': plant("  const parts = [[quickNote, practiced].filter(Boolean).join(' ')];", "  const parts = [[practiced, quickNote].filter(Boolean).join(' ')];"),
     'a lesson with no view read through once': plant('  const practiced = reads ? `${name} read through this lesson ${times(reads)} and', '  const practiced = true ? `${name} read through this lesson ${times(reads || 1)} and'),
-    'one lesson waiting named by its title alone': plant('is reached, the lesson ${lessonInSentence(waiting[0].id, moduleId)} stays locked', 'is reached, ${lessonInSentence(waiting[0].id, moduleId)} stays locked'),
+    'one lesson waiting named by its title alone': plant('is reached, the lesson ${lessonInSentence(waiting[0].id, moduleId, enabled)} stays locked', 'is reached, ${lessonInSentence(waiting[0].id, moduleId, enabled)} stays locked'),   // the call as pass NR has it
   };
   const failsNow = Object.entries(CASES).filter(([, c]) => !c(L.moduleStory)).map(([name]) => name);
   const uncaught = Object.entries(OLD).filter(([, fn]) => !fn || Object.values(CASES).every((c) => c(fn))).map(([name]) => name);
@@ -12490,7 +13724,9 @@ const moreRightProblems = (L) => { const r = {};
 // two lessons of one title apart, and the weekly note does not give the course twice. Who Needs Help's missed-once reason named
 // fundamentalsOf's lesson, which for 202 of 628 lessons with a prerequisite was not the lesson a second miss loops back to, and promised a
 // loop back for a lesson with none: fundamentalsOf is now loopBackTarget's lesson, held for every lesson. Each old code is put back in a
-// copy of its source and caught.
+// copy of its source and caught. Since pass NR (the screen read's MUST FIX 2 and 4, EARMARKS A155) the course follows a title as a
+// sentence says it, "the first Texans from fourth grade history" (courseInSentence), never the list label "in The story of Texas (Grade
+// 4 - History)", and the screens hand lessonInSentence the student's assigned courses (the one rule, sharesTitle).
 { const vm = await import('node:vm');
   const read = (f) => readFileSync(new URL(f, import.meta.url), 'utf8');
   const UI = read('../src/ui.jsx'); const LSRC = read('../src/logic.mjs'); const STORIES = read('../src/stories.mjs'); const lines = LSRC.split('\n');
@@ -12503,19 +13739,20 @@ const moreRightProblems = (L) => { const r = {};
   // A title lowercased for a sentence by toLowerCase: .title, or a function returning a title, lowercased whole and not compared.
   const lowered = (src) => [...src.matchAll(/(?:\.title\)?|Title\([^()]*\))\.toLowerCase\(\)(?!\.(?:includes|startsWith|indexOf|localeCompare)\(| *[!=]==)/g)].length;
   const sourcesClean = (ui) => lowered(ui) === 0 && lowered(LSRC) === 0 && lowered(STORIES) === 0;
-  const screenNames = (ui) => ui.includes('a quick look back at {lessonInSentence(backTo, mod.id)}') && ui.includes('${lessonInSentence(r.moduleId, mod.id) || \'earlier\'}') && ui.includes('>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id)}</Btn>');
+  const screenNames = (ui) => ui.includes('a quick look back at {lessonInSentence(backTo, mod.id, assignedIds)}') && ui.includes('${lessonInSentence(r.moduleId, mod.id, assignedIds) || \'earlier\'}') && ui.includes('>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id, assignedIds)}</Btn>');
   const OLD_UI = {
-    'the Look back button\'s whole title lowercased': swap(UI, '>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id)}</Btn>', '>Look back at {getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()}</Btn>'),
-    'the memory-check line\'s whole title lowercased': swap(UI, '${lessonInSentence(r.moduleId, mod.id) || \'earlier\'}', "${(getModule(r.moduleId) || { title: 'earlier' }).title.toLowerCase()}"),
+    'the Look back button\'s whole title lowercased': swap(UI, '>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id, assignedIds)}</Btn>', '>Look back at {getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()}</Btn>'),
+    'the memory-check line\'s whole title lowercased': swap(UI, '${lessonInSentence(r.moduleId, mod.id, assignedIds) || \'earlier\'}', "${(getModule(r.moduleId) || { title: 'earlier' }).title.toLowerCase()}"),
     'the coloring label\'s whole title lowercased': swap(UI, 'lowerTitle(pictureTitle(pic))', 'pictureTitle(pic).toLowerCase()'),
     'the level label\'s whole title lowercased': swap(UI, 'Walk through ${lowerTitle(lv.title)}', 'Walk through ${lv.title.toLowerCase()}'),
-    'the loop back sentence by its title alone': swap(UI, 'a quick look back at {lessonInSentence(backTo, mod.id)}', 'a quick look back at {lowerTitle(getModule(backTo).title)}'),
+    'the loop back sentence by its title alone': swap(UI, 'a quick look back at {lessonInSentence(backTo, mod.id, assignedIds)}', 'a quick look back at {lowerTitle(getModule(backTo).title)}'),
   };
   const uiHolds = (ui) => sourcesClean(ui) && screenNames(ui);
   // Lessons whose loop back goes to a lesson of the same title, and the stuck sentences about one of them.
   const twins = L.MODULES.filter((m) => { const f = L.prerequisitesOf(m.id); return f.length && L.getModule(f[f.length - 1]).title === m.title; }).map((m) => m.id);
-  const Y = twins[0]; const T = L.prerequisitesOf(Y).slice(-1)[0]; const label = (id) => L.courseLabel(L.getCourse(L.getModule(id).courseId));
-  const both = (s) => !!s && s.includes(`*${L.titleCase(L.getModule(Y).title)}* in ${label(Y)}`) && s.includes(`*${L.titleCase(L.getModule(T).title)}* in ${label(T)}`);
+  const Y = twins[0]; const T = L.prerequisitesOf(Y).slice(-1)[0];
+  const label = (id) => `from ${L.courseInSentence(L.getCourse(L.getModule(id).courseId))}`;   // since pass NR the course as a sentence says it, "from fourth grade history"
+  const both = (s) => !!s && s.includes(`*${L.titleCase(L.getModule(Y).title)}* ${label(Y)}`) && s.includes(`*${L.titleCase(L.getModule(T).title)}* ${label(T)}`);
   const at = (mo, d, h = 12) => new Date(2026, mo, d, h).toISOString(); const full = (id) => L.moduleRules(id).questions;
   const rnd = (id, when, k) => ({ type: 'attempt_completed', at: when, startedAt: when, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, j) => ({ correct: j < k, timeMs: 9000 })), review: null, coreCorrect: k, coreTotal: full(id) });
   const yOn = L.makeCoursesEnabledEvent([L.getModule(Y).courseId], at(8, 1));
@@ -12530,28 +13767,31 @@ const moreRightProblems = (L) => { const r = {};
   const fundamentalsHold = (fo) => L.MODULES.every((m) => { const f = fo(m.id); const back = L.prerequisitesOf(m.id).length ? L.loopBackTarget(twoMisses(m.id), m.id) : null; return (f ? f.id : null) === back; });
   const reason = (F, id) => F.classView([{ id: 's', label: 'Sam', events: [L.makeCoursesEnabledEvent([L.getModule(id).courseId], at(8, 1)), rnd(id, at(9, 5), 1)] }], at(9, 9))[0].reasons.find((r) => / failed the last round of /.test(r)) || '';
   const noPre = L.MODULES.find((m) => !L.prerequisitesOf(m.id).length && !L.isWritingModule(m.id)).id;
-  const reasonHolds = (F) => { const r = reason(F, Y); const n = reason(F, noPre); return r.includes(`**${L.titleCase(L.getModule(Y).title)}** in ${label(Y)}`) && r.includes(`the fundamentals, **${L.titleCase(L.getModule(T).title)}** in ${label(T)}`) && !!n && !/route them back/.test(n); };
+  const reasonHolds = (F) => { const r = reason(F, Y); const n = reason(F, noPre); return r.includes(`**${L.titleCase(L.getModule(Y).title)}** ${label(Y)}`) && r.includes(`the fundamentals, **${L.titleCase(L.getModule(T).title)}** ${label(T)}`) && !!n && !/route them back/.test(n); };
   // The weekly note gives a stuck sentence's course once: the lesson stuck this week and the lesson it loops back to practiced.
   const noteLog = [yOn, ...ladder(5).map((e) => ({ ...e, at: e.at.replace('2026-10-', '2026-11-') })), rnd(T, at(10, 10), 1)];
-  const noteHolds = (note) => { const text = note('Sam', noteLog, at(10, 11)); return text.includes(`in ${label(Y)}`) && !text.includes(`in ${label(Y)} in ${label(Y)}`) && !text.includes(`in ${label(Y)} in`); };
+  const noteHolds = (note) => { const text = note('Sam', noteLog, at(10, 11)); return text.includes(` ${label(Y)}`) && !text.includes(`${label(Y)} ${label(Y)}`) && !text.includes(`${label(Y)} from `); };
   // Who Needs Help's stuck and loop back reasons and View progress's loop back sentence (pass NQ, F4, after round three's code read): on
   // the log of Y missed twice, sent back to T and missed twice more, each of the two lessons has its course beside it; on Count to 10's
   // log, which loops back to Count to 5, each title stands alone.
   const X = 'count-to-10'; const P = L.prerequisitesOf(X).slice(-1)[0]; const plain = [L.makeCoursesEnabledEvent(['counting-k'], at(8, 1)), rnd(X, at(9, 5), 1), rnd(X, at(9, 6), 1), L.makeLoopBackEvent(X, P, at(9, 6, 13)), rnd(X, at(9, 7), 1), rnd(X, at(9, 8), 1)];
   const rowWords = (F, ev) => { const rs = F.classView([{ id: 's', label: 'Sam', events: ev }], at(9, 9))[0].reasons; return [rs.find((r) => / is stuck on /.test(r)) || '', rs.find((r) => / was sent back /.test(r)) || '']; };
   const rowHolds = (F) => { const [stuckY, loopY] = rowWords(F, never); const [stuckX, loopX] = rowWords(F, plain);
-    return stuckY.includes(`is stuck on **${L.titleCase(L.getModule(Y).title)}** in ${label(Y)} (`) && loopY.endsWith(`, to **${L.titleCase(L.getModule(T).title)}** in ${label(T)}`)
+    return stuckY.includes(`is stuck on **${L.titleCase(L.getModule(Y).title)}** ${label(Y)} (`) && loopY.endsWith(`, to **${L.titleCase(L.getModule(T).title)}** ${label(T)}`)
       && stuckX.includes(`is stuck on **${L.titleCase(L.getModule(X).title)}** (`) && loopX.endsWith(`, to **${L.titleCase(L.getModule(P).title)}**`); };
-  const storyHolds = (F) => F.moduleStory('Sam', never, Y).includes(`was sent back to ${L.lowerTitle(L.getModule(T).title)} in ${label(T)} for a quick check`) && F.moduleStory('Sam', plain, X).includes(`was sent back to ${L.lowerTitle(L.getModule(P).title)} for a quick check`);
+  const storyHolds = (F) => F.moduleStory('Sam', never, Y).includes(`was sent back to ${L.lowerTitle(L.getModule(T).title)} ${label(T)} for a quick check`) && F.moduleStory('Sam', plain, X).includes(`was sent back to ${L.lowerTitle(L.getModule(P).title)} for a quick check`);
   const OLD_LOGIC = {
-    'a lesson named by its title alone beside one of the same title': [{ lessonInSentence: plant('lessonInSentence', "return other && other.id !== m.id && other.title === m.title ?", 'return false ?') }, (F) => F.lessonInSentence(T, Y) === `${L.lowerTitle(L.getModule(T).title)} in ${label(T)}` && F.lessonInSentence(T) === L.lowerTitle(L.getModule(T).title)],
+    'a lesson named by its title alone beside one of the same title': [{ lessonInSentence: plant('lessonInSentence', 'fromCourse(id, enabledIds, besideId ? [besideId] : [])', "''") }, (F) => F.lessonInSentence(T, Y) === `${L.lowerTitle(L.getModule(T).title)} ${label(T)}` && F.lessonInSentence(T) === L.lowerTitle(L.getModule(T).title)],
     "the stuck sentences' titles alone": [{ stuckSentence: plant('stuckSentence', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))('), neverStuckSentence: plant('neverStuckSentence', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))('), neverMovedSentence: plant('neverMovedSentence', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))('), lightReviewSentences: plant('lightReviewSentences', 'const named = stuckTitles(', 'const named = ((id, b) => ({ title: `*${titleCase(getModule(id).title)}*`, back: b ? `*${titleCase(getModule(b).title)}*` : \'\' }))(') }, stuckHolds],
     'the old fundamentals (the lesson before, else the first required)': [{ fundamentalsOf: plant('fundamentalsOf', '  const pre = prerequisitesOf(moduleId); const target = pre.length ? getModule(pre[pre.length - 1]) : null;', '  const m = getModule(moduleId); if (!m) return null; const course = getCourse(m.courseId);\n  const before = course ? course.modules.filter((x) => x.order < m.order).sort((a, b) => b.order - a.order)[0] : null;\n  const target = before || (m.requires && m.requires.length ? getModule(m.requires[0]) : null);') }, (F) => fundamentalsHold(F.fundamentalsOf)],
-    'the old missed-once reason': [{ classView: plant('classView', "      const named = (x) => (twin ? `**${titleCase(x.title)}** in ${courseLabel(getCourse(getModule(x.id).courseId))}` : `**${titleCase(x.title)}**`);\n      const route = f ? `; a second miss would route them back to the fundamentals, ${named(f)}` : '';", "      const named = (x) => `**${titleCase(x.title)}**`;\n      const route = `; a second miss would route them back to the fundamentals${f ? `, ${named(f)}` : ''}`;") }, reasonHolds],
+    // Since pass NR (EARMARKS A156) every reason names its lessons by the row's one rule (classView's named), so each old reason is put
+    // back where that rule is called: the missed-once reason's bare titles and its route promised for every lesson, the stuck lesson's
+    // title alone and the loop back's title alone.
+    'the old missed-once reason': [{ classView: plant('classView', "const f = fundamentalsOf(m.id);\n      const route = f ? `; a second miss would route them back to the fundamentals, ${named(f)}` : '';", "const f = fundamentalsOf(m.id); const named = (x) => `**${titleCase(x.title)}**`;\n      const route = `; a second miss would route them back to the fundamentals${f ? `, ${named(f)}` : ''}`;") }, reasonHolds],
     'the weekly note giving the course twice': [{ weeklyNote: plant('weeklyNote', ' && line.includes(own) && !line.includes(given) ?', ' && line.includes(own) ?') }, (F) => noteHolds(F.weeklyNote)],
-    "Who Needs Help's stuck lesson by its title alone": [{ classView: plant('classView', "return f && f.id !== m.id && f.title === m.title ? bold(m) + ' in ' + courseLabel(getCourse(m.courseId)) : bold(m); };", 'return bold(m); };') }, rowHolds],
-    "Who Needs Help's loop back by its title alone": [{ classView: plant('classView', "return from && from.id !== to.id && from.title === to.title ? bold(to) + ' in ' + courseLabel(getCourse(to.courseId)) : bold(to); };", 'return bold(to); };') }, rowHolds],
-    "View progress's loop back by its title alone": [{ moduleStory: plant('moduleStory', 'was sent back to ${back ? lessonInSentence(back.id, moduleId) :', 'was sent back to ${back ? lowerTitle(back.title) :') }, storyHolds],
+    "Who Needs Help's stuck lesson by its title alone": [{ classView: plant('classView', 'stuck.map((m) => `${named(m)} (', 'stuck.map((m) => `${bold(m)} (') }, rowHolds],
+    "Who Needs Help's loop back by its title alone": [{ classView: plant('classView', 'to ${backTo.map(named).join(', 'to ${backTo.map(bold).join(') }, rowHolds],
+    "View progress's loop back by its title alone": [{ moduleStory: plant('moduleStory', 'was sent back to ${back ? lessonInSentence(back.id, moduleId, enabledCourseIds(events)) :', 'was sent back to ${back ? lowerTitle(back.title) :') }, storyHolds],
   };
   // A check that cannot run (a function missing, as in a near miss with an old file) fails rather than stopping the test.
   const safe = (f) => { try { return f(); } catch (e) { return false; } };
@@ -12596,5 +13836,493 @@ const moreRightProblems = (L) => { const r = {};
   const uncaught = Object.entries(OLD).filter(([, [over, h]]) => Object.values(over).some((fn) => !fn) || h({ ...L, ...over })).map(([n]) => n);
   ok(`after a full reset the practice review history counts a review's gap from the star the report shows, as the card does, and a move forward counts only the rounds since the reset (pass NQ, F3; the two old filters put back in their own sources, caught)`,
     failsNow.length === 0 && uncaught.length === 0, JSON.stringify({ failsNow, uncaught, history: (L.lightReviewHistory(reviewed, 'Sam')[0] || {}).text, moved: L.neverMovedSentence(movedLog, move, 'Sam') })); }
+// Pass NR: the educator report's three leftovers (EARMARKS A156), which engineer F4 found beside round three's code fixes in pass NQ and
+// left. Two blocks here; the third leftover, autoBackup's reason, is held by the scripts test.
+// A lesson the educator moved the student past is never under the weekly note's Still practicing (pass NR, EARMARKS A156). Next up never
+// names one (F4, above), since Move Forward means the student moves on from the lesson for now and it comes back as a practice review for
+// a fresh try; but Still practicing listed a lesson practiced this week and then moved past, beside the note's own Move Forward sentence
+// for it ("Still practicing: • Count to 10" above "You moved Sam forward past Count to 10 ..."). It now reads the lessons moved past as
+// Next up, the child's overview and Who Needs Help do (movedPastIds, since the latest full reset and the lesson's own reset), and the
+// note tells of such a lesson in its Move Forward sentence; its rounds still count in the week's questions. Four cases: moved past this
+// week after this week's rounds; moved past weeks ago and practiced again this week; moved past, reset on its own and practiced since;
+// and moved past before a full reset and practiced after it (the last two no longer moved past, so still practicing). The old line is
+// put back in the note's own source and caught, and so are four near misses: leaving out only a lesson whose Move Forward sentence is in
+// this week's note, the move read from the raw log, the move read across the lesson's own reset, and a lesson moved past left out only
+// while none of this week's rounds on it came after the move.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+  const a = lsrc.indexOf('\nexport function weeklyNote('); const b = a < 0 ? -1 : lsrc.indexOf('\n}\n', a + 1); const NOTE = a < 0 || b < 0 ? '' : lsrc.slice(a + '\nexport '.length, b + 2);
+  const asFn = (src) => vm.runInNewContext(`(${src})`, { ...L });
+  const swap = (src, from, to) => (src.split(from).length === 2 ? src.replace(from, () => to) : null);
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const now = new Date(NOW).toISOString(); const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
+  const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, at, right) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: full(id) });
+  const X = 'count-to-10'; const P = L.prerequisitesOf(X).slice(-1)[0]; const TX = L.titleCase(L.getModule(X).title);   // Count to 10 loops back to Count to 5
+  const on = L.makeCoursesEnabledEvent(['counting-k'], ago(60)); const pPassed = (d) => [rnd(P, ago(d), full(P)), rnd(P, ago(d - 1), full(P))];
+  // The stuck ladder on Count to 10 from a day on: two misses, a loop back to Count to 5 and two more misses.
+  const ladder = (d) => [rnd(X, ago(d), 1), rnd(X, ago(d - 1), 1), L.makeLoopBackEvent(X, P, ago(d - 1, 1)), rnd(X, ago(d - 2), 1), rnd(X, ago(d - 3), 1)];
+  // The lessons under Still practicing, by their titles (the bold words each line opens with).
+  const practicing = (text) => { const part = text.split('\n\n').find((x) => x.startsWith('Still practicing:')); return part ? [...part.matchAll(/^• \*\*(.+?)\*\*/gm)].map((m) => m[1]) : []; };
+  const CASES = {
+    "moved past this week after this week's rounds": { log: [on, ...pPassed(50), ...ladder(6), L.makeMovedForwardEvent(X, ago(2))], listed: false,
+      also: (text) => text.includes(`You moved Sam forward past **${TX}** on `) && text.includes(`answered ${4 * full(X)} questions`) && !text.includes(`Next up: **${L.getModule(X).title}**`) },
+    'moved past weeks ago and practiced again this week': { log: [on, ...pPassed(50), ...ladder(30), L.makeMovedForwardEvent(X, ago(25)), rnd(X, ago(3), 2), rnd(X, ago(2), 2)], listed: false },
+    'moved past, then reset on its own and practiced since': { log: [on, ...pPassed(50), ...ladder(30), L.makeMovedForwardEvent(X, ago(25)), L.makeModuleResetEvent(X, ago(10)), rnd(X, ago(3), 2)], listed: true },
+    'moved past before a full reset and practiced after it': { log: [on, ...pPassed(50), ...ladder(30), L.makeMovedForwardEvent(X, ago(25)), L.makeResetEvent(ago(12)), ...pPassed(11), rnd(X, ago(3), 2)], listed: true },
+  };
+  const holds = (note, c) => { const text = note('Sam', c.log, now); return practicing(text).includes(L.getModule(X).title) === c.listed && (!c.also || c.also(text)); };
+  const failing = (note) => Object.entries(CASES).filter(([, c]) => { try { return !holds(note, c); } catch (e) { return true; } }).map(([name]) => name);
+  const LINE = 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0 && !movedPast.includes(id));';
+  const kept = 'const practicing = touched.filter((id) => !byId.get(id).mastered && byId.get(id).attempts > 0';
+  const OLD = {
+    "F4's line, which left out no lesson moved past": `${kept});`,
+    "only a lesson whose Move Forward sentence is in this week's note left out": `${kept} && !lightReviewHistory(events, shownName).some((h) => h.kind === 'moved' && h.moduleId === id && new Date(h.at).getTime() >= week));`,
+    'the move read from the raw log': `${kept} && !(events || []).some((e) => e.type === 'moved_forward' && e.moduleId === id));`,
+    "the move read across the lesson's own reset": `${kept} && !activeEvents(events || []).some((e) => e.type === 'moved_forward' && e.moduleId === id));`,
+    "a lesson moved past left out only while none of this week's rounds on it came after the move": `${kept} && !(movedPast.includes(id) && !attempts.some((e) => e.moduleId === id && String(e.at) > String(deriveProgress(events).perModule[id].movedPastAt))));`,
+  };
+  const uncaught = Object.entries(OLD).filter(([, line]) => { const src = swap(NOTE, LINE, line); return !src || failing(asFn(src)).length === 0; }).map(([name]) => name);
+  ok(`the weekly note never lists a lesson the educator moved the student past under Still practicing, as Next up never names one: it tells of the lesson in its Move Forward sentence, and a lesson reset on its own or by a full reset since its move is practicing again (pass NR, EARMARKS A156; ${Object.keys(CASES).length} cases; the old line and ${Object.keys(OLD).length - 1} near misses put back in the note's own source, each caught)`,
+    !!NOTE && failing(L.weeklyNote).length === 0 && uncaught.length === 0, JSON.stringify({ failsNow: failing(L.weeklyNote), uncaught, note: L.weeklyNote('Sam', CASES["moved past this week after this week's rounds"].log, now) })); }
+// Who Needs Help names every lesson on a student's row one way, by the one rule (pass NR, EARMARKS A156 and the screen read's MUST FIX
+// 4): a lesson's title is followed by its course, "from fourth grade history", when another lesson of that title is in the student's
+// assigned courses or is one the row speaks of, and stands alone otherwise. Until pass NR only the stuck, loop back and missed-once
+// reasons gave the course, only for a lesson and the lesson of its own title it loops back to, and as the list label, so a child given
+// both pre-K Math courses and stuck on each More and fewer read the title twice, and the reasons for guessing, a shaky lesson, a
+// refresher, a lesson moved past and a lesson reopened, and Next up and the practice line, named a lesson by its title alone. Each case
+// puts one lesson of a shared title where the case says and its twin elsewhere (More and fewer in pre-K 3 and pre-K 4, The first Texans
+// in grades 4 and 7, Cause and effect in grade 4 and college) and reads the words that name it; three cases hold what the assigned courses
+// decide alone (one lesson of a shared title alone on its row, its twin's course assigned and not, and a row with no shared title); and
+// three hold the lessons the row speaks of without naming them, when only grade 7's course is assigned (the lesson a stuck lesson's loop
+// back goes to, before the child takes it; the lesson a loop back came from, since passed) and one lesson two loop backs went to, named
+// once. Each old naming is put back where the row's rule is called, in classView's own source, and caught, and so are five near misses.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const lines = lsrc.split('\n');
+  const declSource = (name) => { const re = new RegExp(`^(?:export )?(?:function ${name}\\(|const ${name} = )`); const at = lines.findIndex((l) => re.test(l)); if (at < 0) return '';
+    for (let end = at; end < Math.min(lines.length, at + 400); end++) { const text = lines.slice(at, end + 1).join('\n').replace(/^export /, ''); try { new vm.Script(text); return text; } catch (e) { if (!(e instanceof SyntaxError)) throw e; } }
+    return ''; };
+  const ctx = vm.createContext({ ...L }); vm.runInContext(['outOf'].map(declSource).join('\n'), ctx);
+  const plant = (name, from, to) => { const src = declSource(name); return src && src.split(from).length === 2 ? vm.runInContext(`(${src.replace(from, () => to)})`, ctx) : null; };
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const now = new Date(NOW).toISOString(); const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
+  const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, at, right) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: full(id) });
+  // A round whose last two answers are wrong at two seconds each, which Who Needs Help names under signs of guessing.
+  const guess = (id, at) => { const r = rnd(id, at, full(id) - 2); return { ...r, core: r.core.map((x, k) => (k >= full(id) - 2 ? { correct: false, timeMs: 2000 } : x)) }; };
+  const pass2 = (id, d, right = full(id)) => [rnd(id, ago(d), right), rnd(id, ago(d - 1), right)];   // two passes on two days, the star
+  const failedReview = (id, d) => ({ type: 'light_review_completed', at: ago(d), startedAt: ago(d), moduleId: id, stage: 'first', results: [0, 0, 0, 1, 1].map((x) => ({ correct: !!x, genId: 'g', prompt: 'p' })), correct: 2, total: 5, outcome: 'fail' });
+  const missedCheckpoint = (id, d) => ({ type: 'checkpoint_completed', at: ago(d), startedAt: ago(d), atCount: 4, results: [{ moduleId: id, correct: false }], correct: 0, total: 1 });
+  const quick = (id, d, right) => L.makeQuickCheckEvent(id, Array.from({ length: L.QUICK_CHECK_QUESTIONS }, (_, k) => ({ correct: k < right, timeMs: 9000 })), ago(d));
+  // The shared titles: pre-K 3's and pre-K 4's More and fewer (pre-K 3's needs nothing first, pre-K 4's loops back to Count to 3), grade 4's
+  // and grade 7's The first Texans (grade 7's loops back to grade 4's, as grade 4's Spanish and Mexican Texas does), and grade 4's and
+  // college's Cause and effect, whose courses take a quick check.
+  const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5'; const T4 = 'first-texans'; const T7 = 'the-first-texans'; const S4 = 'spanish-and-mexican-texas'; const C4 = 'cause-and-effect-4'; const CC = 'cause-and-effect';
+  const courseOf = (id) => L.getModule(id).courseId; const title = (id) => L.getModule(id).title;
+  const phrase = (id) => L.courseInSentence(L.getCourse(courseOf(id)));   // "fourth grade history"
+  const withCourse = (id) => `**${L.titleCase(title(id))}** from ${phrase(id)}`; const alone = (id) => `**${L.titleCase(title(id))}**`;
+  const sane = title(P3) === title(P4) && title(T4) === title(T7) && title(C4) === title(CC) && title(S4) !== title(T4) && !L.prerequisitesOf(P3).length && title('which-way-we-read-pk') === title('which-way-we-read')
+    && L.prerequisitesOf(T7).slice(-1)[0] === T4 && L.prerequisitesOf(S4).slice(-1)[0] === T4 && L.quickCheckAllowed([], C4) && L.quickCheckAllowed([], CC);
+  const pk = L.makeCoursesEnabledEvent([courseOf(P3), courseOf(P4)], ago(60)); const tx = L.makeCoursesEnabledEvent([courseOf(T4), courseOf(T7)], ago(60)); const ce = L.makeCoursesEnabledEvent([courseOf(C4), courseOf(CC)], ago(60));
+  const p4Ready = L.prerequisitesOf(P4).flatMap((id) => pass2(id, 50)); const p4Back = L.prerequisitesOf(P4).slice(-1)[0];
+  // Pre-K 4's Which way we read as Next up, kindergarten's lesson of that title missed once: pre-K 4's course comes first by grade
+  // (nextUpModule's order since pass NR), its lessons before it and what it needs mastered.
+  const W4 = 'which-way-we-read-pk'; const WK = 'which-way-we-read'; const ww = L.makeCoursesEnabledEvent([courseOf(W4), courseOf(WK)], ago(60));
+  const firstSounds = L.getCourse(courseOf(W4)).modules.slice().sort((x, y) => x.order - y.order).map((m) => m.id);
+  const beforeW4 = [...new Set([...firstSounds.slice(0, firstSounds.indexOf(W4)), ...L.prerequisitesOf(W4)])].flatMap((id, i) => [rnd(id, ago(30, i / 10), full(id)), rnd(id, ago(29, i / 10), full(id))]);
+  const rowOf = (F, log) => F.classView([{ id: 's', label: 'Sam', events: log }], now)[0];
+  const reason = (r, re) => r.reasons.find((x) => re.test(x)) || '';
+  const rowText = (r) => [...r.reasons, `Next up: ${r.nextNamed}`, r.practice].join('\n');
+  const CASES = {
+    'stuck on each More and fewer, two lessons of one title that do not loop back to each other': [[pk, ...p4Ready, rnd(P3, ago(6), 1), rnd(P3, ago(5), 1), rnd(P4, ago(6, 2), 1), rnd(P4, ago(5, 2), 1)],
+      (r) => { const s = reason(r, / is stuck on /); return s.includes(`${withCourse(P3)} (`) && s.includes(`${withCourse(P4)} (`) && r.practice.includes(`${withCourse(P3)} (`) && r.practice.includes(`${withCourse(P4)} (`); }],
+    'signs of guessing in one, the other missed once': [[pk, ...p4Ready, guess(P3, ago(3)), rnd(P4, ago(2), 1)], (r) => reason(r, /signs of guessing/).includes(`in ${withCourse(P3)} (quick`)],
+    'a refresher and mastered but shaky, the other missed once': [[pk, ...p4Ready, ...pass2(P3, 30, L.moduleRules(P3).toMaster), missedCheckpoint(P3, 10), rnd(P4, ago(2), 1)],
+      (r) => reason(r, /^Missed in the last checkpoint/).includes(`: ${withCourse(P3)} (a refresher`) && reason(r, /^Mastered but shaky/).includes(`: ${withCourse(P3)} at confidence 2 out of 5`)],
+    'moved past, the other missed once': [[pk, ...p4Ready, ...[9, 8, 7, 6].map((d) => rnd(P3, ago(d), 1)), L.makeMovedForwardEvent(P3, ago(5)), rnd(P4, ago(2), 1)], (r) => reason(r, / was moved past /).includes(`moved past ${withCourse(P3)} before`)],
+    'reopened by a practice review, the other missed once': [[pk, ...p4Ready, ...pass2(P3, 40), failedReview(P3, 10), rnd(P4, ago(2), 1)], (r) => reason(r, / is going back through /).includes(`through ${withCourse(P3)} after`)],
+    'stuck after a practice review, the other missed once': [[pk, ...p4Ready, ...pass2(P4, 40), failedReview(P4, 12), rnd(P4, ago(11), 1), rnd(P4, ago(10), 1), L.makeLoopBackEvent(P4, p4Back, ago(10, 1)), rnd(P4, ago(9), 1), rnd(P4, ago(8), 1), rnd(P3, ago(2), 1)],
+      (r) => reason(r, / cannot seem to get past /).includes(`past ${withCourse(P4)} since`)],
+    'stuck in one reason and the other missed once in another': [[pk, ...p4Ready, rnd(P3, ago(6), 1), rnd(P3, ago(5), 1), rnd(P4, ago(2), 1)],
+      (r) => reason(r, / is stuck on /).includes(`stuck on ${withCourse(P3)} (`) && reason(r, / failed the last round of /).includes(`of ${withCourse(P4)} (`)],
+    'a loop back to a lesson whose twin is missed once': [[tx, ...pass2(T4, 40), rnd(S4, ago(9), 1), rnd(S4, ago(8), 1), L.makeLoopBackEvent(S4, T4, ago(8, 1)), rnd(T7, ago(2), 1)],
+      (r) => reason(r, / was sent back /).endsWith(`, to ${withCourse(T4)}`)],
+    'Next up, the other missed once': [[ww, ...beforeW4, rnd(WK, ago(2), 1)], (r) => r.nextNamed === withCourse(W4) && reason(r, / failed the last round of /).includes(`of ${withCourse(WK)} (`)],
+    'tried by a quick check alone, the other missed once': [[ce, quick(C4, 20, 1), rnd(CC, ago(2), 1)],
+      (r) => reason(r, / failed the last round of /).includes(`of ${withCourse(CC)} (`) && r.practice.includes(`${withCourse(C4)} (quick check 1 out of 5)`)],
+    'skipped by a quick check, the other missed once': [[ce, quick(C4, 20, 5), L.makeQuickPlacedEvent(C4, ago(20)), rnd(CC, ago(2), 1)],
+      (r) => r.practice.includes(`Skipped by quick check: ${L.titleCase(title(C4))} from ${phrase(C4)}.`) && reason(r, / failed the last round of /).includes(`of ${withCourse(CC)} (`)],
+    "one lesson of a shared title alone on its row, its twin's course assigned": [[pk, guess(P3, ago(3))], (r) => reason(r, /signs of guessing/).includes(`in ${withCourse(P3)} (quick`) && r.practice.includes(`${withCourse(P3)} (best score`)],
+    "one lesson of a shared title alone on its row, its twin's course not assigned": [[L.makeCoursesEnabledEvent([courseOf(P3)], ago(60)), guess(P3, ago(3))], (r) => reason(r, /signs of guessing/).includes(`in ${alone(P3)} (quick`) && !/\*\* from /.test(rowText(r))],
+    'a row with no shared title': [[L.makeCoursesEnabledEvent(['counting-k'], ago(60)), ...pass2('count-to-5', 50), rnd('count-to-10', ago(6), 1), rnd('count-to-10', ago(5), 1), L.makeLoopBackEvent('count-to-10', 'count-to-5', ago(5, 1)), guess('count-to-10', ago(4))],
+      (r) => r.reasons.length >= 3 && !/\*\* from /.test(rowText(r))],
+    "stuck, its loop back to a lesson of its title not yet taken, only its own course assigned": [[L.makeCoursesEnabledEvent([courseOf(T7)], ago(60)), ...pass2(T4, 40), rnd(T7, ago(6), 1), rnd(T7, ago(5), 1)],
+      (r) => reason(r, / is stuck on /).includes(`stuck on ${withCourse(T7)} (`) && r.practice.includes(`${withCourse(T7)} (best score`)],
+    'a loop back from a lesson of its title, since passed, only its course assigned': [[L.makeCoursesEnabledEvent([courseOf(T7)], ago(60)), ...pass2(T4, 40), rnd(T7, ago(9), 1), rnd(T7, ago(8), 1), L.makeLoopBackEvent(T7, T4, ago(8, 1)), rnd(T7, ago(3), full(T7))],
+      (r) => reason(r, / was sent back /).endsWith(`, to ${withCourse(T4)}`)],
+    'one lesson two loop backs went to, from a lesson of its title and from another': [[tx, ...pass2(T4, 40), rnd(T7, ago(12), 1), rnd(T7, ago(11), 1), L.makeLoopBackEvent(T7, T4, ago(11, 1)), rnd(T7, ago(4), full(T7)), rnd(S4, ago(9), 1), rnd(S4, ago(8), 1), L.makeLoopBackEvent(S4, T4, ago(8, 1)), rnd(S4, ago(3), full(S4))],
+      (r) => reason(r, / was sent back /).endsWith(`2 times after repeated misses, to ${withCourse(T4)}`)],
+  };
+  const failing = (F) => Object.entries(CASES).filter(([, [log, holds]]) => { try { return !holds(rowOf(F, log)); } catch (e) { return true; } }).map(([name]) => name);
+  // Each place the row names a lesson, its old naming put back where the row's rule is called: [the new code, the old code].
+  const OLD = {
+    "the stuck reason's old naming, a course only beside a lesson of its title it loops back to": ['stuck.map((m) => `${named(m)} (', "stuck.map((m) => `${((x) => { const f = fundamentalsOf(x.id); return f && f.id !== x.id && f.title === x.title ? bold(x) + ' in ' + courseLabel(getCourse(x.courseId)) : bold(x); })(m)} ("],
+    "a practice review's stuck lesson by its title alone": ['reviewStuck.map(named)', 'reviewStuck.map(bold)'],
+    'a reopened lesson by its title alone': ['reopenedOnly.map(named)', 'reopenedOnly.map(bold)'],
+    'a lesson moved past by its title alone': ['movedPastMods.map(named)', 'movedPastMods.map(bold)'],
+    "the missed-once reason's old naming, a course only beside a route of its title": ['const f = fundamentalsOf(m.id);\n', "const f = fundamentalsOf(m.id); const twin = !!(f && f.id !== m.id && f.title === m.title); const named = (x) => (twin ? `**${titleCase(x.title)}** in ${courseLabel(getCourse(getModule(x.id).courseId))}` : `**${titleCase(x.title)}**`);\n"],
+    "the loop back's old naming, each lesson beside its own loop back's origin and kept once by its words": ["to ${backTo.map(named).join(' and ')}", "to ${[...new Set(loopBacks.map((e) => { const to = getModule(e.toModuleId); const from = getModule(e.moduleId); if (!to) return null; return from && from.id !== to.id && from.title === to.title ? bold(to) + ' in ' + courseLabel(getCourse(to.courseId)) : bold(to); }).filter(Boolean))].join(' and ')}"],
+    'the guessing lessons by their titles alone': ['guessing.map(named)', 'guessing.map(bold)'],
+    'a refresher by its title alone': ['refresh.map(named)', 'refresh.map(bold)'],
+    'a shaky lesson by its title alone': ['`${named(m)} at confidence', '`${bold(m)} at confidence'],
+    'Next up by its title alone': ['nextNamed: next ? named(next) :', 'nextNamed: next ? bold(next) :'],
+    'the lessons tried by their titles alone': ['`${named(getModule(t.id))} (${t.short})`', '`**${t.title}** (${t.short})`'],
+    'the lessons skipped by their titles alone': ['practiceLine(report, (m) => `${titleCase(m.title)}${courseBeside(m)}`)', 'practiceLine(report)'],
+  };
+  // Five near misses, each a rule someone could write in its place.
+  const RULE = 'const courseBeside = (m) => fromCourse(m.id, report.enabledCourseIds, onRowIds);';
+  const NEAR = {
+    "the course only beside a title another lesson the row speaks of shares, the assigned courses unread": [RULE, 'const courseBeside = (m) => fromCourse(m.id, [], onRowIds);'],
+    "the course only beside a title another assigned lesson shares, the lessons the row speaks of unread": [RULE, 'const courseBeside = (m) => fromCourse(m.id, report.enabledCourseIds, []);'],
+    'a course after every title two lessons share': [RULE, 'const courseBeside = (m) => fromCourse(m.id, COURSES.map((c) => c.id), []);'],
+    'a course after every title': [RULE, 'const courseBeside = (m) => ` from ${courseInSentence(getCourse(getModule(m.id).courseId))}`;'],
+    "the course's list label in the sentence": [RULE, "const courseBeside = (m) => (sharesTitle(m.id, report.enabledCourseIds, onRowIds) ? ` in ${courseLabel(getCourse(getModule(m.id).courseId))}` : '');"],
+  };
+  const uncaught = Object.entries({ ...OLD, ...NEAR }).filter(([, [from, to]]) => { const fn = plant('classView', from, to); return !fn || failing({ ...L, classView: fn }).length === 0; }).map(([what]) => what);
+  ok(`Who Needs Help names every lesson on a row one way: a title another lesson in the student's assigned courses or on the row shares is followed by its course, in every reason (stuck, stuck or reopened after a practice review, moved past, missed once, a loop back, guessing, a refresher, mastered but shaky), in Next up and in the practice line, and stands alone otherwise, so no sentence on the page names two lessons the same way (pass NR, EARMARKS A156; ${Object.keys(CASES).length} cases; ${Object.keys(OLD).length} old namings and ${Object.keys(NEAR).length} near misses put back in classView's own source, each caught)`,
+    sane && failing(L).length === 0 && uncaught.length === 0, JSON.stringify({ sane, failsNow: failing(L), uncaught })); }
+// The one rule for two lessons of one title, read by every place that names a lesson (pass NR, the screen read's MUST FIX 4 with EARMARKS
+// A156, and its MUST FIX 2, A155). A title is followed by its course when another lesson of that title is in the student's assigned
+// courses or in the same sentence (sharesTitle and fromCourse), said as a sentence says it, "from fourth grade history" (courseInSentence:
+// gradeInSentence and the subject in lower case, a band elective by its band), never the list label. The weekly note, Since you last
+// looked and Who Needs Help are held above; this block holds the rest: View progress's lesson that waits ("the lesson Spanish and
+// Mexican Texas stays locked" read beside grade 4's lesson of that title, open on the same report), the stuck, move and practice review
+// sentences (the practice review history builds them from one lesson's events, where every course would read as assigned), the report
+// summary's lessons tried, the phrase itself and its band electives, every shared title's lessons told apart by their phrases, and the
+// lesson page's course line. Each with the assigned twin and without it; the old code of each put back in its own source and caught,
+// and three near misses: the list label in the sentence, a band elective said by its first grade, and the history reading one lesson's
+// events as every course assigned. Since round one's code read: a band elective's subject comes first, "technology for grades 9 to 12"
+// and "philosophy for Kindergarten to grade 2", where "Because from Kindergarten to grade 2 philosophy" read as a range (SHOULD CONSIDER
+// 1); the history's Move Forward line reads the assigned courses as its practice review line does, where a mastered More and fewer moved
+// forward read "from pre-K 3 math" with its twin's course not assigned (SHOULD CONSIDER 3); and the Practice Reviews card names a
+// practice review's lesson beside the lessons the card names, as the weekly note does: each entry's own lesson and the lessons its lines
+// loop back to (loopBacksTold), where with only grade 7's course assigned a review line named grade 7's The first Texans by its title
+// alone under a line that named it and grade 4's lesson of that title, each with its course (SHOULD CONSIDER 2); two lessons of one title
+// on the card are named each with its course, one's course switched off; and a loop back no line tells adds no course. Each old code put
+// back and caught, with two near misses: every loop back in the log beside the card's lines, and the loop backs alone beside them.
+// Since round one's screen read of pass NR (SHOULD CONSIDER 6) View progress names its own lesson by the house's rule for a title in a
+// sentence (lessonInSentence), as it names every other lesson: with its course when its twin's course is assigned, or when its loop
+// back names its twin, where it ended "Sam's confidence score in the first Texans" two sentences after "sent back to the first Texans
+// from fourth grade history"; lowerTitle's words alone put back are caught, and so are the rule read without the lesson named beside
+// it and without the assigned courses.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const lines = lsrc.split('\n'); const UI = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const declSource = (name) => { const re = new RegExp(`^(?:export )?(?:function ${name}\\(|const ${name} = )`); const at = lines.findIndex((l) => re.test(l)); if (at < 0) return '';
+    for (let end = at; end < Math.min(lines.length, at + 400); end++) { const text = lines.slice(at, end + 1).join('\n').replace(/^export /, ''); try { new vm.Script(text); return text; } catch (e) { if (!(e instanceof SyntaxError)) throw e; } }
+    return ''; };
+  const ctx = vm.createContext({ ...L }); vm.runInContext(['MONTHS_LONG', 'niceDate', 'describeDay', 'gapWords', 'ofFive', 'outOf', 'countWords', 'stuckTitles', 'median', 'localDay', 'isBeforeMasteryV2'].map(declSource).join('\n'), ctx);
+  const plant = (name, from, to) => { const src = declSource(name); return src && src.split(from).length === 2 ? vm.runInContext(`(${src.replace(from, () => to)})`, ctx) : null; };
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
+  const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, at, right) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: full(id) });
+  const T4 = 'first-texans'; const T7 = 'the-first-texans'; const S7 = 'spain-and-mexico-in-texas'; const P3 = 'more-or-fewer'; const P4 = 'more-and-fewer-5';
+  const course = (id) => L.getModule(id).courseId; const TT = (id) => L.titleCase(L.getModule(id).title);
+  const on = (...ids) => L.makeCoursesEnabledEvent(ids.map(course), ago(60));
+  const misses = (id, n) => Array.from({ length: n }, (_, i) => rnd(id, ago(9 - i), 1));
+  const failed = (id, d) => ({ type: 'light_review_completed', at: ago(d), startedAt: ago(d), moduleId: id, stage: 'first', results: [0, 0, 0, 1, 1].map((x) => ({ correct: !!x, genId: 'g', prompt: 'p' })), correct: 2, total: 5, outcome: 'fail' });
+  const reviewed = (...courses) => [on(...courses), rnd(P3, ago(40), full(P3)), rnd(P3, ago(39), full(P3)), failed(P3, 3)];
+  const moved = (...courses) => [on(...courses), ...misses(P3, 4), L.makeMovedForwardEvent(P3, ago(2))];
+  const tried = (...courses) => [on(...courses), ...L.prerequisitesOf(P4).flatMap((id) => [rnd(id, ago(30), full(id)), rnd(id, ago(29), full(id))]), rnd(P3, ago(3), 1), rnd(P4, ago(2), 1)];
+  const P3_FROM = `*${TT(P3)}* from pre-K 3 math`;
+  // More and fewer mastered, its practice review failed, four rounds missed (it has nothing before it to loop back to) and moved forward:
+  // the history's Move Forward line. Grade 7's The first Texans mastered, its practice review failed, then two misses, a loop back to grade
+  // 4's lesson of that title and two more misses, only grade 7's course assigned: stuck after its review, the stuck line telling the loop
+  // back. And the same lesson looped back to before it was mastered, its review clear: no line tells that loop back.
+  const movedOn = (...courses) => [on(...courses), rnd(P3, ago(40), full(P3)), rnd(P3, ago(39), full(P3)), failed(P3, 10), ...misses(P3, 4), L.makeMovedForwardEvent(P3, ago(4))];
+  const movedLine = (F, log) => ((F.lightReviewHistory(log, 'Sam').find((h) => h.kind === 'moved') || {}).text || '');
+  const stuckBack = [on(T7), rnd(T7, ago(40), full(T7)), rnd(T7, ago(39), full(T7)), failed(T7, 10), rnd(T7, ago(9), 1), rnd(T7, ago(8), 1), L.makeLoopBackEvent(T7, T4, ago(8, 1)), rnd(T7, ago(7), 1), rnd(T7, ago(6), 1)];
+  const clear = (id, d) => ({ type: 'light_review_completed', at: ago(d), startedAt: ago(d), moduleId: id, stage: 'first', results: [1, 1, 1, 1, 1].map((x) => ({ correct: !!x, genId: 'g', prompt: 'p' })), correct: 5, total: 5, outcome: 'clear' });
+  const backUntold = [on(T7), rnd(T7, ago(50), 1), rnd(T7, ago(49), 1), L.makeLoopBackEvent(T7, T4, ago(49, 1)), rnd(T7, ago(45), full(T7)), rnd(T7, ago(44), full(T7)), clear(T7, 2)];
+  const reviewLine = (F, log) => ((F.lightReviewHistory(log, 'Sam').find((h) => h.kind === 'fail' || h.kind === 'clear') || {}).text || '');
+  const T7_TITLE = `*${TT(T7)}*`;
+  const CASES = {
+    "View progress's lesson that waits, its twin's course assigned": (F) => F.moduleStory('Sam', [on(T4, T7), rnd(T7, ago(3), 1), rnd(T7, ago(2), 1)], T7).includes(`the lesson ${L.lowerTitle(L.getModule(S7).title)} from seventh grade history stays locked`),
+    "View progress's lesson that waits, alone": (F) => F.moduleStory('Sam', [on(T7), rnd(T7, ago(3), 1), rnd(T7, ago(2), 1)], T7).includes(`the lesson ${L.lowerTitle(L.getModule(S7).title)} stays locked`),
+    // View progress's own lesson, by the rule: beside the twin its loop back names (only its own course assigned), and with its twin's
+    // course assigned and alone.
+    "View progress's own lesson beside the twin its loop back names": (F) => { const t = F.moduleStory('Sam', [on(T7), rnd(T7, ago(5), 1), rnd(T7, ago(4), 1), L.makeLoopBackEvent(T7, T4, ago(4, 1))], T7);
+      return t.includes(`sent back to ${L.lowerTitle(L.getModule(T4).title)} from fourth grade history for`) && t.includes(`confidence score in ${L.lowerTitle(L.getModule(T7).title)} from seventh grade history currently`); },
+    "View progress's own lesson, its twin's course assigned and alone": (F) => F.moduleStory('Sam', [on(P3, P4)], P3).includes(`has not opened ${L.lowerTitle(L.getModule(P3).title)} from pre-K 3 math yet.`)
+      && F.moduleStory('Sam', [on(P3)], P3).includes(`has not opened ${L.lowerTitle(L.getModule(P3).title)} yet.`),
+    'the stuck sentence, its twin assigned and alone': (F) => String(F.neverStuckSentence([on(P3, P4), ...misses(P3, 4)], P3, 'Sam', { action: false })).includes(`master ${P3_FROM}.`)
+      && String(F.neverStuckSentence([on(P3), ...misses(P3, 4)], P3, 'Sam', { action: false })).includes(`master *${TT(P3)}*.`),
+    'the move sentence, its twin assigned and alone': (F) => { const a = moved(P3, P4); const b = moved(P3); return String(F.neverMovedSentence(a, a[a.length - 1], 'Sam')).includes(`past ${P3_FROM} on `) && String(F.neverMovedSentence(b, b[b.length - 1], 'Sam')).includes(`past *${TT(P3)}* on `); },
+    "a practice review's sentence, its twin assigned and alone": (F) => { const a = F.lightReviewSentences(reviewed(P3, P4), 'Sam', 1)[0] || ''; const b = F.lightReviewSentences(reviewed(P3), 'Sam', 1)[0] || '';
+      return a.includes(P3_FROM) && b.includes(`*${TT(P3)}*`) && !b.includes(' from pre-K'); },
+    "a practice review's sentence in the history, its twin assigned and alone": (F) => { const a = (F.lightReviewHistory(reviewed(P3, P4), 'Sam')[0] || {}).text || ''; const b = (F.lightReviewHistory(reviewed(P3), 'Sam')[0] || {}).text || '';
+      return a.includes(P3_FROM) && b.includes(`*${TT(P3)}*`) && !b.includes(' from pre-K'); },
+    "the report summary's lessons tried, both assigned and one": (F) => { const both = F.summaryParagraph(F.buildReport('Sam', tried(P3, P4))); const one = F.summaryParagraph(F.buildReport('Sam', [on(P4), ...tried(P4).slice(1, -2), rnd(P4, ago(2), 1)]));
+      return both.includes(`${TT(P4)} from pre-K 4 math (`) && both.includes(`${TT(P3)} from pre-K 3 math (`) && one.includes(`Tried but not passed yet: ${TT(P4)} (`); },
+    'the phrase in a sentence': (F) => F.lessonInSentence(T4, T7) === 'the first Texans from fourth grade history' && F.lessonInSentence(T4) === 'the first Texans' && F.lessonInSentence(S7, null, [course(T4), course(T7)]) === 'Spanish and Mexican Texas from seventh grade history',
+    "a band elective's phrase, its subject first": (F) => F.courseInSentence(L.getCourse('tech-9')) === 'technology for grades 9 to 12' && F.courseInSentence(L.getCourse('philosophy-3')) === 'philosophy for grades 3 to 5'
+      && F.courseInSentence(L.getCourse('philosophy-k')) === 'philosophy for Kindergarten to grade 2' && F.courseInSentence(L.getCourse('history-4')) === 'fourth grade history' && F.courseInSentence(L.getCourse('first-steps-pk')) === 'pre-K 4 math'
+      && L.lessonInSentence('because-k', null, ['philosophy-k', 'philosophy-3']) === 'Because from philosophy for Kindergarten to grade 2',
+    "the history's Move Forward line, its twin assigned and alone": (F) => movedLine(F, movedOn(P3, P4)).includes(`forward on ${P3_FROM} on `) && movedLine(F, movedOn(P3)).includes(`forward on *${TT(P3)}* on `),
+    "a practice review's line in the history beside the loop back a stuck line tells": (F) => { const h = F.lightReviewHistory(stuckBack, 'Sam'); const stuck = (h.find((x) => x.kind === 'stuck') || {}).text || '';
+      return stuck.includes(`get past ${T7_TITLE} from seventh grade history.`) && stuck.includes(`looping back to ${T7_TITLE} from fourth grade history.`) && reviewLine(F, stuckBack).includes(`practice review of ${T7_TITLE} from seventh grade history four weeks after`); },
+    "a practice review's sentence beside a lesson of its title the page names": (F) => { const log = stuckBack.filter((e) => e.moduleId !== T7 || e.type !== 'attempt_completed' || String(e.at) < ago(20));
+      const beside = F.lightReviewSentences(log, 'Sam', 1, { enabledIds: [course(T7)], besideIds: [T4] })[0] || ''; const alone = F.lightReviewSentences(log, 'Sam', 1, { enabledIds: [course(T7)] })[0] || '';
+      return beside.includes(`practice review of ${T7_TITLE} from seventh grade history `) && alone.includes(`practice review of ${T7_TITLE} `) && !alone.includes(' from seventh grade'); },
+    'two lessons of one title on the card, one course since switched off, each with its course': (F) => {
+      const log = [on(P3, P4), rnd(P3, ago(40), full(P3)), rnd(P3, ago(39), full(P3)), rnd(P4, ago(30), full(P4)), rnd(P4, ago(29), full(P4)), clear(P4, 3), on(P3), clear(P3, 1)];
+      const lines = F.lightReviewHistory(log, 'Sam').map((h) => h.text);
+      return lines.length === 2 && lines.some((x) => x.includes(`practice review of ${P3_FROM} `)) && lines.some((x) => x.includes(`practice review of *${TT(P4)}* from pre-K 4 math `)); },
+    'a loop back no line in the history tells adds no course': (F) => reviewLine(F, backUntold).includes(`practice review of ${T7_TITLE} `) && !reviewLine(F, backUntold).includes(' from seventh grade'),
+  };
+  const failing = (F) => Object.entries(CASES).filter(([, c]) => { try { return !c(F); } catch (e) { return true; } }).map(([name]) => name);
+  // Every title two or more lessons share, each of its lessons told apart by its phrase.
+  const byTitle = new Map(); for (const m of L.MODULES) byTitle.set(m.title, [...(byTitle.get(m.title) || []), m]);
+  const shared = [...byTitle.values()].filter((ms) => ms.length > 1);
+  const clash = shared.filter((ms) => new Set(ms.map((m) => L.courseInSentence(L.getCourse(m.courseId)))).size < ms.length).map((ms) => ms[0].title);
+  // The lesson page's course line (SHOULD CONSIDER 8): under the title when another assigned lesson shares it.
+  const pageLine = (ui) => ui.includes('const twinTitle = sharesTitle(mod.id, record ? enabledCourseIds(record.events) : []);') && ui.includes('{twinTitle && <p data-lesson-course="" ') && ui.includes('{capFirst(courseInSentence(course))}</p>}');
+  const OLD = {
+    "View progress's waiting lesson without the assigned courses": ['moduleStory', 'lessonInSentence(waiting[0].id, moduleId, enabled)', 'lessonInSentence(waiting[0].id, moduleId)'],
+    "View progress's own lesson by lowerTitle's words alone": ['moduleStory', 'const ownName = (besideId = null) => lessonInSentence(moduleId, besideId, assignedHere);', 'const ownName = () => lowerTitle(mod.title);'],
+    "View progress's own lesson without the lesson its loop back names (near miss)": ['moduleStory', 'confidence score in ${ownName(backId)} currently', 'confidence score in ${ownName()} currently'],
+    "View progress's own lesson without the assigned courses (near miss)": ['moduleStory', 'lessonInSentence(moduleId, besideId, assignedHere)', 'lessonInSentence(moduleId, besideId)'],
+    'the stuck sentence without the assigned courses': ['neverStuckSentence', 'stuckTitles(moduleId, back ? back.id : null, enabledCourseIds(events))', 'stuckTitles(moduleId, back ? back.id : null)'],
+    'the move sentence without the assigned courses': ['neverMovedSentence', 'stuckTitles(moveEvent.moduleId, back ? back.id : null, enabledCourseIds(events))', 'stuckTitles(moveEvent.moduleId, back ? back.id : null)'],
+    "the practice review sentence's lesson by its title alone": ['lightReviewSentences', '`*${titleCase(mod.title)}*${fromCourse(mod.id, assigned, besideIds)}`', '`*${titleCase(mod.title)}*`'],
+    "the practice review sentence's lesson without the lessons beside it": ['lightReviewSentences', '`*${titleCase(mod.title)}*${fromCourse(mod.id, assigned, besideIds)}`', '`*${titleCase(mod.title)}*${fromCourse(mod.id, assigned)}`'],
+    "the report summary's lessons tried by their titles alone": ['summaryParagraph', 'practiceLine(report, (m) => `${titleCase(m.title)}${fromCourse(m.id, report.enabledCourseIds)}`)', 'practiceLine(report)'],
+    "the course's list label in the sentence (near miss)": ['lessonInSentence', 'fromCourse(id, enabledIds, besideId ? [besideId] : [])', "(sharesTitle(id, enabledIds, besideId ? [besideId] : []) ? ` in ${courseLabel(getCourse(m.courseId))}` : '')"],
+    'a band elective said by its first grade (near miss)': ['courseInSentence', 'band ? `${subject} for ${band}`', 'band ? `${gradeInSentence(course.grade)} ${subject}`'],
+    "a band elective's band before its subject": ['courseInSentence', 'band ? `${subject} for ${band}`', 'band ? `${band} ${subject}`'],
+    "the history reading one lesson's events as every course assigned (near miss)": ['lightReviewHistory', "lightReviewSentences(mine(e.moduleId, e.at), name, 1, { enabledIds, besideIds })[0]; if (s) out.push({ at: e.at, kind: e.outcome", "lightReviewSentences(mine(e.moduleId, e.at), name, 1, { besideIds })[0]; if (s) out.push({ at: e.at, kind: e.outcome"],
+    "the history's Move Forward line reading one lesson's events as every course assigned": ['lightReviewHistory', "lightReviewSentences(mine(e.moduleId, e.at), name, 1, { enabledIds, besideIds })[0] || neverMovedSentence", "lightReviewSentences(mine(e.moduleId, e.at), name, 1, { besideIds })[0] || neverMovedSentence"],
+    "the history's lines without the lessons the card names beside them": ['lightReviewHistory', 'const entries = first.some((h) => sharesTitle(h.moduleId, [], beside)) ? reviewed(beside) : first;', 'const entries = first;'],
+    "every loop back in the log beside the history's lines (near miss)": ['lightReviewHistory', '[...first, ...stuck].flatMap((h) => [h.moduleId, ...loopBacksTold(events, h)])', "[...first, ...stuck].map((h) => h.moduleId).concat(active.filter((e) => e.type === 'looped_back').map((e) => e.toModuleId))"],
+    "the loop backs alone beside the history's lines, not the card's own lessons (near miss)": ['lightReviewHistory', '[...first, ...stuck].flatMap((h) => [h.moduleId, ...loopBacksTold(events, h)])', '[...first, ...stuck].flatMap((h) => loopBacksTold(events, h))'],
+  };
+  const uncaught = Object.entries(OLD).filter(([, [name, from, to]]) => { const fn = plant(name, from, to); return !fn || failing({ ...L, [name]: fn }).length === 0; }).map(([what]) => what);
+  const noLine = UI.replace(/\{twinTitle && <p data-lesson-course="" [^\n]*\n/, '');
+  const near = Object.keys(OLD).filter((k) => k.endsWith('near miss)')).length;
+  // Because keeps its capital (round three's screen read of pass NR, its SHOULD CONSIDER 2): lowerTitle lowercased the title of the two
+  // Because lessons, which then read as the sentence's own word ("B-1's confidence score in because from philosophy for Kindergarten to
+  // grade 2 currently stands at 5 out of 5.", "B-1 has not opened because yet."). Every sentence the report and the learner's own pages
+  // build that names one of the two is built for a student given both philosophy courses, in each state a sentence tells (neither opened,
+  // both tried, the kindergarten lesson mastered, its practice review failed, stuck, moved past, and looped back to from the lesson it
+  // opens), and every place a title stands in it is found by building the same sentences in a copy of the logic whose two Because lessons
+  // are titled Quokka, a plain word with no rule of its own; each such place must print Because. lowerTitle as it stood, planted in a
+  // copy, is caught.
+  { const { pathToFileURL } = await import('node:url'); const fsx = await import('node:fs'); const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
+    const BK = 'because-k'; const B3 = 'because'; const AFTER = 'my-turn-your-turn'; const nowIso = new Date(NOW).toISOString();
+    const onB = L.makeCoursesEnabledEvent(['philosophy-k', 'philosophy-3'], ago(60)); const r = (id, d, right) => rnd(id, ago(d), right); const four = (id) => [9, 8, 7, 6].map((d) => r(id, d, 1));
+    const moveK = L.makeMovedForwardEvent(BK, ago(2));
+    const LOGS = { 'neither opened': [onB], 'both tried': [onB, r(BK, 3, 1), r(B3, 2, 1)], 'mastered since the last look': [onB, r(BK, 4, full(BK)), r(BK, 3, full(BK)), r(B3, 2, 1)],
+      'its practice review failed': [onB, r(BK, 40, full(BK)), r(BK, 39, full(BK)), failed(BK, 3)], 'four misses in a row': [onB, ...four(BK), ...four(B3)], 'moved past': [onB, ...four(BK), moveK],
+      'stuck after its review': [onB, r(BK, 40, full(BK)), r(BK, 39, full(BK)), failed(BK, 10), r(BK, 9, 1), r(BK, 8, 1), L.makeLoopBackEvent(BK, 'i-wonder', ago(8, 1)), r(BK, 7, 1), r(BK, 6, 1)],
+      'looped back to': [onB, r(BK, 40, full(BK)), r(BK, 39, full(BK)), r(AFTER, 9, 1), r(AFTER, 8, 1), L.makeLoopBackEvent(AFTER, BK, ago(8, 1)), r(AFTER, 7, 1)] };
+    const mine = [...L.getCourse('philosophy-k').modules, ...L.getCourse('philosophy-3').modules].map((m) => m.id);
+    const sentences = (LL) => Object.entries(LOGS).flatMap(([state, log]) => { const rep = LL.buildReport('B-1', log); const row = LL.classView([{ id: 'B-1', label: 'B-1', events: log }], nowIso)[0];
+      return [...[BK, B3, AFTER].map((id) => ['View progress', LL.moduleStory('B-1', log, id, nowIso)]), ['the summary', LL.summaryParagraph(rep)], ['the weekly note', LL.weeklyNote('B-1', log, nowIso)],
+        ['Who Needs Help', [...row.reasons, row.why, row.practice, row.nextNamed].join(' ')], ['Since you last looked', LL.changesSince(log, ago(5)).mastered.join(', ')],
+        ['the Practice Reviews card', LL.lightReviewHistory(log, 'B-1').map((h) => h.text).join(' ')], ['the practice review sentences', LL.lightReviewSentences(log, 'B-1', 3).join(' ')],
+        ...[BK, B3].map((id) => ['the stuck sentence', `${LL.stuckSentence(log, id, 'B-1', { action: false }) || ''} ${LL.neverStuckSentence(log, id, 'B-1', { action: false }) || ''}`]),
+        ['the move sentence', log.includes(moveK) ? String(LL.neverMovedSentence(log, moveK, 'B-1') || '') : ''],
+        ...[BK, B3].map((id) => ["a round's end", `${LL.encouragementFor(log, id, true)} ${LL.encouragementFor(log, id, false)}`]), ['My progress', LL.studentSummary(log, mine).join(' ')],
+        ...[BK, B3].map((id) => ['the lesson in a sentence', `${LL.lessonInSentence(id, null, ['philosophy-k', 'philosophy-3'])} | ${LL.lessonInSentence(id)}`]),
+        ["the lesson's goal", `${LL.teachPhrase(LL.getModule(BK).title)} | ${LL.goalPhrase(LL.getModule(BK).title)}`]].map(([where, text]) => [`${state}: ${where}`, String(text || '')]); });
+    // A copy of the logic made with one swap (null when the swap is not found exactly as often as it should be), and removed after.
+    const lsrcB = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const dir = fsx.mkdtempSync(join(tmpdir(), 'edu-because-')); let k = 0;
+    const copyWith = async (from, to, times) => { if (lsrcB.split(from).length !== times + 1) return null; const f = join(dir, `logic-because-${k++}.mjs`); fsx.writeFileSync(f, lsrcB.split(from).join(to)); return import(pathToFileURL(f).href); };
+    let Q = null; let P = null; try { Q = await copyWith("\n    title: 'Because',\n", "\n    title: 'Quokka',\n", 2); P = await copyWith('(keep && !common) || because ? first', 'keep && !common ? first', 1); } finally { fsx.rmSync(dir, { recursive: true, force: true }); }
+    // Each place a title stands, read from the Quokka copy's same sentence: its words around the title must be this sentence's words.
+    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const titlesIn = (text, marked) => { const segs = marked.split(/quokka/i); if (segs.length === 1) return []; const m = new RegExp(`^${segs.map(esc).join('([Bb]ecause)')}$`).exec(text); return m ? m.slice(1) : null; };
+    const R = sentences(L); const S = Q ? sentences(Q) : []; const PP = P ? sentences(P) : [];
+    const read = (rows) => rows.map(([where, text], i) => [where, S[i] ? titlesIn(text, S[i][1]) : null]);
+    const now = read(R); const unread = now.filter(([, t]) => t === null).map(([w]) => w); const lower = now.filter(([, t]) => t && t.some((w) => w !== 'Because')).map(([w]) => w);
+    const named = now.reduce((n, [, t]) => n + (t ? t.length : 0), 0); const places = [...new Set(now.filter(([, t]) => t && t.length).map(([w]) => w.replace(/^[^:]+: /, '')))];
+    const planted = PP.length ? read(PP).filter(([, t]) => t && t.some((w) => w === 'because')).length : 0;
+    ok(`a title that opens with Because keeps its capital in every sentence the report and the learner's own pages build that names one of the two Because lessons (round three's screen read of pass NR, SHOULD CONSIDER 2: ${named} titles in ${R.length} sentences, ${places.length} kinds of sentence: ${places.join(', ')}; each place a title stands read from the same sentences built in a copy whose two Because lessons are titled Quokka; lowerTitle as it stood, planted in a copy, lowercases the title in ${planted} of them, caught; and grade 3's Because, so, then keeps it too)`,
+      !!Q && !!P && unread.length === 0 && lower.length === 0 && named >= 141 && places.length >= 13 && planted > 0 && L.lowerTitle('Because, so, then') === 'Because, so, then' && P.lowerTitle('Because, so, then') === 'because, so, then',
+      JSON.stringify({ unread: unread.slice(0, 4), lower: lower.slice(0, 4), named, places, planted })); }
+  ok(`every place that names a lesson follows a title with its course, as a sentence says it ("from fourth grade history"), when another lesson in the student's assigned courses or in the same sentence has that title: View progress's own lesson and the lesson that waits, the stuck, move and practice review sentences, the history's Move Forward line, the Practice Reviews card beside the lessons its lines loop back to, the report summary's lessons tried and the lesson page; a band elective is said by its subject and then its band ("technology for grades 9 to 12"), and every title two lessons share is told apart by its phrase (pass NR, the screen read's MUST FIX 2 and 4, EARMARKS A155 and A156; round one's code read, SHOULD CONSIDER 1, 2 and 3; round one's screen read, SHOULD CONSIDER 6; ${Object.keys(CASES).length} cases, ${shared.length} shared titles; ${Object.keys(OLD).length - near} old codes and ${near} near misses put back in their own sources, each caught, and the lesson page's course line taken out, caught)`,
+    failing(L).length === 0 && uncaught.length === 0 && clash.length === 0 && shared.length >= 10 && pageLine(UI) && noLine !== UI && !pageLine(noLine), JSON.stringify({ failsNow: failing(L), uncaught, clash, page: pageLine(UI) })); }
+// The dates the report writes in words are the device's own days (pass NR, the screen read's MUST FIX 3). niceDate and describeDay read
+// the UTC day, where the screens' own dates (the Practice Reviews card's date line, View progress's "Passed on") read the device's, so
+// at 7 PM Central one move read "November 12" under the card's "November 11", and View progress said "earned the star on October 20"
+// beside "Mastered on Oct 19". Each is held, under three zones in one run (UTC, America/Chicago and Asia/Tokyo; the block sets TZ for
+// each and puts it back), to the day toLocaleDateString gives for three moments (late evening in Chicago, early morning in Tokyo, and
+// noon), and a day written without a time (the definitions' "September 14, 2026", MASTERY_V2_FROM) to itself; and so is every reader
+// of the two: the move sentences (neverMovedSentence and lightReviewSentences), View progress's quick check and star sentences
+// (moduleStory) and the report's definitions. Each old line is put back (its own source, one line) and caught, and so are two near
+// misses: the device's day with a day without a time read as midnight UTC, in each of the two.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const lines = lsrc.split('\n');
+  const lineOf = (re) => lines.find((l) => re.test(l)) || '';
+  const DESCRIBE = lineOf(/^const describeDay = /); const NICE = lineOf(/^function niceDate\(/); const MONTHS = lineOf(/^const MONTHS_LONG = /);
+  const load = (src) => { const ctx = vm.createContext({}); vm.runInContext(`${MONTHS}\n${src}\nthis.describeDay = typeof describeDay === 'function' ? describeDay : null; this.niceDate = typeof niceDate === 'function' ? niceDate : null;`, ctx); return ctx; };
+  const swap = (src, from, to) => (src.split(from).length === 2 ? src.replace(from, () => to) : null);
+  const MOMENTS = ['2026-11-12T03:30:00.000Z', '2026-11-11T16:30:00.000Z', '2026-10-02T12:00:00.000Z'];
+  const dayWords = (iso) => new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  const helpersHold = (f) => !!f.describeDay && !!f.niceDate && MOMENTS.every((iso) => f.describeDay(iso) === dayWords(iso) && f.niceDate(iso) === `${dayWords(iso)}, ${new Date(iso).getFullYear()}`)
+    && f.niceDate('2026-09-14') === 'September 14, 2026' && f.describeDay('2026-09-14') === 'September 14';
+  // The readers, on the module itself: a move on each moment, a quick check on it, a star earned on it, and the definitions.
+  const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, at, right) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: full(id) });
+  const Z = L.MODULES.find((m) => !L.prerequisitesOf(m.id).length && !L.isWritingModule(m.id) && !L.getCourse(m.courseId).readAloud && L.getCourse(m.courseId).subject !== 'Writing').id;
+  const hour = 3600000; const before = (iso, h) => new Date(Date.parse(iso) - h * hour).toISOString();
+  const readersHold = () => MOMENTS.every((iso) => {
+    const misses = [8, 7, 6, 5].map((h) => rnd(Z, before(iso, 24 * h), 0)); const move = L.makeMovedForwardEvent(Z, iso);
+    const moved = String(L.neverMovedSentence([...misses, move], move, 'Sam')).includes(`on ${dayWords(iso)}, before it was mastered`);
+    const quick = L.moduleStory('Sam', [L.makeQuickCheckEvent(Z, Array.from({ length: L.QUICK_CHECK_QUESTIONS }, () => ({ correct: true, timeMs: 9000 })), iso)], Z).includes(`on ${dayWords(iso)}, ${new Date(iso).getFullYear()}`);
+    return moved && quick; }) && L.buildReport('Sam', []).definitions.some((x) => x.includes('September 14, 2026'));
+  const zones = ['UTC', 'America/Chicago', 'Asia/Tokyo']; const was = process.env.TZ; const results = {};
+  const OLD = {
+    "describeDay's old line, the UTC day": [swap(DESCRIBE, '[d.getMonth()]} ${d.getDate()}', '[d.getUTCMonth()]} ${d.getUTCDate()}'), NICE],
+    "niceDate's old line, the UTC day": [DESCRIBE, swap(NICE, '${MONTHS_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}', '${MONTHS_LONG[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}')],
+    'describeDay by the device with a day without a time read as midnight UTC (near miss)': [swap(DESCRIBE, 'const d = day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(iso);', 'const d = new Date(iso);'), NICE],
+    'niceDate by the device with a day without a time read as midnight UTC (near miss)': [DESCRIBE, swap(NICE, 'const d = day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(iso);', 'const d = new Date(iso);')],
+  };
+  const caught = {};
+  try {
+    for (const tz of zones) {
+      process.env.TZ = tz;
+      results[tz] = { helpers: helpersHold(load(`${DESCRIBE}\n${NICE}`)), readers: readersHold(), offsetHours: -new Date('2026-11-12T03:30:00.000Z').getTimezoneOffset() / 60 };
+      for (const [name, [d, n]] of Object.entries(OLD)) if (d && n && !helpersHold(load(`${d}\n${n}`))) caught[name] = true;
+    }
+  } finally { if (was === undefined) delete process.env.TZ; else process.env.TZ = was; }
+  const uncaught = Object.keys(OLD).filter((name) => !caught[name]);
+  ok(`the dates the report writes in words are the device's own days, as the screens' own dates are, under UTC, Central and Tokyo time alike: describeDay and niceDate, the move sentences, View progress's quick check and the definitions' "September 14, 2026", a day without a time staying that day (pass NR, the screen read's MUST FIX 3; ${zones.length} zones, ${MOMENTS.length} moments; the two old lines and two near misses put back, each caught)`,
+    !!DESCRIBE && !!NICE && zones.every((tz) => results[tz].helpers && results[tz].readers) && new Set(zones.map((tz) => results[tz].offsetHours)).size === zones.length && uncaught.length === 0, JSON.stringify({ results, uncaught })); }
+// Three of the screen read's SHOULD CONSIDER items (pass NR), each in the logic, with round one's code read's fixes to two of them. 1:
+// Next up follows the report's order, the one its Assigned now list sorts by (byGradeOrder: grade by grade, then subject, then the
+// course's title, since round one's code read, SHOULD CONSIDER 4), where it followed course ids, so a child given pre-K 3 and pre-K 4
+// Math read "Next up: Colors", a pre-K 4 lesson, with seventeen pre-K 3 lessons open, and then the course list's order inside a grade
+// and subject, so in grade 12 History and grade 9 Health it named a lesson of the course the list shows second. 2: Who Needs Help's
+// "why" line counts every reason listed under it, where it counted four kinds ("1 thing needs attention" above five reasons). 3: View
+// progress tells a lesson moved past that it comes back as a practice review for a fresh try, on the day its schedule gives, and a
+// lesson a practice review reopened that it is back for a full round, where it said nothing of the first and told the second its
+// questions come back as memory checks. Since round one's code read (MUST FIX 1) what it says of the lessons that need the one moved
+// past is read from the gate (moduleStatuses), each case beside the gate's own reading: nothing when no assigned lesson needs it
+// (kindergarten's last lesson, Picture graphs, needed only by a grade 1 course not assigned), when it was passed before the move, or
+// when the lesson that needs it was opened by hand; "so the lesson that needs it is open" when the move opened it (The equal sign opens
+// Number sentences and stories); and "which counts for the lessons that need it as a pass does" when one is still locked behind another
+// lesson (after Teen numbers, Writing numbers waits on Bigger and smaller to 100 too), where every lesson moved past was told "so the
+// lessons that need it are open". And a fresh try whose day has gone is said to have been due since that day, by the queue's own rule
+// (reviewIsDue; SHOULD CONSIDER 5), where "from November 1" was read on November 16 with the review in that day's queue, and since round
+// two's read (SHOULD CONSIDER 8) one due on the very day is "due today" (reviewDueToday), its hour still to come or already gone, where it
+// read "which has been due since November 16" on November 16; a minute before today began is a day gone. Each old code is put back in
+// its own source and caught, and so is each near miss.
+{ const vm = await import('node:vm');
+  const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const lines = lsrc.split('\n');
+  const declSource = (name) => { const re = new RegExp(`^(?:export )?(?:function ${name}\\(|const ${name} = )`); const at = lines.findIndex((l) => re.test(l)); if (at < 0) return '';
+    for (let end = at; end < Math.min(lines.length, at + 400); end++) { const text = lines.slice(at, end + 1).join('\n').replace(/^export /, ''); try { new vm.Script(text); return text; } catch (e) { if (!(e instanceof SyntaxError)) throw e; } }
+    return ''; };
+  const ctx = vm.createContext({ ...L }); vm.runInContext(['MONTHS_LONG', 'niceDate', 'describeDay', 'outOf', 'median'].map(declSource).join('\n'), ctx);
+  const plant = (name, from, to) => { const src = declSource(name); return src && src.split(from).length === 2 ? vm.runInContext(`(${src.replace(from, () => to)})`, ctx) : null; };
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const now = new Date(NOW).toISOString(); const ago = (d, h = 0) => new Date(NOW - d * DAY + h * 3600000).toISOString();
+  const full = (id) => L.moduleRules(id).questions;
+  const rnd = (id, at, right, ms = 9000) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: full(id) }, (_, k) => ({ correct: k < right, timeMs: k >= right && ms < 4000 ? ms : 9000 })), review: null, coreCorrect: right, coreTotal: full(id) });
+  const first = (courseId) => L.getCourse(courseId).modules.slice().sort((a, b) => a.order - b.order)[0].id;
+  const nextOf = (F, courses) => { const ev = [L.makeCoursesEnabledEvent(courses, ago(5))]; const m = F.nextUpModule(F.buildReport('Sam', ev), ev); return m ? m.id : null; };
+  // View progress's sentence for a lesson moved past, read at the fixed moment now; the gate's own reading of a log (moduleStatuses);
+  // a log with one course assigned, two missed rounds of a lesson (after any events given) and its Move Forward d days ago; a day in
+  // the words the report uses, read on the device's own day; and the words the sentence keeps whatever the gate says.
+  const movedSay = (F, ev, id) => (F.moduleStory('Sam', ev, id, now).match(/Sam was moved past this lesson before mastering it[^]*?for a fresh try[^.]*\./) || [''])[0];
+  const gateOf = (ev) => new Map(L.moduleStatuses(L.deriveProgress(ev), L.enabledCourseIds(ev)).map((x) => [x.id, x.status]));
+  const movedPast = (course, id, d = 5, before = []) => [L.makeCoursesEnabledEvent([course], ago(60)), ...before, rnd(id, ago(d + 3), 1), rnd(id, ago(d + 2), 1), L.makeMovedForwardEvent(id, ago(d))];
+  const day = (iso, d = 0) => new Date(Date.parse(iso) + d * DAY).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  const STAYS = ". It stays on Sam's list as not yet mastered and comes back as a practice review for a fresh try";
+  const queued = (ev, id) => L.lightReviewQueue(ev, now).some((q) => q.moduleId === id);
+  // The Equal sign missed twice and moved past three weeks before the moment dueAt, so its fresh try falls due then.
+  const dueOn = (dueAt) => [L.makeCoursesEnabledEvent(['numbers-1'], ago(60)), rnd('the-equal-sign', ago(30), 1), rnd('the-equal-sign', ago(29), 1), L.makeMovedForwardEvent('the-equal-sign', new Date(dueAt - 21 * DAY).toISOString())];
+  const CASES = {
+    // pre-K 3 before pre-K 4 (course ids put pre-K 4's first), the subject's order inside a grade (grade 3's Art before its Math, which
+    // the course list puts first), and the course's title inside a grade and subject, as the Assigned now list sorts them (grade 12's
+    // Economics and personal finance before United States government, and grade 9's Health for life before Relationships and health,
+    // where the course list puts the other first; grade 6's Growing up healthy before Healthy choices, where the course ids sort the
+    // other way).
+    'Next up: grade before course id': (F) => nextOf(F, ['very-first-steps-pk3', 'first-steps-pk']) === first('very-first-steps-pk3'),
+    'Next up: subject inside a grade': (F) => nextOf(F, ['fractions-intro', 'art-3']) === first('art-3'),
+    "Next up: the course's title inside a grade and subject, grade 12 History": (F) => nextOf(F, ['government-12', 'economics-12']) === first('economics-12'),
+    "Next up: the course's title inside a grade and subject, grade 9 Health": (F) => nextOf(F, ['sexual-health-9', 'health-9']) === first('health-9'),
+    "Next up: the course's title inside a grade and subject, grade 6 Health": (F) => nextOf(F, ['health-6', 'sexual-health-6']) === first('sexual-health-6'),
+    // Five reasons on one row: stuck, missed once, signs of guessing, a refresher and not practiced for two weeks.
+    'the why line counts every reason': (F) => { const K = L.getCourse('counting-k').modules.map((m) => m.id);
+      const ev = [L.makeCoursesEnabledEvent(['counting-k'], ago(60)), rnd(K[0], ago(40), full(K[0])), rnd(K[0], ago(39), full(K[0])), { type: 'checkpoint_completed', at: ago(30), startedAt: ago(30), atCount: 4, results: [{ moduleId: K[0], correct: false }], correct: 0, total: 1 },
+        rnd(K[1], ago(20), 1), rnd(K[1], ago(19), 1), rnd(K[2], ago(15), 2, 2000)];
+      const r = F.classView([{ id: 's', label: 'Sam', events: ev }], now)[0]; return r.reasons.length === 5 && r.why.includes('but 5 things need attention'); },
+    // Two lessons stuck, named in one reason: two things, as the stuck lessons were always counted one by one.
+    'the why line counts each lesson a reason flags': (F) => { const pk = [L.makeCoursesEnabledEvent(['very-first-steps-pk3', 'first-steps-pk'], ago(60)), ...L.prerequisitesOf('more-and-fewer-5').flatMap((id) => [rnd(id, ago(50), full(id)), rnd(id, ago(49), full(id))])];
+      const r = F.classView([{ id: 's', label: 'Sam', events: [...pk, rnd('more-or-fewer', ago(6), 1), rnd('more-or-fewer', ago(5), 1), rnd('more-and-fewer-5', ago(6, 2), 1), rnd('more-and-fewer-5', ago(5, 2), 1)] }], now)[0];
+      return r.reasons.filter((x) => / is stuck on /.test(x)).length === 1 && r.why.includes('but 2 things need attention'); },
+    // Moved past: the fresh try's day three weeks after the move, and a week after a bare fresh try, each still to come (not in the queue).
+    'View progress: a lesson moved past': (F) => { const Z = 'count-to-3'; const moved = [L.makeCoursesEnabledEvent(['counting-k'], ago(60)), ...[9, 8, 7, 6].map((d) => rnd(Z, ago(d), 0)), L.makeMovedForwardEvent(Z, ago(5))];
+      const bare = { type: 'light_review_completed', at: ago(1), startedAt: ago(1), moduleId: Z, stage: 'fresh', results: [1, 1, 1, 0, 0].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 3, total: 5, outcome: 'bare' };
+      const a = F.moduleStory('Sam', moved, Z, now); const b = F.moduleStory('Sam', [...moved, bare], Z, now);
+      return a.includes('Sam was moved past this lesson before mastering it') && a.includes(`comes back as a practice review for a fresh try from ${day(ago(5), 21)}.`) && b.includes(`for a fresh try from ${day(ago(1), 7)}.`) && !a.includes('Until 4 out of 5')
+        && !queued(moved, Z) && !queued([...moved, bare], Z); },
+    'View progress: a lesson a practice review reopened': (F) => { const Z = 'count-to-3'; const ev = [L.makeCoursesEnabledEvent(['counting-k'], ago(60)), rnd(Z, ago(40), full(Z)), rnd(Z, ago(39), full(Z)),
+        { type: 'light_review_completed', at: ago(10), startedAt: ago(10), moduleId: Z, stage: 'first', results: [0, 0, 0, 1, 1].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 2, total: 5, outcome: 'fail' }];
+      const t = F.moduleStory('Sam', ev, Z, now); return t.includes('A practice review reopened this lesson, so it is back for a full round') && !t.includes('will reappear again later as a memory check'); },
+    // What the move did for the lessons that need it, read from the gate (MUST FIX 1), the gate's own reading checked beside each.
+    'View progress: a lesson moved past that no assigned lesson needs': (F) => movedSay(F, movedPast('counting-k', 'picture-graphs-k'), 'picture-graphs-k') === `Sam was moved past this lesson before mastering it${STAYS} from ${day(ago(5), 21)}.`,
+    'View progress: a lesson moved past that opened the lesson that needs it': (F) => { const ev = movedPast('numbers-1', 'the-equal-sign');
+      return gateOf(ev).get('number-sentences-and-stories') === 'available' && movedSay(F, ev, 'the-equal-sign') === `Sam was moved past this lesson before mastering it, so the lesson that needs it is open${STAYS} from ${day(ago(5), 21)}.`; },
+    'View progress: a lesson moved past whose lessons that need it wait on another lesson too': (F) => { const ev = movedPast('numbers-1', 'teen-numbers'); const g = gateOf(ev);
+      return g.get('adding-to-20') === 'available' && g.get('writing-numbers') === 'locked' && g.get('quick-looks') === 'locked'
+        && movedSay(F, ev, 'teen-numbers') === `Sam was moved past this lesson before mastering it, which counts for the lessons that need it as a pass does${STAYS} from ${day(ago(5), 21)}.`; },
+    'View progress: a lesson moved past whose one lesson that needs it waits on another lesson too': (F) => { const ev = movedPast('counting-k', 'coins-k');
+      return gateOf(ev).get('picture-graphs-k') === 'locked' && movedSay(F, ev, 'coins-k') === `Sam was moved past this lesson before mastering it, which counts for the lesson that needs it as a pass does${STAYS} from ${day(ago(5), 21)}.`; },
+    'View progress: a lesson passed once before the move, which opened the lesson that needs it': (F) => { const ev = movedPast('numbers-1', 'the-equal-sign', 5, [rnd('the-equal-sign', ago(20), full('the-equal-sign'))]);
+      return gateOf(ev).get('number-sentences-and-stories') === 'available' && movedSay(F, ev, 'the-equal-sign') === `Sam was moved past this lesson before mastering it${STAYS} from ${day(ago(5), 21)}.`; },
+    'View progress: a lesson passed once before the move, the lesson that needs it waiting on another': (F) => { const ev = movedPast('counting-k', 'coins-k', 5, [rnd('coins-k', ago(20), full('coins-k'))]);
+      return gateOf(ev).get('picture-graphs-k') === 'locked' && movedSay(F, ev, 'coins-k') === `Sam was moved past this lesson before mastering it${STAYS} from ${day(ago(5), 21)}.`; },
+    'View progress: a lesson moved past whose lesson that needs it was opened by hand': (F) => { const ev = movedPast('numbers-1', 'the-equal-sign', 5, [L.makeUnlockEvent('number-sentences-and-stories', ago(30))]);
+      return gateOf(ev).get('number-sentences-and-stories') === 'available' && movedSay(F, ev, 'the-equal-sign') === `Sam was moved past this lesson before mastering it${STAYS} from ${day(ago(5), 21)}.`; },
+    // The fresh try's day by the queue's own rule (SHOULD CONSIDER 5): due since a day gone, the queue offering it from the start of its
+    // day; a day still to come is the case above. Since round two's read (SHOULD CONSIDER 8) the very day says "which is due today", its
+    // hour still to come or already gone, where it read "which has been due since November 16" on November 16; a minute before today
+    // began is a day gone.
+    'View progress: a fresh try whose day has gone': (F) => { const ev = movedPast('numbers-1', 'the-equal-sign', 36);
+      return queued(ev, 'the-equal-sign') && movedSay(F, ev, 'the-equal-sign').endsWith(`for a fresh try, which has been due since ${day(ago(36), 21)}.`); },
+    'View progress: a fresh try due later today': (F) => { const end = new Date(NOW); end.setHours(23, 59, 59, 999); const dueAt = NOW + Math.floor((end.getTime() - NOW) / 2);
+      const ev = dueOn(dueAt); return dueAt > NOW && queued(ev, 'the-equal-sign') && movedSay(F, ev, 'the-equal-sign').endsWith('for a fresh try, which is due today.'); },
+    'View progress: a fresh try due earlier today': (F) => { const start = new Date(NOW); start.setHours(0, 0, 0, 0); const dueAt = start.getTime() + Math.floor((NOW - start.getTime()) / 2);
+      const ev = dueOn(dueAt); return dueAt <= NOW && queued(ev, 'the-equal-sign') && movedSay(F, ev, 'the-equal-sign').endsWith('for a fresh try, which is due today.'); },
+    'View progress: a fresh try due a minute before today began': (F) => { const start = new Date(NOW); start.setHours(0, 0, 0, 0); const dueAt = start.getTime() - 60000;
+      const ev = dueOn(dueAt); return queued(ev, 'the-equal-sign') && movedSay(F, ev, 'the-equal-sign').endsWith(`for a fresh try, which has been due since ${day(new Date(dueAt).toISOString())}.`); },
+  };
+  const failing = (F) => Object.entries(CASES).filter(([, c]) => { try { return !c(F); } catch (e) { return true; } }).map(([name]) => name);
+  const NEXT = 'const inOrder = (report.modules || []).filter((m) => enabled.includes(m.courseId) && getCourse(m.courseId)).map(place)\n    .sort((a, b) => byGradeOrder(a.course, b.course) || COURSES.indexOf(a.course) - COURSES.indexOf(b.course) || a.order - b.order).map((x) => x.m);';
+  const ORDER = 'byGradeOrder(a.course, b.course) || COURSES.indexOf(a.course) - COURSES.indexOf(b.course)';
+  const OLD = {
+    "Next up's old order, the course ids'": ['nextUpModule', NEXT, 'const inOrder = (report.modules || []).filter((m) => enabled.includes(m.courseId));'],
+    "Next up in the course list's order inside a grade and subject (pass NR's order)": ['nextUpModule', ORDER, 'GRADES.indexOf(a.course.grade) - GRADES.indexOf(b.course.grade) || a.course.subject.localeCompare(b.course.subject) || COURSES.indexOf(a.course) - COURSES.indexOf(b.course)'],
+    'Next up by grade alone, then the course list (near miss)': ['nextUpModule', ORDER, 'GRADES.indexOf(a.course.grade) - GRADES.indexOf(b.course.grade) || COURSES.indexOf(a.course) - COURSES.indexOf(b.course)'],
+    'Next up by grade and subject, then course id (near miss)': ['nextUpModule', ORDER, 'GRADES.indexOf(a.course.grade) - GRADES.indexOf(b.course.grade) || a.course.subject.localeCompare(b.course.subject) || a.m.courseId.localeCompare(b.m.courseId)'],
+    "the why line's old count": ['classView', ' + reviewStuck.length + reopenedOnly.length + movedPastMods.length + missedOnce.length + guessing.length + refresh.length + shaky.length + (loops ? 1 : 0) + away;', ' + guessing.length + shaky.length + (loops ? 1 : 0);'],
+    "the why line counting the reasons' lines (near miss)": ['classView', 'const flagged = stuck.length + reviewStuck.length', 'const flagged = reasons.length + 0 * reviewStuck.length'],
+    "the why line counting the lessons, not the days away (near miss)": ['classView', '(loops ? 1 : 0) + away;', '(loops ? 1 : 0);'],
+    "View progress's old silence on a lesson moved past and old words on a reopened one": ['moduleStory', '  if (p && !p.mastered && p.movedPast) {', '  if (false) {'],
+    "View progress's reopened lesson told its questions come back (near miss)": ['moduleStory', "} else if (p && p.mastered && schedule && schedule.stage === 'reopened') {", '} else if (false) {'],
+    "View progress's fresh try always three weeks after the move (near miss)": ['moduleStory', "describeDay(schedule.dueAt) : ''", "describeDay(new Date(Date.parse(p.movedPastAt) + 21 * 86400000).toISOString()) : ''"],
+    "View progress's old clause, every lesson moved past opening the lessons that need it": ['moduleStory', 'before mastering it${gate}. It stays', 'before mastering it, so the lessons that need it are open. It stays'],
+    "every lesson that needs it, open, read as opened by the move (the read's own clause, near miss)": ['moduleStory', "if (needing.some((m) => gateWithout.get(m.id) === 'locked')) gate =", 'if (true) gate ='],
+    'a pass before the move read as the move (near miss)': ['moduleStory', 'if (needing.length && !p.passed) {', 'if (needing.length) {'],
+    'the lessons that need it, always more than one (near miss)': ['moduleStory', "const them = needing.length === 1 ? 'lesson that needs it' : 'lessons that need it';", "const them = 'lessons that need it';"],
+    'a lesson of a course not assigned counted as needing it (near miss)': ['moduleStory', 'MODULES.filter((m) => enabledNow.includes(m.courseId) && gatingPrerequisites(m.id, enabledNow).includes(moduleId))', 'MODULES.filter((m) => gatingPrerequisites(m.id, enabledNow).includes(moduleId))'],
+    "View progress's old fresh try, always from its day": ['moduleStory', "reviewDueToday(schedule.dueAt, now) ? ', which is due today' : reviewIsDue(schedule.dueAt, now) ? `, which has been due since ${day}` : ` from ${day}`", '` from ${day}`'],
+    "round one's fresh try on its very day, due since today": ['moduleStory', "reviewDueToday(schedule.dueAt, now) ? ', which is due today' : ", ''],
+    'a fresh try due today only once its hour has come (near miss)': ['moduleStory', 'reviewDueToday(schedule.dueAt, now) ?', 'reviewDueToday(schedule.dueAt, now) && String(schedule.dueAt) <= String(now) ?'],
+    'a fresh try due today only before its hour (near miss)': ['moduleStory', 'reviewDueToday(schedule.dueAt, now) ?', 'reviewDueToday(schedule.dueAt, now) && String(schedule.dueAt) > String(now) ?'],
+    'today as the last 24 hours, not the day (near miss)': ['moduleStory', 'reviewDueToday(schedule.dueAt, now) ?', 'Math.abs(Date.parse(now) - Date.parse(schedule.dueAt)) < 86400000 ?'],
+  };
+  const near = Object.keys(OLD).filter((k) => k.endsWith('near miss)')).length;
+  const uncaught = Object.entries(OLD).filter(([, [name, from, to]]) => { const fn = plant(name, from, to); return !fn || failing({ ...L, [name]: fn }).length === 0; }).map(([what]) => what);
+  ok(`Next up follows the report's order (grade, subject, the course's title, as the Assigned now list sorts), the why line counts every reason it sits above, and View progress tells a lesson moved past and a lesson a practice review reopened what comes next, what the move did for the lessons that need it read from the gate, and a fresh try due since a day gone or due today on the very day (pass NR, the screen read's SHOULD CONSIDER 1, 2 and 3; round one's code read, MUST FIX 1 and SHOULD CONSIDER 4 and 5; round two's read, SHOULD CONSIDER 8; ${Object.keys(CASES).length} cases; ${Object.keys(OLD).length - near} old codes and ${near} near misses put back in their own sources, each caught)`,
+    failing(L).length === 0 && uncaught.length === 0, JSON.stringify({ failsNow: failing(L), uncaught })); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

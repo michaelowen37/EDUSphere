@@ -46,7 +46,10 @@ finish() { step_end; [ -s "$slow_file" ] && cat "$slow_file"
   [ -n "${CHECK_TIMES_FILE:-}" ] || echo "NOTE: this run's step times were not recorded: CHECK_TIMES_FILE is not set, and only a pass's own runs set it, so a run outside a pass leaves docs/CHECK-TIMES.md as it was and its times out of the medians (its record is in $times_file)"
   if [ "$fail" = 0 ]; then verdict="ALL CHECKS PASSED"; else verdict="CHECKS FAILED - read the lines above"; fi
   echo "$verdict"; times_write "$verdict"; [ "$fail" = 0 ]; }
-step "1/13 rules tests" /tmp/edu_t.txt;  node tests/logic.test.mjs | tail -1 | tee /tmp/edu_t.txt; grep -q " 0 failed" /tmp/edu_t.txt || failed
+# The rules test runs in a heap of 4 GB: since pass NR its parts hold more than Node's default of about 2 GB, and pass NR's final run of
+# 1:48 PM on November 17 stopped in this step at 1,043 seconds, out of memory, its last line a PASS line, so the step failed. A machine
+# with less memory to give stops the same way.
+step "1/13 rules tests" /tmp/edu_t.txt;  node --max-old-space-size=4096 tests/logic.test.mjs | tail -1 | tee /tmp/edu_t.txt; grep -q " 0 failed" /tmp/edu_t.txt || failed
 step "2/13 curriculum coverage" /tmp/edu_c.txt; node tests/coverage.test.mjs | grep -E 'FAIL|NOTE|passed' | tee /tmp/edu_c.txt; grep -q " 0 failed" /tmp/edu_c.txt || failed
 step "3/13 spelling and style" /tmp/edu_sp.txt; node tests/spelling.test.mjs | tail -1 | tee /tmp/edu_sp.txt; grep -q " 0 failed" /tmp/edu_sp.txt || failed
 step "3b/13 the rules audit and algorithms match the code" /tmp/edu_ds.txt; node tests/docs-sync.test.mjs | tail -1 | tee /tmp/edu_ds.txt; grep -q " 0 failed" /tmp/edu_ds.txt || failed
@@ -167,8 +170,10 @@ step "13i/13 the reading lists' Details, in both themes" /tmp/edu_books.txt; run
 step "13j/13 every pre-K line and question on a short phone, in both themes" /tmp/edu_fold.txt; run "the fold check" 3100 node tests/e2e/fold-check.mjs 2>&1 | tail -1 | tee /tmp/edu_fold.txt; grep -q " 0 failed" /tmp/edu_fold.txt || failed
 # Every drawing a bank puts on an answer tile reads at its edge on the resting, right and wrong tiles of both themes (pass ND, EARMARKS
 # A89, the screen read), none waiting, every kind of drawing read since round one's code check: about three minutes alone, so its limit of
-# eight minutes is about twice its time beside another step.
-step "13k/13 every drawing on an answer tile, at its edge, in both themes" /tmp/edu_edges.txt; run "the tile edges" 480 node tests/e2e/tile-edges.mjs 2>&1 | tail -1 | tee /tmp/edu_edges.txt; grep -q " 0 failed" /tmp/edu_edges.txt || failed
+# eight minutes is about twice its time beside another step. Since round three's screen read of pass NR its ink check (every tile's painted
+# ink on Words all around us's thirty screens of which one has a word on it, or none, in both sizes and themes) took it to 326 seconds
+# alone, past two thirds of eight minutes, so the limit is eleven minutes, about twice its time (pass MT).
+step "13k/13 every drawing on an answer tile, at its edge, in both themes" /tmp/edu_edges.txt; run "the tile edges" 660 node tests/e2e/tile-edges.mjs 2>&1 | tail -1 | tee /tmp/edu_edges.txt; grep -q " 0 failed" /tmp/edu_edges.txt || failed
 # Every drawing a lesson's line or a question's own picture puts on the dark theme's light paper reads at its edge (pass NE, EARMARKS A92,
 # found by the screen read beyond A89's tiles; the light theme's paper is white, a light tile's color, which 13k reads), none waiting,
 # and every kind a lesson or a question shows read or left out by name: about two and a half minutes alone, so its limit of five

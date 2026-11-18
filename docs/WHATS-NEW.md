@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 17, 2026 (words all around us, connections to a story, and every lesson named clearly on your screens)
+
+- Three-year-olds learn that words are all around us, not just in books. In Words all around us, your child finds the words on a stop sign, a milk carton, a cubby's name card and a shop's door, learns what each one tells us, and looks for words with you to ask what they say. In Print tells us something, four-year-olds learn that print is talk written down: a note says the same words every time anyone reads it, even when the writer isn't there. Write down something your child says, and read it back while they point to each word.
+- Two new lessons help children connect a story to their own lives. In That is like me!, three-year-olds learn that when something in a story is like something in their own life, that's a connection, and that words that aren't about the story aren't one. In That reminds me!, four-year-olds learn that a story can remind them of their own life or of another story, and find what two stories share: the same problem, the same feeling or the same kind of place. Each of the four new lessons comes with its own story and coloring page.
+- When a student has two lessons that share a title, like More and Fewer at pre-K 3 and pre-K 4, every sentence on your screens now names the course after it in plain words, such as "from pre-K 3 math" or "from fourth grade history". Dates follow your device's own day, Next up follows the order of a student's assigned courses, the Who Needs Help page counts every thing that needs attention, and View progress says exactly what moving a student past a lesson did and when it comes back for a fresh try.
+- Four new Wonder questions for the youngest learners ask about a note in your pocket you haven't read yet, whether a seed is alive, being at the very back of the line, and dropping all your toys when you try to carry them at once.
+
 ## November 16, 2026 (the weekly note's next lesson, what the confidence score counts, and the reason after a wrong answer)
 
 - The weekly note on a student's report now names the same next lesson as that student's card on the Who Needs Help page, always from the courses you've assigned. When you reset a student's progress, the note counts questions, pictures and games from that moment on, it leaves Next up out when that lesson is already under Still practicing, and a week of one question now reads "answered 1 question", as Since you last looked now does too. A lesson title two lessons share, like More and fewer, now has its course beside it.

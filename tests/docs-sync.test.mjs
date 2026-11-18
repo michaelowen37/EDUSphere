@@ -510,6 +510,9 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     // Since pass NQ the four lines it corrected after round three's records read (the Backups line, and three on check.sh's time) count as kept too.
     const nqOpen = '<!-- CLAUDE.md lines as pass NP left them, before pass NQ corrected them, word for word: begin -->\n'; const nqA = hist.indexOf(nqOpen); const nqB = hist.indexOf('<!-- CLAUDE.md lines as pass NP left them, before pass NQ corrected them, word for word: end -->');
     for (const l of (nqA >= 0 && nqB > nqA ? hist.slice(nqA + nqOpen.length, nqB).split('\n') : [])) ngKept.add(l);
+    // Since pass NR its line on running the rules test alone (a heap of 4 GB, after the final run of 1:48 PM stopped out of memory) counts as kept too.
+    const nrOpen = "<!-- CLAUDE.md's line on the rules test as pass NQ left it, before pass NR changed it, word for word: begin -->\n"; const nrA = hist.indexOf(nrOpen); const nrB = hist.indexOf("<!-- CLAUDE.md's line on the rules test as pass NQ left it, before pass NR changed it, word for word: end -->");
+    for (const l of (nrA >= 0 && nrB > nrA ? hist.slice(nrA + nrOpen.length, nrB).split('\n') : [])) ngKept.add(l);
     const lost = (a, b) => { const have = new Set([...a.split('\n'), ...b.split('\n')]); return mr.split('\n').filter((l) => l.trim() && !have.has(l) && !ngKept.has(l)).filter((l) => { if (!l.startsWith('- ')) return true; const m = /^- ([^:]+):/.exec(l); const label = m ? m[1] : null; return !label || !new RegExp(`${esc(label)}(?=,|;| and )`).test(row); }); };
     const real = lost(manual, part2 + '\n' + part3); const someLine = keptLines[3] || ''; const rule5 = manual.split('\n').find((l) => l.startsWith('5. Every answer and explanation is computed by arithmetic')) || '';
     const plants = [!imports(manual.replace('@CLAUDE-PART-2.md', '`@CLAUDE-PART-2.md`')), lost(manual, part2.replace(`${someLine}\n`, '') + '\n' + part3).length > 0, rule5 !== '' && lost(manual.replace(`${rule5}\n`, ''), part2 + '\n' + part3).length > 0, !imports(manual.replace('@CLAUDE-PART-3.md', ''))];
@@ -1258,5 +1261,64 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const planted = msg.replace(titleOf(msg), () => OLD_TITLE);
   ok(`docs/COMMIT-MESSAGE.md's first line, the GitHub title, is 72 characters or fewer (${[...titleOf(msg)].length}; CLAUDE-PART-2's Commit message line; pass NQ, round three's records read, which found 115; that title put back, planted, caught)`,
     fits(msg) && planted !== msg && [...OLD_TITLE].length === 115 && !fits(planted), titleOf(msg)); }
+// Pass NR's records (Mikey, opening pass NR: "Q117 - A" and "Q119 - A"): the two questions answered, each in one line in section 11 and in
+// full in docs/RULES-AUDIT-HISTORY.md's pass NR block for answered questions, with Q120 asked after them in section 11 and NEW-CHAT's open
+// list, Q121 since round three's final read and Q122 since its screen read; the lines his answer to Q119 changed (the file's opening line, section 9's rows on the pass
+// packet, on the records written once and, since round three's ripple read, on what pass NK learned, and section 10's heading and first
+// step) and the rows the pass's work outgrew, corrected under his answer to Q85 (seventeen since round three's ripple read, twenty-two since the floors run
+// after it and twenty-three since round three's screen read's fixes: section 2's five lines, section 5's two rows, section 6's one,
+// section 7's seven, section 8's seven and section 9's one), each kept as pass NQ left
+// them; section 9's new rows on Q117 and on the whole reads and the ripple read; INDEPENDENT-CHECKS' ripple read, its brief before the
+// alignment read's and How item 14's sentence; and, in the records' second sitting, CLAUDE.md's first line and part two's Rules audit line
+// changed to say what Q119 (a) made true, their words as pass NQ left them in docs/CLAUDE-HISTORY.md's pass NR block and section 9's row on
+// CLAUDE.md lines naming the change. Each block is held by its digest, every row opening as its list says, each changed or corrected row
+// saying so, as many times as its rows (section 10's heading, which can carry no sentence, aside), and section 9's row for Q85 naming them;
+// one letter edited inside each block, planted, is caught.
+{ const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const ic = readFileSync(new URL('../docs/INDEPENDENT-CHECKS.md', import.meta.url), 'utf8'); const nc = readFileSync(new URL('../docs/NEW-CHAT.md', import.meta.url), 'utf8');
+  const claudeHist = readFileSync(new URL('../docs/CLAUDE-HISTORY.md', import.meta.url), 'utf8'); const manual = readFileSync(new URL('../CLAUDE.md', import.meta.url), 'utf8'); const part2 = readFileSync(new URL('../CLAUDE-PART-2.md', import.meta.url), 'utf8');
+  const kName = "CLAUDE.md's first line and CLAUDE-PART-2.md's Rules audit line as pass NQ left them, before pass NR changed them, word for word";
+  const qName = "RULES-AUDIT section 11's answered questions in pass NR, word for word";
+  const wName = "RULES-AUDIT rows as pass NQ left them, before pass NR changed them at Mikey's word, word for word";
+  const cName = "RULES-AUDIT rows as pass NQ left them, before pass NR corrected them under Q85, word for word";
+  const inside = (t, name) => { const a = t.indexOf(`<!-- ${name}: begin -->\n`); const b = t.indexOf(`<!-- ${name}: end -->`); return a < 0 || b < a ? '' : t.slice(a + `<!-- ${name}: begin -->\n`.length, b); };
+  const dig = (t) => createHash('sha256').update(t, 'utf8').digest('hex').slice(0, 8);
+  const plant = (t, name, from, to) => { const a = t.indexOf(`<!-- ${name}: begin -->`); const b = t.indexOf(`<!-- ${name}: end -->`); const i = a < 0 ? -1 : t.indexOf(from, a); return i < 0 || i > b ? t : t.slice(0, i) + to + t.slice(i + from.length); };   // inside its own block, never an older one with the same words
+  const qs = inside(hist, qName); const word = inside(hist, wName); const q85 = inside(hist, cName); const claudeLines = inside(claudeHist, kName);
+  const wordRows = word.split('\n').filter(Boolean); const q85Rows = q85.split('\n').filter(Boolean);
+  const ANSWERS = { 117: 'Q117 - A', 119: 'Q119 - A' };
+  const answered = Object.entries(ANSWERS).every(([n, x]) => new RegExp(`^- Q${n}\\. Answered in pass NR \\(Mikey: "${x}"\\): .*The question as it stood: `, 'm').test(qs) && audit.includes(`\n- Q${n}. Answered in pass NR (Mikey: "${x}"). Its rule lives in `));
+  const raised = audit.includes('\n- Q120. A rules packet for each agent, read whole, in place of one big packet searched. ') && nc.includes('\n- Q120. A rules packet for each agent, read whole, in place of one big packet searched. ')
+    && audit.includes('\n- Q121. The Key Word that says what holds a confidence score down. ') && nc.includes('\n- Q121. The Key Word that says what holds a confidence score down. ')
+    && audit.includes("\n- Q122. The grown-up's card for one more question on a device with no voice. ") && nc.includes("\n- Q122. The grown-up's card for one more question on a device with no voice. ");
+  const OPEN_WORD = ['Written 2026-10-06 (pass LD, rewritten in pass LE', "| **The pass packet (Mikey's answer to Q95, pass NH", '| **The records written once, each count filled in', "| **What pass NK learned (Claude's", "## 10. The plan, in Mikey's order (updated 2026-10-06", '1. This file complete and read by every chat (since pass NH'];
+  const OPEN_Q85 = ['- **My Classroom:** ', '- **Practice:** ', '- **Wonder questions:** ', '- **What pre-K teaches:** ', "- **The educator's report:** ", '| **Say it together, one word in five silly ways', "| **Domain III's predictions, retelling and book handling", '| **A heard question prints none of the words it asks about', "| **A lesson's own reset bounds every reader", "| **The report's own words about a lesson say what", '| The class view: a need score', '| **The weekly note and Since you last looked', '| **A lesson named in a sentence keeps its name', '| **The light review, the fourth exposure', '| **A pre-reader hears all four Wonder voices', "| **No pre-K line or question waits under a short phone's fold", '| **The reading light never moves the words', "| **The picture to match draws at its answers' size", '| **No word under the scroll cue on a short phone', "| **A lesson's words keep a hyphenated word whole", '| **Every drawing on an answer tile reads at its edge', "| **Every drawing on the dark theme's lesson paper reads at its edge", '| **An id is defined once (pass MX)'];
+  // The two CLAUDE lines (Q119 (a)): each says the weekly whole reads, the ripple read and what a lesson pass's alignment and final reads
+  // read, the last marked Claude's reading since round three's final read, the old words of both kept, and section 9's row on CLAUDE.md
+  // lines naming the change.
+  const claudeNow = manual.split('\n')[0].endsWith("since Mikey's answer to Q119 (pass NR) the three are read whole once a week, in the tools pass, and in a lesson pass the ripple read reads the rows restating its changes, the alignment and final reads the records it changed and those rows (Claude's reading).")
+    && part2.includes("since pass NR, at his answer to Q119, read whole once a week in the tools pass, and in a lesson pass the ripple read reads the rows restating its changes, the alignment and final reads the records it changed and those rows, Claude's reading)")
+    && /^New chats: read docs\/NEW-CHAT\.md first, then the pass packet it asks for [^\n]*the alignment read and the final read read those three files whole\.\n- Rules audit \(2026-10-06, pass LD, Mikey\): [^\n]*the alignment read and the final read reading it whole\), and when a rule is added or changed/.test(claudeLines)
+    && audit.includes("Changed in pass NR, under Mikey's standing word of pass NG on CLAUDE.md: CLAUDE.md's first line and part two's line Rules audit (2026-10-06, pass LD, Mikey),")
+    // CLAUDE.md's line on the rules test (pass NR, after its final run of 1:48 PM stopped out of memory): the run given 4 GB, its old words kept.
+    && inside(claudeHist, "CLAUDE.md's line on the rules test as pass NQ left it, before pass NR changed it, word for word") === "- `node tests/logic.test.mjs` — rules only; fastest loop while changing logic.\n"
+    && manual.includes("\n- `node --max-old-space-size=4096 tests/logic.test.mjs` — rules only;") && audit.includes("Changed in pass NR too, under the same word, after its final check run of 1:48 PM stopped in its first step out of memory: CLAUDE.md's line on running the rules test alone");
+  const said = (re) => (audit.match(re) || []).length;
+  const changed = said(/Changed in place in pass NR, at Mikey's word \(his answer to Q119, "Q119 - A"\), its pass NQ words in docs\/RULES-AUDIT-HISTORY\.md\./g);
+  const corrected = said(/Corrected in place in pass NR, under Mikey's answer to Q85, its pass NQ words in docs\/RULES-AUDIT-HISTORY\.md\./g);
+  const rows = audit.includes("| **A long row's pass-by-pass history moved to the history file (Mikey's answer to Q117, pass NR, \"Q117 - A\";") && audit.includes("| **The long records read whole once a week, and a ripple read in each lesson pass (Mikey's answer to Q119, pass NR, \"Q119 - A\";")
+    && audit.includes("Changed in pass NR, at Mikey's word (his answers to Q117 and Q119), each saying so,") && audit.includes("Corrected in pass NR, under Mikey's answer to Q85, each saying so,");
+  const ripple = ic.includes('\n## The ripple read\n') && ic.indexOf('\n## The ripple read\n') < ic.indexOf('\n## The alignment read\n')
+    && ic.includes('Since pass NR (Mikey\'s answer to Q119, "Q119 - A") the long files are read whole once a week, in the tools pass, and a lesson pass runs the ripple read in their place');
+  const plants = [dig(inside(plant(hist, qName, 'The question as it stood: Moving a long row', 'The question as it stood: Moving a lung row'), qName)) !== dig(qs),
+    dig(inside(plant(hist, wName, 'the alignment read and the final read read it whole. It holds', 'the alignment read and the final read rad it whole. It holds'), wName)) !== dig(word),
+    dig(inside(plant(hist, cName, 'then Who needs help once there are two students.', 'then Who needs halp once there are two students.'), cName)) !== dig(q85),
+    dig(inside(plant(claudeHist, kName, 'read those three files whole.', 'read those three files hole.'), kName)) !== dig(claudeLines)];
+  ok(`docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass NR, Q117 and Q119 (digest ${dig(qs)}), the lines Mikey's answer to Q119 changed (digest ${dig(word)}, ${wordRows.length} lines) and the rows corrected under Q85 (digest ${dig(q85)}, ${q85Rows.length} rows), unchanged; each question answered in one line in section 11, Q120 asked after them there and in NEW-CHAT, Q121 since round three's final read and Q122 since its screen read; each changed or corrected row saying so and section 9's rows naming them; and INDEPENDENT-CHECKS' ripple read with How item 14's sentence; and docs/CLAUDE-HISTORY.md keeps CLAUDE.md's first line and part two's Rules audit line as pass NQ left them (digest ${dig(claudeLines)}), both lines now saying what Q119 (a) made true, their last clause marked Claude's reading (pass NR's records; one letter edited inside each block, planted, caught)`,
+    dig(qs) === '0142f1fc' && dig(word) === 'a76755b1' && dig(q85) === '0a504952' && dig(claudeLines) === '7793c3e4' && claudeNow && answered && raised && !/\n- Q11[79]\. (?!Answered)/.test(audit)
+    && wordRows.length === OPEN_WORD.length && OPEN_WORD.every((w, k) => wordRows[k].startsWith(w)) && q85Rows.length === OPEN_Q85.length && OPEN_Q85.every((w, k) => q85Rows[k].startsWith(w))
+    && changed === wordRows.length - 1 && corrected === q85Rows.length && rows && ripple && plants.every(Boolean),
+    JSON.stringify({ q: dig(qs), w: dig(word), c: dig(q85), k: dig(claudeLines), claudeNow, nWord: wordRows.length, nQ85: q85Rows.length, changed, corrected, answered, raised, rows, ripple, plants })); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

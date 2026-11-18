@@ -213,9 +213,25 @@ with no loop back (3; with one loop back, 5, needs help now) (corrected in pass 
 three: this line said a stuck student always outranks an idle one).
 
 A row's Next up and the weekly note's come from one rule, nextUpModule (pass NQ): the first
-lesson of an assigned course, in the report's order, that is not mastered and is open now
-and not yet passed, so the two never name different lessons, and the note leaves its Next
-up out when that lesson is already under Still practicing.
+lesson of an assigned course, in the report's order, that is not mastered, not moved past by
+the educator and is open now and not yet passed, so the two never name different lessons,
+and the note leaves its Next up out when that lesson is already under Still practicing. The
+report's order is the one its Assigned now list draws (byGradeOrder, since pass NR): grade
+by grade, beginner first, then subject, then the course's title, two courses alike in all
+three kept in the course list's order, and each course's lessons in their order. Until pass
+NR it walked the report's rows, which are sorted by course id, so a child given pre-K 3 and
+pre-K 4 Math read "Next up: Colors", a pre-K 4 lesson, while seventeen pre-K 3 lessons were
+open. Like every lesson a row names, Next up carries its course when another assigned
+lesson has the same title (RULES-AUDIT section 7, a lesson named in a sentence).
+
+A row that scores five or more says why it is near the top in one sentence, "... but N
+things need attention right now". Since pass NR, N counts each lesson the row's reasons
+flag (stuck, stuck or reopened after a practice review, moved past, missed once, guessing,
+missed in a checkpoint, or shaky), the loop backs once and the days away once, so five
+reasons read five things and two stuck lessons on one line read two. Until then it counted
+stuck, guessing and shaky lessons and the loop backs only, so a row could read "1 thing
+needs attention" above five reasons. A row scoring two to four reads "N mastered so far; a
+couple of small flags, nothing urgent."
 
 ## Tracing
 
@@ -358,13 +374,15 @@ The fourth exposure. A lesson is met in the lesson, in the practice that masters
 - moved: after Move Forward on a lesson stuck after its review; closed, with the star, the gate and the memory checks standing.
 - fresh: a lesson moved past before it was mastered comes back 21 calendar days after the move; a clear pass earns the star (deriveProgress), a near pass retries 7 days later, a miss tries again 21 days later.
 
-**The queue** (`lightReviewQueue`, `lightReviewDay`, `lightReviewDue`): every review that has come due waits, oldest first, counted as due from the start of its day, for lessons the student can see. At most two a day (LIGHT_REVIEWS_PER_DAY = 2): whenever two are due both are offered at the start of the day and taken back to back; a third waits for the next day. A day the student does not open the app costs nothing.
+**The queue** (`lightReviewQueue`, `lightReviewDay`, `lightReviewDue`): every review that has come due waits, oldest first, counted as due from the start of its day, for lessons the student can see. The rule is one function, `reviewIsDue(dueAt, now)`: due from the start of the device's own day its date falls on, and on every day after until it is taken; since pass NR the queue and View progress read it alike (round one's code read), and a date in an educator's sentence is the device's own day too (`describeDay`, `niceDate`), where it had been the UTC day, so a move at 9:30 PM Central on November 11 read "November 12". At most two a day (LIGHT_REVIEWS_PER_DAY = 2): whenever two are due both are offered at the start of the day and taken back to back; a third waits for the next day. A day the student does not open the app costs nothing.
 
 **The student's day.** When a review is due the overview opens on the start-of-day card, "First, A Quick Review" (or "One More Quick Review" for the second of two after a break), naming the module or both modules, with the speaker icon for an early learner and an x to exit; the lessons appear when the reviews are done. A review is five questions from the lesson's own bank with no repeats, headed "Quick Review" over "Question 1 of 5". The result never says fail.
 
 **Stuck, two kinds, one ladder** (`lightReviewStuck` after a missed review, `neverMasteredStuck` for a lesson never mastered): counted from the missed review or from the last pass on the lesson, two misses (the app then loops back to the lesson before it), then two more misses with no pass in between. A lesson with nothing before it to loop back to is stuck after four misses. Until then the app works alone and the educator is not asked.
 
 **Move Forward** (from the Action Item popup; `actionStuckItems` lists both kinds, one item at a time, stuck lessons before papers): one `moved_forward` event, nothing rewritten. After a review: the review closes; the star, the gate and the memory checks stand. Before mastery: no star (`perModule.movedPast`); the gate counts the lesson, so the lessons after it open (`moduleStatuses`; the gate also follows course order); the lesson stays on the student's list, open to practice, and returns as a fresh try. There is no switch to turn reviews off (Mikey, pass LF).
+
+**View progress for a lesson moved past** (`moduleStory`, since pass NR: the screen read's SHOULD CONSIDER 3 and round one's code read). It says "<name> was moved past this lesson before mastering it<gate>. It stays on <name>'s list as not yet mastered and comes back as a practice review for a fresh try<day>." The gate clause is read from the gate itself (`moduleStatuses`, `gatingPrerequisites`): each assigned lesson that needs this one is read as the gate reads it now and with the move taken out, and the clause takes one of four forms. None, when no assigned lesson needs it, when the lesson was passed before the move, or when the lesson that needs it was opened by hand. ", so the lesson that needs it is open" when the move opened the one lesson that needs it, and ", so the lessons that need it are open" when it opened several. ", which counts for the lesson that needs it as a pass does" (or "for the lessons that need it") when one of them is still locked behind another lesson, as Teen numbers is, where Writing numbers also waits on Bigger and smaller to 100. The day is the fresh try's, three weeks after the move or a week after a bare fresh try: " from December 2" for a day still to come, ", which is due today" on its very day, whether its hour has come or not (`reviewDueToday`, since round two's fixes, where on November 16 it had said "which has been due since November 16"), and ", which has been due since November 1" for a day gone (`reviewIsDue`). A lesson a practice review reopened reads: "A practice review reopened this lesson, so it is back for a full round, its story offered again. The lessons it builds on come back in the next rounds' memory checks, and passing it again starts its practice reviews over. The star stays."
 
 **What the educator reads** (Mikey's style: explanatory, varied sentence lengths, no jargon; titles in title case): `lightReviewHistory` lists every review, every Move Forward and every lesson stuck now, each with its date, newest first; the report shows the newest two, with a History link for the rest, and the section stays once it appears. `weeklyNote` adds the entries dated within the note's own seven days, and only those, as plain paragraphs under "Practice reviews:" in the same note as the week's other lines. `classView` (Who Needs Help) weighs a lesson stuck after a review like any stuck lesson, a reopened lesson like one miss, and notes a lesson moved past instead of calling it stuck.
 
@@ -629,7 +647,8 @@ a word; the recordings do each by their tags (the four silly voices low, high, A
 turn follows each form's last piece (sayAlongEcho: three fifths of the time the voice took, pauses included, and 400 ms more, held
 between 700 ms and 1.8 seconds); the child says the word with the voice ("Let's say it together!"), so the turn is a breath for a child a
 beat behind, never the whole saying again. A lesson's games differ: no two words play the same five ways, and a lesson of two games or
-more plays both flavors of the first, second and fifth steps and as many silly thirds as it has games, up to all four. Only the lessons
+more plays both flavors of the first, second and fifth steps (but Animal sounds' second step, the whisper for all six words since
+pass NR, the learner first, SLOT_LET_OFF) and as many silly thirds as it has games, up to all four. Only the lessons
 SAY_ALONG_LESSONS names play it, and since Mikey's answer to Q77, "Q77 - A", every new pre-K lesson that cites a vocabulary outcome (the
 2027 II.D.1 or II.D.2, or Head Start's P-LC 6 or P-LC 7) joins them; SAY_ALONG_WAITS named the eight older ones built without it until
 pass MU, when Mikey's answer to Q81, "Q81 - A", gave them the game too, on the words each teaches (39 words, which words being Claude's

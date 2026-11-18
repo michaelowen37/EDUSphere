@@ -16,7 +16,7 @@ One page, done by a person, before every commit that ships. The automated checks
 7. As an early-years student: open the first lesson, hear it read, tap through one round, color one page for a minute, play one game. Nothing should need reading.
 8. As an older student: open a lesson, use Show me another way twice, open the Experiment link and the story, take one round to mastery, then Practice the missed ones once and read the result page.
 9. As the educator: open the student's report, edit and save the weekly note, print it (or save as PDF) and read the printout as a parent would. Open the transcript and the standards map.
-10. Open Who needs help, open one student from it, and mark one story as read from the Story Log.
+10. Open Who Needs Help, open one student from it, and mark one story as read from the Story Log.
 11. Make a manual backup. Sign out and confirm the automatic backup file appeared. On a second device or a private window, restore from the file and confirm the PIN reset works with the recovery code.
 12. Read the What's new pop-up as a new user would; every line should be true of this build.
 13. On a day near one, confirm the remembrance card shows (September 11, Veterans Day, Memorial Day) and can be hidden for the year.

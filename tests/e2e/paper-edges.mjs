@@ -98,7 +98,12 @@ const DEEP_GOLD = ((/const paperGold = \(\) => \(C\.mode === 'dark' \? '(#[0-9A-
 // Since pass NM 425 drawings in 304 of More Info's sheets, read alone after its round three's fixes; every other count unchanged.
 // Since pass NP (round three's whole read of RULES-AUDIT found the floors still pass NM's) 1,525 drawings, with 433 in 310 of More Info's
 // sheets, its six lessons' books, pages and arrow among them, read alone after its round three's fixes; the diagrams, guides and palette unchanged.
-const FLOORS = { drawings: 1525, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 433, sheets: 310, palette: 99 };
+// Since pass NR (round three's ripple read found the floors still pass NP's) 1,532 drawings, its two print lessons' seven (the milk carton,
+// the open door, the cubby's name, the closed box of crayons, the love note, the teacher's empty hands and the note about dogs), with 439
+// in 315 of More Info's sheets, the six of them a bank puts on a tile, read alone after its round three's fixes; the diagrams, guides and
+// palette unchanged. Since round three's fixes 1,534, the sitting dog (dog~sit) and the three clouds Owl counted (cloud~three) among
+// them, with 440 in 316 of More Info's sheets, read alone by the fix engineer after its fixes.
+const FLOORS = { drawings: 1534, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 440, sheets: 316, palette: 99 };
 // A picture's fields that only place or size it (a pair's frame, a step's number, a lesson's caption) are no part of its drawing, and a
 // name's #2 only tells two of one picture apart.
 const LAYOUT = ['size', 'step', 'frame', 'snap', 'gap', 'grow', 'tight', 'align', 'caption', 'another'];

@@ -720,6 +720,11 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // The eight older vocabulary lessons Q77 (a) left as they were (pass MT) play the game since Mikey's answer to Q81 (pass MU), so no
   // lesson waits: the list is held empty, so it can never grow by a quiet edit.
   const WAITING_NONE = [];
+  // A way a lesson never plays, by its step (pass NR, EARMARKS A154, the critic of pass NQ's lesson read): in Animal sounds every word is
+  // an animal's own sound, so it never squeaks one like a tiny mouse, another animal's voice, and its second step is the whisper for
+  // all six (the learner first: the variety rule below wants both flavors of a step once a lesson has two games). A way let off here is
+  // never played there, and a lesson that plays it fails.
+  const SLOT_LET_OFF = { 'animal-sounds': { 1: ['mouse'] } };
   // II.D.1 and II.D.2 standing alone, never inside III.D.1 (pass NP: Act it out and Tell it again cite III.D.1, retelling and
   // re-enacting a story, and read as vocabulary lessons until the code was read).
   const vocab = (m) => /(?<!I)II\.D\.[12]\b|P-LC [67]\b/.test([].concat(m.sources || []).join(' '));   // ELOF's vocabulary goals are P-LC 6 and 7 (round one's alignment read)
@@ -765,7 +770,8 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
         if (whole.some((x) => x.sound && ['whistle', 'applause'].includes(x.sound) && x.inForm === undefined)) bad.push(`${m.id} ${li}: a cheer's sound outside a cheer`);
       }
       // A lesson's variety: both flavors of the first, second and fifth steps once it has two games, and as many silly thirds as games.
-      if (games >= 2) { for (const s of [0, 1, 4]) if (heard[s].size < slots[s].length) bad.push(`${m.id} never plays ${slots[s].filter((w) => !heard[s].has(w)).join(', ')} at step ${s + 1}`);
+      for (const [s, off] of Object.entries(SLOT_LET_OFF[m.id] || {})) for (const w of off) if (heard[s].has(w)) bad.push(`${m.id} plays ${w} at step ${Number(s) + 1}, which it never plays (SLOT_LET_OFF)`);
+      if (games >= 2) { for (const s of [0, 1, 4]) { const off = (SLOT_LET_OFF[m.id] || {})[s] || []; const missing = slots[s].filter((w) => !off.includes(w) && !heard[s].has(w)); if (missing.length) bad.push(`${m.id} never plays ${missing.join(', ')} at step ${s + 1}`); }
         if (heard[2].size < Math.min(games, slots[2].length)) bad.push(`${m.id} plays ${heard[2].size} silly thirds in ${games} games`); }
       // Q77 (a): every pre-K lesson that cites a vocabulary outcome plays the game, but the older ones that wait by name.
       if (/^PK/.test(m.grade || '') && vocab(m) && !lessons.includes(m.id) && !waits.includes(m.id)) bad.push(`${m.id} cites a vocabulary outcome and plays no say-along (Q77 (a))`);
@@ -792,6 +798,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     problems(edit('learning-words', "Let's say it together! First, let's say it like a big, sleepy giant. Match.", "Let's say it all together! First, let's say it like a big, sleepy giant. Match.")),   // the opener in other words
     problems(edit('learning-words', game('different', ['slow', 'whisper', 'silly', 'fast', 'stretch']), game('different', ['slow', 'mouse', 'silly', 'fast', 'stretch']))),   // Mikey's version changed
     problems(edit('learning-words', 'Great job! One last time, nice and clear. Different.', 'One last time, nice and clear. Different.')),   // no praise
+    problems(edit('animal-sounds', game('meow', ['slow', 'whisper', 'silly', 'fast', 'stretch']), game('meow', ['slow', 'mouse', 'silly', 'fast', 'stretch']))),   // Animal sounds' tiny mouse back (pass NR)
     problems(edit('words-go-together', /^[^]*?(Let's say it together! First, let's say it like a big, sleepy giant\. Clothes\.)/, '$1')),   // the word not said before its opener
     problems(edit('learning-words', 'so they match. Our word is same. ', 'so they match. ')),   // a line that ends on match before same's opener (round one)
     problems(graded, { lessons: L.SAY_ALONG_LESSONS.slice(1) }),   // a say-along outside the say-along lessons
@@ -1641,6 +1648,98 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const backupPlanted = Object.entries(BACKUP_PLANTS).map(([what, [from, to]]) => [what, ui.split(from).length === 2 ? ui.replace(from, () => to) : null]);
   ok(`the automatic backup's code and comments name only its two triggers left, a student's Exit and an educator's sign-out: no course-finish lines or courseProgressFinished, and no comment naming the first sign-in of the day's backup (pass NQ, F4; ${backupPlanted.length} old lines planted back, each caught)`,
     leftIn(ui).length === 0 && onlySignOuts(ui) && backupPlanted.every(([, src]) => !!src && leftIn(src).length > 0), JSON.stringify({ left: leftIn(ui), uncaught: backupPlanted.filter(([, src]) => !src || leftIn(src).length === 0).map(([w]) => w) })); }
+// The automatic backup's own definition names no trigger that is gone (pass NR, EARMARKS A156). The check above reads every call of
+// autoBackup but passes over its definition, whose reason still defaulted to 'course', the backup when a course is finished that pass L
+// removed. Now every quoted word in the definition's parameters and in each call's arguments must be a trigger that still exists,
+// 'sign-out' (a student's Exit and an educator's sign-out both pass it), and the definition must be found once, so a rewrite cannot
+// slip past unread. The old default is put back and caught, and so are five near misses: the default in double quotes, in backquotes
+// and with no spaces, the first sign-in of the day's trigger (removed 2026-09-20), and one call naming the course finish.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const LIVE_TRIGGERS = ['sign-out'];
+  const definitions = (src) => [...src.matchAll(/\bfunction autoBackup\(([^)]*)\)/g)].map((m) => m[1]);
+  const argLists = (src) => [...src.matchAll(/\bautoBackup\(([^)]*)\)/g)].map((m) => m[1]);   // each call's arguments, and the definition's parameters
+  const quoted = (text) => [...text.matchAll(/(['"`])((?:(?!\1).)*)\1/g)].map((m) => m[2]);
+  const namesOnlyLive = (src) => definitions(src).length === 1 && argLists(src).length >= 4 && argLists(src).every((a) => quoted(a).every((w) => LIVE_TRIGGERS.includes(w)));
+  const DEF = 'async function autoBackup(reason) {'; const CALL = "await autoBackup('sign-out'); setLastActive(0);";
+  const NEAR = {
+    "the old default, 'course'": [DEF, "async function autoBackup(reason = 'course') {"],
+    'the default in double quotes': [DEF, 'async function autoBackup(reason = "course") {'],
+    'the default in backquotes': [DEF, 'async function autoBackup(reason = `course`) {'],
+    'the default with no spaces': [DEF, "async function autoBackup(reason='course') {"],
+    "the first sign-in of the day's trigger as the default": [DEF, "async function autoBackup(reason = 'first-sign-in') {"],
+    'a call naming the course finish': [CALL, "await autoBackup('course'); setLastActive(0);"],
+  };
+  const nearPlanted = Object.entries(NEAR).map(([what, [from, to]]) => [what, ui.split(from).length === 2 ? ui.replace(from, () => to) : null]);
+  const uncaught = nearPlanted.filter(([, src]) => !src || namesOnlyLive(src)).map(([what]) => what);
+  ok(`the automatic backup's definition and its calls name only a trigger that exists, 'sign-out': its reason no longer defaults to 'course', the course finish's backup that pass L removed (pass NR, EARMARKS A156; ${definitions(ui).length} definition and ${argLists(ui).length - 1} calls read; the old default and ${Object.keys(NEAR).length - 1} near misses planted, each caught)`,
+    namesOnlyLive(ui) && uncaught.length === 0, JSON.stringify({ definitions: definitions(ui), args: argLists(ui), uncaught })); }
+// Four of the screen read's findings on Who Needs Help, the report and the result screen (pass NR), each read here where a node test can
+// see it, the screen's own code compiled with TypeScript (from npm root -g) and drawn with a stand-in React that keeps the tree. SHOULD
+// CONSIDER 5: a student's label never breaks at its hyphen ("S- / 21" at 320): WholeNames holds each label it is given in a span that does
+// not wrap, and Who Needs Help's summary line and View progress both draw their words through it. 6: the weekly note's "Practice reviews:"
+// is drawn as its other small headings are, the review after it with no rule between, where it was a plain line between two rules. 7: the
+// educator's countdown reads the clock, so it never shows more than 60 (it read 61 to 63 while the tick, which starts over at each
+// touch, lagged). 4, and MUST FIX 2: the places that left a lone last word at 320 wrap balanced, or pretty past six lines (View
+// progress), the Look back button and the memory-check line among them. Each old line is put back and caught, and so are two near misses.
+{ const { execSync } = await import('node:child_process'); const { createRequire } = await import('node:module'); const vm = await import('node:vm');
+  const ts = createRequire(import.meta.url)(`${execSync('npm root -g').toString().trim()}/typescript`);
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const fnSource = (src, name) => { const a = src.indexOf(`\nfunction ${name}(`); const b = a < 0 ? -1 : src.indexOf('\n}\n', a + 1); return a < 0 || b < 0 ? '' : src.slice(a + 1, b + 2); };
+  const React = { Fragment: 'Fragment', createElement: (type, props, ...children) => (typeof type === 'function' ? type({ ...(props || {}), children }) : { type, props: props || {}, children: children.flat(Infinity).filter((c) => c !== null && c !== undefined && c !== false && c !== '') }) };
+  const C = { mode: 'light', green: '#2F5D4F', muted: '#5E6A63', line: '#D9DED4' };
+  // Since round three's screen read of pass NR, WholeNames and the weekly note keep a hyphenated word and a pre-K grade with its number whole
+  // (wholeHyphens, splitting by WHOLE_WORD), so each is compiled with those two, read from the same source.
+  const helpers = (src) => `${(/^const WHOLE_WORD = .*$/m.exec(src) || [''])[0]}\n${fnSource(src, 'wholeHyphens')}`;
+  const compile = (src, name, from = ui) => { if (!src) return null; const js = ts.transpileModule(`${helpers(from)}\n${src}`, { compilerOptions: { jsx: ts.JsxEmit.React, target: ts.ScriptTarget.ES2022 } }).outputText; const ctx = vm.createContext({ React, C }); vm.runInContext(`${js}\nthis.__fn = ${name};`, ctx); return ctx.__fn; };
+  const textOf = (n) => (typeof n === 'string' || typeof n === 'number' ? String(n) : n && n.children ? n.children.map(textOf).join('') : '');
+  const all = (n, out = []) => { if (n && typeof n === 'object') { out.push(n); for (const c of n.children || []) all(c, out); } return out; };
+  const swap = (src, from, to) => (src.split(from).length === 2 ? src.replace(from, () => to) : null);
+  // SHOULD CONSIDER 5.
+  const wholeHolds = (src) => { const W = compile(fnSource(src, 'WholeNames'), 'WholeNames', src); if (!W) return false; const tree = W({ text: '2 students need help now (S-21, S-3). Sam and Samantha.', names: ['S-3', 'S-21', 'Sam', 'Samantha'] });
+    const spans = all(tree).filter((n) => n.type === 'span' && n.props['data-whole-name'] === '' && n.props.style && n.props.style.whiteSpace === 'nowrap').map(textOf);
+    return textOf(tree) === '2 students need help now (S-21, S-3). Sam and Samantha.' && JSON.stringify(spans) === JSON.stringify(['S-21', 'S-3', 'Sam', 'Samantha'])
+      && src.includes('<WholeNames text={line} names={classRows.map((r) => r.label)} />') && src.includes('<WholeNames text={moduleStory(shownName, educatorRecord.events, storyModule)} names={[shownName]} />'); };
+  // SHOULD CONSIDER 6, on a real note: a review this week (Count to 5's practice review), so the note has its "Practice reviews:" part.
+  const L = await import('../src/logic.mjs');
+  const DAY = 86400000; const NOW = Date.parse('2026-11-16T18:00:00.000Z'); const ago = (d) => new Date(NOW - d * DAY).toISOString(); const N = L.moduleRules('count-to-5').questions;
+  const rnd = (at) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: 'count-to-5', seed: 1, core: Array.from({ length: N }, () => ({ correct: true, timeMs: 9000 })), review: null, coreCorrect: N, coreTotal: N });
+  const note = L.weeklyNote('Sam', [L.makeCoursesEnabledEvent(['counting-k'], ago(60)), rnd(ago(30)), rnd(ago(29)), { type: 'light_review_completed', at: ago(2), startedAt: ago(2), moduleId: 'count-to-5', stage: 'first', results: [1, 1, 1, 1, 1].map((c) => ({ correct: !!c, genId: 'g', prompt: 'p' })), correct: 5, total: 5, outcome: 'clear' }], new Date(NOW).toISOString());
+  const headingHolds = (src) => { const B = compile(fnSource(src, 'WeeklyNoteBody'), 'WeeklyNoteBody', src); if (!B || !note.includes('\n\nPractice reviews:\n\n')) return false; const parts = B({ text: note }).children;
+    const at = parts.findIndex((d) => textOf(d) === 'Practice reviews'); if (at < 1) return false;
+    const head = all(parts[at]).find((n) => n.type === 'p'); const rule = (d) => all(d).some((n) => n.props && n.props['aria-hidden'] === 'true' && n.props.style && n.props.style.height === 2);
+    return !!head && head.props['data-note-heading'] === '' && head.props.style.textTransform === 'uppercase' && !rule(parts[at + 1]) && rule(parts[at]); };
+  // SHOULD CONSIDER 7: the countdown line itself, run on a clock: a touch at T read 2.5 seconds late by the tick, and mid-minute with the
+  // tick a second behind.
+  const lineOf = (src) => (/^ {2}const logoutIn = .*$/m.exec(src) || [''])[0];
+  const countdown = (line, nowMs, tickMs, touchMs) => vm.runInNewContext(`${line}; logoutIn`, { onEducatorScreen: true, tourStep: -1, EDUCATOR_IDLE_MS: 60000, lastActive: touchMs, now: tickMs, Date: { now: () => nowMs }, Math });
+  const T = 1700000000000;
+  const chipHolds = (src) => { const line = lineOf(src); return !!line && countdown(line, T + 5, T - 2500, T) === 60 && countdown(line, T + 30500, T + 29000, T) === 30 && countdown(line, T + 59999, T + 59000, T) === 1 && countdown(line, T + 60000, T + 60000, T) === 0; };
+  // SHOULD CONSIDER 4 and MUST FIX 2: each place's wrap.
+  const WRAPS = {
+    "the first-backup nudge's heading": "fontWeight: 600, textWrap: 'balance' }}>Make your first backup soon</p>",
+    "the first-backup nudge's words": "color: C.muted, textWrap: 'balance' }}>A forgotten PIN can be reset",
+    'Since you last looked': "textAlign: 'center', textWrap: 'balance' }}>{/* balanced since pass NR",
+    // Since round three's screen read of pass NR the summary's lines keep a pre-K grade with its number whole (wholeHyphens).
+    "the summary's first lines": "{first.map((line) => <p key={line} style={{ margin: '2px 0', textWrap: 'balance' }}>{wholeHyphens(line)}</p>)}",
+    "the summary's last lines": "{second.map((line) => <p key={line} style={{ margin: '2px 0', textWrap: 'balance' }}>{wholeHyphens(line)}</p>)}",
+    'View progress': "lineHeight: 1.7, textWrap: 'pretty' }}><WholeNames text={moduleStory(",
+    'the memory-check line': "textAlign: 'center', textWrap: 'balance' }}>Memory {lastEvent.review2",
+    'the Look back button': "disabled={busy} style={{ textWrap: 'balance' }}>Look back at {lessonInSentence(",
+  };
+  const wrapsHold = (src) => Object.values(WRAPS).every((w) => src.split(w).length === 2);
+  const holds = (src) => ({ whole: wholeHolds(src), heading: headingHolds(src), chip: chipHolds(src), wraps: wrapsHold(src) });
+  const OLD = {
+    "Who Needs Help's summary line without WholeNames": swap(ui, '<WholeNames text={line} names={classRows.map((r) => r.label)} />', '{line}'),
+    "WholeNames' span without nowrap (near miss)": swap(ui, "<span key={i} data-whole-name=\"\" style={{ whiteSpace: 'nowrap' }}>{part}</span>", '<span key={i} data-whole-name="">{part}</span>'),
+    '"Practice reviews:" as a plain line between rules': swap(ui, "        else if (headingAlone(part)) inner = <p data-note-heading=\"\" style={{ ...heading, margin: 0 }}>{part.replace(/:$/, '')}</p>;\n", ''),
+    "the chip's old count, from the tick": swap(ui, '(EDUCATOR_IDLE_MS - (Date.now() - lastActive)) / 1000)', '(EDUCATOR_IDLE_MS - (now - lastActive)) / 1000)'),
+    "the chip's tick count capped at 60 (near miss)": swap(ui, 'Math.max(0, Math.ceil((EDUCATOR_IDLE_MS - (Date.now() - lastActive)) / 1000))', 'Math.min(60, Math.max(0, Math.ceil((EDUCATOR_IDLE_MS - (now - lastActive)) / 1000)))'),
+    ...Object.fromEntries(Object.entries(WRAPS).map(([name, w]) => [`${name} without its wrap`, swap(ui, w, w.replace(/, textWrap: '(?:balance|pretty)'| style=\{\{ textWrap: 'balance' \}\}/, ''))])),
+  };
+  const now = holds(ui);
+  const uncaught = Object.entries(OLD).filter(([, src]) => { if (!src) return true; const h = holds(src); return h.whole && h.heading && h.chip && h.wraps; }).map(([name]) => name);
+  ok(`a student's label is held whole on Who Needs Help and in View progress, "Practice reviews:" is drawn as the weekly note's other small headings are, the educator's countdown never shows more than 60, and the places that left a lone last word wrap balanced or pretty (pass NR, the screen read's SHOULD CONSIDER 4 to 7 and MUST FIX 2; ${Object.keys(OLD).length} old lines and near misses put back, each caught)`,
+    now.whole && now.heading && now.chip && now.wraps && uncaught.length === 0, JSON.stringify({ now, uncaught })); }
 // Every stop of the device's voice sits in a try (pass NQ, round one's code reads): SpeakButton's stop called
 // window.speechSynthesis.cancel() bare, where every other cancel in the screens has a try, so a voice that throws there skipped the
 // rest of the stop and left the button saying Stop reading. Read with TypeScript's own parser (from npm root -g, as the check above

@@ -48,7 +48,7 @@ async function walk(W, H, box = false) {   // box: false, 'root' (a box holds th
     const m = await measure(page); const s = m.sheet;
     let good = !!s && s.left >= -1 && s.top >= -1 && s.right <= m.W + 1 && s.bottom <= m.H + 1;
     const oneCol = m.life && m.exp ? Math.abs(m.life.top - m.exp.top) > 8 : true;
-    // Card 1 sits centered close under Add someone new, and above Who needs help when it shows (pass JW, Mikey).
+    // Card 1 sits centered close under Add someone new, and above Who Needs Help when it shows (pass JW, Mikey).
     if (step === 1) good = good && !!m.add && s.top - m.add.bottom >= 0 && s.top - m.add.bottom <= 24 && near((s.left + s.right) / 2, (m.add.left + m.add.right) / 2, 8) && (!m.help || s.top < m.help.top);
     if (step === 2) good = good && near(s.right, m.W, 14) && near(s.bottom, m.H, 14);
     // The page behind card 2 is the live fraction lesson (pass JI, Mikey): a rewrite of it, or of its title, shows in the tour by itself.
@@ -93,8 +93,8 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
   ok(`${box ? 'in a scrolling box, ' : ''}the lesson title shows in title case`, opened.screen !== 'lesson' || (words.length > 0 && words.every((w) => /^[A-Z]/.test(w))), opened);
   await page.close();
 }
-{ // Card 1 in a classroom with students (pass JW, Mikey, Chrome on a laptop): Who needs help shows under Add someone new, and card 1
-  // sits close under the glowing Add button with its top a little above Who needs help, never below it. The tour is replayed
+{ // Card 1 in a classroom with students (pass JW, Mikey, Chrome on a laptop): Who Needs Help shows under Add someone new, and card 1
+  // sits close under the glowing Add button with its top a little above Who Needs Help, never below it. The tour is replayed
   // from the backup page's Show the first week tour again.
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(pageUrl); await signUp(page);
@@ -112,7 +112,7 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
   await page.waitForSelector('[aria-label="First week tour"]', { timeout: 5000 }); await page.waitForTimeout(1300);
   const m = await measure(page); const s = m.sheet;
   const good = !!s && !!m.add && !!m.help && s.top - m.add.bottom >= 0 && s.top - m.add.bottom <= 24 && s.top < m.help.top && near((s.left + s.right) / 2, (m.add.left + m.add.right) / 2, 8);
-  ok('with students in the classroom, card 1 sits close under Add someone new, a little above Who needs help', good, good ? null : { sheet: s, add: m.add, help: m.help });
+  ok('with students in the classroom, card 1 sits close under Add someone new, a little above Who Needs Help', good, good ? null : { sheet: s, add: m.add, help: m.help });
   await page.close();
 }
 { // A frame as tall as the whole page: the app's own window never scrolls there, so the page around the frame must.

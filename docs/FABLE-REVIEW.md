@@ -200,6 +200,21 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NR (Mikey's answers Q117 and Q119, print all around us and connections to a story at both ages, and four early Wonder questions)
+
+- After a negative a child hears "either", never "too": "I could not sleep last night either", where the first build had a friend who could not sleep say she could not sleep too, and a turtle's line had a double negative.
+- A story's problem is read against the animal: most owls hunt at night, so an owl awake at night is no problem for a story to solve; Owl now could not sleep in the day and counted the clouds.
+- A reason names only what the child heard: in a bank of two stories, a friend's other story is told whole before a reason may name any part of it, since a reason that named what the friend never said told a child she was wrong by words she never heard; and a pronoun in it has one owner (round two found a "she" that could be any of three).
+- One word, one bar: a sign or a box that holds a word in a painting shows the word's mark, one short bar a word, so a stop sign that the lines say has a word is painted with its bar, and a bar is placed so it reads as a word, not as another sign.
+- A friend's whole other story, not a piece of it: a connection to another story is heard as that story, so a child can find what the two stories share, the same problem, the same feeling or the same kind of place.
+- A fixed sentence's pictures are read again: when a fix changes a line's or a paragraph's words, every picture those words stand beside is read against the new words in the same round (a book the words never put down lay on a bench; a view from above could not show the faces its rows asked for).
+- A claim a lesson softens in a fix is softened in its stories in the same round, as passes KF, KH and MA learned: Words all around us came to say where a word is seen can help us know what it says, and its story's aunt still said that you can tell by where you see it.
+- Three topknots in one batch: a look the writers reach for more than once in a pass is read across the batch before it is written again (a note for the next writer; nothing changed).
+- A word a picture prints is a printed word: a note that says "I love you" on its own button, under a question about what the note says, answers the question for a child who only matches letters (round one's screen read), so a print's words stay off the question and off its buttons while the voice can speak.
+- Two children in one course are told apart by color before anything else: the look tool passes a different garment and a different style word, but a four-year-old sees "the girl in black" twice (Florence now wears a navy-blue sweater; round two).
+- A word the ear can take two ways is reworded where it stands: "a palm seed", heard right after "a seed sits still in your hand", is the hand's palm to a three-year-old, so it is "a palm tree seed" (round two).
+- Two cards of one question never end on one frame: "She had written, you are brave." and "Grandpa had written, I love you!" read as one beat twice, so the first now says "It said, you are brave." (round two).
+
 ## Learned in pass NP (Mikey's answer Q111, six pre-K lessons of Domain III, the read-along in questions, Wonder and the book, and four early Wonder questions)
 
 - A lesson that teaches a guess builds its stories in mirrored pairs: each picture is the good guess after one story and the wrong one after its mirror (dark clouds bring rain, and when the clouds go away the sun is the good guess), since when the rain was always the good guess a child who always tapped it was right about two times in three without listening.

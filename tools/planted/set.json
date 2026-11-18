@@ -885,7 +885,7 @@
           "edits": []
         }
       ],
-      "correct": "Unchanged.",
+      "correct": "Changed in pass NR (EARMARKS A154): the yes or no bank asks whether right in a friend's face is too close, as the lesson says it, never whether it is kind, and two No rows from the lesson's lines on waiting and on hi and bye keep it even, four Yes rows to four No; the reasons say the lesson's own words (wait, do not talk at the same time, taking turns, listen and wait for your turn). Still clean.",
       "tests": {
         "passed": [
           "scripts",
@@ -896,9 +896,10 @@
           "pictures",
           "logic"
         ],
-        "on": "unchanged; every copy built in pass NQ passed these",
+        "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
-      }
+      },
+      "history": "Pass NR: two real defects round one of pass NQ found in this item (the close question asked about kindness, which the lesson never names, and two reasons said \"at once\" and \"finish\", which no line says) were fixed in the project, so neither joins the known list."
     },
     {
       "id": "K02",
@@ -922,33 +923,8 @@
           "edits": []
         }
       ],
-      "correct": "Unchanged.",
-      "known": [
-        {
-          "what": "p4-plan-yesno answers Yes on about 80 percent of its seeds (four Yes rows to one No): a real defect of today's content, not the set's",
-          "seen": "round one of pass NQ: all three lesson reads (two as must fix)",
-          "words": [
-            "leans yes",
-            "yes on \\d",
-            "(80|81|80\\.5) percent",
-            "four yes",
-            "always (taps|tap|says|answers) yes",
-            "always yes",
-            "yes rows",
-            "plan-yesno"
-          ]
-        },
-        {
-          "what": "p4-play-plan's new-idea row gives Listen to your friend's idea, too as More right answers, which answers another question and is said in no line: a real defect of today's content, not the set's",
-          "seen": "round one of pass NQ: two lesson reads (one as must fix)",
-          "words": [
-            "listen to your friend.s idea",
-            "answers another question",
-            "new-idea row",
-            "new idea"
-          ]
-        }
-      ],
+      "correct": "Changed in pass NR (EARMARKS A154): the yes or no bank gains three No rows in the lesson's words, four Yes rows to four No; the new-idea row's More right answers is empty; and either part of a plan may be yours in the who-does-which-part bank, so a question's words never give its answer. Still clean.",
+      "known": [],
       "tests": {
         "passed": [
           "scripts",
@@ -959,9 +935,10 @@
           "pictures",
           "logic"
         ],
-        "on": "unchanged; every copy built in pass NQ passed these",
+        "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
-      }
+      },
+      "history": "Pass NR: its two known defects (the yes or no bank leaning Yes, and the new-idea row's More right answers) and the critic's finding on the who-does-which-part bank were fixed in the project, so the known list is empty."
     },
     {
       "id": "K03",
@@ -984,7 +961,7 @@
           "edits": []
         }
       ],
-      "correct": "Unchanged.",
+      "correct": "Changed in pass NR (EARMARKS A154): the say-alongs for meow, ribbit and growl whisper twice, as quack, buzz and hoot do, where they squeaked like a tiny mouse, another animal's voice in a lesson where each animal has a sound of its own; the scripts test lets Animal sounds off the tiny mouse and holds it off. Still clean.",
       "tests": {
         "passed": [
           "scripts",
@@ -995,9 +972,10 @@
           "pictures",
           "logic"
         ],
-        "on": "unchanged; every copy built in pass NQ passed these",
+        "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
-      }
+      },
+      "history": "Pass NR: the real defect round one of pass NQ found in this item (three say-alongs in a tiny mouse's voice) was fixed in the project, so it does not join the known list."
     },
     {
       "id": "P09",
@@ -1019,13 +997,13 @@
           "edits": [
             {
               "file": "src/stories.mjs",
-              "find": "    'Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. Big O, he said.',",
-              "replace": "    'Florence stood on a chair by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. Big O, he said.',"
+              "find": "    'Dad made pancakes shaped like letters. He put a big round one with a hole in the middle on his own plate. Big O, he said.',",
+              "replace": "    'Florence stood on a chair by the hot pan. Dad made letter pancakes, and a big one had a hole. Big O, he said.',"
             },
             {
               "file": "src/stories.mjs",
-              "find": "STORIES[\"small-letters\"].audio = [\"[cheerful] Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];",
-              "replace": "STORIES[\"small-letters\"].audio = [\"[cheerful] Florence stood on a chair by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];"
+              "find": "STORIES[\"small-letters\"].audio = [\"[cheerful] Dad made pancakes shaped like letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one with a hole. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she held hers up beside his.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];",
+              "replace": "STORIES[\"small-letters\"].audio = [\"[cheerful] Florence stood on a chair by the hot pan. Dad made letter pancakes, and a big one had a hole. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one with a hole. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she held hers up beside his.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];"
             }
           ],
           "catch": [
@@ -1044,13 +1022,13 @@
           "edits": [
             {
               "file": "src/stories.mjs",
-              "find": "    'Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. Big O, he said.',",
-              "replace": "    'Florence knelt on the counter by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. Big O, he said.',"
+              "find": "    'Dad made pancakes shaped like letters. He put a big round one with a hole in the middle on his own plate. Big O, he said.',",
+              "replace": "    'Florence knelt on the counter by the hot pan. Dad made letter pancakes, and a big one had a hole. Big O, he said.',"
             },
             {
               "file": "src/stories.mjs",
-              "find": "STORIES[\"small-letters\"].audio = [\"[cheerful] Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];",
-              "replace": "STORIES[\"small-letters\"].audio = [\"[cheerful] Florence knelt on the counter by the hot pan as Dad made letter pancakes. He put a big round one with a hole on his plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];"
+              "find": "STORIES[\"small-letters\"].audio = [\"[cheerful] Dad made pancakes shaped like letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one with a hole. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she held hers up beside his.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];",
+              "replace": "STORIES[\"small-letters\"].audio = [\"[cheerful] Florence knelt on the counter by the hot pan. Dad made letter pancakes, and a big one had a hole. [in a deep, easy dad voice, playful] Big O, [softly] he said.\", \"[playful] Next he gave Florence a little round one with a hole. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!\", \"[pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.\", \"[curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.\", \"[in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.\", \"[playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.\", \"[cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she held hers up beside his.\", \"[slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.\"];"
             }
           ],
           "catch": [
@@ -1087,33 +1065,8 @@
         "on": "every wording: light tests on --variant 1 and --variant 2 builds before and after the merges of round one and on the seed-1 and seed-2 copies; the whole rules test on the first --variant 1 and --variant 2 builds and the seed-1 copy, built before the merges, and the rules test blocks of round one on the --variant builds after them (pass NQ)",
         "browser": "not run; tests/e2e searched for this item by its serials and names, with no hit"
       },
-      "known": [
-        {
-          "what": "S4163 and S4164 paint the O rings and X strips flat on a table with no overhead view, though they are the shapes taught (picture brief item 24)",
-          "seen": "round one of pass NQ: the Opus story read (a real defect of today's content in this plant's item, not the set's; records only count it, since no record names a plant's item)",
-          "words": [
-            "overhead view",
-            "seen from directly above",
-            "from above"
-          ]
-        },
-        {
-          "what": "the words never give the little O its hole (paragraph 1)",
-          "seen": "round one of pass NQ: the Opus story read (a real defect of today's content in this plant's item, not the set's; records only count it, since no record names a plant's item)",
-          "words": [
-            "little (o|one) .{0,40}hole",
-            "with a hole"
-          ]
-        },
-        {
-          "what": "it repeats A cookie with a bite in the same course: a dad, a daughter, a letter snack, the girl eating her letter at the end (story brief item 21)",
-          "seen": "round one of pass NQ: the Opus story read (a real defect of today's content in this plant's item, not the set's; records only count it, since no record names a plant's item)",
-          "words": [
-            "cookie with a bite",
-            "repeats a cookie"
-          ]
-        }
-      ]
+      "known": [],
+      "history": "Pass NR: the story fixes of EARMARKS A154 cut paragraph 1 to \"Dad made pancakes shaped like letters.\" to hold the story at 200 words, so both wordings were rewritten against today's file in no more words than the paragraph has (the stories test would catch a story over 200): \"Florence stood on a chair by the hot pan. Dad made letter pancakes, and a big one had a hole.\" and \"Florence knelt on the counter by the hot pan. ...\"; the defect and the catch words are unchanged. Its three known real defects were fixed in the project, so its known list is empty."
     },
     {
       "id": "P10",
@@ -1140,8 +1093,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "STORIES[\"o-and-u\"].audio = [\"[cheerful] It rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];",
-              "replace": "STORIES[\"o-and-u\"].audio = [\"[cheerful] Gideon rode up front beside Mom, and it rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];"
+              "find": "STORIES[\"o-and-u\"].audio = [\"[cheerful] It rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] In lots of words, O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];",
+              "replace": "STORIES[\"o-and-u\"].audio = [\"[cheerful] Gideon rode up front beside Mom, and it rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] In lots of words, O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];"
             }
           ],
           "catch": [
@@ -1164,8 +1117,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "STORIES[\"o-and-u\"].audio = [\"[cheerful] It rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];",
-              "replace": "STORIES[\"o-and-u\"].audio = [\"[cheerful] Gideon hopped into Mom's car, and it rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];"
+              "find": "STORIES[\"o-and-u\"].audio = [\"[cheerful] It rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] In lots of words, O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];",
+              "replace": "STORIES[\"o-and-u\"].audio = [\"[cheerful] Gideon hopped into Mom's car, and it rained all the way to the aquarium. [playful] Mom closed her umbrella at the door, and she and Gideon went to watch an otter swim.\", \"[in a warm, bright mom voice, slowly] In lots of words, O says the sound at the start of otter, [softly] said Mom. [in a warm, bright mom voice, playful] What else here starts that way?\", \"[playful] Gideon looked around. [in a small, husky boy voice, sure of himself] Umbrella! [softly] he said, and he pointed at Mom's.\", \"[pause] [in a warm, bright mom voice, gently] Say them both slowly, [softly] said Mom, [in a warm, bright mom voice, slowly] and listen to the very start. Otter. Umbrella.\", \"[thoughtful] Gideon said them slowly. [in a small, husky boy voice, surprised] They do not start the same way! [softly] he said.\", \"[in a warm, bright mom voice, warmly] Right, [softly] said Mom. [in a warm, bright mom voice, slowly] Umbrella starts with the sound that U says, the sound at the start of up.\", \"[curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!\", \"[in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.\", \"[in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.\", \"[slowly, warmly] In lots of words, O says the sound at the start of octopus. U says the sound at the start of umbrella and up.\"];"
             }
           ],
           "catch": [
@@ -1201,15 +1154,8 @@
         "on": "every wording: light tests on --variant 1 and --variant 2 builds before and after the merges of round one and on the seed-1 and seed-2 copies; the whole rules test on the first --variant 1 and --variant 2 builds and the seed-1 copy, built before the merges, and the rules test blocks of round one on the --variant builds after them (pass NQ)",
         "browser": "not run; tests/e2e searched for this item by its serials and names, with no hit"
       },
-      "known": [
-        {
-          "what": "its moral drops the lesson's \"In lots of words\"",
-          "seen": "round one of pass NQ: the Opus story read (a real defect of today's content in this plant's item, not the set's; records only count it, since no record names a plant's item)",
-          "words": [
-            "in lots of words"
-          ]
-        }
-      ]
+      "known": [],
+      "history": "Pass NR: the story fix of EARMARKS A154 changed the moral in the audio line its finds held, so each wording's audio edit was made again on today's line, the plant unchanged; its known real defect was fixed in the project, so its known list is empty."
     },
     {
       "id": "P11",
@@ -1380,17 +1326,8 @@
         "on": "every wording: light tests on --variant 1 and --variant 2 builds before and after the merges of round one and on the seed-1 and seed-2 copies; the whole rules test on the first --variant 1 and --variant 2 builds and the seed-1 copy, built before the merges, and the rules test blocks of round one on the --variant builds after them (pass NQ)",
         "browser": "not run; tests/e2e searched for this item by its serials and names, with no hit"
       },
-      "known": [
-        {
-          "what": "Sylvie's look shares a color with Harlow's sheet (C10); a teal sundress passes the look tool's three readers (picture brief item 25)",
-          "seen": "round one of pass NQ: the Opus story read (a real defect of today's content in this plant's item, not the set's; records only count it, since no record names a plant's item)",
-          "words": [
-            "harlow's sheet",
-            "teal sundress",
-            "shares? a colou?r with"
-          ]
-        }
-      ]
+      "known": [],
+      "history": "Pass NR: its known real defect (Sylvie's white sundress beside Harlow's white top) was fixed in the project (a teal sundress), so its known list is empty; its plant still lands."
     },
     {
       "id": "P13",
@@ -1638,8 +1575,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "    'Knock, knock, said Daphne. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',",
-              "replace": "    'Knock, knock, said Evie. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',"
+              "find": "    'Knock, knock, said Daphne. Which letter says the sound your friend\\'s name starts with? asked Grandpa.',",
+              "replace": "    'Knock, knock, said Evie. Which letter says the sound your friend\\'s name starts with? asked Grandpa.',"
             },
             {
               "file": "src/stories.mjs",
@@ -1648,8 +1585,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "    'Daphne said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',",
-              "replace": "    'Evie said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',"
+              "find": "    'Elephant, said Daphne slowly. It starts like elf, so it is E! she said. In marched the elephant.',",
+              "replace": "    'Elephant, said Evie slowly. It starts like elf, so it is E! she said. In marched the elephant.',"
             },
             {
               "file": "src/stories.mjs",
@@ -1668,8 +1605,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Daphne said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];",
-              "replace": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Evie and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Evie. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Evie held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Evie said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Evie fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Evie slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Evie said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];"
+              "find": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Which letter says the sound your friend's name starts with? [softly] asked Grandpa.\", \"[playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[in a small, clear girl voice, slowly] Elephant, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] It starts like elf, so it is E! [cheerful] she said. In marched the elephant.\", \"[cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] In lots of words, the letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];",
+              "replace": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Evie and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Evie. [in a low, rumbly grandpa voice, playful] Which letter says the sound your friend's name starts with? [softly] asked Grandpa.\", \"[playful] Evie held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[in a small, clear girl voice, slowly] Elephant, [softly] said Evie slowly. [in a small, clear girl voice, delighted] It starts like elf, so it is E! [cheerful] she said. In marched the elephant.\", \"[cheerful] Next, Evie fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Evie slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Evie said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] In lots of words, the letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];"
             }
           ],
           "catch": [
@@ -1691,8 +1628,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "    'Knock, knock, said Daphne. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',",
-              "replace": "    'Knock, knock, said Abby. Tell me the letter that says the sound your friend\\'s name starts with, said Grandpa.',"
+              "find": "    'Knock, knock, said Daphne. Which letter says the sound your friend\\'s name starts with? asked Grandpa.',",
+              "replace": "    'Knock, knock, said Abby. Which letter says the sound your friend\\'s name starts with? asked Grandpa.',"
             },
             {
               "file": "src/stories.mjs",
@@ -1701,8 +1638,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "    'Daphne said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',",
-              "replace": "    'Abby said it slowly. Elephant. It starts like elf, so it is E! she said. In marched the elephant.',"
+              "find": "    'Elephant, said Daphne slowly. It starts like elf, so it is E! she said. In marched the elephant.',",
+              "replace": "    'Elephant, said Abby slowly. It starts like elf, so it is E! she said. In marched the elephant.',"
             },
             {
               "file": "src/stories.mjs",
@@ -1721,8 +1658,8 @@
             },
             {
               "file": "src/stories.mjs",
-              "find": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Daphne said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];",
-              "replace": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Abby and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Abby. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.\", \"[playful] Abby held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[thoughtful] Abby said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.\", \"[cheerful] Next, Abby fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Abby slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Abby said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];"
+              "find": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Which letter says the sound your friend's name starts with? [softly] asked Grandpa.\", \"[playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[in a small, clear girl voice, slowly] Elephant, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] It starts like elf, so it is E! [cheerful] she said. In marched the elephant.\", \"[cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] In lots of words, the letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];",
+              "replace": "STORIES[\"a-e-and-i\"].audio = [\"[playful] Abby and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.\", \"[in a small, clear girl voice, playful] Knock, knock, [softly] said Abby. [in a low, rumbly grandpa voice, playful] Which letter says the sound your friend's name starts with? [softly] asked Grandpa.\", \"[playful] Abby held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.\", \"[pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.\", \"[in a small, clear girl voice, slowly] Elephant, [softly] said Abby slowly. [in a small, clear girl voice, delighted] It starts like elf, so it is E! [cheerful] she said. In marched the elephant.\", \"[cheerful] Next, Abby fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.\", \"[in a small, clear girl voice, slowly] Apple, [softly] said Abby slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.\", \"[in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Abby said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.\", \"[slowly, warmly] In lots of words, the letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.\"];"
             }
           ],
           "catch": [
@@ -1757,15 +1694,8 @@
         "on": "every wording: light tests on --variant 1 and --variant 2 builds before and after the merges of round one and on the seed-1 and seed-2 copies; the whole rules test on the first --variant 1 and --variant 2 builds and the seed-1 copy, built before the merges, and the rules test blocks of round one on the --variant builds after them (pass NQ)",
         "browser": "not run; tests/e2e searched for this item by its serials and names, with no hit"
       },
-      "known": [
-        {
-          "what": "its moral drops the lesson's \"In lots of words\"",
-          "seen": "round one of pass NQ: the Opus story read (a real defect of today's content in this plant's item, not the set's; records only count it, since no record names a plant's item)",
-          "words": [
-            "in lots of words"
-          ]
-        }
-      ]
+      "known": [],
+      "history": "Pass NR: the story fixes of EARMARKS A154 changed paragraphs 2 and 5 and the audio line its finds held, so those edits were made again on today's lines, the name the only change; its known real defect was fixed in the project, so its known list is empty."
     },
     {
       "id": "P30",
@@ -1991,7 +1921,7 @@
         "id": "S4205-S4208",
         "aliases": [
           "Now I read to you",
-          "Opal"
+          "Ursula"
         ]
       },
       "about": "\"Now I read to you\" (pre-K 3, Listen and point), the module story: its words, its audio tags, and the art ledger rows of its pictures.",
@@ -2000,20 +1930,8 @@
           "edits": []
         }
       ],
-      "correct": "Unchanged.",
-      "known": [
-        {
-          "what": "the truck book Opal holds up comes from nowhere in the words, and the cow book is never put down: a real defect of today's content, not the set's",
-          "seen": "round one of pass NQ: both story reads (one as must fix)",
-          "words": [
-            "truck book",
-            "from nowhere",
-            "came from somewhere",
-            "never put down",
-            "cow book"
-          ]
-        }
-      ],
+      "correct": "Changed in pass NR (EARMARKS A154): the child is Ursula, where she was Opal, two letters from pre-K 4's Omar; she sets the cow book down and fetches her truck book before its wheels are at the bottom; S4208's dump truck is plain, its only marks its windows and its wheels; and her look is light brown hair in a topknot and a blush-pink dress, sharing nothing with Harlow's sheet. Still clean.",
+      "known": [],
       "tests": {
         "passed": [
           "scripts",
@@ -2024,9 +1942,10 @@
           "pictures",
           "logic"
         ],
-        "on": "unchanged; every copy built in pass NQ passed these",
+        "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its serials and names, with no hit"
-      }
+      },
+      "history": "Pass NR: its known real defect (the truck book from nowhere and the cow book never put down) and three more that round one of pass NQ found (the name, the truck's marks and the look) were fixed in the project, so the known list is empty."
     },
     {
       "id": "K06",
@@ -2047,7 +1966,7 @@
           "edits": []
         }
       ],
-      "correct": "Unchanged.",
+      "correct": "Changed in pass NR (EARMARKS A154), in its picture rows alone: the tugboat is plain, its only marks its round windows, and so is S4212's gray ship; the pages' print is short, straight dark gray bars lying end to end along each row, with small gaps between them, never squiggles. Still clean.",
       "tests": {
         "passed": [
           "scripts",
@@ -2058,9 +1977,10 @@
           "pictures",
           "logic"
         ],
-        "on": "unchanged; every copy built in pass NQ passed these",
+        "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its serials and names, with no hit"
-      }
+      },
+      "history": "Pass NR: the two real defects round one of pass NQ found in this item (the vehicles' unwritten marks and the squiggles) were fixed in the project, so neither joins the known list."
     },
     {
       "id": "P23",
@@ -3286,7 +3206,7 @@
           "edits": []
         }
       ],
-      "correct": "Unchanged: pass NP wrote it, and its Wonder reads passed it.",
+      "correct": "Changed in pass NR (EARMARKS A154): the skeptic's voices tell of his uncle, who took a street he did not know that ended at a fence, laughed, turned around and still got home; Mike asks first whether the street goes home. Still clean.",
       "tests": {
         "passed": [
           "scripts",
@@ -3297,9 +3217,10 @@
           "pictures",
           "logic"
         ],
-        "on": "unchanged; every copy built in pass NQ passed these",
+        "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its id, with no hit"
-      }
+      },
+      "history": "Pass NR: the real defect round one of pass NQ found in this item (two voices that sounded like one dad on one drive, and a small fear before its comfort) was fixed in the project, so it does not join the known list."
     },
     {
       "id": "K08",
@@ -3351,7 +3272,7 @@
           "edits": []
         }
       ],
-      "correct": "Unchanged.",
+      "correct": "Changed in pass NR (EARMARKS A154): the skeptic's voices say he did it and feels proud, then wonder how he learned it and thank the one who showed him, never doubting the prompt's all by yourself. Still clean.",
       "tests": {
         "passed": [
           "scripts",
@@ -3362,9 +3283,10 @@
           "pictures",
           "logic"
         ],
-        "on": "unchanged; every copy built in pass NQ passed these",
+        "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its id, with no hit"
-      }
+      },
+      "history": "Pass NR: the real defect round one of pass NQ found in this item (the skeptic doubting the prompt's own words) was fixed in the project, so it does not join the known list."
     }
   ]
 }

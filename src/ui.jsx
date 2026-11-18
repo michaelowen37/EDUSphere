@@ -278,6 +278,17 @@ function ContactLine({ onOpen, inline = false }) {
 // wherever the name is shown: the spaces inside the parentheses become non-breaking. Display only;
 // the stored name never changes.
 const keepTogether = (s) => String(s).replace(/\(([^)]*)\)/g, (m) => m.replace(/ /g, '\u00A0').replace(/-/g, '\u2011'));
+// A student's label never breaks across two lines (pass NR, the screen read's SHOULD CONSIDER 5), as the report's summary holds the name
+// (data-summary-name): "S-21" split at its hyphen at 320, "(S- / 21, Pre-K 2)", in Who Needs Help's summary and in View progress. Each
+// label the text holds sits in a span that does not wrap, so copying or searching the page still finds it as typed; the longest label
+// is matched first, so one label inside another is never split. Since round three's screen read of pass NR the words between the labels
+// keep a hyphenated word and a pre-K grade with its number whole (wholeHyphens), so View progress never breaks "pre- / K 4 math".
+function WholeNames({ text, names }) {
+  const list = [...new Set((names || []).filter(Boolean).map(String))].sort((a, b) => b.length - a.length);
+  if (!list.length) return <>{wholeHyphens(text)}</>;
+  const pattern = new RegExp(`(${list.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'g');
+  return <>{String(text).split(pattern).map((part, i) => (i % 2 ? <span key={i} data-whole-name="" style={{ whiteSpace: 'nowrap' }}>{part}</span> : <React.Fragment key={i}>{wholeHyphens(part)}</React.Fragment>))}</>;
+}
 const linkBtn = themed(() => ({ background: 'none', border: 'none', color: C.green, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 15, cursor: 'pointer', padding: '6px 0', textDecoration: 'underline' }));
 // Cards are solid, so stars show only in the open space between them and never behind text.
 const cardLink = themed(() => ({ ...linkBtn, marginRight: 12 }));
@@ -756,7 +767,7 @@ function RemembranceCard({ educator = false }) {
   );
 }
 
-function IconPic({ name, size = 90, tile = false }) {
+function IconPic({ name, size = 90, tile = false, grow = null }) {
   const [base, look] = String(name).split('#')[0].split('~');
   // A unique id for this drawing's clip paths (the people's coats and faces, pass MR), so two of one person on a page never share one.
   const uid = useId().replace(/:/g, '');
@@ -1524,9 +1535,10 @@ function IconPic({ name, size = 90, tile = false }) {
     // the first; and the box's cross is drawn thinner in a larger box, since at 64 pixels its X filled in like a die showing four. The
     // triangle, two slanted sides meeting at the top with a bar across, fit pre-K 3's own words for A, so it is gone, and the top row's three
     // marks are centered over the second row (round two's content and alignment reads; round one's lesson read had asked for it).
+    // Since pass NR (round one's screen read) the word card's cat is DRAWN_WORDS's, fitted to its room as the print drawings' words are.
     scribble: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><path d="M24 36 Q30 24 36 36 T48 36 T60 36 T72 34 M26 58 C34 46 40 70 48 56 S62 46 68 62 S74 70 76 56" fill="none" stroke="#4A86C5" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" /></g>,
     marks: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g fill="none" stroke="#C9573E" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><g transform="translate(7 0)"><circle cx="26" cy="32" r="5" /><path d="M26 37 L26 46" /><circle cx="41" cy="38" r="6" /><path d="M41 32 L41 44 M35 38 L47 38" /><path d="M59 30 L59 44 M53 37 L65 37 M54.5 32.5 L63.5 41.5 M63.5 32.5 L54.5 41.5" /></g><path d="M32 57 L46 57 L46 71 L32 71 Z M32 57 L46 71 M46 57 L32 71" strokeWidth="2.6" /><path d="M56 64 a2 2 0 1 1 4 0 a4 4 0 1 1 -8 0 a6 6 0 1 1 12 0" /></g></g>,
-    word: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><text x="50" y="60" textAnchor="middle" fontSize="30" fontWeight="700" fill="#2E2E2E" style={{ fontFamily: 'inherit' }}>cat</text></g>,
+    word: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><text x="50" y="60" textAnchor="middle" fontSize="30" fontWeight="700" textLength="45" lengthAdjust="spacingAndGlyphs" fill="#2E2E2E" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS.word[0]}</text></g>,
     // The words of pre-K 4's Q, V and Y (pass NI; Claude's drawings): a queen and a quilt for Q, a van and a volcano for V, and a yo-yo and a
     // ball of yarn for Y, each outlined in a dark line on light places and a light one on the dark theme's tiles, so it reads on every tile.
     // The queen, head and shoulders: a gold crown with three jewels, long black hair, a purple robe with a white fur collar, and a smile.
@@ -1695,10 +1707,14 @@ function IconPic({ name, size = 90, tile = false }) {
   // A look after ~ (pass MP) draws the same thing another way, and its name stays the thing's own, so a screen reader hears block;
   // since pass MW a look that is a state its line names is said with it (pictureLookName: a broken crayon, a sleeping baby).
   // A look that needs the live palette (bird~big's gold beak) is a function of it, and since pass NE (EARMARKS A92) it is handed dkPaper too
-  // (plate~food's rim on the dark theme's paper).
+  // (plate~food's rim on the dark theme's paper), and since pass NR the drawing's unique id, for a look with clip paths (teacher~hands).
   const lookArt = look && ICON_LOOKS[`${base}~${look}`];
-  const shown = (typeof lookArt === 'function' ? lookArt({ grey, gold, dk, dkPaper }) : lookArt) || body;
-  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={pictureLookName(look ? `${base}~${look}` : base)} style={{ display: 'block', margin: '0 auto' }}>{shown}</svg>;
+  const shown = (typeof lookArt === 'function' ? lookArt({ grey, gold, dk, dkPaper, uid }) : lookArt) || body;
+  // grow (pass NR, round three's screen read, its MUST FIX 2): [how much larger, the middle of the drawing's ink from top to bottom] draws the
+  // drawing larger inside the same box, its ink's middle at the box's middle, for a thing with no words on a print question's tile
+  // (PRINT_TILE_GROW, which choiceFace reads); the box, and so the tile, keeps its size.
+  const drawn = grow ? <g data-print-grow="" transform={`translate(50 50) scale(${grow[0]}) translate(-50 -${grow[1]})`}>{shown}</g> : shown;
+  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={pictureLookName(look ? `${base}~${look}` : base)} style={{ display: 'block', margin: '0 auto' }}>{drawn}</svg>;
 }
 // Another look of an icon, named after a tilde (pass MP), as a shape's look is (shape:triangle~thin): block~wood is the wooden block
 // of the material and magnet lessons, its grain on every face; baby~asleep (pass MV) is the baby asleep, for the lines that say a baby
@@ -1796,7 +1812,7 @@ const ICON_LOOKS = {
   'drawing~rain': ({ dk }) => <g><rect x="6" y="6" width="88" height="88" rx="5" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g transform="translate(50 50) scale(1.12) translate(-50 -50)"><path d="M24 40 Q22 30 32 30 Q36 20 46 24 Q54 18 60 26 Q70 26 68 36 Q72 42 64 44 L28 44 Q20 44 24 40 Z" fill="#B9C2C9" stroke="#6B716A" strokeWidth="2.5" strokeLinejoin="round" /><path d="M30 52 L28 58 M42 52 L40 58 M54 52 L52 58" stroke="#4A86C5" strokeWidth="3" strokeLinecap="round" /><path d="M48 70 Q62 54 76 70 Z" fill="#D9473B" stroke="#8E3A27" strokeWidth="2.5" strokeLinejoin="round" /><path d="M62 70 L62 82 Q62 86 58 84" fill="none" stroke="#6B716A" strokeWidth="2.5" strokeLinecap="round" /></g></g>,
   // A stop sign (pass NC): a red sign of eight sides with a white rim and STOP, on a grey post, for the writing lessons' sign that tells a
   // car to stop at the corner; the app's stop on its own is the raised hand the safety lessons teach.
-  'sign~stop': ({ dk }) => <g><rect x="47" y="70" width="6" height="26" rx="1.5" fill="#8A9086" stroke={dk ? '#E9EEF0' : '#5C6355'} strokeWidth="2" /><path d="M61.5 12.3 L79.7 30.5 L79.7 56.5 L61.5 74.7 L38.5 74.7 L20.3 56.5 L20.3 30.5 L38.5 12.3 Z" fill="#D9473B" stroke={dk ? '#F4A99F' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /><path d="M59.8 16.5 L75.5 32.2 L75.5 54.8 L59.8 70.5 L40.2 70.5 L24.5 54.8 L24.5 32.2 L40.2 16.5 Z" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinejoin="round" /><text x="50" y="49.5" textAnchor="middle" fontSize="15" fontWeight="800" fill="#FFFFFF" style={{ fontFamily: 'inherit', letterSpacing: 0.5 }}>STOP</text></g>,
+  'sign~stop': ({ dk }) => <g><rect x="47" y="70" width="6" height="26" rx="1.5" fill="#8A9086" stroke={dk ? '#E9EEF0' : '#5C6355'} strokeWidth="2" /><path d="M61.5 12.3 L79.7 30.5 L79.7 56.5 L61.5 74.7 L38.5 74.7 L20.3 56.5 L20.3 30.5 L38.5 12.3 Z" fill="#D9473B" stroke={dk ? '#F4A99F' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /><path d="M59.8 16.5 L75.5 32.2 L75.5 54.8 L59.8 70.5 L40.2 70.5 L24.5 54.8 L24.5 32.2 L40.2 16.5 Z" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinejoin="round" /><text x="50" y="49.5" textAnchor="middle" fontSize="15" fontWeight="800" textLength="40" lengthAdjust="spacingAndGlyphs" fill="#FFFFFF" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['sign~stop'][0]}</text></g>,
   'drawing~bedtime': ({ dk }) => <g><rect x="6" y="6" width="88" height="88" rx="5" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g transform="translate(50 50) scale(1.12) translate(-50 -50)"><path d="M30 18 A12 12 0 1 1 30 42 A20 20 0 0 0 30 18 Z" fill="#F2C14E" stroke="#94741A" strokeWidth="2" strokeLinejoin="round" /><path d="M62 22 L64 27 L69 27 L65 30 L67 35 L62 32 L57 35 L59 30 L55 27 L60 27 Z" fill="#F2C14E" stroke="#94741A" strokeWidth="1.5" strokeLinejoin="round" /><path d="M20 78 L20 56 M80 78 L80 64 M20 64 L80 64 L80 72 L20 72" fill="none" stroke="#8B5A2B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /><rect x="22" y="57" width="12" height="7" rx="3" fill="#FFFFFF" stroke="#6B716A" strokeWidth="2" /><rect x="34" y="64" width="44" height="6" fill="#4A86C5" /></g></g>,
   // Hold a book and Which way we read (pass NP, PK3 and PK4 III.E.3): the front of a picture book (its name on a gold band and a picture
   // of a sun over a hill, its spine at the side, drawn a fifth larger than the box's plain book so the sun reads on an answer tile), the
@@ -1808,6 +1824,132 @@ const ICON_LOOKS = {
   'page~start': ({ dk }) => <PageDot dk={dk} cx={29} cy={30} />,
   'page~end': ({ dk }) => <PageDot dk={dk} cx={70} cy={66} />,
   'arrow~down': ({ dk }) => <g transform="rotate(90 50 50)"><path d="M12 40 L56 40 L56 24 L88 50 L56 76 L56 60 L12 60 Z" fill="#4CAF6E" stroke={dk ? '#9FDDB5' : '#1F5A36'} strokeWidth="3" strokeLinejoin="round" /></g>,
+  // Words all around us and Print tells us something (pass NR, PK3 and PK4 III.E.1): things with words on them, drawn by the app since
+  // each carries the word a question depends on, in the style of the stop sign and the books (thick outlines, flat fills): a white milk
+  // carton with a gabled top and a blue band, MILK across it; a wooden classroom cubby on a shelf, a little coat inside, with a name card
+  // above it that says Sam; a shop's wooden door with a glass window and a small sign hanging in it that says OPEN; a green and yellow box
+  // of crayons, closed (since round one's lesson reads, pass NR: its line says even before we open the box), its lid on top and three
+  // crayons printed across its front in red, blue and yellow, CRAYONS across its band; and a small paper note, folded once, that
+  // says I love you with a red heart, or I like dogs with none. Each word is set in the app's own type (inherit), bold, at the stop sign's
+  // 15 units or more (MILK and Sam 17, the notes 18), CRAYONS at 14 so its seven letters fit the box's whole width. Its words are
+  // DRAWN_WORDS's (src/logic.mjs), the one table the rules test reads them from too, and since round one's screen read (pass NR) each is
+  // fitted to its room (textLength, lengthAdjust spacingAndGlyphs), a little under its width in the face the test browser draws (Inter),
+  // so it stays inside its outline in any face: a phone draws in its own, and in DejaVu Sans Bold MILK ran 47.2 units in the carton's 45
+  // and Sam 41.4 in the card's 39. On an answer tile these drawings draw at a drawing's size (choiceFace), 84 pixels, 69 on a short
+  // phone, where until then they drew at 64 and 52: so a word's type is about 9.7 pixels on a short phone's tile (CRAYONS, 14 units at
+  // 69) to 15 on a full one (the notes, 18 at 84), sizes of type and not heights, a capital standing about seven tenths of its type.
+  // Every outer edge is an outline that reads 3 to 1 or better on the light theme's resting, right, wrong and ruled-out tiles and
+  // on the dark theme's paper (#D9E6DC), and on a dark tile (dk) a light one that reads the same on the dark theme's four tiles.
+  'milk~carton': ({ dk }) => <g><rect x="44" y="9" width="12" height="9" rx="1.5" fill="#F4F7FA" stroke={dk ? '#B9D3E6' : '#4A6A86'} strokeWidth="3" strokeLinejoin="round" /><path d="M26 36 L50 17 L74 36 Z" fill="#E6EDF3" stroke={dk ? '#B9D3E6' : '#4A6A86'} strokeWidth="3" strokeLinejoin="round" /><rect x="26" y="36" width="48" height="56" fill="#FFFFFF" /><rect x="26" y="50" width="48" height="23" fill="#2F6FB0" /><rect x="26" y="36" width="48" height="56" fill="none" stroke={dk ? '#B9D3E6' : '#4A6A86'} strokeWidth="3" strokeLinejoin="round" /><text x="50" y="67.5" textAnchor="middle" fontSize="17" fontWeight="800" textLength="40" lengthAdjust="spacingAndGlyphs" fill="#FFFFFF" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['milk~carton'][0]}</text></g>,
+  'cubby~name': ({ dk }) => <g><rect x="16" y="36" width="68" height="56" rx="2" fill="#E2B97A" stroke={dk ? '#F0D3A8' : '#8B5A2B'} strokeWidth="3" strokeLinejoin="round" /><rect x="23" y="43" width="54" height="42" rx="1" fill="#9C6A38" stroke="#7A4E24" strokeWidth="1.5" /><circle cx="50" cy="48" r="2.2" fill="#5A5F55" /><path d="M50 49 L41 53 L34 66 L38 68 L41 62 L41 82 L59 82 L59 62 L62 68 L66 66 L59 53 Z" fill="#4A86C5" stroke="#1F4B7A" strokeWidth="2" strokeLinejoin="round" /><path d="M50 50 L50 82" stroke="#1F4B7A" strokeWidth="1.5" /><rect x="29" y="12" width="42" height="22" rx="2.5" fill="#FFFDF5" stroke={dk ? '#F0D3A8' : '#8B5A2B'} strokeWidth="3" /><text x="50" y="28.5" textAnchor="middle" fontSize="17" fontWeight="800" textLength="34" lengthAdjust="spacingAndGlyphs" fill="#24291F" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['cubby~name'][0]}</text></g>,
+  'door~open': ({ dk }) => <g><rect x="15" y="5" width="70" height="91" rx="2" fill="#A9743F" stroke={dk ? '#E2B97A' : '#6E4A26'} strokeWidth="3" strokeLinejoin="round" /><rect x="21" y="11" width="58" height="44" rx="1.5" fill="#CFEAF7" stroke="#6E4A26" strokeWidth="2.5" /><path d="M36 26 L50 15 L64 26" fill="none" stroke="#5A5F55" strokeWidth="1.6" strokeLinejoin="round" /><circle cx="50" cy="15" r="1.8" fill="#5A5F55" /><rect x="25" y="25" width="50" height="22" rx="2.5" fill="#FFFFFF" stroke="#1E6B3C" strokeWidth="2.2" /><text x="50" y="41.5" textAnchor="middle" fontSize="15" fontWeight="800" textLength="40" lengthAdjust="spacingAndGlyphs" fill="#1E6B3C" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['door~open'][0]}</text><rect x="23" y="62" width="54" height="27" rx="1" fill="none" stroke="#6E4A26" strokeWidth="2" opacity="0.55" /><circle cx="76" cy="58.5" r="3.4" fill="#E0B44C" stroke="#8A6A1F" strokeWidth="1.2" /></g>,
+  'box~crayons': ({ dk }) => <g><path d="M9 38 L17 24 L83 24 L91 38 Z" fill="#E2B43A" stroke={dk ? '#F7DC8A' : '#7A5A12'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 31.5 Q50 28.5 70 31.5" fill="none" stroke="#7A5A12" strokeWidth="2" strokeLinecap="round" /><rect x="9" y="38" width="82" height="55" rx="3" fill="#F4C53D" stroke={dk ? '#F7DC8A' : '#7A5A12'} strokeWidth="3" strokeLinejoin="round" />{[[20, '#D9473B', '#7A2620'], [41, '#4A86C5', '#2F5F91'], [62, '#F2C14E', '#94741A']].map(([x, fill, edge]) => <path key={x} d={`M${x} 42.5 H${x + 13} L${x + 18} 45.5 L${x + 13} 48.5 H${x} Z`} fill={fill} stroke={edge} strokeWidth="1.5" strokeLinejoin="round" />)}<rect x="10.5" y="52" width="79" height="25" fill="#2E7048" /><text x="50" y="69.5" textAnchor="middle" fontSize="14" fontWeight="800" textLength="68" lengthAdjust="spacingAndGlyphs" fill="#FFFFFF" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['box~crayons'][0]}</text></g>,
+  'note~love': ({ dk }) => <g><rect x="12" y="18" width="76" height="64" rx="2.5" fill="#FFFDF5" stroke={dk ? '#C9D3CE' : '#6F7A76'} strokeWidth="3" /><line x1="13.5" y1="50" x2="86.5" y2="50" stroke="#D3D8D4" strokeWidth="1.5" /><text x="50" y="42.5" textAnchor="middle" fontSize="18" fontWeight="800" textLength="46" lengthAdjust="spacingAndGlyphs" fill="#24291F" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['note~love'][0]}</text><text x="41" y="72.5" textAnchor="middle" fontSize="18" fontWeight="800" textLength="32" lengthAdjust="spacingAndGlyphs" fill="#24291F" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['note~love'][1]}</text><path d="M70 75 C62 69 60 65 62 62 C64 59 68 59 70 62 C72 59 76 59 78 62 C80 65 78 69 70 75 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="1.5" strokeLinejoin="round" /></g>,
+  'note~dogs': ({ dk }) => <g><rect x="12" y="18" width="76" height="64" rx="2.5" fill="#FFFDF5" stroke={dk ? '#C9D3CE' : '#6F7A76'} strokeWidth="3" /><line x1="13.5" y1="50" x2="86.5" y2="50" stroke="#D3D8D4" strokeWidth="1.5" /><text x="50" y="42.5" textAnchor="middle" fontSize="18" fontWeight="800" textLength="40" lengthAdjust="spacingAndGlyphs" fill="#24291F" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['note~dogs'][0]}</text><text x="50" y="72.5" textAnchor="middle" fontSize="18" fontWeight="800" textLength="42" lengthAdjust="spacingAndGlyphs" fill="#24291F" style={{ fontFamily: 'inherit' }}>{DRAWN_WORDS['note~dogs'][1]}</text></g>,
+  // Clouds to count in a day sky (pass NR, round three's screen read, its SHOULD CONSIDER 5): That reminds me!'s line 2 says Owl could not
+  // sleep in the day, so she counted the clouds, and showed one small gray cloud; here three white clouds, two above and one below, the
+  // house's own cloud shape, sit in a light blue day sky, as line 3 marks the night with the moon. The sky's edge is a deep blue (#2F66A8),
+  // 3 to 1 or better on the light paper and the dark theme's paper (#D9E6DC), and a light blue (#9CC7F0) on a dark tile; each cloud's
+  // gray edge (#7A8076) shows it on the pale sky. The sky is drawn a little smaller than its box, so beside the owl it paints about as much
+  // as she does (round three's screen read measured every pair of these lessons within 1.0 to 1.6 times in painted area).
+  'cloud~three': ({ dk }) => (
+    <g>
+      <rect x="15" y="22.5" width="70" height="55" rx="8" fill="#CFEAF7" stroke={dk ? '#9CC7F0' : '#2F66A8'} strokeWidth="3" />
+      {[[34, 38], [66, 37], [50, 61]].map(([x, y]) => <path key={x} transform={`translate(${x} ${y}) scale(0.36) translate(-50 -41.5)`} d="M28 66a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#FFFFFF" stroke="#7A8076" strokeWidth="5.5" strokeLinejoin="round" />)}
+    </g>
+  ),
+  // The dog sitting up (pass NR, round three's screen read, its MUST FIX 2): Words all around us's dog, the whole dog in the house's dog's own
+  // colors and face (its tan coat, its brown ears hanging beside its head, its cream muzzle, eyes, nose and smile), sitting up with its front
+  // legs straight, four paws in a row and its tail curled at its side, so it stands about as tall as the print drawings beside it. In
+  // "Which one has no words on it?" the dog's face was 36 pixels tall in a 69-pixel tile beside print drawings 55 to 63 tall, so the answer
+  // was the one short picture; it stands about 63 tall here (what a tile draws is read from its painted ink by tests/e2e/tile-edges.mjs).
+  // Its outer edge is the dog's own: the darker tan (#8A5A2E) on light tiles and paper, and on a dark tile the coat alone, with the ears'
+  // light edge (#D9B48A), as the dog's face is drawn; the front legs' lines are the darker tan in both themes, since they lie inside its
+  // outline (on a dark tile they vanished into the coat).
+  'dog~sit': ({ dk }) => (
+    <g>
+      {/* Its tail, curled up at its right side */}
+      <path d="M71 89 C83 90 89 81 87 71 C86.2 67 81.6 67.4 82 71.2 C82.8 77.4 78.6 82 71 82 Z" fill="#C98B52" stroke={dk ? 'none' : '#8A5A2E'} strokeWidth="2.5" strokeLinejoin="round" />
+      {/* Its body, sitting, wider at the haunches, and its cream chest */}
+      <path d="M38.5 43 C30 55 24 70 24 87 Q24 94.5 31.5 94.5 L68.5 94.5 Q76 94.5 76 87 C76 70 70 55 61.5 43 Z" fill="#C98B52" stroke={dk ? 'none' : '#8A5A2E'} strokeWidth="2.5" strokeLinejoin="round" />
+      <ellipse cx="50" cy="60" rx="9.5" ry="12.5" fill="#F1D3B0" />
+      {/* Its two front legs, straight down */}
+      <rect x="40" y="62" width="8.5" height="32" rx="4.25" fill="#C98B52" stroke="#8A5A2E" strokeWidth="2" />
+      <rect x="51.5" y="62" width="8.5" height="32" rx="4.25" fill="#C98B52" stroke="#8A5A2E" strokeWidth="2" />
+      {/* Four cream paws in a row: the back paws at its sides, the front paws between them */}
+      {[[30.5, 93.5, 6.5, 3.6], [69.5, 93.5, 6.5, 3.6], [44.2, 94, 5.6, 3.4], [55.8, 94, 5.6, 3.4]].map(([cx, cy, rx, ry]) => <ellipse key={cx} cx={cx} cy={cy} rx={rx} ry={ry} fill="#F1D3B0" stroke={dk ? '#C98B52' : '#8A5A2E'} strokeWidth="2" />)}
+      {/* Its ears hanging beside its head, then its head, muzzle, eyes, nose and smile, as the dog's face draws them */}
+      <ellipse cx="32.5" cy="27" rx="8" ry="14.6" fill="#7A4E2A" stroke={dk ? '#D9B48A' : 'none'} strokeWidth="2" transform="rotate(18 32.5 27)" />
+      <ellipse cx="67.5" cy="27" rx="8" ry="14.6" fill="#7A4E2A" stroke={dk ? '#D9B48A' : 'none'} strokeWidth="2" transform="rotate(-18 67.5 27)" />
+      <circle cx="50" cy="26" r="19" fill="#C98B52" stroke={dk ? 'none' : '#8A5A2E'} strokeWidth="2.5" />
+      <ellipse cx="50" cy="35.5" rx="10.5" ry="7.6" fill="#F1D3B0" />
+      <circle cx="42.6" cy="22.5" r="3" fill="#2E2E2E" /><circle cx="57.4" cy="22.5" r="3" fill="#2E2E2E" />
+      <ellipse cx="50" cy="31.5" rx="4.6" ry="3.4" fill="#2E2E2E" />
+      <path d="M50 34.5v3.6M45.4 39q4.6 3.6 9.2 0" fill="none" stroke="#2E2E2E" strokeWidth="2" strokeLinecap="round" />
+    </g>
+  ),
+  // The teacher with empty hands (pass NR, round one's lesson reads): Print tells us something's line 8 says his teacher writes Leo's words
+  // down, and its who bank says "Your teacher wrote a note", where the teacher who holds a book open toward us, reading, read against the
+  // words. He is drawn whole as the teacher is everywhere else, every line of his drawing but the book's (the rules test holds them, so his
+  // outline is his own and reads on every tile and paper as his does), his two hands resting together on his front, as the sleeping baby's
+  // rest on hers, edged in his ears' brown. Its name stays the teacher's own.
+  'teacher~hands': ({ dk, uid }) => (
+    <g>
+      <defs>
+        <clipPath id={`${uid}-body`}><path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" /></clipPath>
+        <clipPath id={`${uid}-face`}><path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.56 42.5 39.28 46.2C41.68 49.6 47 51.6 50 51.6C53 51.6 58.32 49.6 60.72 46.2C63.44 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" /></clipPath>
+      </defs>
+      {/* His neck, and the shadow under his chin */}
+      <path d="M43.6 42C43.6 49 43.2 54 42.2 58.4L57.8 58.4C56.8 54 56.4 49 56.4 42Z" fill="#8D5524" />
+      <path d="M43.6 42L56.4 42L56.4 52.2Q50 57.2 43.6 52.2Z" fill="#713F17" />
+      {/* A green sweater, its far side in shade, and the white collar of his shirt */}
+      <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="#3E8E6E" />
+      <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L81.6 101.6C81.8 90 81.2 80 82.98 72.6C81.08 67.6 74.6 63 70 60Z" fill="#327459" /></g>
+      {/* On a dark tile (pass ND, EARMARKS A89) the sweater read 2.81 to 1 on a right answer's tile and its edge 1.74, his hair's edge 1.1
+          and his ears' 1.0 to 1.3; a pale green edge, closed along the foot of the drawing, and a lighter brown on his hair's, his ears' and
+          his face's edges read 3.37 or better. */}
+      <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L11.6 99.3L88.4 99.3L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="none" stroke={dk ? '#8FC79B' : '#2C6A51'} strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M50 59.2L43.4 55.6L40.8 60.6L46.4 64.6Z" fill="#F4F6F7" stroke="#C9D0D5" strokeWidth="1.1" strokeLinejoin="round" />
+      <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 59.2L43.4 55.6L40.8 60.6L46.4 64.6Z" fill="#F4F6F7" stroke="#C9D0D5" strokeWidth="1.1" strokeLinejoin="round" /></g>
+      {/* His ears and face */}
+      <g>
+        <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M34.4 31C32.4 30.8 32 33.4 33.4 35" fill="none" stroke="#713F17" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+      <g transform="matrix(-1 0 0 1 100 0)">
+        <g>
+          <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M34.4 31C32.4 30.8 32 33.4 33.4 35" fill="none" stroke="#713F17" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      </g>
+      <path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.56 42.5 39.28 46.2C41.68 49.6 47 51.6 50 51.6C53 51.6 58.32 49.6 60.72 46.2C63.44 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.1" />
+      {/* Short, close-curled hair, with a soft shadow under the hairline */}
+      <g clipPath={`url(#${uid}-face)`}><path d="M50 21.4C46.4 21.4 42.4 21 39.4 21.8C36.8 22.8 35.4 25.4 34.6 30.2C33 24.4 33.2 18 37 13.8C40 10.4 44.8 8.6 50 8.6C55.2 8.6 60 10.4 63 13.8C66.8 18 67 24.4 65.4 30.2C64.6 25.4 63.2 22.8 60.6 21.8C57.6 21 53.6 21.4 50 21.4Z" fill="#713F17" opacity="0.6" /></g>
+      <path d="M50 19.8C46.4 19.8 42.4 19.4 39.4 20.2C36.8 21.2 35.4 23.8 34.6 28.6C33 22.8 33.2 16.4 37 12.2C40 8.8 44.8 7 50 7C55.2 7 60 8.8 63 12.2C66.8 16.4 67 22.8 65.4 28.6C64.6 23.8 63.2 21.2 60.6 20.2C57.6 19.4 53.6 19.8 50 19.8Z" fill="#231610" stroke={dk ? '#A8876E' : '#46301F'} strokeWidth="1.2" strokeLinejoin="round" />
+      <path d="M40.2 13.6 q 1.4 -1.2 2.8 0M45 10.8 q 1.4 -1.2 2.8 0M51.4 10.4 q 1.4 -1.2 2.8 0M56.8 12.6 q 1.4 -1.2 2.8 0M37.8 18.4 q 1.2 -1.2 2.6 -0.4M59.6 18 q 1.4 -0.8 2.6 0.4M47.6 15 q 1.4 -1.2 2.8 0M53.4 15.6 q 1.4 -1.2 2.8 0M42.2 16.6 q 1.4 -1.2 2.8 0" fill="none" stroke="#4A3423" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Eyes, brows, nose and a wide smile */}
+      <g>
+        <ellipse cx="43.8" cy="32.6" rx="2.5" ry="1.75" fill="#1E120B" />
+        <path d="M46.43 32.3Q43.8 29.45 40.55 31.6" fill="none" stroke="#120B07" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="42.95" cy="31.95" r="0.75" fill="#FFFFFF" />
+      </g>
+      <g>
+        <ellipse cx="56.2" cy="32.6" rx="2.5" ry="1.75" fill="#1E120B" />
+        <path d="M53.58 32.3Q56.2 29.45 59.45 31.6" fill="none" stroke="#120B07" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="55.35" cy="31.95" r="0.75" fill="#FFFFFF" />
+      </g>
+      <path d="M46.8 27.8Q43.8 26.6 40.8 28.3" fill="none" stroke="#231610" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <g transform="matrix(-1 0 0 1 100 0)"><path d="M46.8 27.8Q43.8 26.6 40.8 28.3" fill="none" stroke="#231610" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></g>
+      <path d="M50.9 34.8Q52.7 38.6 50.7 40.3Q49.7 40.8 48.6 40.2" fill="none" stroke="#713F17" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M46 43.4Q50 44.3 54 43.4Q53.2 47.4 50 47.6Q46.8 47.4 46 43.4Z" fill="#4E1A14" />
+      <path d="M46.72 43.75Q50 44.55 53.28 43.75L52.96 44.85Q50 45.5 47.04 44.85Z" fill="#FFFFFF" />
+      {/* His two hands resting together on his front, with no book, his ears' brown edge around them */}
+      <path d="M37.6 84.2C37.2 80.4 41.8 78.6 46.4 79.4C50.4 80.2 51.8 83.6 50.2 86.2C48.4 89.2 38.4 89.2 37.6 84.2Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.2" strokeLinejoin="round" />
+      <g transform="matrix(-1 0 0 1 100 0)"><path d="M37.6 84.2C37.2 80.4 41.8 78.6 46.4 79.4C50.4 80.2 51.8 83.6 50.2 86.2C48.4 89.2 38.4 89.2 37.6 84.2Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.2" strokeLinejoin="round" /></g>
+      <path d="M40.2 82.4Q43.8 81.4 47.6 82.2M40 85.4Q43.6 84.6 47.8 85.4" fill="none" stroke="#713F17" strokeWidth="1.1" strokeLinecap="round" />
+      <g transform="matrix(-1 0 0 1 100 0)"><path d="M40.2 82.4Q43.8 81.4 47.6 82.2M40 85.4Q43.6 84.6 47.8 85.4" fill="none" stroke="#713F17" strokeWidth="1.1" strokeLinecap="round" /></g>
+    </g>
+  ),
 };
 
 // Grade 1 geometry (pass KY, TEKS 1.6A to 1.6D): the rhombus, the hexagon and the trapezoid join the four kindergarten shapes,
@@ -2340,8 +2482,21 @@ const SHORT_PICTURES = 0.82;
 // The picture to match, where a question's answers are pictures of its kind (pass NC, EARMARKS A84): drawn at the answer tile's own base
 // size for that kind, scaled as the tiles are, so the answer that is the same is drawn the same size as it (choiceFace's sizes).
 const MATCH_SIZE = { pic: 72, art: 84, item: 64, icon: 64 };
-// A child's drawing to match draws at a drawing's tile size, 84, as choiceFace draws it on an answer tile (round one's code check, pass NC).
-const matchSize = (v) => (v && v.kind === 'icon' && /^drawing~/.test(String(v.name)) ? 84 : MATCH_SIZE[v && v.kind]);
+// A child's drawing to match draws at a drawing's tile size, 84, as choiceFace draws it on an answer tile (round one's code check, pass NC),
+// and since pass NR (round one's screen read) so does a drawing that prints a word (DRAWN_WORDS), or any picture beside answers one of
+// which prints a word (printTiles), as choiceFace draws them all.
+// A thing with no words drawn larger on a print question's tiles (pass NR, round three's screen read, its MUST FIX 2). In plain terms: every
+// tile of a question with a print drawing draws its picture at one size (84 pixels, 69 on a short phone), but the ink inside differed, so in
+// Words all around us's "Which one has a word on it?" and "Which one has no words on it?" the answer was the one tall picture or the one
+// short picture on all 2,000 of seeds 1 to 2,000 (the print drawings' ink 55 to 63 pixels tall at 69, the tree, the ball and the dog's face
+// 36 to 48). The tree draws 1.26 times larger there (61 pixels tall at 69), its ink's middle (53, from 18 to 88) at the box's middle, and the
+// dog is the whole dog sitting up (dog~sit, about 63 tall); the ball keeps its size, the one short thing of the three, since with all three
+// as tall as the print drawings the cue turns around: worked out from the measured ink, the answer would be the one picture against its
+// kind (the tallest where the question asks which one has no words, the shortest where it asks for a word) on 62 percent of screens. Each way,
+// by the ink's height and by its painted area, the answer is now the one tallest or shortest, largest or smallest about a third of the time,
+// as chance gives (tests/e2e/tile-edges.mjs reads each tile's painted ink and holds it).
+const PRINT_TILE_GROW = { tree: [1.26, 53] };
+const matchSize = (v, printTiles = false) => (v && v.kind === 'icon' && (printTiles || /^drawing~/.test(String(v.name)) || DRAWN_WORDS[v.name]) ? 84 : MATCH_SIZE[v && v.kind]);
 // The height read is the height a person sees (seenHeight): in a frame taller than the screen (the claude.ai preview runs the app in a
 // page-tall frame), the screen's own height, so the preview on a phone draws the short phone's layout too (round one's code check, pass
 // MZ). It is decided at the height first seen at a width and kept while the width and the screen's own height stay and the height moves
@@ -4401,9 +4556,15 @@ const SENTENCE_PARTS = new RegExp('(' + SENTENCE_BREAK.source + ')');
 // Since round two's screen read the and before a run's last letter may be held to it by a no-break space, as keepLoneLetters holds a lesson
 // line's lone letter to the word before it ("j, a and m" lost its run on nine lesson sentences, and "j, a" ended a row at 320, read as a).
 const SPELLED_RUN = /((?<![A-Za-z'])[A-Za-z](?:(?:, (?:and[ \u00A0])?| and[ \u00A0])[A-Za-z](?![A-Za-z'])){2,}|\bI spy\b)/;
+// A word kept whole in running words (WHOLE_WORD), the one pattern partsWhole and wholeHyphens split by: a hyphenated word, and since round
+// three's screen read of pass NR (its SHOULD CONSIDER 3) a pre-K grade with its number, "pre-K 3" or "Pre-K 4", with what is joined to
+// it ("(Pre-K 3),"). Kept whole as a hyphenated word alone, it still broke after its hyphen or before its number: Since you last looked
+// read "pre- / K 4 math" at 320 by 568 in both themes, so the grade is one kept word wherever an educator's sentence prints it (the
+// report's lines, View progress, the Practice Reviews card and an Action Item, the weekly note, the summary and Who Needs Help).
+const WHOLE_WORD = /(\S*[Pp]re-K \d+\S*|\S+-\S+)/;
 function partsWhole(text, keyPrefix = 'p') {
   const s = String(text); const out = []; let n = 0;
-  const hyphens = (t) => String(t).split(/(\S+-\S+)/).forEach((w, i) => { if (!w) return; out.push(i % 2 && w.length <= 22 ? <span key={`${keyPrefix}-h${n++}`} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w); });
+  const hyphens = (t) => String(t).split(WHOLE_WORD).forEach((w, i) => { if (!w) return; out.push(i % 2 && w.length <= 22 ? <span key={`${keyPrefix}-h${n++}`} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w); });
   const plain = (t) => String(t).split(SPELLED_RUN).forEach((w, i) => { if (!w) return; if (!(i % 2) || w.length > 24) { hyphens(w); return; }
     out.push(<span key={`${keyPrefix}-l${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{w}</span>); });
   for (const piece of s.split(SENTENCE_PARTS)) {
@@ -4460,13 +4621,15 @@ function inlineRich(text, keyPrefix) {
 // words are the note's own, generated or edited. Parts split at blank lines, with a short line between them; a part that
 // opens with a line ending in a colon is a small heading with its bulleted items under it, each item's bold title on a
 // line of its own and the rest of it smaller beneath; Next up names its module large and bold. Anything else stays a plain
-// centered paragraph, so a note the educator rewrote still reads.
+// centered paragraph, so a note the educator rewrote still reads. Since round three's screen read of pass NR its words keep a hyphenated word
+// and a pre-K grade with its number whole (wholeHyphens), as the report's other sentences do, so "from pre-K 4 math" never breaks inside.
 function WeeklyNoteBody({ text }) {
   const dark = C.mode === 'dark';
   const head = dark ? '#1E5A45' : C.green; const soft = dark ? '#2E4A3E' : C.muted; const rule = dark ? 'rgba(30, 90, 69, 0.5)' : C.line;
   const parts = String(text || '').split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
-  const bold = (s) => s.split(/\*\*(.+?)\*\*/g).map((x, i) => (i % 2 ? <strong key={i}>{x}</strong> : x));
+  const bold = (s) => s.split(/\*\*(.+?)\*\*/g).map((x, i) => (i % 2 ? <strong key={i}>{wholeHyphens(x)}</strong> : <React.Fragment key={i}>{wholeHyphens(x)}</React.Fragment>));
   const heading = { margin: '0 0 8px', fontSize: 12.5, fontWeight: 700, letterSpacing: 0.9, textTransform: 'uppercase', color: head };
+  const headingAlone = (p) => !/\n/.test(p) && /^[^•*]{1,40}:$/.test(p);   // one short line ending in a colon, "Practice reviews:" (pass NR)
   return (
     <div style={{ textAlign: 'center' }}>
       {parts.map((part, i) => {
@@ -4481,14 +4644,19 @@ function WeeklyNoteBody({ text }) {
               return (
                 <div key={j} style={{ margin: j ? '10px 0 0' : 0 }}>
                   <p style={{ margin: 0, fontSize: 16.5, fontWeight: 700 }}>{m ? m[1] : bold(t)}</p>
-                  {rest && <p style={{ margin: '2px auto 0', maxWidth: 460, fontSize: 14, lineHeight: 1.5, color: soft }}>{rest.charAt(0).toUpperCase() + rest.slice(1)}</p>}
+                  {rest && <p style={{ margin: '2px auto 0', maxWidth: 460, fontSize: 14, lineHeight: 1.5, color: soft }}>{wholeHyphens(rest.charAt(0).toUpperCase() + rest.slice(1))}</p>}
                 </div>
               );
             })}
           </>
         );
+        // A heading alone in its part, as "Practice reviews:" is (each review is a paragraph of its own), is drawn as the note's other small
+        // headings are, and the paragraph after it follows with no rule between (pass NR, the screen read's SHOULD CONSIDER 6): it was a
+        // plain line between two rules.
+        else if (headingAlone(part)) inner = <p data-note-heading="" style={{ ...heading, margin: 0 }}>{part.replace(/:$/, '')}</p>;
         else inner = <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6 }}>{bold(part)}</p>;
-        return <div key={i}>{i > 0 && <div aria-hidden="true" style={{ width: '38%', maxWidth: 180, height: 2, borderRadius: 1, background: rule, margin: '16px auto' }} />}{inner}</div>;
+        const underHeading = i > 0 && headingAlone(parts[i - 1]);
+        return <div key={i}>{i > 0 && !underHeading && <div aria-hidden="true" style={{ width: '38%', maxWidth: 180, height: 2, borderRadius: 1, background: rule, margin: '16px auto' }} />}{underHeading && <div aria-hidden="true" style={{ height: 8 }} />}{inner}</div>;
       })}
     </div>
   );
@@ -5634,8 +5802,8 @@ function saveBlob(name, blob) { const a = document.createElement('a'); a.href = 
 Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: titleCase(st.title), about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])), Object.fromEntries(Object.entries(MASTERY_STORIES).map(([id, st]) => [`mastery:${id}`, { title: st.title, about: st.about || '' }])));
 // The first-week tour: title, the element it points at (a data-tour name, or null), the sample screen it opens, where its card
 // sits, and the words. Where each card sits, in Mikey's words (passes DH, IT and JE), at every screen width the tour runs at:
-//   1 below-add: centered close under Add someone new, its top a little above Who needs help, so it sits by the glowing Add
-//     button (pass JW, Mikey, Chrome on a laptop: once a classroom had students it sat under Who needs help).
+//   1 below-add: centered close under Add someone new, its top a little above Who Needs Help, so it sits by the glowing Add
+//     button (pass JW, Mikey, Chrome on a laptop: once a classroom had students it sat under Who Needs Help).
 //   2 flush-right-low: against the right edge of the screen, near the bottom, over the sample lesson.
 //   3 over-life-by-backup: centered over the Backup classroom link, close above it, overlapping Practical Life Skills (pass JW,
 //     Mikey: in Chrome on a laptop it sat to the right of the link).
@@ -5644,7 +5812,7 @@ Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id,
 //   6 by-reading: on a laptop, to the left of the glowing Reading Lists card, over Wonder Questions (pass JF); in one column,
 //     on top of Science Experiments, close under Reading Lists.
 //   7 under-exp: overlapping Practical Life Skills, close by the glowing Experiments card.
-//   8 right-at-search: Who needs help at its top, the card right-aligned with its top level with the search box. Where the whole card would
+//   8 right-at-search: Who Needs Help at its top, the card right-aligned with its top level with the search box. Where the whole card would
 //     not fit below that (a 768-pixel laptop since pass MB's longer Who Needs Help sentence), it sits as low as the screen allows.
 //   9 bottom-right: the bottom right corner of the screen, so the top of the Story Log reads behind it.
 //  10 above: just above the transcript. Good as it is.
@@ -5663,10 +5831,11 @@ const TOUR = [
   // Pass LG (Mikey): a red Action Item link on a student's card when something needs the educator; Roger's popup shows it.
   ['Action Items', 'action-demo', null, 'under-action', <>When something needs your attention, an Action Item link appears.<br /><br />This feature is tied to written papers ready for your review and students who need help sooner rather than later.</>],
 ];
-// Emphasized titles: the sentences from logic wrap a lesson title in asterisks, shown here in bold.
+// Emphasized titles: the sentences from logic wrap a lesson title in asterisks, shown here in bold. Since round three's screen read of pass
+// NR their words keep a hyphenated word and a pre-K grade with its number whole (wholeHyphens), as the report's other sentences do.
 function Emphasized({ text }) {
   const parts = String(text).split(/(\*[^*]+\*)/g);
-  return <>{parts.map((p, i) => (/^\*[^*]+\*$/.test(p) ? <strong key={i}>{p.slice(1, -1)}</strong> : <span key={i}>{p}</span>))}</>;
+  return <>{parts.map((p, i) => (/^\*[^*]+\*$/.test(p) ? <strong key={i}>{wholeHyphens(p.slice(1, -1))}</strong> : <span key={i}>{wholeHyphens(p)}</span>))}</>;
 }
 // The Action Item popup (pass LG, Mikey): what needs the educator for one student, in whole sentences, with the one action the
 // app can offer (Move forward on a lesson that is stuck after its review) and an X. The border breathes red. The tour shows it
@@ -5721,7 +5890,7 @@ const practiceReviewsMore = (name) => 'Review quizzes are capped at two per day 
 const TOUR_SAMPLE_ROSTER = [['tour-alex', 'Alex', '1'], ['tour-frederick', 'Frederick', 'K'], ['tour-roger', 'Roger', '1'], ['tour-sydney', 'Sydney', 'K']]
   .map(([id, label, startGrade]) => ({ id, label, level: 'early', startGrade, active: true }));
 const TOUR_ROGER_ITEMS = { stuck: [{ moduleId: 'teen-numbers', sentence: '' }], writings: 0 };
-// Three made-up students for the tour's sample Who needs help view. Nothing is saved.
+// Three made-up students for the tour's sample Who Needs Help view. Nothing is saved.
 function sampleClass() {
   const one = sampleRecord();
   const day = (n, h) => { const d = new Date(); d.setDate(d.getDate() - n); d.setHours(h, 0, 0, 0); return d.toISOString(); };
@@ -8849,7 +9018,9 @@ function FitText({ children, size = 12, min = 9, style = null, className = undef
 // screen prints go through it: a pre-reader's voice card and closing card ("a grown- / up can help you" at 320), a reader's voices and
 // the educator's review, and since the third read a reader's options and the review's option chips (grade 2's courses are not read
 // aloud and meet early questions: "A hug from a grown- / up" at 320). A prop the voice says (text={wonder.prompt}) stays a string.
-function wholeHyphens(text) { return String(text).split(/(\S+-\S+)/).map((w, i) => (i % 2 ? <span key={i} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w)); }
+// Since round three's screen read of pass NR it splits by WHOLE_WORD, so a pre-K grade with its number ("pre-K 4") is one kept word too,
+// and the educator's sentences go through it: Since you last looked broke "pre- / K 4 math" at 320 by 568.
+function wholeHyphens(text) { return String(text).split(WHOLE_WORD).map((w, i) => (i % 2 ? <span key={i} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w)); }
 function WordFit({ children }) {
   const words = wholeHyphens(children);
   return <span data-word-fit="" style={{ display: 'block', width: '100%', fontSize: 'var(--tile-words, 20px)', whiteSpace: 'normal', overflowWrap: 'normal', hyphens: 'none', textWrap: 'balance' }}>{words}</span>;
@@ -12582,7 +12753,7 @@ function EduSphereScreens() {
   const [restoreNote, setRestoreNote] = useState('');              // the outcome of a restore, shown inside the restore card
   const [heardNote, setHeardNote] = useState(false);               // the "on silent" note, once anything has been spoken on this screen
   onSpoke = () => setHeardNote(true);
-  const [now, setNow] = useState(Date.now());                      // ticks each second while an educator is signed in, for the countdown
+  const [now, setNow] = useState(Date.now());                      // ticks each second while an educator is signed in, so the countdown redraws (it reads the clock, pass NR)
   const [autoBackupNote, setAutoBackupNote] = useState('');       // what the last automatic backup did
   useEffect(() => {
     if (screen !== 'backup') return;
@@ -12973,10 +13144,13 @@ function EduSphereScreens() {
   }
 
   // A backup file straight to the downloads folder (the one file an educator could once choose to keep up to date,
-  // keepOneFile, is gone; pass MN corrected this comment). Never during a walk-through. `changed` is set by every saved
-  // event and cleared here, so a sign-out with nothing new to save downloads nothing.
+  // keepOneFile, is gone; pass MN corrected this comment). Never during a walk-through. changedSinceBackup is set by every
+  // saved event and every change to the roster, the Wonder Questions and the Story Log, and cleared here, so a sign-out with
+  // nothing new to save downloads nothing (pass NR corrected its name here, which read `changed`). The reason says what called
+  // it: its two triggers, a student's Exit and an educator's sign-out, both pass 'sign-out', and nothing here reads it. Since
+  // pass NR it has no default, which was 'course', the backup when a course is finished that pass L removed (EARMARKS A156).
   const changedSinceBackup = useRef(false);
-  async function autoBackup(reason = 'course') {
+  async function autoBackup(reason) {
     const rec = recordRef.current || record;
     if (rec && rec.preview) return;
     if (!changedSinceBackup.current) return;
@@ -13273,7 +13447,10 @@ function EduSphereScreens() {
   // student's clock was written beside it: this said four and five quiet minutes, and the next effect's comment thirty seconds.)
   const EDUCATOR_SCREENS = ['educator-pick', 'educator-report', 'transcript', 'life-skills', 'wonder-review', 'backup', 'class-view', 'change-state', 'standards-map'];
   const onEducatorScreen = EDUCATOR_SCREENS.includes(screen);
-  const logoutIn = onEducatorScreen && lastActive && tourStep < 0 ? Math.max(0, Math.ceil((EDUCATOR_IDLE_MS - (now - lastActive)) / 1000)) : null;
+  // The seconds left are read from the clock itself (pass NR, the screen read's SHOULD CONSIDER 7). `now` is the tick's time, and the
+  // tick starts over at every touch (its effect reads lastActive), so it could lag a touch by up to a second and more, and the chip read
+  // "Logging out in 61" to "63" while the educator was busy; `now` still ticks each second, which redraws the chip.
+  const logoutIn = onEducatorScreen && lastActive && tourStep < 0 ? Math.max(0, Math.ceil((EDUCATOR_IDLE_MS - (Date.now() - lastActive)) / 1000)) : null;
   useEffect(() => {
     if (!onEducatorScreen) { setIdleWarning(false); return undefined; }
     setLastActive(Date.now());
@@ -13667,6 +13844,16 @@ function EduSphereScreens() {
         events.push(pass(p2, 12), pass(p2, 11), miss(y.id, 7, 2), miss(y.id, 6, 2), makeLoopBackEvent(y.id, p2, ago(6, 1)), pass(p2, 5, 2), miss(y.id, 4, 2), miss(y.id, 3, 2));
         seeded.never = y.id; seeded.neverPrereq = p2; }
     }
+    // Two lessons of one title on a student's own screens (round one's code read, SHOULD CONSIDER 6): grade 4's and grade 7's Texas
+    // history assigned beside the student's own courses (the newest course setting, so it is the one read); both The first Texans lessons
+    // starred days ago; and grade 7's Spanish and Mexican Texas, whose title grade 4's course has too, missed once yesterday. Its lesson
+    // page then carries its course line, and a round of it missed now loops back to grade 7's The first Texans, so the result screen's
+    // look-back line, memory checks and Look back button each name a lesson whose title another assigned lesson shares.
+    if (plan.twins) {
+      const T4 = 'first-texans'; const T7 = 'the-first-texans'; const S7 = 'spain-and-mexico-in-texas';
+      events.push(makeCoursesEnabledEvent([...new Set([...courseIds, 'history-4', 'history-7'])], ago(0)), pass(T4, 5), pass(T4, 4), pass(T7, 3), pass(T7, 2), miss(S7, 1));
+      seeded.twins = { first: [T4, T7], lesson: S7 };
+    }
     // A course finished a few days ago (pass MB): every module passed on two days, recently enough that no Quick Review is due,
     // so the walk can open Let's Read and read the course's story again.
     if (plan.finish && getCourse(plan.finish)) {
@@ -13804,7 +13991,7 @@ function EduSphereScreens() {
       if (where === 'under-action') {   // card 11 (pass LG, Mikey): centered close under Roger's Action Item popup, above it if the screen is short
         const under = r.bottom + 10; const fits = under + cardH <= B - 8;
         box = { left: clamp(r.left + r.width / 2 - cardW / 2, 12, flushRight), top: fits ? under : Math.max(T + 8, r.top - 10 - cardH), width: cardW };
-      } else if (where === 'below-add') {   // card 1 (pass JW, Mikey): centered close under Add someone new, over Who needs help when it shows
+      } else if (where === 'below-add') {   // card 1 (pass JW, Mikey): centered close under Add someone new, over Who Needs Help when it shows
         box = { left: clamp(r.left + r.width / 2 - cardW / 2, 12, flushRight), top: r.bottom + 10, width: cardW };
       } else if (where === 'flush-right-low') {   // card 2: against the right edge of the screen, near its bottom
         box = { left: flushRight, top: low, width: cardW };
@@ -14753,7 +14940,14 @@ function EduSphereScreens() {
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to overview</button>
         <p style={{ color: C.muted, margin: '-22px 0 0', fontSize: 14, textAlign: 'right' }}>Module {mod.order} of {course.modules.length}</p>
-        <h1 style={{ fontSize: 26, margin: '14px 0 22px', textAlign: 'center' }}>{titleCase(mod.title)}</h1>
+        {/* A title another lesson in the student's assigned courses shares (sharesTitle, pass NR, the screen read's SHOULD CONSIDER 8)
+            shows its course under it, as a sentence says it ("Fourth grade history", a band elective's subject first since round one's
+            code read, "Technology for grades 9 to 12"): Look back from grade 7's The first Texans opens grade 4's, and the page read "The
+            First Texans" with only "Module 1 of 4" to tell it from grade 7's "1 of 6". The click-through's section 8 walks it. */}
+        {(() => { const twinTitle = sharesTitle(mod.id, record ? enabledCourseIds(record.events) : []); return (<>
+          <h1 style={{ fontSize: 26, margin: twinTitle ? '14px 0 4px' : '14px 0 22px', textAlign: 'center' }}>{titleCase(mod.title)}</h1>
+          {twinTitle && <p data-lesson-course="" style={{ color: C.muted, margin: '0 0 22px', fontSize: 15, textAlign: 'center' }}>{capFirst(courseInSentence(course))}</p>}
+        </>); })()}
         <div style={{ ...card }} data-tour="lesson-card">
           {mod.lesson.paragraphs.map((t, i) => <RichText key={i} text={mod.lesson.prose ? t : formatTeachingText(t)} size={17} lineGap={12} />)}
           {/* Lesson pictures (pass JO): where a real picture teaches better than words, like the Liberty Bell's crack or the plant parts we eat. P serials live in art/stories with the story art. */}
@@ -14828,7 +15022,14 @@ function EduSphereScreens() {
     // Since pass NF (EARMARKS A98) the dots, the tens, an array and a clock are handed the paper flag too, as a lesson's own picture hands it
     // (PictureInner), and a look's dots take it from tile (LookGroup), so in More Info's boxes they draw as they do on a lesson's paper:
     // until then the tens and an array stayed the dark theme's mint there, the dots had no rim, and a clock drew a night-green face.
-    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} tile={!paper} paper={paper} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} paper={paper} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} tile={!paper} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} tile={!paper} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} tile={!paper} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)} tile={!paper} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} paper={paper} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} tile={!paper} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} paper={paper} /> : /^print:/.test(c) ? <PrintWords text={c.slice(6)} size={Math.round(22 * k)} paper={paper} /> : sentenceWritings(q.choices) ? <FitText size={Math.round(26 * k)} min={14} style={{ fontWeight: 700 }}>{c}</FitText> : /^[A-Za-z]$/.test(c) && loneLetterAmongPictures(q.choices) ? <span data-tile-letter="" style={{ display: 'block', fontSize: Math.round(LETTER_TILE * k), fontWeight: 700, lineHeight: 1.1 }}>{c}</span> : c);
+    // Since round one's screen read (pass NR) a drawing that prints a word (DRAWN_WORDS: the stop sign, the milk carton, the cubby, the shop's
+    // door, the crayon box, the two notes and the word card) draws at a drawing's size, 84 (69 on a short phone), as drawing~'s do: at 64,
+    // 52 on a short phone, its words were the smallest type on any screen, about 7 to 9 pixels. Every other picture of a question that has
+    // one draws at that size too (printTiles), so no answer stands out by its size: which one has no words on it puts the tree beside two
+    // such drawings, and Draw and tell's and Write to tell's which job the stop sign beside a book, a card and a list. Since round three's
+    // screen read the ink inside the box is read too: the tree draws larger on these tiles (PRINT_TILE_GROW), and the bank's dog sits up.
+    const printTiles = q.type === 'choice' && Array.isArray(q.choices) && q.choices.some((c) => /^icon:/.test(String(c)) && !!DRAWN_WORDS[String(c).slice(5)]);
+    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} tile={!paper} paper={paper} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} paper={paper} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} tile={!paper} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} tile={!paper} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} tile={!paper} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:drawing~/.test(c) || (printTiles && /^icon:/.test(c)) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)} grow={printTiles ? PRINT_TILE_GROW[c.slice(5)] || null : null} tile={!paper} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} paper={paper} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} tile={!paper} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} paper={paper} /> : /^print:/.test(c) ? <PrintWords text={c.slice(6)} size={Math.round(22 * k)} paper={paper} /> : sentenceWritings(q.choices) ? <FitText size={Math.round(26 * k)} min={14} style={{ fontWeight: 700 }}>{c}</FitText> : /^[A-Za-z]$/.test(c) && loneLetterAmongPictures(q.choices) ? <span data-tile-letter="" style={{ display: 'block', fontSize: Math.round(LETTER_TILE * k), fontWeight: 700, lineHeight: 1.1 }}>{c}</span> : c);
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
@@ -14914,7 +15115,7 @@ function EduSphereScreens() {
           {shownQ.prompt !== '' && readAlongOver(<p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance', scrollMarginTop: 12 }}>{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
-          {q.visual && !cardHides && <div data-question-picture="" style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
+          {q.visual && !cardHides && <div data-question-picture="" style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual, printTiles) ? { ...shownVisual, size: matchSize(q.visual, printTiles) } : shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
           {q.type === 'choice' && cardUp ? (
             // The grown-up's card stands in the answers' place until Ready (Q91 (a), pass NG; GrownUpCard above). Since round one's reads
             // (pass NG) Ready brings the question back into view when the page was scrolled past it to reach Ready (at 320 by 568 the card
@@ -15386,6 +15587,7 @@ function EduSphereScreens() {
     const stage = record && progress ? (record.preview ? (mastered && !nextMod ? 'complete' : null) : courseCelebrationStage(progress, course, lastEvent)) : null;
     const cheer = !!stage && celebratedRound.current !== lastEvent.at;
     const celebrate = () => { celebratedRound.current = lastEvent.at; setCelebrateCourse(mod.courseId); setCelebrateStage(stage); setScreen('course-done'); };
+    const assignedIds = enabledCourseIds(record.events);   // the student's assigned courses, which tell a title two lessons share (sharesTitle, pass NR)
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, borderColor: mastered ? C.gold : C.clay }}>
@@ -15394,25 +15596,31 @@ function EduSphereScreens() {
           <h1 style={{ fontSize: 24, margin: '12px 0 6px', textAlign: 'center' }}>{mastered ? (lastEvent.dose > 1 ? 'You did it!' : masteryState(record.events, mod.id) === 'mastered' ? 'Mastered!' : 'Great job!') : 'Good try!'}</h1>
           <div style={{ margin: '0 0 12px' }}><RichText text={encouragementFor(record.events, mod.id, mastered)} size={17} center lineGap={8} /></div>
           {/* The lesson a loop back goes to is named by lessonInSentence (pass NQ, F3): its title keeps a name's capital, and when it shares
-              this lesson's title (The first Texans, grade 7, loops back to The first Texans, grade 4) its course is named beside it. The
-              memory-check line and the Look back button below name their lessons the same way. */}
+              this lesson's title (The first Texans, grade 7, loops back to The first Texans, grade 4), or since pass NR another assigned
+              lesson's (sharesTitle), its course follows as a child says it: "the first Texans from fourth grade history" (pass NR, A155),
+              where the course's list label had read "in The story of Texas (Grade 4 - History)". The memory-check line and the Look back
+              button below name their lessons the same way, each reading the assigned courses (assignedIds), which the click-through's
+              section 8 walks since round one's code read. Since pass NR the look-back sentence is centered like the words around it and
+              its other branch (the screen read's MUST FIX 1), where it stood flush left. */}
           {(() => {
             const backTo = mastered ? null : loopBackTarget(record.events, mod.id);
             const rules = moduleRules(mod.id);
             if (backTo) {
-              return <p style={{ fontSize: 17, margin: '0 0 12px' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. This one has been tricky twice, so let us take a quick look back at {lessonInSentence(backTo, mod.id)}. Getting that solid again usually makes this one click.</p>;
+              return <p data-look-back-line="" style={{ fontSize: 17, margin: '0 0 12px', textAlign: 'center' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. This one has been tricky twice, so let us take a quick look back at {lessonInSentence(backTo, mod.id, assignedIds)}. Getting that solid again usually makes this one click.</p>;
             }
             return <p style={{ fontSize: 17, margin: '0 0 12px', textAlign: 'center' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. {mastered ? `Getting ${rules.toMaster} or more right shows you truly understand it.` : `You need ${rules.toMaster} of ${lastEvent.coreTotal}. Reading the lesson once more, then trying a fresh set of questions, usually does it.`}</p>;
           })()}
           <FractionBar parts={lastEvent.coreTotal} shaded={lastEvent.coreCorrect} color={mastered ? C.gold : C.clay} height={36} />
           {cheer && <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '14px 0 0', textAlign: 'center' }}>{courseFinishedWords(course, stage).result}</p>}
-          {lastEvent.review && <p style={{ color: C.muted, fontSize: 14, margin: '12px 0 0', textAlign: 'center' }}>Memory {lastEvent.review2 ? 'checks' : 'check'} from earlier: {[lastEvent.review, lastEvent.review2].filter(Boolean).map((r) => `${lessonInSentence(r.moduleId, mod.id) || 'earlier'} ${r.correct ? 'correct' : 'missed'}`).join(', ')} (does not affect mastery).</p>}
+          {/* Balanced (pass NR, the screen read's MUST FIX 2), so "(does not affect mastery)." never leaves its last word alone. */}
+          {lastEvent.review && <p style={{ color: C.muted, fontSize: 14, margin: '12px 0 0', textAlign: 'center', textWrap: 'balance' }}>Memory {lastEvent.review2 ? 'checks' : 'check'} from earlier: {[lastEvent.review, lastEvent.review2].filter(Boolean).map((r) => `${lessonInSentence(r.moduleId, mod.id, assignedIds) || 'earlier'} ${r.correct ? 'correct' : 'missed'}`).join(', ')} (does not affect mastery).</p>}
         </div>
         <div style={{ display: 'grid', gap: 10 }}>
           {cheer && <Btn full halo onClick={celebrate} disabled={busy} style={{ background: C.gold, borderColor: C.gold, color: C.onGold }}>Celebrate!</Btn>}
           {FEATURES.reflection && !readAloud && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, previewReview()) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, previewReview())); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); }}>Wonder for a minute</WonderButton>}
           {mastered && nextMod && <Btn full onClick={() => openModule(nextMod.id)} disabled={busy}>Next: {titleCase(nextMod.title)}</Btn>}
-          {!mastered && loopBackTarget(record.events, mod.id) && <Btn full onClick={() => loopBack(mod.id, loopBackTarget(record.events, mod.id))} disabled={busy}>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id)}</Btn>}
+          {/* Balanced (pass NR, MUST FIX 2): "Look back at the first Texans / from fourth grade history" on two even lines. */}
+          {!mastered && loopBackTarget(record.events, mod.id) && <Btn full onClick={() => loopBack(mod.id, loopBackTarget(record.events, mod.id))} disabled={busy} style={{ textWrap: 'balance' }}>Look back at {lessonInSentence(loopBackTarget(record.events, mod.id), mod.id, assignedIds)}</Btn>}
           {!mastered && !loopBackTarget(record.events, mod.id) && <Btn full onClick={() => setScreen('lesson')}>Review the lesson</Btn>}
           {(mastered || !loopBackTarget(record.events, mod.id)) && <Btn full kind="secondary" onClick={startPractice}>{mastered ? 'Practice this again' : 'Try a fresh set of questions'}</Btn>}
           <Btn full kind="secondary" onClick={() => setScreen('overview')}>Back to overview</Btn>
@@ -15864,6 +16072,7 @@ function EduSphereScreens() {
     const onCount = wonderOnCount(wonderReview); const allOff = wonderReviewState(wonderReview).allOff;
     const keptOff = wonderReviewState(wonderReview).hidden.filter((id) => WONDER.some((w) => w.id === id)).length;   // turned off by name
     const reviewingQuestion = WONDER.find((w) => w.id === reviewing) || null;
+    const earlyNote = 'Children who cannot read yet hear the wonder questions instead. They select an answer, also spoken, then hear four differing perspectives which will hopefully broaden their own.';   // Mikey's line for the early learners' panel (pass MI), word for word
     const apply = async (next) => {
       changedSinceBackup.current = true;
       setWonderReview(next);
@@ -15979,18 +16188,24 @@ function EduSphereScreens() {
                 </Tag>
 
               </div>
-              <p style={{ margin: '12px 0 14px', fontSize: 18, fontWeight: 600, lineHeight: 1.4, textAlign: 'center' }}>{wholeHyphens(reviewingQuestion.prompt)}</p>
+              {/* The sheet's words wrap as the child's voice card does (EARMARKS A142; round one's screen read of pass NR, SHOULD CONSIDER 5:
+                  the four new early questions' sheets ended paragraphs on one word, nine times at 320, and 44 times in every paragraph of
+                  the four sheets at 320, 375 and 412 in both themes): the question, the early learners' note and voices and the closing
+                  question balanced, with their last two words held together (lastTwoTogether), and a reader's voice, long enough that a
+                  browser balances nothing (16 to 27 lines at 320), wrapped pretty, as a long lesson line is, its last two words held too.
+                  Their marks, data-wonder-sheet-*, are for the browser check that reads them (tests/e2e/educator.mjs). */}
+              <p data-wonder-sheet-asked="" style={{ margin: '12px 0 14px', fontSize: 18, fontWeight: 600, lineHeight: 1.4, textAlign: 'center', textWrap: 'balance' }}>{lastTwoTogether(wholeHyphens(reviewingQuestion.prompt), reviewingQuestion.prompt)}</p>
 
               {Array.isArray(reviewingQuestion.simple) && (
                 <div style={{ background: PANEL, ...(C.mode === 'dark' ? { border: `1px solid ${C.panelLine}` } : {}), borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
                   <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600, textAlign: 'center' }}>Early Learners</p>
-                  <p style={{ margin: '0 0 8px', paddingBottom: 8, borderBottom: `1px solid ${C.mode === 'dark' ? 'rgba(124, 195, 166, 0.45)' : C.line}`, fontSize: 13, color: C.muted, textAlign: 'center' }}>Children who cannot read yet hear the wonder questions instead. They select an answer, also spoken, then hear four differing perspectives which will hopefully broaden their own.</p>
+                  <p data-wonder-sheet-note="" style={{ margin: '0 0 8px', paddingBottom: 8, borderBottom: `1px solid ${C.mode === 'dark' ? 'rgba(124, 195, 166, 0.45)' : C.line}`, fontSize: 13, color: C.muted, textAlign: 'center', textWrap: 'balance' }}>{lastTwoTogether(earlyNote, earlyNote)}</p>
                   {/* Each voice: the person's name, the small label for how they see things just above the sentence, and a gap
                       before the next voice (Mikey, 2026-09-25; by name since pass LY). */}
                   {reviewingQuestion.simple.map((v, i) => (
                     <div key={v.voice} style={{ margin: i === 0 ? 0 : '14px 0 0', textAlign: 'center' }}>
                       <VoiceName label={v.voice} size={14} color={C.green} />
-                      <p style={{ margin: 0, fontSize: 14 }}>{wholeHyphens(v.says)}</p>
+                      <p data-wonder-sheet-early-says="" style={{ margin: 0, fontSize: 14, textWrap: 'balance' }}>{lastTwoTogether(wholeHyphens(v.says), v.says)}</p>
                     </div>
                   ))}
                 </div>
@@ -16022,7 +16237,7 @@ function EduSphereScreens() {
                     </button>
                     <div className="edu-collapsible" style={{ display: shown ? 'block' : 'none', paddingBottom: 10, textAlign: 'center' }}>
                       <VoiceName label={p.voice} size={15} roleOnly />
-                      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>{wholeHyphens(p.says)}</p>
+                      <p data-wonder-sheet-says="" style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center', textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphens(p.says), p.says)}</p>
                     </div>
                   </div>
                 );
@@ -16030,7 +16245,7 @@ function EduSphereScreens() {
 
               <div style={{ background: C.mode === 'dark' ? '#AAD8C5' : PANEL, color: C.mode === 'dark' ? '#16201B' : undefined, borderRadius: 10, padding: '10px 12px', marginTop: 12 }}>
                 <p style={{ margin: 0, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>Closing question</p>
-                <p style={{ margin: '2px 0 0', fontSize: 15, textAlign: 'center' }}>{wholeHyphens(reviewingQuestion.closing)}</p>
+                <p data-wonder-sheet-closing="" style={{ margin: '2px 0 0', fontSize: 15, textAlign: 'center', textWrap: 'balance' }}>{lastTwoTogether(wholeHyphens(reviewingQuestion.closing), reviewingQuestion.closing)}</p>
               </div>
 
               {/* What the tap did, said where the tap is (pass NJ, round one's screen read: the sheet's tag is a screen above its button). */}
@@ -16487,8 +16702,9 @@ function EduSphereScreens() {
         {backupNudgeOpen && (
           <Overlay className="edu-no-print">
             <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
-              <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>Make your first backup soon</p>
-              <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>A forgotten PIN can be reset with your recovery code or a backup file, and every backup holds the code.</p>
+              {/* Balanced (pass NR, the screen read's SHOULD CONSIDER 4): "soon" and "code." stood alone on their lines at 320. */}
+              <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600, textWrap: 'balance' }}>Make your first backup soon</p>
+              <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted, textWrap: 'balance' }}>A forgotten PIN can be reset with your recovery code or a backup file, and every backup holds the code.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Btn full kind="secondary" onClick={() => { setBackupNudgeSeen(true); scrollToTop(true); setTimeout(() => scrollToTop(true), 120); }}>Later</Btn>
                 <Btn full onClick={() => { setBackupNudgeSeen(true); setScreen('backup'); }}>Backup now</Btn>
@@ -16519,8 +16735,8 @@ function EduSphereScreens() {
                 for (const st of visible) { const r = await loadRecord(st.id); students.push({ id: st.id, label: st.label, events: r.events }); }
                 setClassRows(classView(students, new Date().toISOString()));
                 setScreen('class-view');
-              }}>Who needs help</Btn></div>
-              <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', display: 'inline-flex' }}><InfoButton onClick={() => setShowHelpTip(!showHelpTip)} label="About who needs help" open={showHelpTip} /></span>
+              }}>Who Needs Help</Btn></div>
+              <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', display: 'inline-flex' }}><InfoButton onClick={() => setShowHelpTip(!showHelpTip)} label="About Who Needs Help" open={showHelpTip} /></span>
             </div>
             {showHelpTip && <TipText>A list of struggling students who might need some guidance. Fast clicking, repeat failures and low confidence scores will push a student to the top of the list.</TipText>}
           </div>
@@ -17147,10 +17363,12 @@ function EduSphereScreens() {
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
-        <h1 style={{ fontSize: 24, margin: '12px 0 16px', textAlign: 'center' }}>Who needs help</h1>
+        {/* The page's name in title case (pass NR, the screen read's MUST FIX 5), as the tour card's words (Mikey's), the Notes tip and
+            every other named page have it (My Classroom, Wonder Questions, Story Log); it read "Who needs help" here and on its button. */}
+        <h1 style={{ fontSize: 24, margin: '12px 0 16px', textAlign: 'center' }}>Who Needs Help</h1>
         <p className="edu-print-only" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.muted }}>{educator && educator.deviceName ? `${educator.deviceName}, ` : ''}{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}. Ranked most in need first.</p>
         <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge, marginBottom: 24 }} data-tour="rows">
-          {classSummary(classRows).split('\n').map((line, i) => <p key={i} style={{ margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 }}>{line}</p>)}
+          {classSummary(classRows).split('\n').map((line, i) => <p key={i} style={{ margin: i === 0 ? '0 0 10px' : 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: i === 0 ? 400 : 700 }}><WholeNames text={line} names={classRows.map((r) => r.label)} /></p>)}
         </div>
         <div className="edu-no-print" style={{ margin: '0 0 14px' }}>
           <ClearableInput value={noteSearch} onChange={(e) => setNoteSearch(e.target.value)} onClear={() => setNoteSearch('')} aria-label="Search notes" placeholder="Search your notes, for example: shy"
@@ -17177,7 +17395,7 @@ function EduSphereScreens() {
               <div style={{ margin: '10px 0 0', fontSize: 15 }}>
                 {(() => { const lines = r.reasons.length ? r.reasons.map((x) => x.replace(/^./, (c) => c.toUpperCase()) + '.') : ['Nothing to flag.'];
                   const tally = r.total ? `${r.mastered} out of ${r.total} assigned modules have been mastered.` : 'No courses assigned.';
-                  const next = r.nextTitle ? ` Next up: **${r.nextTitle}**.` : '';
+                  const next = r.nextNamed ? ` Next up: ${r.nextNamed}.` : '';   // named as the row names every lesson (classView, pass NR)
                   return <RichText text={[...lines, tally + next].join('\n')} size={15} lineGap={4} />; })()}
               </div>
               {r.practice && <div style={{ margin: '14px 0 0', paddingTop: 10, borderTop: `1px solid ${C.line}`, fontSize: 14, color: C.muted }}><RichText text={r.practice} size={14} lineGap={4} /></div>}
@@ -17508,8 +17726,8 @@ function EduSphereScreens() {
         <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 26, margin: '10px 0 26px', textAlign: 'center' }}>{keepTogether(shownName)}</h1>
         {since && (since.attempts || since.mastered.length || since.stories || since.colored || since.played) ? (
-          <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>
-            Since you last looked: {sinceLine(since)}.<br />({niceDateShort(reportOpenedFrom)})
+          <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center', textWrap: 'balance' }}>{/* balanced since pass NR: "answered." stood alone at 320 */}
+            Since you last looked: {wholeHyphens(sinceLine(since))}.<br />({niceDateShort(reportOpenedFrom)})
           </p>
         ) : since ? <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Nothing new since you last looked.<br />({niceDateShort(reportOpenedFrom)})</p> : null}
         <div className="edu-no-print" style={{ textAlign: 'center', margin: '0 0 12px' }}><Btn kind="secondary" onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this report</Btn></div>
@@ -17568,16 +17786,17 @@ function EduSphereScreens() {
                   {/* Centered bullets (2026-09-30, pass GW, Mikey): the tinted box stays full width, and the list inside it shrinks to the width of its longest line
                       and sits in the middle, so the bullets line up on the left while the block stays close to the centered sentences above and below. On a
                       phone the list simply grows to the box's width and wraps as before. */}
-                  {parts.items.length > 0 && <div data-summary-list="mastered" style={{ margin: '0 0 10px', padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}><ul style={{ margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{it}</li>)}</ul></div>}
+                  {parts.items.length > 0 && <div data-summary-list="mastered" style={{ margin: '0 0 10px', padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}><ul style={{ margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 }}>{parts.items.map((it) => <li key={it} style={{ display: 'list-item' }}>{wholeHyphens(it)}</li>)}</ul></div>}
                   {/* Air between the summary's thoughts (2026-09-29, Mikey): the ground to make up and the practice so far sit together, the reflection
                       line stands alone, the coloring line stands alone, and the tried-but-not-passed list gets its own room below. */}
                   {/* Short faint rules between the summary's thoughts (2026-09-30, pass GY, Mikey): one between the practice lines and the
                       reflection line, one between the reflection line and the coloring line, and then air, no rule, above the tried list. */}
                   {parts.rest && (() => { const lines = parts.rest.split(/(?<=\.)\s+/).filter(Boolean); const cut = lines.findIndex((l) => /reflection question/i.test(l)); const first = cut < 0 ? lines : lines.slice(0, cut); const second = cut < 0 ? [] : lines.slice(cut); return (
                     <div style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>
-                      {first.length > 0 && <div>{first.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
+                      {/* Each line balanced (pass NR, SHOULD CONSIDER 4): "Practice so far: 7 rounds, 2 / passed." left its last word alone. */}
+                      {first.length > 0 && <div>{first.map((line) => <p key={line} style={{ margin: '2px 0', textWrap: 'balance' }}>{wholeHyphens(line)}</p>)}</div>}
                       {first.length > 0 && second.length > 0 && <div aria-hidden="true" data-summary-rule="" style={{ width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' }} />}
-                      {second.length > 0 && <div>{second.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
+                      {second.length > 0 && <div>{second.map((line) => <p key={line} style={{ margin: '2px 0', textWrap: 'balance' }}>{wholeHyphens(line)}</p>)}</div>}
                     </div>); })()}
                   {/* Play and reading (pass MB, Mikey): the coloring line, then game breaks and elective stories in his words, each under
                       the same short faint rule, each only when it has something to count (summaryPlayLines in logic.mjs). */}
@@ -17594,7 +17813,7 @@ function EduSphereScreens() {
                       <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
                       {/* The same centered, shrink-to-fit list as the mastered list above; these lines are longer, so the block is wider and still on one line where the screen allows (pass GW). */}
                       <div data-summary-list="tried" style={{ margin: 0, padding: '10px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', border: '1px solid #AAD8C5', color: '#16201B' } : { background: C.tipBg, border: `1px solid ${C.tipLine}` }) }}><ul style={{ margin: '0 auto', padding: '0 0 0 20px', width: 'fit-content', maxWidth: '100%', boxSizing: 'border-box', textAlign: 'left', listStyleType: 'disc', fontSize: 15, lineHeight: 1.7 }}>
-                        {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }} onClick={() => setStoryModule(t.id)}>{t.title}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
+                        {parts.tried.map((t) => <li key={t.id}><button type="button" style={{ ...linkBtn, fontSize: 15, fontWeight: 600, color: C.mode === 'dark' ? B.green : C.green }} onClick={() => setStoryModule(t.id)}>{wholeHyphens(t.title)}</button> ({t.subject ? `${t.subject}: ` : ''}{t.detail})</li>)}
                       </ul></div>
                     </div>
                   )}
@@ -17778,7 +17997,7 @@ function EduSphereScreens() {
                         )}
                         {/* The story of this module opens over the page, so a long report never sprawls. */}
                         <button type="button" className="edu-no-print" style={{ ...linkBtn }} onClick={() => setStoryModule(m.id)}>View progress for this module</button>
-                        <p className="edu-print-only" style={{ margin: '6px 0 0', fontSize: 13, lineHeight: 1.6 }}>{moduleStory(shownName, educatorRecord.events, m.id)}</p>
+                        <p className="edu-print-only" style={{ margin: '6px 0 0', fontSize: 13, lineHeight: 1.6 }}>{wholeHyphens(moduleStory(shownName, educatorRecord.events, m.id))}</p>
                         {m.attempts > 0 && (confirmModuleReset === m.id ? (
                           <div style={{ background: C.claySoft, borderRadius: 10, padding: 12, marginTop: 8 }}>
                             <p style={{ margin: '0 0 10px', fontSize: 15 }}>Are you sure you want to erase all current progress for this module? Historical performance is still recorded.</p>
@@ -17805,7 +18024,9 @@ function EduSphereScreens() {
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
               <p style={{ margin: '0 0 2px', fontSize: 18, fontWeight: 600, paddingRight: 40 }}>{titleCase(getModule(storyModule).title)}</p>
               <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{courseLabel(getCourse(getModule(storyModule).courseId))}</p>
-              <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7 }}>{moduleStory(shownName, educatorRecord.events, storyModule)}</p>
+              {/* Pretty wrapping (pass NR, SHOULD CONSIDER 4), as a lesson line past six lines has it: a browser balances only short blocks, and
+                  View progress's paragraph ended on "5." alone at 320. */}
+              <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, textWrap: 'pretty' }}><WholeNames text={moduleStory(shownName, educatorRecord.events, storyModule)} names={[shownName]} /></p>
               {(() => {
                 const row = rep.modules.find((x) => x.id === storyModule);
                 if (!row || row.attempts === 0) return null;
@@ -17907,7 +18128,7 @@ function EduSphereScreens() {
         </p>
         {!educatorRecord.preview && (
           <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 10px' }}>
-            <button type="button" onClick={() => { const st = findStudent(roster, educatorRecord.name); setStoryRows([{ id: educatorRecord.name, label: st ? st.label : educatorRecord.name, events: educatorRecord.events || [] }]); setStoryView({}); setStoryExpanded({}); setOpenStoryId(null); setStoryLogFrom('report'); setScreen('story-log'); }} style={{ ...linkBtn, fontSize: 15 }}>Story log</button>
+            <button type="button" onClick={() => { const st = findStudent(roster, educatorRecord.name); setStoryRows([{ id: educatorRecord.name, label: st ? st.label : educatorRecord.name, events: educatorRecord.events || [] }]); setStoryView({}); setStoryExpanded({}); setOpenStoryId(null); setStoryLogFrom('report'); setScreen('story-log'); }} style={{ ...linkBtn, fontSize: 15 }}>Story Log</button>
           </p>
         )}
         <details className="edu-no-print" style={{ marginBottom: 14 }}>

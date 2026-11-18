@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-11-15 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 14078 clips, 2,089,309 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 277 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-17 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 14288 clips, 2,111,275 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 281 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -21,7 +21,7 @@ Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to st
 
 | Build | What it holds | Clips | Characters |
 |---|---|---|---|
-| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9519 | 1,073,568 |
+| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9729 | 1,095,534 |
 | 2 | Grade 2 and up | 4559 | 1,015,741 |
 
 ## Emphasis, sounds and descriptions (pass MW)
@@ -76,7 +76,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 9772 | 1,105,221 |
+| Pre-K to grade 2 | 9982 | 1,127,187 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,910 |
@@ -102,9 +102,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 740 |
-| story | 4891 |
-| lesson line | 7063 |
+| story title | 744 |
+| story | 4927 |
+| lesson line | 7233 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -1268,14 +1268,14 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 ### Knock, knock (S4143, a-e-and-i)
 
 - S4143-1: [playful] Daphne and Grandpa built an igloo out of pillows. [cheerful] Grandpa crawled inside to guard the door.
-- S4143-2: [in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Tell me the letter that says the sound your friend's name starts with, [softly] said Grandpa.
+- S4143-2: [in a small, clear girl voice, playful] Knock, knock, [softly] said Daphne. [in a low, rumbly grandpa voice, playful] Which letter says the sound your friend's name starts with? [softly] asked Grandpa.
 - S4143-3: [playful] Daphne held up her toy elephant and said its name fast. [in a small, clear girl voice, quickly] Elephant! Is it the letter I? [softly] she asked.
 - S4143-4: [pause] [in a low, rumbly grandpa voice, gently] Say it slowly, [softly] said Grandpa, [in a low, rumbly grandpa voice, slowly] and listen to its very start. In lots of words, E says the sound at the start of elf. I says the sound at the start of insect.
-- S4143-5: [thoughtful] Daphne said it slowly. [in a small, clear girl voice, slowly, then delighted] Elephant. It starts like elf, so it is E! [softly] she said. [cheerful] In marched the elephant.
+- S4143-5: [in a small, clear girl voice, slowly] Elephant, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] It starts like elf, so it is E! [cheerful] she said. In marched the elephant.
 - S4143-6: [cheerful] Next, Daphne fetched an apple from the kitchen. [in a low, rumbly grandpa voice, slowly] The letter A says the sound at the start of ant, [softly] said Grandpa.
 - S4143-7: [in a small, clear girl voice, slowly] Apple, [softly] said Daphne slowly. [in a small, clear girl voice, delighted] Apple starts like ant, so it is the letter A! [cheerful] she said, and in it went.
 - S4143-8: [in a low, rumbly grandpa voice, playful] And our igloo? [softly] asked Grandpa. Daphne said it slowly. [in a small, clear girl voice, slowly, then proud] Igloo starts like insect, so it is the letter I! [warmly] she said, and crawled inside.
-- S4143-9: [slowly, warmly] The letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.
+- S4143-9: [slowly, warmly] In lots of words, the letter A says the sound at the start of apple. E says the sound at the start of elephant. I says the sound at the start of igloo.
 
 ### The next tank (S4148, o-and-u)
 
@@ -1288,17 +1288,17 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S4148-7: [curious] They walked on, and at the next tank something with long, curly arms waved at them. [in a small, husky boy voice, delighted] Octopus! [softly] said Gideon. [in a small, husky boy voice, delighted] Octopus starts like otter!
 - S4148-8: [in a warm, bright mom voice, warmly] So it starts with the sound that O says, [softly] said Mom. [cheerful] When it was time to go, the rain had not stopped.
 - S4148-9: [in a warm, bright mom voice, playful] Which letter says the sound umbrella starts with, O or U? [softly] asked Mom. [in a small, husky boy voice, proud] U! [cheerful] said Gideon, and up went the umbrella.
-- S4148-10: [slowly, warmly] O says the sound at the start of octopus. U says the sound at the start of umbrella and up.
+- S4148-10: [slowly, warmly] In lots of words, O says the sound at the start of octopus. U says the sound at the start of umbrella and up.
 
 ### Pancake letters (S4161, small-letters)
 
-- S4161-1: [cheerful] Dad made pancakes in the shapes of letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.
-- S4161-2: [playful] Next he gave Florence a little round one. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!
+- S4161-1: [cheerful] Dad made pancakes shaped like letters. He put a big round one with a hole in the middle on his own plate. [in a deep, easy dad voice, playful] Big O, [softly] he said.
+- S4161-2: [playful] Next he gave Florence a little round one with a hole. [in a small, peppy girl voice, sure of herself] That is not an O, [softly] said Florence. [in a small, peppy girl voice, sure of herself] It is too small!
 - S4161-3: [pause] Dad set the two plates side by side. [in a deep, easy dad voice, gently] Look at the shape, [softly] he said. [in a deep, easy dad voice, slowly] Each one goes all the way around.
 - S4161-4: [curious] Florence looked from the big one to the little one and back again. [in a small, peppy girl voice, surprised] They are the same shape! [softly] she said. [in a small, peppy girl voice, delighted] Mine is only smaller.
 - S4161-5: [in a deep, easy dad voice, slowly] Big O and small o are the same letter, with the same name, [softly] said Dad. [in a deep, easy dad voice, slowly] Big O is tall, and small o is short.
 - S4161-6: [playful] They ate their O pancakes. Then Dad crossed two long strips of pancake on his plate and two short ones on hers. [in a small, peppy girl voice, delighted] Big X and small x! [softly] said Florence. [in a small, peppy girl voice, proud] Each one is two lines that cross.
-- S4161-7: [cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she ate hers point first.
+- S4161-7: [cheerful] Last came a pancake with a point at its bottom for each of them. [in a small, peppy girl voice, proud] Big V and small v, [warmly] said Florence, and she held hers up beside his.
 - S4161-8: [slowly, warmly] Big or small, it is the same letter. Some small letters look just like their big letters, only smaller.
 
 ### The note that came back (S4165, end-marks)
@@ -1423,15 +1423,15 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Now I read to you (S4205, hold-a-book)
 
-- S4205-1: [cheerful] After lunch, Grandpa always read Opal a book. [playful] Today Opal wanted to read to him.
-- S4205-2: [cheerful] She climbed onto the sofa beside him and held up her cow book. [in a small, sunny girl voice, surprised] The cow is standing on its head! [softly] said Opal.
+- S4205-1: [cheerful] After lunch, Grandpa always read Ursula a book. [playful] Today Ursula wanted to read to him.
+- S4205-2: [cheerful] She climbed onto the sofa beside him and held up her cow book. [in a small, sunny girl voice, surprised] The cow is standing on its head! [softly] said Ursula.
 - S4205-3: [puzzled] She tipped her head over to look, but that made her dizzy.
 - S4205-4: [pause] Grandpa chuckled. [in a soft, gravelly grandpa voice, gently] We hold a book right side up, [softly] he said, [in a soft, gravelly grandpa voice, slowly] so its picture is the right way. Turn the book, not your head.
-- S4205-5: [delighted] Opal turned it the other way up, and the cow stood on its feet.
+- S4205-5: [delighted] Ursula turned it the other way up, and the cow stood on its feet.
 - S4205-6: [in a soft, gravelly grandpa voice, gently] That is the front, [softly] said Grandpa. [in a soft, gravelly grandpa voice, slowly] It has the book's name and a picture, and we start a book at the front.
-- S4205-7: [cheerful] Opal opened it at the front. [in a small, sunny girl voice, curious] Where do I start? [softly] she asked.
-- S4205-8: [in a soft, gravelly grandpa voice, gently] At the top of the page, by the first word, [softly] said Grandpa. [warmly] Opal knew every word of this story. She put a finger at the top and said, [in a small, sunny girl voice, proud] Cow went to the barn.
-- S4205-9: [carefully] She began every page at the top. [thoughtful] Then she held up her truck book and looked at its picture. [happily] Its wheels were at the bottom, the right way.
+- S4205-7: [cheerful] Ursula opened it at the front. [in a small, sunny girl voice, curious] Where do I start? [softly] she asked.
+- S4205-8: [in a soft, gravelly grandpa voice, gently] At the top of the page, by the first word, [softly] said Grandpa. [warmly] Ursula knew every word of this story. She put a finger at the top and said, [in a small, sunny girl voice, proud] Cow went to the barn.
+- S4205-9: [carefully] She began every page at the top. [thoughtful] Then she set the cow book down and fetched her truck book. [happily] The wheels were at the bottom, the right way.
 - S4205-10: [slowly, warmly] Hold a book right side up, start at the front, and read from the top of each page.
 
 ### The pointing job (S4209, which-way-we-read-pk)
@@ -1445,6 +1445,54 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S4209-7: [in a small, raspy boy voice, delighted] Now down, and back to the start! [softly] said Clyde. [happily] His finger and her voice went along each line together, top to bottom.
 - S4209-8: [cheerful] Clyde turned the page. [playful] His finger was waiting at the start of the top line.
 - S4209-9: [slowly, warmly] Hold a book right side up, and read each line from its start to its end, top to bottom.
+
+### Can we go in? (S4213, words-all-around)
+
+- S4213-1: [cheerful] Humphrey and his aunt walked to the corner shop for milk.
+- S4213-2: [curious] Its door was shut. Humphrey pressed his nose to the glass, but saw only his face. [in a small, chirpy boy voice, unsure] Maybe nobody is here, [softly] he said.
+- S4213-3: [pause] His aunt tapped a little sign on the door. [in a cheery, sing-song aunt voice, gently] Words are all around us, [softly] she said, [in a cheery, sing-song aunt voice, slowly] and they tell us things.
+- S4213-4: [thoughtful] Humphrey did not know the sign's word. He pointed at it and asked, [in a small, chirpy boy voice, curious] What does this say?
+- S4213-5: [in a cheery, sing-song aunt voice, warmly] It says open, and that tells us we can go in, [softly] said his aunt. [happily] So Humphrey pushed the door, [a little shop bell dinging] and a bell went ding.
+- S4213-6: [curious] Inside, his aunt took a carton from the fridge. Humphrey put a finger on its word and asked, [in a small, chirpy boy voice, curious] What does this say? [softly] His aunt said, [in a cheery, sing-song aunt voice, clearly] It says milk, and that tells us what is inside.
+- S4213-7: [cheerful] On the way home, Humphrey held his aunt's hand. At the corner stood a red sign with eight sides. [in a small, chirpy boy voice, proud] I know that one! [softly] said Humphrey. [in a small, chirpy boy voice, proud] It says stop!
+- S4213-8: [in a cheery, sing-song aunt voice, delighted] Where you see it can help you know, [softly] said his aunt. [in a cheery, sing-song aunt voice, gently] It tells cars to stop. [warmly] And a blue car rolled up and stopped.
+- S4213-9: [slowly, warmly] Words are all around us, and they tell us things. Ask a grown-up, What does this say?
+
+### Who will tell Dad? (S4217, print-tells-us)
+
+- S4217-1: [cheerful] Esperanza's block castle stood as tall as her chin. [in a soft, steady grandma voice, brightly] Time for the library! [softly] called Grandma.
+- S4217-2: [worried] Dad would come home while they were out, and he always put the blocks away. [in a small, clear girl voice, determined] I will tell him not to! [softly] said Esperanza. [puzzled] But how? When Dad came home, she would be gone.
+- S4217-3: [pause] Grandma took a card and a pen out of her tote bag. [in a soft, steady grandma voice, gently] Print is talk written down, [softly] she said. [in a soft, steady grandma voice, slowly] Tell me your words, and I will write them.
+- S4217-4: [in a small, clear girl voice, carefully] Please save my castle, [softly] said Esperanza. [calmly] Grandma wrote the words down. Then she read them back while Esperanza pointed to each one.
+- S4217-5: [in a soft, steady grandma voice, warmly] Now Dad can read what you want to tell him, [softly] said Grandma, [in a soft, steady grandma voice, warmly] even when you are not here. [cheerful] They stood the card against the castle and went out.
+- S4217-6: [delighted] When they came home, the castle was still standing. [in a deep, gentle dad voice, warmly] I read your card, [softly] said Dad, [in a deep, gentle dad voice, reading aloud] and it says, Please save my castle.
+- S4217-7: [in a small, clear girl voice, delighted] Those are my words! [softly] said Esperanza. [warmly] She asked Grandma to read the card too, and it said the very same words. Dad said, [in a deep, gentle dad voice, gently] Print says the same words every time.
+- S4217-8: [slowly, warmly] Print is talk written down. People write words to tell us things, and when we read them, we find out.
+
+### Wibble-wobble (S4221, that-is-like-me)
+
+- S4221-1: [cheerful] Yolanda had new red boots, and she put them on all by herself.
+- S4221-2: [curious] On the way to the laundromat with Dad, her feet felt funny. [playful] She walked wibble-wobble.
+- S4221-3: [thoughtful] When they got there, Dad sat her on the bench and tipped each boot upside down. Nothing fell out. [puzzled] Yolanda pulled her boots back on, and her feet still felt funny.
+- S4221-4: [calmly] While the washer went round and round, Dad took a little book from his pocket. [in a deep, easy dad voice, reading aloud] A monkey got new boots, [softly] Dad read. [in a deep, easy dad voice, reading aloud] The monkey's feet felt funny, and he walked wibble-wobble.
+- S4221-5: [pause] [in a small, bouncy girl voice, delighted] That is like me! [softly] said Yolanda, and she pointed at the monkey. [in a small, bouncy girl voice, delighted] I walk wibble-wobble too!
+- S4221-6: [in a deep, easy dad voice, warmly] That is a connection, [softly] said Dad. [in a deep, easy dad voice, slowly] Something in the story is like something in your own life.
+- S4221-7: [curious] Then he turned the page. [in a deep, easy dad voice, reading aloud] The monkey looked down, [softly] he read, [in a deep, easy dad voice, reading aloud] and his boots were on the wrong feet!
+- S4221-8: [curious] Yolanda looked down at her own boots. [in a small, bouncy girl voice, surprised] Mine are too! [softly] she said. [happily] Dad helped her switch them, and she stamped up and down with no wobble at all.
+- S4221-9: [slowly, warmly] A connection is when something in a story is like something in your own life. Listen to a book, and think, is that like me?
+
+### Goodbye, Badger (S4225, that-reminds-me)
+
+- S4225-1: [warmly] Thaddeus loved his library book, about a badger who got stuck in a log.
+- S4225-2: [sadly] But today it had to go back, and at the library Thaddeus held it tight.
+- S4225-3: [in a light, kind mom voice, gently] There are lots of other books, [softly] said Mom. [in a small, husky boy voice, stubborn] I only want Badger! [softly] said Thaddeus.
+- S4225-4: [reluctant] At last he let it slide into the return box, [a book landing with a soft thump] thump. [calmly] Then Mom sat with him on a big cushion and read a new book.
+- S4225-5: [in a light, kind mom voice, reading aloud] A goat got her foot stuck in a bucket, [softly] Mom read. [in a light, kind mom voice, reading aloud] The goat went clank, clank, clank!
+- S4225-6: [pause] Thaddeus sat up. [in a small, husky boy voice, delighted] That reminds me of Badger's story! [softly] he said. [in a small, husky boy voice, delighted] Both friends got stuck!
+- S4225-7: [in a light, kind mom voice, warmly] They had the same problem, [softly] said Mom, [in a light, kind mom voice, warmly] so you made a connection to another story. [in a light, kind mom voice, slowly] A story can remind us of our own life too.
+- S4225-8: [in a small, husky boy voice, giggling] It reminds me of my sleeve! [softly] said Thaddeus. [in a small, husky boy voice, giggling] My arm got stuck in it today, and you pulled and pulled until it came out!
+- S4225-9: [in a small, husky boy voice, happily] Badger is a little bit in this one, [softly] said Thaddeus. [warmly] He carried the goat book all the way home.
+- S4225-10: [slowly, warmly] A connection is when a story in a book reminds you of your own life, or of another story you know. Listen, and think, what does it remind me of?
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

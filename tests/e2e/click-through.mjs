@@ -286,6 +286,9 @@ ok('a refresh brings the student back to the lesson they were on', (await page.e
 // Story-based learning (2026-09-22): the lesson's green button opens the story page; its own Practice button leads on.
 t = await text();
 ok('lesson shows key idea and a plain-text source', t.includes('Key idea') && t.includes('Source:') && (await page.locator('a').count()) === 0);
+// A title no other assigned lesson has carries no course line under it (pass NR; round one's code read, SHOULD CONSIDER 6; section 8 below
+// holds a title two lessons share).
+ok('a lesson whose title no other assigned lesson has carries no course line', (await page.locator('[data-lesson-course]').count()) === 0);
 // The Key idea card is light green with dark text in the dark theme, and its title is centered (pass HI, Mikey).
 { const ki = await page.evaluate(() => { const el = document.querySelector('[data-key-idea]'); if (!el) return null; return { bg: getComputedStyle(el).backgroundColor, ink: getComputedStyle(el.querySelector('p')).color, center: getComputedStyle(el.querySelector('p')).textAlign, dark: document.documentElement.dataset.theme || '' }; });
   ok('the key idea card is light green with dark text and a centered title', !!ki && ki.center === 'center' && (ki.bg === 'rgb(170, 216, 197)' ? ki.ink === 'rgb(22, 32, 27)' : true)); }
@@ -511,6 +514,27 @@ await runSet([true, false, false, false, false]);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');
 t = await text();
 ok('two misses in a row explain the loop back in plain words', t.includes('tricky twice') && t.includes('what a fraction means'));
+// The look-back sentence is centered like the words around it (pass NR, the screen read's MUST FIX 1): it stood flush left, its lines
+// ending up to 195 pixels short of its edge at 375, between "Good try!", the encouragement and the memory-check line, all centered. Each
+// of its lines is read, its two gaps within six pixels (a space at a line's end), and then its old style, with no text-align, is put
+// back in the page and the same read must find it not centered. The Look back button wraps balanced (MUST FIX 2). The layout check's
+// own read (layout-check.mjs, align) is run on this screen too, now and with the old style, the first time it reaches a result screen
+// with a loop back (EARMARKS A145): it must find nothing now, and what it finds of the old style is reported, since its rule (a
+// block's longest line more than 16 pixels short of its edge) can pass a block wrapped greedily.
+{ const { LAYOUT_SOURCE } = await import('./layout-check.mjs');
+  const look = await page.evaluate((src) => {
+    const read = eval(`(${src})`); const p = document.querySelector('[data-look-back-line]'); if (!p) return null;
+    const lines = () => { const range = document.createRange(); range.selectNodeContents(p); const rows = new Map(); for (const b of range.getClientRects()) { if (b.width < 1) continue; const top = Math.round(b.top); const row = rows.get(top) || [Infinity, -Infinity]; rows.set(top, [Math.min(row[0], b.left), Math.max(row[1], b.right)]); }
+      const r = p.getBoundingClientRect(); return [...rows.values()].map(([l, rr]) => ({ left: Math.round(l - r.left), right: Math.round(r.right - rr) })); };
+    const centered = (ls) => ls.length >= 2 && ls.every((x) => Math.abs(x.left - x.right) <= 6);
+    const flagged = () => read('#root', { align: true }).filter((x) => x.kind === 'uncentered' && /tricky twice|look back at/i.test(x.text)).length;
+    const now = { align: getComputedStyle(p).textAlign, lines: lines(), layout: flagged() };
+    const keep = p.style.textAlign; p.style.textAlign = ''; const old = { align: getComputedStyle(p).textAlign, lines: lines(), layout: flagged() }; p.style.textAlign = keep;
+    const btn = [...document.querySelectorAll('button')].find((b) => /^Look back at /.test(b.textContent.trim())); const cs = btn ? getComputedStyle(btn) : null;
+    return { now: { ...now, centered: centered(now.lines) }, old: { ...old, centered: centered(old.lines) }, buttonWrap: cs ? (cs.textWrapStyle || cs.textWrap || '') : null };
+  }, LAYOUT_SOURCE);
+  ok(`the look-back sentence is centered on every line, as the words around it are, and the Look back button wraps balanced (pass NR, MUST FIX 1 and 2; its old flush-left style put back in the page, read as not centered; the layout check found ${look ? look.old.layout : '?'} with the old style)`,
+    !!look && look.now.align === 'center' && look.now.centered && look.now.layout === 0 && !look.old.centered && /balance/.test(look.buttonWrap || ''), JSON.stringify(look)); }
 await tap('Look back at what a fraction means');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
 ok('the loop back opens the prerequisite lesson', /what a fraction means/i.test(await text()));
@@ -1100,10 +1124,10 @@ t = await text();
 ok('Keep closes the popup and keeps the student', !t.includes('Yes, delete') && /Inactive Students \(1\)/.test(t));
 await tap('Show again');
 await page.waitForTimeout(300);
-await tap('Who needs help');
+await tap('Who Needs Help');   // the page's name in title case since pass NR
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'class-view');
 t = await text();
-ok('the class view ranks students with reasons in words', t.includes('Who needs help') && /has not started/i.test(t) && t.includes('Next up:'));
+ok('the class view ranks students with reasons in words', t.includes('Who Needs Help') && /has not started/i.test(t) && t.includes('Next up:'));
 await page.fill('input[aria-label="Search notes"]', 'shy');
 t = await text();
 ok('searching the notes keeps only the student written about, and shows the line', t.includes('Reads well aloud; shy in groups.') && !t.includes('S-3003'));
@@ -1969,7 +1993,7 @@ await page.getByRole('button', { name: 'Close coloring' }).first().click({ force
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await tap('Exit');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
-await tap('Who needs help');
+await tap('Who Needs Help');   // the page's name in title case since pass NR
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'class-view');
 ok('the class view can be printed', (await page.getByRole('button', { name: 'Print this list' }).count()) === 1 && (await text()).includes('S-1042'));
 t = await text();
@@ -2106,6 +2130,52 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
     ok('the sentence being read is at full ink with no box, and the words ahead of the voice are faint (pass NO)', lit);
     ok('once a story is read to its end, no word is left faint and none marked as being read (pass NO)', restAfter === 0, restAfter);
   } else ok('a spoken story reads its title and every paragraph in order (skipped: no voice on this page)', true);
+}
+
+// 8. Two lessons of one title on a student's own screens (pass NR; round one's code read, SHOULD CONSIDER 6). The lesson page's course
+// line and the result screen's three lessons named in a sentence (the look-back line, the memory checks and the Look back button) read
+// the student's assigned courses, so a lesson whose title another assigned lesson has is named with its course ("the first Texans from
+// seventh grade history"). Until round one's code read only the rules test's source pins held them. A new student is given grade 4's and
+// grade 7's Texas history by the test-only hook (both The first Texans lessons starred, grade 7's Spanish and Mexican Texas, whose title
+// grade 4's course shares, missed once yesterday), opens that lesson and misses a round of it, which loops back to grade 7's The first
+// Texans. Each check was proven by building the page with its old code put back (the course line taken out, and each of the three
+// calls without the assigned courses) and seeing it fail.
+{
+  await page.evaluate(() => window.__eduTest.goHome());
+  await page.waitForFunction(() => window.__eduTest && (window.__eduTest.screen === 'educator-pick' || window.__eduTest.screen === 'welcome'));
+  await page.waitForTimeout(400);
+  if ((await state()).screen === 'welcome') await educatorLogin();
+  await tap('Add someone new');
+  await page.fill('input[placeholder="School-issued ID"]', 'S-5005');
+  await page.getByRole('button', { name: /^Elementary/ }).click();
+  await tap('Add');
+  await page.waitForTimeout(300);
+  const twins = await page.evaluate(() => window.__eduTest.seedHistory('S-5005', { twins: true }));
+  ok('the hook gives S-5005 two lessons of one title and a lesson that loops back to one', !!(twins && twins.twins && twins.twins.lesson === 'spain-and-mexico-in-texas'), twins);
+  await page.waitForTimeout(500);
+  await tap('Sign out');
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
+  await page.getByRole('button', { name: /S-5005$/ }).click();
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+  await page.evaluate(() => window.__eduTest.openModule('spain-and-mexico-in-texas'));
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+  const tidy = (s) => (s || '').replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+  const page1 = await page.evaluate(() => { const p = document.querySelector('[data-lesson-course]'); const h = p && p.previousElementSibling; return { line: p ? p.textContent : null, title: h ? h.textContent : null }; });
+  ok('a lesson whose title another assigned lesson shares has its course under its title, on the lesson page', tidy(page1.title) === 'Spanish and Mexican Texas' && tidy(page1.line) === 'Seventh grade history', page1);
+  await practice();
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
+  await runSet(Array(30).fill(false));
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');
+  const said = await page.evaluate(() => {
+    const look = document.querySelector('[data-look-back-line]'); const memory = [...document.querySelectorAll('p')].find((p) => /^Memory checks? from earlier: /.test(p.textContent.trim()));
+    const button = [...document.querySelectorAll('button')].find((b) => /^Look back at /.test(b.textContent.trim()));
+    return { look: look ? look.textContent : null, memory: memory ? memory.textContent : null, button: button ? button.textContent : null };
+  });
+  const FIRST = 'the first Texans from seventh grade history';
+  ok('the look-back line names the lesson it goes back to with its course, a lesson of its title being assigned too (result screen)', tidy(said.look).includes(`so let us take a quick look back at ${FIRST}.`), said.look);
+  const checks = (/^Memory checks? from earlier: (.+) \(does not affect mastery\)\.$/.exec(tidy(said.memory)) || [])[1];
+  ok('the memory checks name each lesson they came from with its course, each having a twin assigned (result screen)', !!checks && checks.split(', ').every((x) => /^the first Texans from (fourth|seventh) grade history (correct|missed)$/.test(x)), said.memory);
+  ok('the Look back button names the lesson it opens with its course (result screen)', tidy(said.button) === `Look back at ${FIRST}`, said.button);
 }
 ok('no browser errors during the whole run', errors.length === 0);
 if (errors.length) console.log(errors.slice(0, 5).join('\n'));

@@ -1,4 +1,4 @@
-New chats: read docs/NEW-CHAT.md first, then the pass packet it asks for (node tools/pass-packet.mjs --areas <the pass's areas>, Mikey's answer to Q95 in pass NH: the lines of docs/RULES-AUDIT.md, every standing rule and what enforces it, and of docs/EARMARKS.md and docs/INDEPENDENT-CHECKS.md that the pass touches, word for word, with an index of the rest) and the latest docs/DECISIONS.md entry, as NEW-CHAT's How to start a new chat and How a pass is delivered say; the alignment read and the final read read those three files whole.
+New chats: read docs/NEW-CHAT.md first, then the pass packet it asks for (node tools/pass-packet.mjs --areas <the pass's areas>, Mikey's answer to Q95 in pass NH: the lines of docs/RULES-AUDIT.md, every standing rule and what enforces it, and of docs/EARMARKS.md and docs/INDEPENDENT-CHECKS.md that the pass touches, word for word, with an index of the rest) and the latest docs/DECISIONS.md entry, as NEW-CHAT's How to start a new chat and How a pass is delivered say; since Mikey's answer to Q119 (pass NR) the three are read whole once a week, in the tools pass, and in a lesson pass the ripple read reads the rows restating its changes, the alignment and final reads the records it changed and those rows (Claude's reading).
 
 # EduSphere
 
@@ -19,7 +19,7 @@ docs/DECISIONS.md. What to do when something breaks lives in docs/RUNBOOK.md. St
 
 ## Commands
 - `./check.sh` — runs everything (rules tests, curriculum coverage, build, render smoke, syntax, the browser tests). Must end with `ALL CHECKS PASSED`. It takes about three hours (187 minutes in pass NP's final run and 191 in pass NQ's mid-pass run), so start it detached, as part two's Running check.sh line says, once a pass's first build is in and again at its end, run the fast tests a change touches after each change, and paste its last line.
-- `node tests/logic.test.mjs` — rules only; fastest loop while changing logic.
+- `node --max-old-space-size=4096 tests/logic.test.mjs` — rules only; fastest loop while changing logic (since pass NR its whole run needs more than Node's default heap).
 - `tsc` prints one line `Cannot find module 'react'` — ignore that line only.
 - `./check.sh` step 10 is a real-browser click-through (`tests/e2e/click-through.mjs`, headless Chromium, about nine minutes run alone, 525 seconds in pass NL on a passing run, not counting ./build.sh and node tests/e2e/make-page.mjs, which come first, since the page is made from the build). If step 10 fails, read its FAIL line in /tmp/edu_click_through.log: it names the screen and the tap.
 

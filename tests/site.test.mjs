@@ -28,12 +28,16 @@ if (await reminder.count()) { await page.getByRole('button', { name: 'Later', ex
 const newsSeen = { shown: (await page.getByRole('dialog', { name: "What's new" }).count()) === 1, text: '' };
 // A note keeps its last two words together with a no-break space since pass NT, so the words are read with it as a space.
 if (newsSeen.shown) newsSeen.text = (await page.getByRole('dialog', { name: "What's new" }).textContent()).replace(/\u00a0/g, ' ');
+// Since pass NU (EARMARKS A173) the educator's countdown chip hides on a phone while any pop-up is open, as under a sheet (Q104), until its
+// last ten seconds: What's new is such a pop-up, opened here a few seconds into the educator's minute, so the chip reads 0 under it.
+const chipUnderNews = newsSeen.shown ? await page.evaluate(() => { const c = document.querySelector('.edu-logout-chip'); return c ? { opacity: getComputedStyle(c).opacity, lastTen: c.hasAttribute('data-last-ten'), popup: document.body.classList.contains('edu-has-popup') } : null; }) : null;
 // More Details (pass HL, Mikey): the pop-up shows short notes and a centered link to a page with every note in full.
 const details = { link: (await page.getByRole('button', { name: 'More Details' }).count()) === 1, text: '' };
 if (details.link) { await page.getByRole('button', { name: 'More Details' }).click(); await page.waitForTimeout(300); details.text = (await page.textContent('#root')).replace(/\u00a0/g, ' '); await page.getByRole('button', { name: 'Back to Classroom' }).click(); await page.waitForTimeout(300); }
 { const got = page.getByRole('button', { name: 'Got it' }); if (await got.count()) await got.click(); }
 await page.waitForTimeout(200);
 const newsGone = (await page.getByRole('dialog', { name: "What's new" }).count()) === 0;
+const popupAfterNews = await page.evaluate(() => document.body.classList.contains('edu-has-popup'));
 await page.getByRole('button', { name: 'Add someone new' }).click();
 await page.fill('input[placeholder="School-issued ID"]', 'S-777');
 await page.getByRole('button', { name: /^Elementary/ }).click();
@@ -56,6 +60,8 @@ ok('no browser errors on the standalone page', errors.length === 0);
   ok('the standalone page\'s security policy lets the app\'s own sounds play (media-src keeps blob:)', /(?:^|;)\s*media-src [^;]*\bblob:/.test(csp), csp); }
 ok("the What's new pop-up opens on a phone with the newest block in short notes, at most four", !!wantNews && newsSeen.shown && newsSeen.text.includes(wantNews.date) && wantNews.brief.slice(0, 4).every((t) => newsSeen.text.includes(t)) && newsGone);
 ok('the backup reminder and What\'s new never open at the same time, so every button can be tapped', oneAtATime);
+ok("on a phone the educator's countdown chip hides while What's new is open, until its last ten seconds, as under a sheet (pass NU, EARMARKS A173)", !!chipUnderNews && chipUnderNews.popup === true && chipUnderNews.lastTen === false && chipUnderNews.opacity === '0', chipUnderNews);
+ok('once What\'s new is closed the body no longer carries edu-has-popup, so the chip shows again (pass NU)', popupAfterNews === false, { popupAfterNews });
 ok("More Details opens a page with every note of the newest block in full, and closes the pop-up", details.link && wantNews.items.every((t) => details.text.includes(t)));
 const newsAfter = (await page.getByRole('dialog', { name: "What's new" }).count()) === 0;
 ok("What's new stays closed after a reload, because Got it was remembered", newsAfter);
@@ -284,6 +290,28 @@ ok("What's new stays closed after a reload, because Got it was remembered", news
   ok('a phone held upright, a short laptop window and a tablet held sideways are never asked (Q71)', upAsk.there && !upAsk.shown && laptopAsk.there && !laptopAsk.shown && tabletAsk.there && !tabletAsk.shown, { upAsk, laptopAsk, tabletAsk });
   ok('a short upright touch page is never asked, even where the browser calls its screen landscape (pass MR)', saysLandscape && shortUpAsk.there && !shortUpAsk.shown, { saysLandscape, shortUpAsk });
   ok('a tablet held sideways whose window a keyboard shortens is never asked to turn its phone (pass MR)', keyboardAsk.there && !keyboardAsk.shown, keyboardAsk); }
+// Since pass NU (round one's screen read, MF2 and SC1): What's new's notes scroll inside its box and Got it and More Details stay at its
+// foot, so on a phone held sideways (667 by 375, this page's own context with no touch, so no ask to turn upright) Got it shows whole
+// as the pop-up opens, inside the box and the screen, where round one's copy had it 113 pixels below the box's foot, and the box with its
+// padding counted and no foot of its own 42, both with the notes as they stood then. Since round two's records read: the notes as
+// delivered were shortened after that, and with them Got it shows sideways with or without the foot, so the read is made twice, as the
+// pop-up opens and with a long note planted in its list (a block whose notes run long, which the foot is for), taken out again after:
+// without the foot the planted note puts Got it below the box, and this check fails.
+{ const ctx2 = await b.newContext({ viewport: { width: 667, height: 375 } }); const p2 = await ctx2.newPage(); await p2.goto(url);
+  await p2.getByRole('button', { name: 'Create account' }).click(); await p2.fill('input[placeholder="PIN"]', '2468'); await p2.fill('input[placeholder="PIN again"]', '2468');
+  await p2.fill('input[placeholder="This device\'s name"]', 'Sideways'); await p2.selectOption('select[aria-label="Your state"]', 'CA');
+  await p2.getByRole('button', { name: 'Create account', exact: true }).click();
+  { const skip = p2.getByRole('button', { name: 'Skip tour' }); if (await skip.count()) await skip.click({ force: true }); }
+  await p2.waitForTimeout(1600); if (await p2.getByText('Make your first backup soon').count()) { await p2.getByRole('button', { name: 'Later', exact: true }).first().click(); await p2.waitForTimeout(600); }
+  const readSide = () => p2.evaluate(() => { const d = document.querySelector('[role="dialog"][aria-label="What\'s new"]'); if (!d) return null; const g = [...d.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Got it');
+    const dr = d.getBoundingClientRect(); const gr = g && g.getBoundingClientRect(); return { box: [Math.round(dr.top), Math.round(dr.bottom)], got: gr ? [Math.round(gr.top), Math.round(gr.bottom)] : null, h: window.innerHeight }; });
+  const inView = (x) => !!x && !!x.got && x.got[0] >= x.box[0] && x.got[1] <= Math.min(x.box[1], x.h) + 0.5;
+  const side = await readSide();
+  const planted = await p2.evaluate(() => { const ul = document.querySelector('[data-news-brief]'); if (!ul) return false; const li = document.createElement('li'); li.setAttribute('data-planted', '');
+    li.textContent = 'A note that runs long, as a block of notes can, so the list grows taller than the box. '.repeat(6); ul.appendChild(li); return true; });
+  await p2.waitForTimeout(300); const longSide = await readSide(); await p2.evaluate(() => document.querySelectorAll('[data-planted]').forEach((x) => x.remove()));
+  ok("on a phone held sideways (667 by 375) What's new shows Got it whole as it opens, its notes scrolling above it, and with a long note planted in its list Got it stays in the box (pass NU, round one's screen read and round two's records read)", inView(side) && planted && inView(longSide), { side, longSide });
+  await ctx2.close(); }
 await b.close();
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

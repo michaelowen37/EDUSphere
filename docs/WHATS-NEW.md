@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 18, 2026 (two reviews that share a name, and a few tidier screens)
+
+- Quick Review cards now name a shared title's course. When More and Fewer at pre-K 3 and at pre-K 4 are both due on one day, your child's card says "from pre-K 3 math" and "from pre-K 4 math", and so does its Hear it button, so the two never look or sound alike.
+- On a phone, "Logging out in" now hides under pop-ups. It shows again for its last ten seconds, just as it already does over a question sheet, and What's new keeps its Got it button in view however long its notes run.
+- Key Words now keep numbers and hyphenated words whole. On a student's report, "80 percent", "adds 1 more" and "re-introduction" never split across two lines, on a phone or on paper, and no definition ends on one word alone.
+- In Walk through, questions now stay below the top tab. After you tap Ready on a grown-up's card, the question settles just below the Walkthrough Mode tab, where on a small phone it used to slip underneath.
+
 ## November 18, 2026 (what holds a confidence score down, one rule at a time)
 
 - On a student's report, What holds a confidence score down, one of the Key Words, now gives each rule its own sentence. A score stays down while the latest round has a mistake in it, and it stays down until the lesson's latest eight answers are all correct. Questions that come back later are a second way up: when at least two of a lesson's questions have come back, in memory checks, checkpoints or practice reviews, and 80% or more of them were answered correctly, your student earns that last point without the eight in a row.

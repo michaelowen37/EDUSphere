@@ -292,7 +292,8 @@ const copiedOf = (opts) => checkPacket(T.packet(opts)).copied;
   ok('the words of --match are split at each | outside parentheses and brackets, and a word that names no rules audit row and no open earmark by its title is found, an open earmark\'s title and a word in other capitals naming their rows (round one\'s code read and round two\'s records read of pass NS)',
     JSON.stringify(T.matchParts('a|(b|c)|[|]|d\\|e||f')) === JSON.stringify(['a', '(b|c)', '[|]', 'd\\|e', 'f']) && T.unmatchedWords(TASKS[0].match).length === 0 && JSON.stringify(T.unmatchedWords('zzzqqq|^The pass packet|(qqzz|xxyy)')) === JSON.stringify(['zzzqqq', '(qqzz|xxyy)']) && T.unmatchedWords(null).length === 0
     // Since round two's records read: an open earmark's title names its row, and a word in other capitals names its row too, as the packet reads them.
-    && T.unmatchedWords('^A172').length === 0 && T.unmatchedWords("GROWN-UP'S CARD ON A DEVICE").length === 0);
+    // Since pass NU the open earmark is the first row of the screen brief's list, which the check above holds open (it was A172, which pass NU closed).
+    && T.unmatchedWords('^' + T.SCREEN_BRIEF_ROWS[0]).length === 0 && T.unmatchedWords("GROWN-UP'S CARD ON A DEVICE").length === 0);
   ok('a task packet whose briefs take the screen brief holds the earmark rows every screen brief names, and one without it does not (round one\'s code read of pass NS)',
     made[1][1].includes('## The earmark rows every screen brief names') && T.SCREEN_BRIEF_ROWS.every((id) => made[1][1].includes('\n- ' + id + ' ')) && !made[0][1].includes('## The earmark rows every screen brief names') && !made[2][1].includes('## The earmark rows every screen brief names'));
   // The edge, with a planted row padded until its packet holds exactly 40,000 bytes: that packet is not over, and one byte more of its

@@ -143,6 +143,30 @@ const printedWords = async (theme) => {
     await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(200); await skipTour();
   } };
 await printedWords('dark');
+// The Key Words keep a number and the word percent together and a hyphenated word whole on a phone (pass NU, EARMARKS A174, round one's
+// code read): at 320 pixels wide Confidence, scored 1 to 5 broke "80 / percent" and "re- / introduction" until wholeHyphensAndNumbers
+// (keyWordWhole in round one); each kept phrase of the three definitions that hold one is read by a range over its characters, which must
+// lie on one line, and since round one's screen read every definition's last line holds two words or more (lastTwoTogether; "guessing."
+// and "mastered." stood alone at 320).
+{ await keepAlive(); await page.evaluate(() => window.__eduTest.goTo('educator-report')); await page.waitForTimeout(250);
+  await page.evaluate((terms) => { for (const b of document.querySelectorAll('button[aria-expanded]')) { const s = b.querySelector('span'); if (s && terms.includes(s.textContent) && b.getAttribute('aria-expanded') !== 'true') b.click(); } }, EXPLANATIONS.map((x) => x.term));
+  await page.waitForTimeout(300);
+  // This page keeps the browser's 8-pixel margin, so its column at a width is the product page's at 16 pixels less: the widths below are
+  // the product's 320, 360, 375, 390, 393, 412, 414 and 430, where round one's screen read measured the lone words.
+  const read = async (w) => { await page.setViewportSize({ width: w, height: 800 }); await page.waitForTimeout(200); return (await page.evaluate(() => { const NB = String.fromCharCode(160); const ps = [...document.querySelectorAll('p.edu-collapsible')];
+      const lines = (root, phrase) => { const nodes = []; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; let all = '';
+        while ((n = w.nextNode())) { nodes.push({ n, at: all.length }); all += n.nodeValue; }
+        const i = all.split(NB).join(' ').indexOf(phrase); if (i < 0) return null;
+        const pos = (k) => { for (let j = nodes.length - 1; j >= 0; j--) if (k >= nodes[j].at) return [nodes[j].n, k - nodes[j].at]; return null; };
+        const r = document.createRange(); const [a, ao] = pos(i); const [b, bo] = pos(i + phrase.length - 1); r.setStart(a, ao); r.setEnd(b, bo + 1);
+        return new Set([...r.getClientRects()].filter((x) => x.width > 0).map((x) => Math.round(x.top))).size; };
+      const lastLines = ps.filter((p) => p.textContent.trim()).map((p) => { const tops = []; const w = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let n;
+        while ((n = w.nextNode())) { const re = /[^ ]+/g; let m; const v = n.nodeValue.split(NB).join(' '); while ((m = re.exec(v))) { const r = document.createRange(); r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length); tops.push([m[0], Math.round(r.getBoundingClientRect().top)]); } }
+        const last = Math.max(...tops.map((t) => t[1])); return tops.filter((t) => t[1] === last).map((t) => t[0]).join(' '); });
+      return ['80 percent', '60 percent', '1 more', 're-introduction', 'long-term', 'pre-determined'].map((ph) => { const p = ps.find((x) => x.textContent.split(NB).join(' ').includes(ph)); return [ph, p ? lines(p, ph) : null]; }).concat(lastLines.map((l) => ['last line: ' + l, l.includes(' ') ? 1 : 0])); })).map(([ph, n]) => [`${w - 16}: ${ph}`, n]); };
+  const rows = []; for (const w of [336, 376, 391, 406, 409, 428, 430, 446]) rows.push(...(await read(w)));
+  ok('at the product page\'s 320 to 430 pixels wide every Key Word keeps "80 percent", "60 percent", "1 more" and its hyphenated words each on one line, and no definition ends on one word alone (pass NU, EARMARKS A174, and round one\'s screen read)', rows.length === 8 * (6 + EXPLANATIONS.length) && rows.every(([, n]) => n === 1), rows.filter(([, n]) => n !== 1).slice(0, 8));
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(200); await skipTour(); }
 await page.getByRole('button', { name: 'Light theme' }).first().click(); await page.waitForTimeout(250);
 await printedWords('light');
 await page.getByRole('button', { name: 'Dark theme' }).first().click(); await page.waitForTimeout(250);

@@ -426,6 +426,22 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   if (bookNow) { await settle(); await page.getByLabel('Hear your story').click(); await screenIs('story'); await page.waitForTimeout(500); }
   await settle(); await page.getByLabel('Keep going').click(); await page.waitForTimeout(700);
   ok("a first passed round on that lesson afterwards offers its own story as the reward and celebrates no second time: the star the review earned stands, and the story's arrow goes on", bookNow && !['course-done', 'result', 'story'].includes(await screen()), { bookNow, screen: await screen() }); }
+// Two reviews of one title due on one day (pass NU, EARMARKS A161): S-63 has pre-K 3's and pre-K 4's More and fewer starred twenty-five
+// days ago, both courses assigned, so her day opens on the Quick Review card with the two together, each naming its course by the one
+// rule (reviewCardNames), on the card and in the line its Hear it button speaks.
+{ await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
+  await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
+  await page.fill('input[placeholder="School-issued ID"]', 'S-63'); await page.getByRole('button', { name: /^Early years/ }).first().click(); await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Add', exact: true }).click(); await page.waitForTimeout(500); await tapIf('Later');
+  const twins = await page.evaluate(() => window.__eduTest.seedHistory('S-63', { reviewTwins: true }));
+  ok('the hook gives S-63 two reviews of one title due today, More and fewer from pre-K 3 and from pre-K 4', !!twins && Array.isArray(twins.reviewTwins) && twins.reviewTwins.join('|') === 'more-or-fewer|more-and-fewer-5', twins);
+  await page.getByRole('button', { name: 'Home' }).first().click(); await page.waitForTimeout(500);
+  await page.getByRole('button', { name: /S-63$/ }).first().click(); await page.waitForTimeout(900); await tapIf('Later');
+  const card = await page.evaluate(() => { const c = document.querySelector('[data-light-review-card]'); return c ? { count: c.getAttribute('data-light-review-count'), courses: [...c.querySelectorAll('[data-review-course]')].map((x) => x.textContent.replace(/\u00a0/g, ' ').trim()) } : null; });
+  await page.evaluate(() => { window.__spoken = []; }); await settle();
+  const hear = page.getByRole('button', { name: 'Hear it' }); if (await hear.count()) { await hear.first().click(); await page.waitForTimeout(2500); }
+  const said = await page.evaluate(() => (window.__spoken || []).join(' ').replace(/\u00a0/g, ' '));
+  ok('her day opens on the Quick Review card with the two More and fewer lessons, each naming its course by the one rule, on the card and in the line Hear it speaks (pass NU, EARMARKS A161)', !!card && card.count === '2' && card.courses.join('|') === 'from pre-K 3 math|from pre-K 4 math' && said.includes('More and fewer from pre-K 3 math') && said.includes('more and fewer from pre-K 4 math'), { card, said: said.slice(0, 400) }); }
 // A reader's finished course (pass MF, Mikey's answer to Q21: "reader too but don't need the print"): the Elementary student
 // S-56, one star short of How Computers Think (tech-3, three tap-answer lessons with a long story), passes its last lesson. Her
 // result says the whole course is done and offers Celebrate!, once; the celebration page names the course on its card without

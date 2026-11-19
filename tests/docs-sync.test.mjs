@@ -1492,5 +1492,25 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   ok(`docs/RULES-AUDIT-HISTORY.md keeps the question answered in pass NT, Q123 (digest ${dig(qs)}), and section 7's row on confidence as pass NS left it (digest ${dig(word)}), unchanged, Q123 answered in one line in section 11 and the row saying it changed at his word; docs/CLAUDE-HISTORY.md keeps part two's line Module ids are global as pass NS left it (digest ${dig(kept)}); section 9's rows name both changes, and its rows for L31, L34, L36 and what pass NT learned are there (pass NT; one letter edited inside each block, planted, caught)`,
     dig(qs) === 'bf553318' && dig(word) === '85074b9f' && dig(kept) === '51b46257' && answered && wordRow.length === 1 && wordRow[0].startsWith('| **Confidence, 1 to 5:**') && changed === 1 && named && rowsThere && claudeOk && plants.every(Boolean),
     JSON.stringify({ q: dig(qs), w: dig(word), k: dig(kept), answered, rows: wordRow.length, changed, named, rowsThere, claudeOk, plants })); }
+// Pass NU's record (round two's records read): section 8's row on the grown-up's card, corrected in place under Mikey's answer to Q85, since
+// EARMARKS A172 counts Ready's margin after it from the Walkthrough Mode tab's foot where the tab shows, kept as pass NT left it in
+// docs/RULES-AUDIT-HISTORY.md's pass NU block and held by its digest; the row saying so once and naming the tab, and section 9's row for Q85
+// naming it. One letter edited inside the block, planted, is caught.
+{ const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const cName = "RULES-AUDIT rows as pass NT left them, before pass NU corrected them under Q85, word for word";
+  const inside = (t, name) => { const a = t.indexOf(`<!-- ${name}: begin -->\n`); const b = t.indexOf(`<!-- ${name}: end -->`); return a < 0 || b < a ? '' : t.slice(a + `<!-- ${name}: begin -->\n`.length, b); };
+  const dig = (t) => createHash('sha256').update(t, 'utf8').digest('hex').slice(0, 8);
+  const plant = (t, name, from, to) => { const a = t.indexOf(`<!-- ${name}: begin -->`); const b = t.indexOf(`<!-- ${name}: end -->`); const i = a < 0 ? -1 : t.indexOf(from, a); return i < 0 || i > b ? t : t.slice(0, i) + to + t.slice(i + from.length); };
+  const q85 = inside(hist, cName); const rows = q85.split('\n').filter(Boolean);
+  const card = audit.split('\n').find((l) => l.startsWith("| **The grown-up's card on a device with no voice")) || '';
+  const corrected = card.split("Corrected in place in pass NU (Mikey's answer to Q85; round two's records read, which found its margin after Ready still counted from the screen's top alone after EARMARKS A172), its pass NT words in docs/RULES-AUDIT-HISTORY.md.").length - 1;
+  const tab = card.includes("or since pass NU of the Walkthrough Mode tab's foot where the tab shows") && !rows.join('').includes("Walkthrough Mode tab");
+  const s9 = audit.slice(audit.indexOf('## 9. Process'), audit.indexOf('\n## 10.'));
+  const named = s9.includes("Corrected in pass NU, under Mikey's answer to Q85, saying so, its pass NT words in docs/RULES-AUDIT-HISTORY.md's pass NU block: section 8's row on the grown-up's card on a device with no voice,");
+  const plants = [dig(inside(plant(hist, cName, 'brings the question back into view', 'brings the question back into veiw'), cName)) !== dig(q85)];
+  ok(`docs/RULES-AUDIT-HISTORY.md keeps section 8's row on the grown-up's card as pass NT left it (digest ${dig(q85)}), unchanged; the row, corrected in place under Q85 since EARMARKS A172 counts Ready's margin from the Walkthrough Mode tab's foot, says so once and names the tab, and section 9's row for Q85 names it (pass NU, round two's records read; a letter edited inside the block, planted, caught)`,
+    dig(q85) === '40e03ed6' && rows.length === 1 && rows[0].startsWith("| **The grown-up's card on a device with no voice") && corrected === 1 && tab && named && plants.every(Boolean),
+    JSON.stringify({ c: dig(q85), rows: rows.length, corrected, tab, named, plants })); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

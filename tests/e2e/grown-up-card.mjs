@@ -137,7 +137,9 @@ const state = (page) => page.evaluate(() => {
     // own top margin (the test page keeps the browser's 8 pixels; the product has none), so the count is the product's
     after: (document.querySelector('[data-card-after]') || {}).textContent || null,
     checkBottom: (() => { const b = [...document.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Check answer' && vis(x)); if (!b) return null; return Math.round(b.getBoundingClientRect().bottom + window.scrollY - (parseFloat(getComputedStyle(document.body).marginTop) || 0)); })(),
-    setupTop: (() => { const t = document.querySelector('[data-question-setup]') || document.querySelector('[data-question-text]'); return t ? Math.round(t.getBoundingClientRect().top) : null; })() };
+    setupTop: (() => { const t = document.querySelector('[data-question-setup]') || document.querySelector('[data-question-text]'); return t ? Math.round(t.getBoundingClientRect().top) : null; })(),
+    // Since pass NU (EARMARKS A172): the Walkthrough Mode tab's foot, 0 with no tab, since Ready's 12 pixels count from it where it shows.
+    tabBottom: (() => { const t = document.querySelector('[data-walkthrough-tab]'); return t ? Math.round(t.getBoundingClientRect().bottom) : 0; })() };
 });
 // Every run of small l's in a text, as ellRuns finds them, and whether every lone capital of a text keeps the word before it.
 const ellsIn = (t) => L.ellRuns(t).filter((x, i) => i % 2);
@@ -336,12 +338,13 @@ const wholeHeld = (page) => page.evaluate(() => [...document.querySelectorAll('[
   return { t: e.textContent, rows: new Set([...e.getClientRects()].map((r) => Math.round(r.top))).size, over: Math.round((er.right - right) * 10) / 10 }; }));
 const wholeFaults = (held) => held.filter((h) => h.rows !== 1 || h.over > 0.5);
 // Since the third read's screen read the walk runs sideways too (667 by 375), where the cue's tap had left the question's first line 2 to 4
-// pixels from the screen's top: after Ready the question's first line keeps its 12 pixels (11 or more), and after the cue's tap Ready sits
+// pixels from the screen's top: after Ready the question's first line keeps its 12 pixels (11 or more; since pass NU, EARMARKS A172, counted
+// from the Walkthrough Mode tab's foot, which this walk shows, where at 320 by 568 the line had come to rest under the tab), and after the cue's tap Ready sits
 // 28 pixels above the screen's foot (25 to 31), never flush on it.
 for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'dark']) { const page = await openPage(theme); await noVoice(page); await page.setViewportSize({ width: W, height: H }); await page.waitForTimeout(300);
   // Sideways, a touch screen first asks to turn the phone upright (pass MS, Q74); a grown-up who cannot turn it taps Keep going sideways.
   const keep = page.locator('#edu-rotate.edu-rotate-on .edu-rotate-keep'); if (await keep.count()) { await keep.click(); await page.waitForTimeout(200); }
-  const short = { cue: [], after: [], row: [], again: [], room: [], whole: [] }; let below = 0; let wholeRead = 0; const size = `${W} by ${H}`;
+  const short = { cue: [], after: [], row: [], again: [], room: [], whole: [], end: [] }; let below = 0; let wholeRead = 0; const size = `${W} by ${H}`;
   for (const g of banks) {
     const q = L.generateQuestion(g, 1); const card = L.grownUpCard(q); const where = `${g} s1`;
     await show(page, g, 1); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(700);
@@ -360,17 +363,30 @@ for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'da
     else if (s.cue) short.cue.push({ where, cueWithReadyShown: s.readyBottom });
     await page.locator('[data-card-ready] button').click(); await page.waitForTimeout(250);
     s = await state(page);
-    if (s.setupTop === null || s.setupTop < 11 || s.focused !== `choice:${q.choices[0]}`) short.after.push({ where, top: s.setupTop, focused: s.focused });
+    if (s.setupTop === null || !(s.tabBottom > 0) || s.setupTop < s.tabBottom + 11 || s.focused !== `choice:${q.choices[0]}`) short.after.push({ where, top: s.setupTop, tab: s.tabBottom, focused: s.focused });
     if (card.sounds && new Set(s.numberTops).size !== 1) short.row.push({ where, tops: s.numberTops });
     // After a pick, Show the words again: one cue at most, the one to Ready, and a tap on it brings Ready into view.
     await page.locator('[data-choice]').first().click(); await page.waitForTimeout(150); await page.locator('[data-card-again]').click(); await page.waitForTimeout(700);
     s = await state(page); const cues = await page.locator('[data-scroll-cue]').count();
     if (cues > 1 || (s.readyBottom > H + 4 && cues !== 1)) short.again.push({ where, cues, bottom: s.readyBottom });
     else if (cues === 1) { await page.locator('[data-scroll-cue]').click(); await page.waitForTimeout(500); s = await state(page); if (s.readyBottom > H - 25) short.again.push({ where, step: 'after the cue', bottom: s.readyBottom }); }
+    // Since round one's code read (pass NU, M1): with the card back, the page scrolled to its end before Ready, where the question's first
+    // line can rest inside its margin below the Walkthrough Mode tab rather than above the screen, so Ready's condition, which counts the
+    // margin from the tab's foot, is read as well as its scroll (with that half undone the line rested 5.5 to 10 pixels below the tab);
+    // and the tab must be there, since this walk is the walk-through, where a tab read as 0 would make it the old check.
+    await page.evaluate(() => window.scrollTo(0, 99999)); await page.waitForTimeout(300);
+    if (await page.locator('[data-card-ready] button').count()) { await page.locator('[data-card-ready] button').click(); await page.waitForTimeout(250); const e = await state(page);
+      if (e.setupTop === null || !(e.tabBottom > 0) || e.setupTop < e.tabBottom + 11) short.end.push({ where, top: e.setupTop, tab: e.tabBottom });
+      // The card put back, so the walk leaves each page as it had it before this route: the near miss after the walk shows the walk's
+      // last kind at the same seed (p4-print-tells at 1), the test hook keeps the card's Ready for the same question, and without this
+      // its read found no card (the lead's run of round one's fixes).
+      await page.locator('[data-card-again]').click(); await page.waitForTimeout(200); }
+    else short.end.push({ where, step: 'no Ready after Show the words again' });
   }
   ok(`${theme}, ${size}: wherever Ready sits below the fold (${below} of the ${banks.length} at seed 1) the scroll cue shows, and a tap on it brings Ready into view 28 pixels above the screen's foot; where it shows, no cue`, short.cue.length === 0 && below > 0, short.cue.slice(0, 3));
   ok(`${theme}, ${size}: wherever the cue shows beside the card, no word of the card sits under it or within 6 pixels of it`, short.room.length === 0, short.room.slice(0, 3));
-  ok(`${theme}, ${size}: after Ready the question's first line is on the screen 11 pixels or more below its top, and the first answer has the focus`, short.after.length === 0, short.after.slice(0, 3));
+  ok(`${theme}, ${size}: after Ready the question's first line is on the screen 11 pixels or more below the Walkthrough Mode tab's foot (since pass NU, EARMARKS A172), and the first answer has the focus`, short.after.length === 0, short.after.slice(0, 3));
+  ok(`${theme}, ${size}: with the card back and the page scrolled to its end, after Ready the question's first line is 11 pixels or more below the Walkthrough Mode tab's foot (pass NU, round one's code read)`, short.end.length === 0, short.end.slice(0, 3));
   ok(`${theme}, ${size}: a which-sound question's numbered buttons stand in one row`, short.row.length === 0, short.row.slice(0, 3));
   ok(`${theme}, ${size}: after a pick, Show the words again leaves one cue at most, the one to Ready, and its tap brings Ready into view`, short.again.length === 0, short.again.slice(0, 3));
   ok(`${theme}, ${size}: every answer of several words on a card's list stands on one row and inside its line, never past its paragraph's right edge (${wholeRead} read, the print card's three at seed 1; pass NS, Q122 (a), and round one's code read)`, short.whole.length === 0 && wholeRead === 3, short.whole.slice(0, 3));

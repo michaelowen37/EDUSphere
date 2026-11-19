@@ -4068,6 +4068,10 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
      button of it lies under the chip. As a sheet taller than the screen opens, the chip in its last ten seconds lies over the words at the
      foot of the screen until the sheet is scrolled, where Mikey's answer keeps it. */
   @media (max-width: 999px) { body.edu-has-sheet .edu-logout-chip:not([data-last-ten]) { opacity: 0 !important; } body.edu-has-chip .edu-sheet:not([data-sheet-placed]) { padding-bottom: 68px !important; } }
+  /* Since pass NU (EARMARKS A173, from pass NT's screen read) the chip hides the same way under every other pop-up, What's new among
+     them: at 320 by 568 it lay over the foot of What's new's box, 6 pixels of it in the light theme and about 18 in the dark (Claude's
+     reading of Q104's answer for a pop-up that is no sheet). The body carries edu-has-popup while any pop-up is open (Overlay). */
+  @media (max-width: 999px) { body.edu-has-popup .edu-logout-chip:not([data-last-ten]) { opacity: 0 !important; } }
   @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.frame}; pointer-events: none; z-index: 50; } }
 .edu-side { display: none; }
 .edu-page-stars { display: none; }
@@ -5963,6 +5967,7 @@ function overlayPlace(sheet = false) {
 // second, and a box that followed the page as it scrolled could never be scrolled to the buttons at its foot. z is the layer,
 // sheet a pop-up that scrolls as one long page, start a box that sits at the top and scrolls, and the rest pass straight through.
 let openSheets = 0;   // how many sheets are open, so the body's edu-has-sheet class goes only when the last one closes
+let openPopups = 0;   // how many pop-ups are open, a sheet or not, so the body's edu-has-popup class goes only when the last one closes (pass NU)
 function Overlay({ children, z = 100, onClick, role, label, modal, className, bg, pad = 16, sheet = false, start = false, scroll = false }) {
   const [place, setPlace] = useState(() => overlayPlace(sheet));
   useEffect(() => { const t = setTimeout(() => setPlace(overlayPlace(sheet)), 150); return () => clearTimeout(t); }, []);
@@ -5978,6 +5983,13 @@ function Overlay({ children, z = 100, onClick, role, label, modal, className, bg
     openSheets += 1; document.body.classList.add('edu-has-sheet');
     return () => { openSheets = Math.max(0, openSheets - 1); if (!openSheets) document.body.classList.remove('edu-has-sheet'); };
   }, [sheet]);
+  // Every pop-up, a sheet or not, puts edu-has-popup on the body while it is open (counted, as the sheets are), so on a phone or a tablet
+  // the countdown chip hides under it until its last ten seconds, as under a sheet (pass NU, EARMARKS A173; the CSS beside the sheet's).
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    openPopups += 1; document.body.classList.add('edu-has-popup');
+    return () => { openPopups = Math.max(0, openPopups - 1); if (!openPopups) document.body.classList.remove('edu-has-popup'); };
+  }, []);
   const cls = [className, sheet ? 'edu-sheet' : ''].filter(Boolean).join(' ') || undefined;
   const placed = sheet && place.paddingTop !== undefined;
   return <div className={cls} data-sheet-placed={placed ? '' : undefined} role={role} aria-label={label} aria-modal={modal} onClick={onClick} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: bg || C.scrim, zIndex: z, ...lay, ...place }}>{children}</div>;
@@ -6277,6 +6289,13 @@ function keepCueRoom(spot) {
     if (story && !aloneBefore && Math.round(least) > 0 && lastRowAlone(el)) holdStoryPair(el);
   }
   return gave;
+}
+// How far the Walkthrough Mode tab reaches down into the top of what shows (pass NU, EARMARKS A172): the tab's foot below the top of the
+// visible band, or 0 with no tab or with the tab above what shows (the preview's page-tall frame scrolled down), so a margin kept below
+// the top of the screen is kept below the tab's foot where the tab shows.
+function tabCover() {
+  if (typeof document === 'undefined') return 0; const tab = document.querySelector('[data-walkthrough-tab]'); if (!tab) return 0;
+  const r = tab.getBoundingClientRect(); const top = visibleBand().top; return r.bottom > top ? Math.ceil(r.bottom - top) : 0;
 }
 function visibleBand() {
   const H = typeof window === 'undefined' ? 800 : window.innerHeight;
@@ -9027,6 +9046,14 @@ function FitText({ children, size = 12, min = 9, style = null, className = undef
 // aloud and meet early questions: "A hug from a grown- / up" at 320). A prop the voice says (text={wonder.prompt}) stays a string.
 // Since round three's screen read of pass NR it splits by WHOLE_WORD, so a pre-K grade with its number ("pre-K 4") is one kept word too,
 // and the educator's sentences go through it: Since you last looked broke "pre- / K 4 math" at 320 by 568.
+// Words kept whole where a line would part them (pass NU, EARMARKS A174, from pass NT's screen read, its SHOULD CONSIDER 5: on the Key
+// Words card Confidence, scored 1 to 5 broke "80 / percent" at 320, 360, 412 and 414 pixels wide and in print, and "re- / introduction"
+// and "long- / term" at 320, 390 and 393). In plain terms: a hyphenated word stays whole (wholeHyphens), and a number keeps the word after
+// it, joined by a no-break space ("80 percent", "adds 1 more"). Since round one's screen read it holds a number to any word after it, not
+// only to percent ("adds 1 / more." parted on the card), and What's new's notes are drawn through it too, where "from pre- / K 3 math"
+// and "grown- / up's" broke. EXPLANATIONS and docs/WHATS-NEW.md keep their words as written, which the tests read; only the screens draw
+// them so.
+function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\d) (?=[a-z])/g, '$1\u00A0')); }
 function wholeHyphens(text) { return String(text).split(WHOLE_WORD).map((w, i) => (i % 2 ? <span key={i} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w)); }
 function WordFit({ children }) {
   const words = wholeHyphens(children);
@@ -13861,6 +13888,14 @@ function EduSphereScreens() {
       events.push(makeCoursesEnabledEvent([...new Set([...courseIds, 'history-4', 'history-7'])], ago(0)), pass(T4, 5), pass(T4, 4), pass(T7, 3), pass(T7, 2), miss(S7, 1));
       seeded.twins = { first: [T4, T7], lesson: S7 };
     }
+    // Two reviews of one title due on one day (pass NU, EARMARKS A161): pre-K 3's and pre-K 4's More and fewer, both courses assigned (the
+    // newest course setting) and both lessons starred twenty-five days ago, pre-K 3's an hour earlier so it is the older and comes first, so
+    // the child's Quick Review card offers the two together and names each one's course.
+    if (plan.reviewTwins) {
+      const R3 = 'more-or-fewer'; const R4 = 'more-and-fewer-5';
+      events.push(makeCoursesEnabledEvent([...new Set([...courseIds, 'very-first-steps-pk3', 'first-steps-pk'])], ago(0)), pass(R3, 26, 1), pass(R3, 25, 1), pass(R4, 26), pass(R4, 25));
+      seeded.reviewTwins = [R3, R4];
+    }
     // A course finished a few days ago (pass MB): every module passed on two days, recently enough that no Quick Review is due,
     // so the walk can open Let's Read and read the course's story again.
     if (plan.finish && getCourse(plan.finish)) {
@@ -14223,14 +14258,21 @@ function EduSphereScreens() {
       // The card's spoken line for a young learner: the lesson's name starts a sentence, so it keeps its capital (round four's code
       // read, pass MQ: lowered, "count to 5." took no rest before it, since a rest comes only before a piece that starts a sentence),
       // while the second of two names, inside the sentence, is lowered.
-      const lbSay = lbHead + '. ' + lbBody + ' ' + (lbTwo ? lbList[0].title + ', then ' + lowerTitle(lbList[1].title) + '. ' : lbMod.title + '. ') + lbTail;
+      // Since pass NU (EARMARKS A161) a title another lesson shares names its course after it, on the card and in its spoken line, by the
+      // one rule (reviewCardNames): two reviews of More and fewer on one day read "from pre-K 3 math" and "from pre-K 4 math".
+      const lbNames = reviewCardNames((lbTwo ? lbList : [lbMod]).map((m) => m.id), enabledCourseIds(record.events));
+      const lbFrom = (i) => (lbNames[i] && lbNames[i].course ? ` from ${lbNames[i].course}` : '');
+      const lbSay = lbHead + '. ' + lbBody + ' ' + (lbTwo ? lbList[0].title + lbFrom(0) + ', then ' + lowerTitle(lbList[1].title) + lbFrom(1) + '. ' : lbMod.title + lbFrom(0) + '. ') + lbTail;
       return (
         <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={false} /><div className="edu-wrap" style={{ ...wrap }}>
           <div className="edu-rise" style={{ ...card, textAlign: 'center', marginTop: 36 }} data-light-review-card={lookBack.moduleId} data-light-review-count={lbList.length}>
             <h1 style={{ fontSize: 24, margin: '0 0 10px' }}>{lbHead}</h1>
             <p style={{ margin: '0 0 12px', fontSize: 17, lineHeight: 1.5 }}>{lbBody} {lbTail}</p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, margin: '0 0 16px' }}>
-              {(lbTwo ? lbList : [lbMod]).map((m, i) => <span key={m.id} style={{ display: 'inline-block', padding: '6px 14px', borderRadius: 999, border: `1px solid ${C.line}`, fontSize: 15, fontWeight: 700 }}>{lbTwo ? (i + 1) + '. ' : ''}{titleCase(m.title)}</span>)}
+              {/* A course after a shared title (pass NU, EARMARKS A161) is one block after a space, balanced, its "from" held to the next
+                  word, so it moves to its own line whole rather than leave "from" or "math" alone on a line (round one's code read: "math"
+                  alone at 328 to 366 pixels wide). */}
+              {(lbTwo ? lbList : [lbMod]).map((m, i) => <span key={m.id} style={{ display: 'inline-block', padding: '6px 14px', borderRadius: 999, border: `1px solid ${C.line}`, fontSize: 15, fontWeight: 700 }}>{lbTwo ? (i + 1) + '. ' : ''}{titleCase(m.title)}{lbFrom(i) && <>{' '}<span data-review-course="" style={{ display: 'inline-block', fontWeight: 400, color: C.muted, textWrap: 'balance' }}>{wholeHyphens(lbFrom(i).trim().replace(/^from /, 'from\u00A0'))}</span></>}</span>)}
             </div>
             {youngLearner && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}><SpeakButton mini text={lbSay} label="Hear it" /></div>}
             <Btn full onClick={() => startLightReview(lookBack)} style={{ width: 'min(320px, 100%)' }}>Start</Btn>
@@ -15132,7 +15174,10 @@ function EduSphereScreens() {
               const top = document.querySelector('[data-question-setup]') || document.querySelector('[data-question-text]');
               // Since the third read's screen read: whenever the question's first line sits within its 12-pixel margin of the top, not only
               // above it (sideways, the cue's tap had left it 2 to 4 pixels from the screen's top edge).
-              if (top && top.scrollIntoView && top.getBoundingClientRect().top < visibleBand().top + 12) top.scrollIntoView({ block: 'start', behavior: 'auto' });
+              // Since pass NU (EARMARKS A172) the 12 pixels count from the Walkthrough Mode tab's foot where the tab shows (tabCover): at 320
+              // by 568 in the walk-through the question's first line had come to rest at 15 pixels, under the tab, which runs to 19 or so.
+              const cover = tabCover();
+              if (top && top.scrollIntoView && top.getBoundingClientRect().top < visibleBand().top + 12 + cover) { top.style.scrollMarginTop = `${12 + cover}px`; top.scrollIntoView({ block: 'start', behavior: 'auto' }); }
               const first = document.querySelector('[data-choice]'); if (first && first.focus) first.focus({ preventScroll: true }); }); }} />
           ) : q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
@@ -15446,7 +15491,9 @@ function EduSphereScreens() {
 
   if (screen === 'light-review-result' && lastEvent && lastEvent.type === 'light_review_completed') {
     const mod = getModule(lastEvent.moduleId);
-    const title = mod ? '*' + titleCase(mod.title) + '*' : 'this lesson';   // emphasized on screen (Mikey, pass LP)
+    // Since round one's code read (pass NU, EARMARKS A161) a title another lesson shares carries its course after it, by the one rule
+    // (fromCourse), as the card that offered the review does: "*More and Fewer* from pre-K 3 math is worth another visit."
+    const title = mod ? '*' + titleCase(mod.title) + '*' + fromCourse(mod.id, record ? enabledCourseIds(record.events) : []) : 'this lesson';   // emphasized on screen (Mikey, pass LP)
     const line = lastEvent.stage === 'fresh' ? (lastEvent.outcome === 'clear' ? `You've got ${title} now! That one is yours to keep!` : lastEvent.outcome === 'bare' ? `You're getting closer with ${title}. We will look back at it once more soon.` : `${title} is still tricky, and that's okay. It's on your list so you can go back through it any time.`)
       : lastEvent.outcome === 'clear' ? `You remembered ${title} well. That one is yours to keep!`
       : lastEvent.outcome === 'bare' ? `You remembered a lot of ${title}. We will look back at it once more soon.`
@@ -16677,17 +16724,28 @@ function EduSphereScreens() {
     // tour has not started yet, because it starts a moment later, so a tour that is about to start counts as running.
     const tourPending = !!(educator && !educator.tourSeen && !phoneScreen && !tourBegun.current);
     const backupNudgeOpen = !!(educator && backupAt === null && !backupNudgeSeen && tourStep < 0 && !tourPending);
+    // The box counts its padding in its 85 percent of the screen's height (round one's screen read, pass NU, SC1: its padding had added 48
+    // pixels, so at 320 by 568 it ran to 549, under the countdown chip's last ten seconds at 524), its width grown by the padding so a wide
+    // screen draws it as before in the light theme (in the dark, whose 1-pixel border it counts too, 2 pixels narrower, as round two's
+    // records read measured); and its notes scroll inside it while Got it and More Details stay at its foot (MF2: Got it, the pop-up's
+    // only way out, had sat below the box's foot as it opened at 320 by 568, 360 by 640 and on a phone held sideways, with the notes as
+    // round one read them; at 667 by 375 the notes as delivered fit without the foot, which is for a block whose notes run long), so the
+    // way out shows as the pop-up opens at any size, however long the notes run.
     const newsPopup = newsOpen && news && !backupNudgeOpen && tourStep < 0 && !tourPending ? (
       <Overlay className="edu-no-print">
-        <div className="edu-rise" style={{ width: 'min(440px, 100%)', maxHeight: '85vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
+        <div className="edu-rise" style={{ width: 'min(484px, 100%)', maxHeight: '85vh', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
+          <div data-news-scroll="" style={{ overflowY: 'auto', minHeight: 0, flex: '1 1 auto' }}>
           <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700 }}>What's new</p>
           <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{news.date}</p>
           {/* Each note keeps its last two words together and wraps evenly (pass NT, round one's screen read: the worked example ended on "4."
               alone at 320 pixels, and a note on "sentence." alone at 390 and 393, the widths most iPhones have). */}
-          <ul data-news-brief="" style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{newsBrief.slice(0, 4).map((t, k) => <li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>)}</ul>
+          <ul data-news-brief="" style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{newsBrief.slice(0, 4).map((t, k) => <li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>)}</ul>
           {newsBrief.length > 4 && <p style={{ margin: '-8px 0 14px', fontSize: 14, color: C.muted }}>And {newsBrief.length - 4} more in More Details.</p>}
+          </div>
+          <div data-news-foot="" style={{ flex: 'none' }}>
           <Btn onClick={dismissNews}>Got it</Btn>
           <p style={{ margin: '14px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 15 }} onClick={async () => { await dismissNews(); setScreen('whats-new'); }}>More Details</button></p>
+          </div>
         </div>
       </Overlay>
     ) : null;
@@ -17503,7 +17561,7 @@ function EduSphereScreens() {
             {/* The title wraps balanced, and each note keeps its last two words together and wraps evenly, as the pop-up's do (pass NT,
                 round one's screen read: a title ended on "time" alone at 412 to 430 pixels, and a note on "sixth." alone at 414). */}
             {bk.title && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textWrap: 'balance' }}>{bk.title.charAt(0).toUpperCase() + bk.title.slice(1)}</p>}
-            <ul style={{ margin: 0, padding: '0 0 0 20px', fontSize: 15, lineHeight: 1.6 }}>{bk.items.map((t, k) => <li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>)}</ul>
+            <ul style={{ margin: 0, padding: '0 0 0 20px', fontSize: 15, lineHeight: 1.6 }}>{bk.items.map((t, k) => <li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>)}</ul>
           </div>
         ))}
       </div></div>
@@ -17948,7 +18006,7 @@ function EduSphereScreens() {
           {coursePreview && getCourse(coursePreview) && (
             // A course previewed before it is assigned (2026-09-29, Mikey): every module with its one-line description.
             <Overlay onClick={() => setCoursePreview(null)}>
-              <div className="edu-rise" role="dialog" aria-label="Course preview" style={{ width: 'min(520px, 100%)', maxHeight: '86vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '22px 22px 18px' }} onClick={(e) => e.stopPropagation()}>
+              <div className="edu-rise" role="dialog" aria-label="Course preview" style={{ width: 'min(564px, 100%)', maxHeight: '86vh', boxSizing: 'border-box', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '22px 22px 18px' }} onClick={(e) => e.stopPropagation()}>
                 <p style={{ margin: '0 0 2px', fontSize: 19, fontWeight: 700, textAlign: 'center' }}>{getCourse(coursePreview).title}</p>
                 <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{courseGradeLabel(getCourse(coursePreview))} · {getCourse(coursePreview).subject} · {getCourse(coursePreview).modules.length} {getCourse(coursePreview).modules.length === 1 ? 'module' : 'modules'}</p>
                 <ol style={{ margin: 0, padding: '0 0 0 22px' }}>
@@ -18124,7 +18182,10 @@ function EduSphereScreens() {
                 </button>
                 {/* Each definition is rendered closed too and prints open (round four's screen read, pass MS: on paper the eight key words
                     had printed with none of their definitions, since only an open one was rendered). */}
-                <p className="edu-collapsible" style={{ display: open ? 'block' : 'none', margin: '0 0 6px', fontSize: 15 }}>{x.plain}</p>
+                {/* Since pass NU (EARMARKS A174) a definition keeps a hyphenated word and a number with its word whole (wholeHyphensAndNumbers), and
+                    since round one's screen read its last two words together, wrapped pretty, so none ends on one word alone ("information."
+                    stood alone in print once "long-term" no longer broke, and "guessing." and "mastered." at 320 on screen). */}
+                <p className="edu-collapsible" style={{ display: open ? 'block' : 'none', margin: '0 0 6px', fontSize: 15, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(x.plain), x.plain)}</p>
               </div>
             );
           })}

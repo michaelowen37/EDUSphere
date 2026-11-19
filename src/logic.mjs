@@ -136,7 +136,8 @@ export function courseInSentence(course) {
 // list enabledCourseIds gives), or is among the lessons the same sentence or page names or speaks of (besideIds), as a loop back from
 // grade 7's The first Texans to grade 4's names both when only grade 7's course is assigned. Every place that names a lesson for a
 // person reads it here (lessonInSentence, the stuck and practice review sentences, Who Needs Help, the weekly note, Since you last looked,
-// Practice so far and the lesson page), so no screen names two lessons the same way. Until pass NR each place decided pair by pair: Who
+// Practice so far, the lesson page and, since pass NU, a child's Quick Review card, by reviewCardNames below, and its result), so no screen names two
+// lessons the same way. Until pass NR each place decided pair by pair: Who
 // Needs Help named a lesson by its title alone in five of its reasons, and View progress said "the lesson Spanish and Mexican Texas stays
 // locked" beside grade 4's lesson of that title, open on the same report.
 export function sharesTitle(id, enabledIds = [], besideIds = []) {
@@ -157,6 +158,16 @@ export function fromCourse(id, enabledIds = [], besideIds = []) {
 export function lessonInSentence(id, besideId = null, enabledIds = []) {
   const m = getModule(id); if (!m) return '';
   return `${lowerTitle(m.title)}${fromCourse(id, enabledIds, besideId ? [besideId] : [])}`;
+}
+// The names a child's Quick Review card gives the lessons it offers (pass NU, EARMARKS A161, found by pass NR's engineer E1). In plain
+// terms: each lesson's id and title, and its course's words (courseInSentence) where the one rule above (sharesTitle) says the title needs
+// them, another lesson of that title being on the same card or in the student's assigned courses (enabledIds), so a busy day's two reviews
+// of one title never read alike. The card prints the course after the title, and its spoken line says it: "More and fewer from pre-K 3
+// math, then more and fewer from pre-K 4 math." An id the app does not know gives null.
+export function reviewCardNames(ids, enabledIds = []) {
+  const list = ids || [];
+  return list.map((id) => { const m = getModule(id); if (!m) return null;
+    return { id, title: m.title, course: sharesTitle(id, enabledIds, list.filter((x) => x !== id)) ? courseInSentence(getCourse(m.courseId)) : '' }; });
 }
 
 // A COURSE belongs to exactly one subject (Math, Reading, Science, ...) and

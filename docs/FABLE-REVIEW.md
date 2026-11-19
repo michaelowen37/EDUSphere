@@ -200,6 +200,12 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NU (four waiting earmarks a person sees: the Key Words kept whole, the sign-out chip under every pop-up, a shared title's course on the Quick Review card, and Ready below the walk-through tab)
+
+- A What's new note's first sentence is what the pop-up shows on a phone, so it is short, about two lines at 320 pixels, and says the change; its example goes in the second sentence, which More Details shows. A block of four long first sentences pushed Got it, the pop-up's only way out, below the box on small phones.
+- A pass that keeps words whole on one screen keeps them whole in the What's new note that tells of it: the note promising "re-introduction" never splits had split "re- / introduction" on More Details.
+- A child's card that names lessons follows the one rule the educator's sentences follow: a title another lesson shares carries its course, in print and in the spoken line, "More and fewer from pre-K 3 math".
+
 ## Learned in pass NT (Mikey's answer Q123 in his own words, and three tools items: the floor guard's plants, the names in the CLAUDE files, and the rules test's planted copies)
 
 - A sentence of Mikey's own words that reads two ways is offered a fix as a choice and left as he wrote it until he takes one; his typo is fixed and told. He took two phrases in pass NT ("questions that come back" and "that point instead"), each saying outright what the score does.

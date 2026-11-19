@@ -1,14 +1,14 @@
-NT: Q123 in Mikey's words; tools items L34, L31 and L36 in part
+NU: Key Words whole, chip under pop-ups, Quick Review twins named
 
-- Pass NT (committed through NS): a small pass at the end of the week, building Mikey's answer Q123 (a) with his own words for its end, then the three tools items pass NS could not reach.
-- Q123 (a): the Key Word What holds a confidence score down gives each rule its own sentence, in his words ("student's" made "students"), with the two phrases he took: "questions that come back" and "can earn that point instead". The rules test reads the point below the score's top and for every way a question comes back, with nineteen word plants and two code faults. What's new gains a block for November 18.
-- L34: the floor guard's plants read the baseline and run on a raised tree too; question-screens' floor of older stories is 71; part two's line Module ids names the rules test for its counts.
-- L31: the docs sync test reads every name and path the three CLAUDE files mention against the tree, each name whole and outside comments, the names that are not the project's code kept with their reasons.
-- L36, in part: the rules test loads its planted copies of the logic in contexts of their own and says its memory before its summary; what stays live past Node's default heap waits for a heap snapshot.
-- Round one's code read (Fable) and screen read (Opus), round two's records read (Fable), and their fixes: the point read below the top and for every way back; the floor guard's plants on a raised tree; names read whole; What's new's notes keep their last two words together and wrap evenly, in a row of their own; L27 and L36 open again to the packet tool; EARMARKS A173 and A174.
-- check.sh: every test passed in one run of 189 minutes, none past two thirds of its limit; the rules test 3,319.
+- Pass NU (committed through NT): a small pass at the end of the week, building four waiting earmarks a person sees, each with a code read on Fable, a screen read on Opus and a records read on Fable.
+- A174: the Key Words keep a hyphenated word and a number with its word whole, and each definition its last two words together; What's new's notes are drawn the same way.
+- A173: on a phone the educator's sign-out chip hides under every pop-up until its last ten seconds, as under a sheet; the What's new box and the course preview count their padding, and What's new keeps Got it in view below its notes.
+- A161: a child's Quick Review card, its spoken line and the review's result name a shared title's course, by the one rule the educator's sentences follow.
+- A172: after Ready on a grown-up's card, the question settles 12 pixels below the Walkthrough Mode tab.
+- Round one's code read and screen read, round two's records read, and their fixes: a walk-through route that lands inside Ready's margin, the course as one balanced block, What's new's short first sentences, the Key Words read at the product page's widths, a sideways check that plants a long note, section 8's grown-up card row corrected in place under Q85, and EARMARKS A175 to A177.
+- check.sh: every test passed in one run of 194 minutes, none past two thirds of its limit; the rules test 3,320.
 
-Passes: NT
+Passes: NU
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01NP3XVR7HdPXSxLvft2Dr4g
+Claude-Session: https://claude.ai/code/session_01NP3XVRXbsUewinG3FJuzQT

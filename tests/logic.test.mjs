@@ -12506,7 +12506,8 @@ const moreRightProblems = (L) => { const r = {};
       ok('the young voice keeps its rest before a sentence that starts with a digit or a bracket, and More Info\'s young reading rests by restBefore (pass MQ, round four\'s code read)', ![r5, r6].some((r) => r.error) && h.digit !== null && h.digit >= rest && h.bracket !== null && h.bracket >= rest && h.moreInfo, JSON.stringify(h)); }
     // The Quick Review card's spoken line for a young learner (round four's code read, pass MQ): the lesson's name starts a sentence
     // with its capital, so the rest before it holds; lowered, "...long ago. count to 5." ran on with no rest.
-    ok('the Quick Review card\'s spoken line starts the lesson\'s name with its capital, so the young voice rests before it (pass MQ, round four\'s code read)', /const lbSay = [^\n]*\(lbTwo \? lbList\[0\]\.title \+ ', then ' \+ lowerTitle\(lbList\[1\]\.title\) \+ '\. ' : lbMod\.title \+ '\. '\) \+ lbTail;/.test(ui));
+    // Since pass NU (EARMARKS A161) each name is followed by its course where the one rule asks (lbFrom), its capital kept.
+    ok('the Quick Review card\'s spoken line starts the lesson\'s name with its capital, so the young voice rests before it (pass MQ, round four\'s code read)', /const lbSay = [^\n]*\(lbTwo \? lbList\[0\]\.title \+ lbFrom\(0\) \+ ', then ' \+ lowerTitle\(lbList\[1\]\.title\) \+ lbFrom\(1\) \+ '\. ' : lbMod\.title \+ lbFrom\(0\) \+ '\. '\) \+ lbTail;/.test(ui));
     // No read-aloud lesson line and no game's welcome line is cut by the sentence rule before a piece that does not start a sentence
     // (round four's code read, pass MQ): a lesson reads each sentence as its own text and the young rest falls at every cut, and the
     // audio ledger keys each piece as its own clip, so "Washington, D.C. is ..." in a lesson would rest in the middle of its sentence.
@@ -14453,13 +14454,54 @@ const moreRightProblems = (L) => { const r = {};
 // "4." alone, and at 390 and 393 a note on "sentence." alone; on More Details a title ended on "time" alone at 412 to 430). Each site's
 // old text, planted alone in a copy of the screen code, is caught; the lead's look and round two's read read the pop-up by eye.
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
-  const SITES = [["<li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>", '<li key={k} style={{ marginBottom: 4 }}>{t}</li>'],
-    ["<li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>", '<li key={k} style={{ marginBottom: 6 }}>{t}</li>'],
+  // Since pass NU (round one's screen read) each note is drawn through wholeHyphensAndNumbers first, so the two places' texts follow it.
+  const SITES = [["<li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>", '<li key={k} style={{ marginBottom: 4 }}>{t}</li>'],
+    ["<li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>", '<li key={k} style={{ marginBottom: 6 }}>{t}</li>'],
     ["fontSize: 14, color: C.muted, textWrap: 'balance' }}>{bk.title.charAt(0)", 'fontSize: 14, color: C.muted }}>{bk.title.charAt(0)']];
   const held = (src) => SITES.every(([now]) => src.split(now).length === 2);
   const caught = SITES.map(([now, old]) => { const p = ui.replace(now, old); return p !== ui && !held(p); });
   ok(`What's new's notes keep their last two words together and wrap evenly in the pop-up and on More Details, and its block titles wrap balanced (pass NT, round one's screen read; ${SITES.length} sites, each old text planted alone, caught)`,
     held(ui) && caught.every(Boolean), JSON.stringify({ held: SITES.map(([now]) => ui.split(now).length - 1), caught })); }
+// Pass NU's four fixes, each a waiting earmark. A Key Word's definition keeps a hyphenated word and a number with its word whole on the
+// card (wholeHyphensAndNumbers, EARMARKS A174; until round one's screen read keyWordWhole, which held only percent), its last two words
+// together, and every percent in EXPLANATIONS follows a number, so the card's join reaches each; What's new's notes are drawn through it
+// too, and the What's new box and the course preview count their padding in their height (round one's screen read); every
+// pop-up, a sheet or not, puts edu-has-popup on the body, under which the countdown chip hides on a phone until its last ten seconds
+// (A173); the child's Quick Review card names a shared title's course by the one rule (reviewCardNames, A161), on the card and in its
+// spoken line, and since round one's code read its result too; and Ready's 12 pixels count from the Walkthrough Mode tab's foot (tabCover,
+// A172). The pop-up count's cleanup (round one's code read: a bare remove passed) is a site too. Each site's old text, planted alone in a
+// copy of the screen code, is caught; reviewCardNames is run on More and fewer's two lessons, a title beside it on the card and a title in
+// an assigned course each naming the course, and a title no lesson beside it or assigned shares naming none; and a percent after a word
+// is planted in a copy of the definitions, caught. The site test reads the chip while What's new is open; the lead's look reads the rest.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const SITES = [
+    ["fontSize: 15, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(x.plain), x.plain)}</p>", "fontSize: 15 }}>{x.plain}</p>"],
+    ["function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) (?=[a-z])/g, '$1\\u00A0')); }", "function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) percent\\b/g, '$1\\u00A0percent')); }"],
+    ["<li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>", "<li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>"],
+    ["<li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>", "<li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>"],
+    ["width: 'min(484px, 100%)', maxHeight: '85vh', boxSizing: 'border-box', display: 'flex', flexDirection: 'column'", "width: 'min(440px, 100%)', maxHeight: '85vh', overflowY: 'auto'"],
+    ["<div data-news-scroll=\"\" style={{ overflowY: 'auto', minHeight: 0, flex: '1 1 auto' }}>", "<div data-news-scroll=\"\">"],
+    ["<div data-news-foot=\"\" style={{ flex: 'none' }}>", "<div data-news-foot=\"\">"],
+    ["width: 'min(564px, 100%)', maxHeight: '86vh', boxSizing: 'border-box', overflowY: 'auto'", "width: 'min(520px, 100%)', maxHeight: '86vh', overflowY: 'auto'"],
+    ["@media (max-width: 999px) { body.edu-has-popup .edu-logout-chip:not([data-last-ten]) { opacity: 0 !important; } }", "@media (max-width: 999px) { }"],
+    ["openPopups += 1; document.body.classList.add('edu-has-popup');", "openPopups += 1;"],
+    ["const lbNames = reviewCardNames((lbTwo ? lbList : [lbMod]).map((m) => m.id), enabledCourseIds(record.events));", "const lbNames = (lbTwo ? lbList : [lbMod]).map(() => null);"],
+    ["lbList[0].title + lbFrom(0) + ', then ' + lowerTitle(lbList[1].title) + lbFrom(1) + '. ' : lbMod.title + lbFrom(0) + '. '", "lbList[0].title + ', then ' + lowerTitle(lbList[1].title) + '. ' : lbMod.title + '. '"],
+    ["{titleCase(m.title)}{lbFrom(i) && <>{' '}<span data-review-course=\"\" style={{ display: 'inline-block', fontWeight: 400, color: C.muted, textWrap: 'balance' }}>{wholeHyphens(lbFrom(i).trim().replace(/^from /, 'from\\u00A0'))}</span></>}</span>)}", "{titleCase(m.title)}{lbFrom(i) && <span data-review-course=\"\" style={{ fontWeight: 400, color: C.muted }}>{' '}{wholeHyphens(lbFrom(i).trim())}</span>}</span>)}"],
+    ["top.getBoundingClientRect().top < visibleBand().top + 12 + cover) { top.style.scrollMarginTop = `${12 + cover}px`; top.scrollIntoView({ block: 'start', behavior: 'auto' }); }", "top.getBoundingClientRect().top < visibleBand().top + 12) top.scrollIntoView({ block: 'start', behavior: 'auto' });"],
+    ["return r.bottom > top ? Math.ceil(r.bottom - top) : 0;", "return 0;"],
+    ["return () => { openPopups = Math.max(0, openPopups - 1); if (!openPopups) document.body.classList.remove('edu-has-popup'); };", "return () => { document.body.classList.remove('edu-has-popup'); };"],
+    ["const title = mod ? '*' + titleCase(mod.title) + '*' + fromCourse(mod.id, record ? enabledCourseIds(record.events) : []) : 'this lesson';", "const title = mod ? '*' + titleCase(mod.title) + '*' : 'this lesson';"]];
+  const held = (src) => SITES.every(([now]) => src.split(now).length === 2);
+  const caught = SITES.map(([now, old]) => { const p = ui.replace(now, old); return p !== ui && !held(p); });
+  const R = L.reviewCardNames; const pk3 = 'more-or-fewer', pk4 = 'more-and-fewer-5', c3 = 'very-first-steps-pk3', c4 = 'first-steps-pk';
+  const both = R([pk3, pk4], [c3, c4]), beside = R([pk3, pk4], [c3]), assigned = R([pk3], [c3, c4]), alone = R([pk3], [c3]), none = R(['first-texans', pk3, 'no-such-lesson'], ['history-4', c3]);
+  const names = both[0].course === 'pre-K 3 math' && both[1].course === 'pre-K 4 math' && beside[0].course === 'pre-K 3 math' && beside[1].course === 'pre-K 4 math'
+    && assigned[0].course === 'pre-K 3 math' && alone[0].course === '' && none[0].course === '' && none[1].course === '' && none[2] === null && both.every((x) => x.title === 'More and fewer');
+  const afterNumber = (list) => list.every((x) => !/percent/i.test(String(x.plain).replace(/\d percent\b/g, '')));
+  const wordPlant = L.EXPLANATIONS.map((x, i) => (i ? x : { ...x, plain: x.plain + ' About eighty percent of them.' }));
+  ok(`pass NU's four fixes: Key Words kept whole (A174), the chip hidden under every pop-up (A173), a shared title's course on the Quick Review card (A161) and Ready's margin below the walk-through tab (A172), ${SITES.length} sites, each old text planted alone and caught, reviewCardNames on More and fewer's two lessons, and every percent in EXPLANATIONS after a number, a percent after a word planted`,
+    held(ui) && caught.every(Boolean) && names && afterNumber(L.EXPLANATIONS) && !afterNumber(wordPlant), JSON.stringify({ held: SITES.map(([now]) => ui.split(now).length - 1), caught, both, beside, assigned, alone, none })); }
 // The run's memory (pass NT, EARMARKS L36): the most the process held, as the system measured it, and the highest heap read at a check
 // (garbage not yet collected included), against the heap's limit, so a run growing toward its limit says so in its own last lines, before
 // the summary, which stays the last line for check.sh's step 1.

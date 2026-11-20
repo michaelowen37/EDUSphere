@@ -9,6 +9,12 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 19, 2026 (yes or no questions with nothing to give the answer away)
+
+- Five pre-K lessons' yes or no questions no longer give away their answers. In Happy, sad, mad and scared, every No question used to say "when you feel mad", so a child who said No whenever they heard "when" was always right. Now "when" comes with Yes questions too, like "Is it okay to use your words when you feel mad?"
+- Yes or no questions in five pre-K lessons now come out about half Yes and half No. A voice to fit the place, Being a good friend, Let's play together and Three steps got the same fix as Happy, sad, mad and scared, with new questions from each lesson's own words. Before, a child who always said Yes was right six or seven times in ten.
+- On a phone, a question's words now keep a hyphenated word like grown-up whole. Before, a narrow screen could print "Do you need a grown-" on one line and "up" on the next, in pre-K questions old and new.
+
 ## November 18, 2026 (two reviews that share a name, and a few tidier screens)
 
 - Quick Review cards now name a shared title's course. When More and Fewer at pre-K 3 and at pre-K 4 are both due on one day, your child's card says "from pre-K 3 math" and "from pre-K 4 math", and so does its Hear it button, so the two never look or sound alike.

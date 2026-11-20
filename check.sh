@@ -216,6 +216,11 @@ step "13p/13 a student signed out after fifteen quiet minutes" /tmp/edu_idle.txt
 # two seeds of its banks at one size and theme from the page step 10 built, none blank and every one in its index. It took about
 # 30 seconds run alone in pass NQ, so its limit is 60, about twice its time (run, above).
 step "13q/13 a lesson's look proves itself, screen by screen" /tmp/edu_look.txt; run "a lesson's look" 60 node tools/lesson-look.mjs --selftest 2>&1 | tail -1 | tee /tmp/edu_look.txt; grep -q " 0 failed" /tmp/edu_look.txt || failed
+# A question's printed words keep a hyphenated word whole (pass NV, round one's screen read: "Do you need a grown- / up to say kind
+# words to a sad friend?" at 320 to 364 pixels, and 33 pre-K prompts somewhere from 320 to 440): every pre-K prompt with a hyphenated
+# word, shown through the app's own screen at every 8 pixels from 320 to 440 in both themes, with its plain text planted. It took about
+# 150 seconds run alone in pass NV, so its limit is 300, about twice its time (run, above).
+step "13r/13 a question's printed words keep a hyphenated word whole" /tmp/edu_hyph.txt; run "the question's hyphenated words" 300 node tests/e2e/prompt-hyphens.mjs 2>&1 | tail -1 | tee /tmp/edu_hyph.txt; grep -q " 0 failed" /tmp/edu_hyph.txt || failed
 # The run's end (finish, above): a step stopped at its limit, or one past two thirds of it, is named again, then the verdict, and after it
 # the run's step times when CHECK_TIMES_FILE is set; the exit code is the verdict's, as before.
 finish || exit 1

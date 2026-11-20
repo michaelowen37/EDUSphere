@@ -200,6 +200,20 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NW (the blind read names its by-design marks)
+
+- A mark a reader judges by design is written where the tool that prints it reads it, with the share it was judged at and the reason, so the next reader reads the reason instead of judging the mark again. In Talking with a friend and Play with a plan, every question offers one of the lesson's right acts beside one that is not, so a child who always taps Listen, or always taps Give a high five, is right whenever that choice is shown: the habit is the lesson itself.
+- A tie is pinned by the rule its members share, never by one member's name: Play with a plan's five right ways to plan and play each show on about a fifth of its questions, so which one a blind read names best changes with the seeds.
+- A rule that holds a reader's judgment is a tripwire, never the judgment. Of the 135 pre-K banks whose "always the same choice" row leans, 58 show no right answer as a wrong choice, since a small two-choice bank of k rows, each with its own right answer, leans by arithmetic (0.5 + 0.5/k), so a reader still says which ones are the lesson itself (EARMARKS A180).
+
+## Learned in pass NV (five older pre-K yes or no banks one word gave away, the one-word check widened, and a question's printed words kept whole)
+
+- A yes or no bank is read for what a child could answer by without the lesson: one word in every Yes row and no No row, two words together, and a Yes share far from half. Five older banks, as pass NU left them, each had a word that told the answer every time, and a child who always said Yes was right six or seven times in ten; each now asks its places, voices, steps, feelings and problems both ways, from its own lesson's lines.
+- A row asked both ways is read for what it mirrors: a dose can ask one topic twice, and the first question's explanation tells the second its answer (EARMARKS A179).
+- A new row never makes a child's body a wrong answer: "When your friend talks, do you turn away?" counted a child who cannot face a speaker wrong, and now asks whose turn it is, as the lesson does.
+- A More right answers line under "Is it okay to feel sad when your balloon floats away?" names sad or its sign, never the other feeling, however the question is asked.
+- A row and its twin are fixed together. "Can a friend far away by the slide hear a big outside voice?" asked about hearing, which the fair-bank row reads as ability, and was rewritten in round one while its No twin, "...hear your whisper?", waited for round two; both now ask which voice you use by the slide.
+
 ## Learned in pass NU (four waiting earmarks a person sees: the Key Words kept whole, the sign-out chip under every pop-up, a shared title's course on the Quick Review card, and Ready below the walk-through tab)
 
 - A What's new note's first sentence is what the pop-up shows on a phone, so it is short, about two lines at 320 pixels, and says the change; its example goes in the second sentence, which More Details shows. A block of four long first sentences pushed Got it, the pop-up's only way out, below the box on small phones.

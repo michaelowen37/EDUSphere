@@ -15161,7 +15161,9 @@ function EduSphereScreens() {
           {/* The printed question wraps balanced too, so it never ends on one lone word (pass MY, round one's screen check). */}
           {/* A hiding kind's card stands alone while it is up (pass NH, Q97 (a)): no question prints above it. */}
           {/* While the voice reads the setup the question is faint, and its sentences turn full ink as the voice begins each (pass NP). */}
-          {shownQ.prompt !== '' && readAlongOver(<p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance', scrollMarginTop: 12 }}>{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}
+          {/* Since pass NV (round one's screen read) it keeps a hyphenated word whole, as the Wonder prompt does: balanced lines had broken
+              "Do you need a grown- / up to say kind words to a sad friend?" at 320 to 364 pixels, and 33 pre-K prompts somewhere from 320 to 440. */}
+          {shownQ.prompt !== '' && readAlongOver(<p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance', scrollMarginTop: 12 }}>{wholeHyphens(shownQ.prompt)}</p>, lookFor(askedAt[1], C.surface))}
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
           {q.visual && !cardHides && <div data-question-picture="" style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual, printTiles) ? { ...shownVisual, size: matchSize(q.visual, printTiles) } : shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}

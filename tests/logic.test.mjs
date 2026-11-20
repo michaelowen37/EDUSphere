@@ -160,7 +160,11 @@ const MS_FIT_YESNO = { 'Do you use a big outside voice in the library?': 'No', '
 const MV_FIT_VOICE = { 'A baby is sleeping.': [['A whisper']], 'You are in the library, where others read their books.': [['A whisper']], 'You are talking with your teacher in the classroom.': [['An inside voice'], ['A whisper']], 'Your friend is far away on the playground, by the slide.': [['A big outside voice']], 'You are hurt and need help.': [['A big outside voice']] };
 const MV_FIT_WHERE = { 'Where do you use a whisper?': [['icon:book'], ['icon:teacher']], 'Which one goes with a whisper?': [['icon:baby~asleep'], ['icon:teacher']], 'Where can you use a big outside voice?': [['icon:slide']], 'Which one goes with an inside voice?': [['icon:teacher']] };
 const MV_FIT_KIND = { 'Your friend is sad.|Which voice fits?': [['A kind, soft voice']], 'Your friend is right beside you, and you want a turn on the slide.|Which voice fits?': [['A kind voice']], 'Your friend is sad.|What can you say in a kind, soft voice?': [['Are you okay?']] };
-const MV_FIT_YESNO = { 'When a baby is sleeping, do you use a big outside voice?': 'No', 'In the library, do you use a whisper?': 'Yes', 'On the playground, can you use a big outside voice?': 'Yes', 'Is a whisper too soft for a friend far away?': 'Yes', 'When a friend is sad, do you use a big outside voice?': 'No', 'If you are hurt and need help, can you use a big voice?': 'Yes', 'In the classroom, do you use an inside voice with your teacher?': 'Yes' };
+const MV_FIT_YESNO = { 'When a baby is sleeping, do you use a big outside voice?': 'No', 'In the library, do you use a whisper?': 'Yes', 'On the playground, can you use a big outside voice?': 'Yes', 'Is a whisper too soft for a friend far away?': 'Yes', 'When a friend is sad, do you use a big outside voice?': 'No', 'If you are hurt and need help, can you use a big voice?': 'Yes', 'In the classroom, do you use an inside voice with your teacher?': 'Yes',
+  // Since pass NV (EARMARKS A158), the rows that ask each place and voice the other way.
+  'When a baby is sleeping, do you use a whisper?': 'Yes', 'When a friend is sad, do you use a kind, soft voice?': 'Yes', 'By the slide, do you use a big outside voice?': 'Yes',
+  'In the library, do you use a big outside voice?': 'No', 'By the slide, do you use a whisper?': 'No', 'In the classroom, is an inside voice too soft for your teacher?': 'No',
+  'In the classroom, do you use a big outside voice with your teacher?': 'No', 'Is a big outside voice too soft for a friend far away?': 'No', 'In the library, is a whisper too loud?': 'No' };
 const MV_FIT_CLEAR = { 'How do you say your words, so your friend can understand you?': [['Slowly and clearly']], 'Which one helps your friend understand you?': [['Turn toward your friend']], 'Which one helps your teacher understand you?': [['Say your words slowly and clearly']] };
 const MV_TONE3_YESNO = { 'When we ask a question, does our voice often go up at the end?': 'Yes', 'When we tell, does our voice often go up at the end?': 'No', 'Can your voice go up high, like a little bird?': 'Yes', 'Can your voice go down low, like a big bear?': 'Yes', 'Can you say one word strong, to show it matters most?': 'Yes', 'Does a little bird sound like a voice down low?': 'No' };
 const MV_TONE4_YESNO = { 'When we ask a question, does our voice often go up at the end?': 'Yes', 'When we tell, does our voice often go up at the end?': 'No', 'Can the same words ask or tell?': 'Yes', 'Is a sad voice often quick, going up high?': 'No', 'Does a happy voice often go up high?': 'Yes', 'Can how something is said tell you how someone feels?': 'Yes', 'When you talk with a doctor you have just met, do you say your words slowly and clearly?': 'Yes' };
@@ -1243,7 +1247,11 @@ const PREK_DERIVE = {
   'p4-steps-say-them': (q) => { const m = /^Listen\. Tap the (\w+), then the (\w+), and then the (\w+)\.$/.exec(q.story || ''); return m && q.prompt === 'What can you say to yourself, to help you remember?' ? `First ${m[1]}, next ${m[2]}, last ${m[3]}` : null; },
   'p4-steps-which': (q) => { const m = /^Listen\. Tap the (\w+), then the (\w+), and then the (\w+)\.$/.exec(q.story || ''); const at = ['first', 'second', 'last'].indexOf((/^Which one do you tap (first|second|last)\?$/.exec(q.prompt) || [])[1]); return m && at >= 0 ? `icon:${m[1 + at]}` : null; },
   'p4-steps-tips': (q) => ({ 'You forgot a step of a direction. What can you say?': 'Can you say it again, please?', 'What can you do before you start a three-step direction?': 'Listen to all three steps', 'What can help you remember all three steps?': 'Say them to yourself' })[q.prompt] || null,
-  'p4-steps-yesno': (q) => ({ 'Get a cup, get a spoon, and then sit in your chair. Is the spoon the second step?': 'Yes', 'Get a cup, get a spoon, and then sit in your chair. Is the chair the first step?': 'No', 'Can you ask for a direction again when you forget a step?': 'Yes', 'Do you listen to all three steps before you start?': 'Yes', 'Tap the sun, then the moon, and then the star. Is the star the last step?': 'Yes', 'Tap the hat, then the book, and then the ball. Is the ball the first step?': 'No' })[q.prompt] || null,
+  // Since pass NV (EARMARKS A158) worked out from the direction a question says: the order its three steps are said in, and the place
+  // it asks of one of them; the rows about listening keep the test's own answers.
+  'p4-steps-yesno': (q) => { const m = /^(?:Get a (\w+), get a (\w+), and then sit in your (\w+)|Tap the (\w+), then the (\w+), and then the (\w+))\. Is the (\w+) the (first|second|last) step\?$/.exec(q.prompt);
+    if (m) { const order = m[1] ? [m[1], m[2], m[3]] : [m[4], m[5], m[6]]; const at = order.indexOf(m[7]); return at < 0 ? null : at === ['first', 'second', 'last'].indexOf(m[8]) ? 'Yes' : 'No'; }
+    return ({ 'Can you ask for a direction again when you forget a step?': 'Yes', 'Do you listen to all three steps before you start?': 'Yes', 'Do you start before you listen to all three steps?': 'No' })[q.prompt] || null; },
   'p4-steps-places': (q) => { const st = MO_ROUTINES[(q.story || '').replace(/^Listen\. /, '')]; return st && st.length === 3 && q.prompt === 'Tap the pictures in order.' ? st.map((x) => `icon:${x}`).join(' | ') : null; },
   'p3-ideas-looks': (q) => { const m = /^Listen\. It is (?:a (circle|square|triangle), and it is (red|blue|yellow|green)|(red|blue|yellow|green), and it is a (circle|square|triangle))\.$/.exec(q.story || ''); return m ? `item:${m[1] || m[4]}-${m[2] || m[3]}` : null; },
   'p3-ideas-sizes': (q) => { const m = /^Listen\. It is (?:a (circle|square|triangle), and it is (big|little)|(big|little), and it is a (circle|square|triangle))\.$/.exec(q.story || ''); return m ? `shape:${m[1] || m[4]}:${(m[2] || m[3]) === 'little' ? 'small' : 'big'}` : null; },
@@ -5385,6 +5393,13 @@ const PREK_DERIVE = {
     try { return [`${g} ${key}`, rounds(500)]; } finally { L.GENERATORS[g] = keep; } });
   ok(`no first or later round of Words all around us asks what an earlier question told (${asBuilt} of 3,000 rounds; each bank's one-way key taken out alone, planted, each caught: ${planted.map(([k, n]) => `${k} ${n} of 1,000`).join(', ')}; in a triple dose a question follows one that told its thing in ${doses.toLocaleString('en-US')} of 1,500 doses, the echo rule's price)`,
     asBuilt === 0 && planted.every(([, n]) => n > 0), JSON.stringify(planted)); }
+// The five older banks' rows as pass NU left them (EARMARKS A158), each a prompt and its answer: the one-word check below plants them
+// for the words pass NR's check named, and the even yes or no rows' check after it deals them for their Yes share (pass NV).
+const NV_NU_ROWS = { 'p3-feel-okay': [['Is it okay to feel sad?', 'Yes'], ['Is it okay to feel mad?', 'Yes'], ['Is it okay to feel scared?', 'Yes'], ['Is it okay to hit when you feel mad?', 'No'], ['Is it okay to push when you feel mad?', 'No']],
+    'p3-vfit-yesno': [['When a baby is sleeping, do you use a big outside voice?', 'No'], ['In the library, do you use a whisper?', 'Yes'], ['On the playground, can you use a big outside voice?', 'Yes'], ['Is a whisper too soft for a friend far away?', 'Yes'], ['When a friend is sad, do you use a big outside voice?', 'No'], ['If you are hurt and need help, can you use a big voice?', 'Yes'], ['In the classroom, do you use an inside voice with your teacher?', 'Yes']],
+    'p4-when-grownup': [['Should you get a grown-up when your friend falls and gets hurt?', 'Yes'], ['Do you need a grown-up when a fight starts and you cannot stop it?', 'Yes'], ['Should you get a grown-up when your friend is very sad and cannot stop crying?', 'Yes'], ['Do you need a grown-up when you and your friend can take turns choosing the game?', 'No'], ['Should you get a grown-up when you and your friend can find a game you both like?', 'No']],
+    'p4-play-yesno': [['Is a smile and a hi a friendly way to start playing?', 'Yes'], ["Is it kind to grab a new friend's toy?", 'No'], ['Is it okay when a new friend says, no thanks?', 'Yes'], ['Is it kind to shout while your friend is talking?', 'No'], ['Can you say good morning to your teacher?', 'Yes'], ['Can a wave say hi without any words?', 'Yes']],
+    'p4-steps-yesno': [['Get a cup, get a spoon, and then sit in your chair. Is the spoon the second step?', 'Yes'], ['Get a cup, get a spoon, and then sit in your chair. Is the chair the first step?', 'No'], ['Can you ask for a direction again when you forget a step?', 'Yes'], ['Do you listen to all three steps before you start?', 'Yes'], ['Tap the sun, then the moon, and then the star. Is the star the last step?', 'Yes'], ['Tap the hat, then the book, and then the ball. Is the ball the first step?', 'No']] };
 // No one word tells a yes or no answer (pass NR, round one's lesson reads: every Yes row of Play with a plan's yes or no said can and no No
 // row did, so a child who answered Yes when it said can was right every time). In each yes or no bank this pass built or changed, no word
 // is in every Yes question and in no No question, or the other way about, over seeds 1 to 2,000, the story read with the question. Plant:
@@ -5394,30 +5409,85 @@ const PREK_DERIVE = {
 // other way about, read over the questions as dealt) is right under 80 percent of the time. Plant: round one's two only rows ("Does a
 // plan say only what one friend will do?" and "When the house is done, did only one friend make it?") put back in place of the roof
 // and new idea rows, which the strict rule passes and the bound catches (87.5 percent, on only or one).
-{ const words = (t) => new Set(String(t || '').toLowerCase().replace(/[^a-z' ]+/g, ' ').split(/\s+/).filter(Boolean));
+// Since pass NV (EARMARKS A158) both rules read every pre-K bank that asks yes or no, found by its Yes and No choices and read over the
+// questions it deals that way: no bank has a word in every Yes question and no No question, or the other way about, the five older banks
+// pass NR named given rows that say each telling word with the other answer too, their rows as pass NU left them planted, each caught by
+// its own words (p3-feel-okay when and you, p3-vfit-yesno when, p4-when-grownup can and game, p4-play-yesno kind, p4-steps-yesno first);
+// and every bank's best one-word rule is right under 80 percent of the time but the older banks ONE_WORD_WAITS names (EARMARKS A178),
+// each held at or under its read rounded up to a whole percent, and a wait whose bank reads under 80 is stale and fails, so the list only
+// shrinks. Plant for the bound: Being a good friend's rows as built, with cannot moved from its one No row to its hurt friend's Yes row,
+// which the strict rule passes and the bound catches. Each bank is read and let go in turn, so no bank's 2,000 questions stay held.
+// Since round one's code read (pass NV) the live read and every plant pass through one judge, so each rule's plant fails with that
+// rule undone; a wait more than a point above its bank's read fails too, so the list's caps come down as the banks improve.
+{ const ONE_WORD_WAITS = { 'p4-clue-check': 90, 'p4-fit-yesno': 90, 'p3-join-yesno': 88, 'p4-form-yesno': 87, 'p3-sent-yesno': 87, 'p3-help-yesno': 86, 'p4-friends-yesno': 86, 'p4-opposite-yesno': 86, 'p4-tone-yesno': 86, 'p4-feel-okay': 86, 'p3-event-yesno': 85, 'p4-learn-shape-yesno': 85, 'p3-tone-yesno': 85, 'p3-steps-yesno': 84, 'p4-sent-yesno': 82, 'p4-good-yesno': 81 };
+  const BOUND = 0.8;
+  const words = (t) => new Set(String(t || '').toLowerCase().replace(/[^a-z' ]+/g, ' ').split(/\s+/).filter(Boolean));
   const tellsOf = (qs) => { const heard = (q) => words(`${q.story || ''} ${q.prompt}`); const yes = qs.filter((q) => q.answer === 'Yes').map(heard); const no = qs.filter((q) => q.answer === 'No').map(heard);
-    if (!yes.length || !no.length) return []; const all = new Set([...yes, ...no].flatMap((s) => [...s]));
-    return [...all].filter((w) => (yes.every((s) => s.has(w)) && no.every((s) => !s.has(w))) || (no.every((s) => s.has(w)) && yes.every((s) => !s.has(w)))); };
+    if (!yes.length || !no.length) return []; const all = new Set([...yes, ...no].flatMap((x) => [...x]));
+    return [...all].filter((w) => (yes.every((x) => x.has(w)) && no.every((x) => !x.has(w))) || (no.every((x) => x.has(w)) && yes.every((x) => !x.has(w)))); };
   const gen = (g) => Array.from({ length: 2000 }, (_, i) => L.generateQuestion(g, i + 1));
   const yesNo = (q) => q && q.type === 'choice' && Array.isArray(q.choices) && q.choices.length === 2 && q.choices.includes('Yes') && q.choices.includes('No');
-  const PASS_NR = ['p3-around-yesno', 'p4-print-yesno', 'p3-link-yesno', 'p4-link-yesno', 'p3-talk-yesno', 'p4-plan-yesno'];
-  const marked = PASS_NR.map((g) => [g, tellsOf(gen(g))]).filter(([, t]) => t.length);
-  const ROUND_ONE = [['Can a plan say who does each part?', 'Yes'], ['Is it playing together if one friend does every part?', 'No'], ['Can pretend play have a plan too?', 'Yes'], ['Can you talk while you play together?', 'Yes'], ['When you have a new idea, can you ask, is that okay?', 'Yes'], ['Does a plan say only what one friend will do?', 'No'], ['When the house is done, did only one friend make it?', 'No'], ['Is a plan only for building with blocks?', 'No']];
-  const plant = tellsOf(ROUND_ONE.map(([prompt, answer]) => ({ prompt, answer }))).includes('can');
   const bestWord = (qs) => { const heard = qs.map((q) => words(`${q.story || ''} ${q.prompt}`)); let best = [0, ''];
     for (const w of new Set(heard.flatMap((h) => [...h]))) { const right = qs.filter((q, i) => (heard[i].has(w) ? 'Yes' : 'No') === q.answer).length; const acc = Math.max(right, qs.length - right) / qs.length; if (acc > best[0]) best = [acc, w]; }
     return best; };
-  const reads = PASS_NR.map((g) => [g, ...bestWord(gen(g))]);
+  const pct = (v) => Math.round(v * 1000) / 10;
+  const PASS_NR = ['p3-around-yesno', 'p4-print-yesno', 'p3-link-yesno', 'p4-link-yesno', 'p3-talk-yesno', 'p4-plan-yesno'];
+  const PASS_NV = ['p3-feel-okay', 'p3-vfit-yesno', 'p4-when-grownup', 'p4-play-yesno', 'p4-steps-yesno'];
+  const prek = [...new Set(L.COURSES.filter((c) => ['PK3', 'PK4'].includes(c.grade)).flatMap((c) => c.modules.flatMap((m) => m.generators)))];
+  // A bank is read whole only when one of its first 40 seeds asks yes or no, as the yes-or-no reason check finds its banks (all 92 found
+  // so in pass NV, the same as every seed to 2,000 finds), so the other banks' questions are never made by the thousand; a bank that
+  // throws is named (round one's code read: both catches had passed a throw in silence), and the read holds the 92 the code has.
+  const thrown = [];
+  const probe = (g, into) => { for (let s = 1; s <= 40; s++) { let q; try { q = L.generateQuestion(g, s); } catch (e) { into.push(`${g} at seed ${s}`); return false; } if (yesNo(q)) return true; } return false; };
+  const asksYesNo = (g) => probe(g, thrown);
+  const deal = (g, into) => { try { return gen(g).filter(yesNo); } catch (e) { into.push(`${g} dealing`); return []; } };
+  const res = []; for (const g of prek.filter(asksYesNo)) { const qs = deal(g, thrown); if (qs.length) res.push([g, tellsOf(qs), ...bestWord(qs)]); }
+  const readOf = new Map(res.map(([g, , v, w]) => [g, [v, w]]));
+  // One judge for the live read and every plant (round one's code read: the plants had compared with literals of their own, so the
+  // bound, the strict rule, the waits and the stale rule could each be undone with every plant still caught): a bank's telling words, a
+  // read at or over the bound with no wait, a read over its wait, a wait more than a point above its read (so a cap comes down as its
+  // bank improves) and a wait whose bank reads under the bound or is gone.
+  const judge = (rows, waits) => ({ marked: rows.filter(([, t]) => t.length).map(([g, t]) => `${g} (${[...t].sort().join(' and ')})`),
+    over: rows.filter(([g, , v]) => v >= BOUND && !(g in waits)).map(([g, , v, w]) => `${g} ${pct(v)} on ${w}`),
+    waitOver: rows.filter(([g, , v]) => g in waits && pct(v) > waits[g]).map(([g, , v]) => `${g} ${pct(v)} over ${waits[g]}`),
+    waitLoose: rows.filter(([g, , v]) => g in waits && v >= BOUND && pct(v) < waits[g] - 1).map(([g, , v]) => `${g} ${pct(v)} under ${waits[g]}`),
+    stale: Object.keys(waits).filter((g) => { const r = rows.find(([h]) => h === g); return !r || r[2] < BOUND; }) });
+  const clean = (j) => Object.values(j).every((list) => list.length === 0);
+  const live = judge(res, ONE_WORD_WAITS);
+  const asRows = (g, pairs) => { const qs = pairs.map(([prompt, answer]) => ({ prompt, answer })); return [g, tellsOf(qs), ...bestWord(qs)]; };
+  // Plants, each judged by the same judge: Play with a plan's rows as round one of pass NR read them (can in every Yes row); the five
+  // banks' rows as pass NU left them, each marked by the words pass NR's check named and over the bound; round one's two only rows in
+  // place of the roof and new idea rows, and Being a good friend's rows with cannot moved from its one No row to its hurt friend's Yes
+  // row, each over the bound and marked by no word; a wait a point under its read, one two points over it, and a wait for a bank the
+  // bound passes and for a bank there is not, each named; and a waited bank's wait taken away, over the bound.
+  const ROUND_ONE = [['Can a plan say who does each part?', 'Yes'], ['Is it playing together if one friend does every part?', 'No'], ['Can pretend play have a plan too?', 'Yes'], ['Can you talk while you play together?', 'Yes'], ['When you have a new idea, can you ask, is that okay?', 'Yes'], ['Does a plan say only what one friend will do?', 'No'], ['When the house is done, did only one friend make it?', 'No'], ['Is a plan only for building with blocks?', 'No']];
+  const plant = judge([asRows('p4-plan-yesno', ROUND_ONE)], {}).marked.some((m) => /[( ]can[ )]/.test(m));
+  const NU_TELLS = { 'p3-feel-okay': 'when and you', 'p3-vfit-yesno': 'when', 'p4-when-grownup': 'can and game', 'p4-play-yesno': 'kind', 'p4-steps-yesno': 'first' };
+  const nuJudge = judge(Object.entries(NV_NU_ROWS).map(([g, rows]) => asRows(g, rows)), {});
+  const nuPlant = Object.keys(NV_NU_ROWS).length === PASS_NV.length && PASS_NV.every((g) => nuJudge.marked.includes(`${g} (${NU_TELLS[g]})`) && nuJudge.over.some((x) => x.startsWith(`${g} `)));
   const planRows = [...new Map(gen('p4-plan-yesno').map((q) => [q.prompt, q.answer]))];
   const ONLY = { 'When the plan says your friend builds the roof, do you build the roof too?': 'Does a plan say only what one friend will do?', 'When you have a new idea, can you change the plan without asking?': 'When the house is done, did only one friend make it?' };
-  const onlyRows = planRows.map(([prompt, answer]) => ({ prompt: ONLY[prompt] || prompt, answer }));
-  const [onlyRead, onlyWord] = bestWord(onlyRows);
-  const onlyPlant = planRows.length === 8 && onlyRows.filter((q) => Object.values(ONLY).includes(q.prompt)).length === 2 && tellsOf(onlyRows).length === 0 && onlyRead >= 0.8;
-  const pct = (v) => Math.round(v * 1000) / 10;
-  const prek = [...new Set(L.COURSES.filter((c) => ['PK3', 'PK4'].includes(c.grade)).flatMap((c) => c.modules.flatMap((m) => m.generators)))].filter((g) => !PASS_NR.includes(g));
-  const older = prek.filter((g) => { try { return yesNo(L.generateQuestion(g, 1)); } catch (e) { return false; } }).map((g) => [g, tellsOf(gen(g).filter(yesNo))]).filter(([, t]) => t.length);
-  ok(`no one word tells the answer in a yes or no bank this pass built or changed (${PASS_NR.length} banks, seeds 1 to 2,000: no word in every Yes question and no No question, or the other way about; Play with a plan's rows as round one read them, every Yes row saying can, planted, caught), and the best one-word rule is right under 80 percent of the time in each (${reads.map(([g, v, w]) => `${g} ${pct(v)} on ${w}`).join(', ')}; round one's two only rows in place of the roof and new idea rows, planted, ${pct(onlyRead)} on ${onlyWord}, caught); ${older.length} older pre-K yes or no banks the rule would mark, each answered every time by its word, left as they are for an earmark: ${older.map(([g, t]) => `${g} (${t.join(', ')})`).join('; ')}`,
-    PASS_NR.every((g) => yesNo(L.generateQuestion(g, 1))) && marked.length === 0 && plant && reads.every(([, v]) => v < 0.8) && onlyPlant, JSON.stringify({ marked, reads })); }
+  const onlyPairs = planRows.map(([prompt, answer]) => [ONLY[prompt] || prompt, answer]); const onlyRow = asRows('p4-plan-yesno', onlyPairs); const onlyJ = judge([onlyRow], {});
+  const onlyPlant = planRows.length === 8 && onlyPairs.filter(([prompt]) => Object.values(ONLY).includes(prompt)).length === 2 && onlyJ.marked.length === 0 && onlyJ.over.length === 1;
+  const friendRows = [...new Map(gen('p4-when-grownup').map((q) => [q.prompt, q.answer]))];
+  const CANNOT = { 'Should you get a grown-up when your friend falls and gets hurt?': 'Should you get a grown-up when your friend falls, gets hurt and cannot stop crying?', 'Can you and your friend fix the problem together when a fight starts and you cannot stop it?': 'Can you and your friend fix the problem together when a fight starts?' };
+  const cannotPairs = friendRows.map(([prompt, answer]) => [CANNOT[prompt] || prompt, answer]); const cannotRow = asRows('p4-when-grownup', cannotPairs); const cannotJ = judge([cannotRow], {});
+  const cannotPlant = friendRows.length === 12 && cannotPairs.filter(([prompt]) => Object.values(CANNOT).includes(prompt)).length === 2 && cannotJ.marked.length === 0 && cannotJ.over.length === 1;
+  const lowered = judge(res, { ...ONE_WORD_WAITS, 'p4-clue-check': ONE_WORD_WAITS['p4-clue-check'] - 1 }).waitOver.some((x) => x.startsWith('p4-clue-check '));
+  const loosened = judge(res, { ...ONE_WORD_WAITS, 'p4-good-yesno': ONE_WORD_WAITS['p4-good-yesno'] + 2 }).waitLoose.some((x) => x.startsWith('p4-good-yesno '));
+  const staleJ = judge(res, { ...ONE_WORD_WAITS, 'p4-plan-yesno': 80, 'no-such-bank': 80 }).stale; const stalePlant = staleJ.length === 2 && staleJ.includes('p4-plan-yesno') && staleJ.includes('no-such-bank');
+  // A bank that throws is named, not skipped: Three steps' yes or no made to throw, in a list of its own, caught, while it is probed and,
+  // since round two's records read (the second catch had no plant of its own, and swallowed alone the check still passed), while it is
+  // read whole.
+  const throwPlant = (() => { const keep = L.GENERATORS['p4-steps-yesno']; const into = []; L.GENERATORS['p4-steps-yesno'] = () => { throw new Error('planted'); };
+    try { probe('p4-steps-yesno', into); } finally { L.GENERATORS['p4-steps-yesno'] = keep; } return into.length === 1; })();
+  const dealPlant = (() => { const keep = L.GENERATORS['p4-steps-yesno']; const into = []; L.GENERATORS['p4-steps-yesno'] = () => { throw new Error('planted'); };
+    try { deal('p4-steps-yesno', into); } finally { L.GENERATORS['p4-steps-yesno'] = keep; } return into.length === 1 && into[0] === 'p4-steps-yesno dealing'; })();
+  const { 'p4-clue-check': dropped, ...lessOne } = ONE_WORD_WAITS; const unwaited = !!dropped && judge(res, lessOne).over.some((x) => x.startsWith('p4-clue-check '));
+  const show = (ids) => ids.map((g) => (readOf.has(g) ? `${g} ${pct(readOf.get(g)[0])} on ${readOf.get(g)[1]}` : `${g} not found`)).join(', ');
+  ok(`no one word tells the answer in any pre-K yes or no bank (${res.length} banks found by their choices, at least the 92 the code has, none throwing, seeds 1 to 2,000: no word in every Yes question and no No question, or the other way about), and the best one-word rule is right under 80 percent of the time in each but the ${Object.keys(ONE_WORD_WAITS).length} ONE_WORD_WAITS holds, each at or under its wait and within a point of it (pass NV's five: ${show(PASS_NV)}; pass NR's six: ${show(PASS_NR)}; waiting, EARMARKS A178: ${show(Object.keys(ONE_WORD_WAITS))}). Planted, each judged by the same rule: Play with a plan's rows as round one of pass NR read them, every Yes row saying can, caught; the five older banks' rows as pass NU left them, each caught by its own words: ${nuJudge.marked.join(', ')}; round one's two only rows in place of the roof and new idea rows, ${pct(onlyRow[2])} on ${onlyRow[3]}, and Being a good friend's cannot moved from its No row to its hurt friend's Yes row, ${pct(cannotRow[2])} on ${cannotRow[3]}, each caught by the bound alone; a wait a point under its read, one two points over it, a wait for a bank under the bound and one for a bank there is not, and a waited bank with its wait taken away, and a bank made to throw while it is probed and while it is read whole, each caught`,
+    res.length >= 92 && thrown.length === 0 && [...PASS_NR, ...PASS_NV].every((g) => readOf.has(g)) && clean(live) && plant && nuPlant && onlyPlant && cannotPlant && lowered && loosened && stalePlant && unwaited && throwPlant && dealPlant,
+    JSON.stringify({ live, thrown, nu: nuJudge.marked, only: onlyJ, cannot: cannotJ, lowered, loosened, stale: staleJ, unwaited, throwPlant, dealPlant })); }
 // Who does which part, dealt either way (pass NR, EARMARKS A154): either of a plan's two parts may be yours, so the question alone, "Who builds
 // the roof?", never tells whose it is. Read by a child who heard only the question (the answer each question had most often at the other
 // seeds), at seeds 1 to 2,000, it is right no more than chance allows (under 56 percent, chance 50). Plant: the old line put back, the
@@ -5444,17 +5514,20 @@ const PREK_DERIVE = {
   const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
   const shares = (mid, g, n) => { const R = ofModule(mid, n); return [yesShare(Array.from({ length: 2000 }, (_, i) => L.generateQuestion(g, i + 1))), ...['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g))).filter((qs) => qs.length).map(yesShare)]; };
   const even = (v) => v.every((x) => x >= 0.4 && x <= 0.6);
-  const BANKS = [['play-with-a-plan', 'p4-plan-yesno'], ['talk-with-a-friend', 'p3-talk-yesno']];
+  // Since pass NV (round one's code read: three new No rows taken out of Three steps' yes or no left it 66.3 percent Yes, with every
+  // check passing) A158's five banks are held too, each with its rows as pass NU left them planted (NV_NU_ROWS).
+  const BANKS = [['play-with-a-plan', 'p4-plan-yesno'], ['talk-with-a-friend', 'p3-talk-yesno'], ['four-feelings', 'p3-feel-okay'], ['voice-to-fit', 'p3-vfit-yesno'], ['good-friend', 'p4-when-grownup'], ['play-together', 'p4-play-yesno'], ['three-steps', 'p4-steps-yesno']];
+  const NV_MODULE = { 'p3-feel-okay': 'four-feelings', 'p3-vfit-yesno': 'voice-to-fit', 'p4-when-grownup': 'good-friend', 'p4-play-yesno': 'play-together', 'p4-steps-yesno': 'three-steps' };
   const now = BANKS.map(([mid, g]) => [g, shares(mid, g, 1500)]);
   const NQ_PLAN = [['Can a plan say who does each part?', 'Yes'], ['Is it playing together if one friend does every part?', 'No'], ['Can pretend play have a plan too?', 'Yes'], ['Can you talk while you play together?', 'Yes'], ['When you have a new idea, can you ask, is that okay?', 'Yes']];
   const STEP_TALK = [['Is it kind to talk at the same time as your friend?', 'No'], ['Is it kind to wait until your friend stops talking?', 'Yes'], ['Is it kind to listen while your friend talks?', 'Yes'], ['Can you take turns talking with your teacher too?', 'Yes'], ["Is right in your friend's face too close?", 'Yes'], ['Is it kind to shout while your friend is talking?', 'No']];
   const dealt = (rows) => (rng) => { const [prompt, answer] = L.pick(rng, rows); const wrong = answer === 'Yes' ? 'No' : 'Yes';
     return { type: 'choice', story: null, prompt, choices: L.shuffle(rng, ['Yes', 'No']), answer, explain: `${answer}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why: 'is not the answer here.' } }, alsoRight: [] }; };
-  const plants = [['play-with-a-plan', 'p4-plan-yesno', NQ_PLAN], ['talk-with-a-friend', 'p3-talk-yesno', STEP_TALK]].map(([mid, g, rows]) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = dealt(rows);
+  const plants = [['play-with-a-plan', 'p4-plan-yesno', NQ_PLAN], ['talk-with-a-friend', 'p3-talk-yesno', STEP_TALK], ...Object.entries(NV_NU_ROWS).map(([g, rows]) => [NV_MODULE[g], g, rows])].map(([mid, g, rows]) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = dealt(rows);
     try { return [g, shares(mid, g, 300)]; } finally { L.GENERATORS[g] = keep; } });
   const pct = (v) => Math.round(v * 1000) / 10; const span = (v) => `${pct(Math.min(...v))} to ${pct(Math.max(...v))}%`;
-  ok(`Play with a plan's and Talking with a friend's yes or no answer Yes ${now.map(([g, v]) => `${span(v)} (${g})`).join(' and ')} of the time, alone and in rounds (between 40 and 60; pass NQ's plan rows, four Yes to one No, and the talking rows' step between, four Yes to two No, planted, ${plants.map(([g, v]) => `${span(v)}`).join(' and ')}, each caught)`,
-    now.every(([, v]) => v.length === 5 && even(v)) && plants.every(([, v]) => !even(v)), JSON.stringify({ now, plants })); }
+  ok(`seven yes or no banks answer Yes between 40 and 60 percent of the time, alone and in rounds: Play with a plan's and Talking with a friend's (pass NR) and, since pass NV, A158's five (${now.map(([g, v]) => `${g} ${span(v)}`).join(', ')}); planted, pass NQ's plan rows, four Yes to one No, the talking rows' step between, four Yes to two No, and the five banks' rows as pass NU left them (${plants.map(([g, v]) => `${g} ${span(v)}`).join(', ')}), each caught`,
+    now.length === 7 && now.every(([, v]) => v.length === 5 && even(v)) && plants.length === 7 && plants.every(([, v]) => !even(v)), JSON.stringify({ now, plants })); }
 // No question prints a word a drawing on its screen prints (pass NR, round one's screen read, its MUST FIX 1: the note's I love you was
 // on the note and on the answer's button in a third of p4-print-tells, and on the note's tile and in the printed question in a third of
 // p4-print-which, so a pre-reader who matched letter shapes tapped the right one without the print read, and what the print says was the
@@ -6498,7 +6571,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       if (genId === 'p3-feel-name-face') { const f = q.visual && q.visual.feeling; if (q.prompt !== 'How does this face feel?' || !f || q.answer.toLowerCase() !== f || mdOthers.some((c) => c.toLowerCase() === f)) problems.push('face named wrong'); }
       if (genId === 'p3-feel-moment') { const mm = /^How might ([A-Z][a-z]+) feel when (.+)\?$/.exec(q.prompt) || []; const hit = MD_MOMENT.find(([re]) => re.test(' ' + (mm[2] || '')));
         if (!mm[1] || !hit || q.story !== null || fe(q.answer) !== hit[1] || mdOthers.length !== 1 || !hit[2].includes(fe(mdOthers[0]))) problems.push('feeling moment wrong'); }
-      if (genId === 'p3-feel-okay') { const want = /^Is it okay to feel (sad|mad|scared)\?$/.test(q.prompt) ? 'Yes' : /^Is it okay to (hit|push) when you feel mad\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes') problems.push('feeling okay wrong'); }
+      // Since pass NV (EARMARKS A158) the act decides, whatever the moment: feeling a feeling, or using your words, is okay, and hitting
+      // and pushing are not.
+      if (genId === 'p3-feel-okay') { const want = /^Is it okay to (?:feel (?:sad|mad|scared)(?: when (?:your balloon floats away|you hear a big boom of thunder))?|use your words when you feel mad)\?$/.test(q.prompt) ? 'Yes' : /^Is it okay to (?:hit|push) when (?:you feel (?:mad|sad)|someone grabs your toy)\?$|^Is (?:hitting|pushing) okay\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes') problems.push('feeling okay wrong'); }
       // A name-it question shows the face and never says its feeling (the lesson check, pass MD): the answer names the face
       // shown, and the wrong choice names another feeling, never happy and never the one shown.
       if (genId === 'p3-feel-calm') { const shown = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null;
@@ -6538,7 +6613,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       const MN_YES = { 'p3-join-yesno': [/can I play too\?$|^Is it okay when your friends say, not now\?$|do you want to play with me\?$|^Should you watch the game first /, /knock down your friends|grab your friends|is a ball a good thing to bring\?$/],
         'p4-feel-okay': [/^Is it okay to feel (mad|scared)\?$|^Is it okay to cry when you feel sad\?$|^Is it okay to ask for a hug /, /^Is it okay to (hit|throw a toy|push a friend) when you feel mad\?$/],
         'p4-friends-yesno': [/^Can two friends feel different |^Is it okay to feel (worried|embarrassed)\?$|^Can you ask a friend how they feel\?$/, /^Do friends always (like|feel) the same |^Does a piece of cake make every friend happy\?$/],
-        'p4-when-grownup': [/ when (your friend falls and gets hurt|a fight starts and you cannot stop it|your friend is very sad and cannot stop crying)\?$/, / when you and your friend can (take turns choosing the game|find a game you both like)\?$/],
+        'p4-when-grownup': [/^(?:Should you get|Do you need) a grown-up when (?:your friend falls and gets hurt|a fight starts and you cannot stop it|your friend is very sad and cannot stop crying|you and your friend cannot fix a problem together)\?$|^Can you and your friend fix (?:the problem together when you want different games|it together when your friend spills a little milk)\?$/,
+          /^(?:Should you get|Do you need) a grown-up when you and your friend (?:can (?:take turns choosing the game|find a game you both like)|fix a problem together)\?$|^Do you need a grown-up to say kind words to a sad friend\?$|^Can you and your friend fix the problem together when a fight starts and you cannot stop it\?$|^Should you get a grown-up when you want to play blocks and your friend wants to play ball\?$/],
         'p4-good-yesno': [/^Is it kind to (say, it is okay|ask a worried friend, can I hold your hand|say what the problem is)/, /^Is it kind to laugh |^Is it fair if only you choose /] };
       if (MN_YES[genId]) { const [yes, no] = MN_YES[genId]; const want = yes.test(q.prompt) ? 'Yes' : no.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes') problems.push('yes or no wrong'); }
       // Each moment's feeling and the wrong faces fair to offer with it.
@@ -6579,7 +6655,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
         'p4-play-body': [[/your hand to say hi\?$/, 'Wave', 'Push'], [/show your friend you are listening\?$/, 'Nod your head', 'Shout while your friend talks'], [/^What can you do when your friend talks\?$/, 'Listen', 'Say, stop talking!'], [/I am happy to play with you, without any words\?$/, 'A smile', 'A push'], [/both get a turn to talk\?$/, 'Take turns talking', 'Only you talk'], [/how can you show you had fun\?$/, 'Give a high five', 'Say, I did it all!']],
         'p4-play-plan': [[/build a house with blocks\. What can you do first\?$/, 'Make a plan', 'Grab all the blocks'], [/^What does a plan say\?$/, 'What you will make, and who does each part', 'Who gets all the blocks'], [/a new idea for the game\. What can you do\?$/, 'Say it, and ask, is that okay?', 'Knock the house down'], [/your friend builds the roof\. What can you do\?$/, 'Do your part', 'Do every part yourself'], [/ask your friend for a block\?$/, 'Can you pass me a block?', 'Give me that!']] };
       if (MO_KIND[genId]) { const hit = MO_KIND[genId].filter(([re]) => re.test(q.prompt)); if (hit.length !== 1 || q.answer !== hit[0][1] || one !== hit[0][2] || q.story !== null) problems.push('play together row wrong'); }
-      if (genId === 'p4-play-yesno') { const want = /^Is a smile and a hi |^Is it okay when a new friend says, no thanks\?$|^Can a plan say who does each part\?$|^Can you say good morning to your teacher\?$|^Can a wave say hi /.test(q.prompt) ? 'Yes' : /^Is it kind to (grab|shout) |^Is it playing together if one friend does every part\?$/.test(q.prompt) ? 'No' : null;
+      // Since pass NV (EARMARKS A158) kind, can, okay and grabbing each come with Yes and with No, and since its round one the two
+      // alternatives no row of the bank says (Play with a plan's, from before its split) are gone.
+      if (genId === 'p4-play-yesno') { const want = /^Is a smile and a hi |^Is it okay when a new friend says, no thanks\?$|^Can you say good morning to your teacher\?$|^Can a wave say hi |^Is it kind to say, I like your tower\?$|^Do kind words help friends feel happy\?$|^Can grabbing a friend's toy make your friend feel mad\?$/.test(q.prompt) ? 'Yes' : /^Is it kind to (grab|shout) |^Is grabbing a friend's toy a friendly way to start\?$|^Can a mad face say, I am happy to play with you\?$|^When your friend talks, is it your turn\?$|^If a new friend says, no thanks, is it okay to grab the toy\?$/.test(q.prompt) ? 'No' : null;
         if (!want || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes') problems.push('play together yes or no wrong'); }
       // Who does which part: the asked part, turned to the you form with the test's own table, belongs to you when the plan says
       // you do it and to your friend when the plan says your friend does it, and to exactly one of you.
@@ -7609,7 +7687,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     for (const e of Object.values(q.whyNot || {})) if (!fits(q, e)) off.push(`${g}: "${q.prompt}" ${e.name} ${e.why}`); }
   const planted = !fits({ prompt: 'Are glad and happy opposites?' }, { why: 'would mean they do, but they do not.' }) && fits({ prompt: 'Is this the letter B?' }, { why: 'means it is B, but it has two round bumps.' })
     && !fits({ prompt: 'Do I say it right?' }, { why: 'would mean I got it wrong, but I did not.' });
-  ok(`a yes-or-no reason in every pre-K bank that asks yes or no names a word of its own question (pass MQ; since pass MX all ${banks.length} found by their choices; a reason naming nothing planted and caught, and one fitting only by the pronoun I)`, banks.length >= 41 && off.length === 0 && planted, [...new Set(off)].slice(0, 3).join(' | ')); }
+  ok(`a yes-or-no reason in every pre-K bank that asks yes or no names a word of its own question (pass MQ; since pass MX all ${banks.length} found by their choices; a reason naming nothing planted and caught, and one fitting only by the pronoun I)`, banks.length >= 92 && off.length === 0 && planted, [...new Set(off)].slice(0, 3).join(' | ')); }
 
 // Q83 (a), Mikey: "Q83 - A (I want the correct form and don't want to make it confusing)" (pass MX, round two's alignment read: no test
 // held it). Every wrong form a pre-K "Which one says it right?" question offers, and the form a No yes or no "Do we say, X?" asks
@@ -11673,7 +11751,7 @@ const moreRightProblems = (L) => { const r = {};
   const bad = new Set(); let read = 0;
   for (const id of Object.keys(L.GENERATORS)) for (let s = 1; s <= 120; s++) { let q; try { q = L.generateQuestion(id, s); } catch (e) { break; }
     const more = q.alsoRight || []; if (!more.length) continue;
-    const a = strip(q.answer); const okay = /^Is it okay to feel (\w+)\?$/.exec(q.prompt || ''); const mightDo = /^What might (?:you|your friend) do when (?:you|he|she|they) feels? (\w+)\?$/i.exec(q.prompt || '');
+    const a = strip(q.answer); const okay = /^Is it okay to feel (\w+)(?: when [^?]+)?\?$/.exec(q.prompt || ''); const mightDo = /^What might (?:you|your friend) do when (?:you|he|she|they) feels? (\w+)\?$/i.exec(q.prompt || '');
     const shown = !!q.visual && q.visual.kind === 'face' && q.visual.feeling === a;
     const asks = FEELINGS.includes(a) && (/\bfeel\b/i.test(q.prompt || '') || new RegExp(`\\b${a}\\b`, 'i').test(q.prompt || '') || shown);
     const feel = okay ? okay[1].toLowerCase() : mightDo ? mightDo[1].toLowerCase() : asks ? a : null; if (!feel || !SIGNS[feel]) continue; read += 1;
@@ -11830,6 +11908,9 @@ const moreRightProblems = (L) => { const r = {};
     ['p3-join-how', /idea for the game/, 'Listening to a friend\'s idea can make a new friend happy.', 'catch'],
     ['p4-feel-does', /you feel mad/, 'You might make tight fists, too.', 'keep'],
     ['p3-feel-okay', /^Is it okay to feel mad\?$/, 'You might feel mad when someone grabs your toy, and that is okay.', 'keep'],
+    // Since pass NV (round one's lesson and code read) a question with a when clause is read too: the balloon row's first line named scared.
+    ['p3-feel-okay', /balloon floats away\?$/, 'You might feel scared when you hear a big boom of thunder, and that is okay.', 'catch'],
+    ['p3-feel-okay', /boom of thunder\?$/, 'You might feel sad when your balloon floats away, and that is okay.', 'catch'],
     ['p4-feel-okay', /throw a toy/, 'Pushing is not okay either, because it can hurt your friend.', 'keep'],
     ['p3-join-turn', /whose turn/, 'Taking turns lets you both get to play.', 'catch'],
     // Pass NA: a line naming more words that start the same passes under a question that asks which word to say for its sound, and is
@@ -13088,7 +13169,7 @@ const moreRightProblems = (L) => { const r = {};
       'const base = readAhead().opacity;', '  return { opacity: a };\n}', 'const spans = look.whole ? [{ from: 0, to: textOf(nodes).length }] : sentenceSpans(textOf(nodes));'],
     question: ['const questionText = readAlongLine(questionReadParts(q));', "speak(questionText, { ...(q && q.voices ? { voices: q.voices } : {}), onPlace: followReading('question', questionText) })", "follow={followReading('question', questionText)} />",
       "const askedAt = readAlongMap(questionReadParts(q, shownQ), readingIn('question', questionText));", "data-read-lit={askedAt[0].whole && askedAt[0].lit === 0 ? '' : undefined}", 'lit={!askedAt[0].whole && askedAt[0].lit >= 0 ? askedAt[0].lit : null} ahead={askedAt[0].reached === 0} />',
-      '{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}'],
+      '{wholeHyphens(shownQ.prompt)}</p>, lookFor(askedAt[1], C.surface))}'],
     after: ["const said = readAlongLine(answerReadParts(q, wasCorrect, String(given), wrongPicks)); speak(said, { ...(q.voices ? { voices: q.voices } : {}), onPlace: followReading('after', said) });", "const afterAt = readAlongMap(afterParts, readingIn('after', readAlongLine(afterParts)));",
       // Since pass NQ (Mikey's answer to Q112, "Q112 - C") only Correct, on the green strip, reads along; the reason after a wrong tap is held at full ink by the block after this one.
       'readAloud && wasCorrect ? lookFor(afterAt[0], C.greenSoft, C.green) : null)}', 'const afterParts = checked && wasCorrect ? answerReadParts(q, wasCorrect, String(given), wrongPicks, canSpeak() || !!grownCard) : [];',
@@ -13116,7 +13197,7 @@ const moreRightProblems = (L) => { const r = {};
   const screenHolds = (src) => missing(src).length === 0 && !fadesIn(src) && !/data-read-(?:ahead|lit)="" style=\{\{[^}]*transition/.test(src);
   const PLANTS = {
     'a place whose next sentence is not faint (the walker)': ['r.j >= 0 && r.j >= look.reached ? <span', 'r.j >= 0 && r.j > look.reached ? <span'],
-    'a place whose next sentence is not faint (the question)': ['{shownQ.prompt}</p>, lookFor(askedAt[1], C.surface))}', '{shownQ.prompt}</p>, null)}'],
+    'a place whose next sentence is not faint (the question)': ['{wholeHyphens(shownQ.prompt)}</p>, lookFor(askedAt[1], C.surface))}', '{wholeHyphens(shownQ.prompt)}</p>, null)}'],
     'a faint left after the line is said': ['onDone: () => { if (opts.onPlace) opts.onPlace(null); if (opts.onDone) opts.onDone(); }', 'onDone: () => { if (opts.onDone) opts.onDone(); }'],
     'a faint left after a newer reading or a hush': ['&& readAlongAt.ticket === speechTicket ? readAlongAt.s : null', '? readAlongAt.s : null'],
     'a faint left after Stop reading': ['setReading(false); if (follow) follow(null); return; }', 'setReading(false); return; }'],

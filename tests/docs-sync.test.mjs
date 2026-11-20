@@ -828,9 +828,10 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   // Twenty since pass NE's step for the words under the scroll cue (13m, EARMARKS A63).
   // Twenty-two since pass NG's steps for the grown-up's card (13n, Q91) and the note for a browser too old for the app (13o, Q92).
   // Twenty-three since pass NJ's step for the student signed out after fifteen quiet minutes (13p).
+  // Twenty-four since pass NQ's lesson look (13q), and twenty-five since pass NV's step for a question's hyphenated words (13r).
   ok(`check.sh names a browser step stopped at its time limit and notes one past two thirds of it, so a limit is raised before it stops a passing run (pass MT; ${steps.length} browser steps, each through run; the click-through's 695 seconds of 720 noted, a hung step named with its code kept, three near misses passed, a bare timeout caught)`,
     slowFn !== '' && runFn !== '' && notes.length === want.length && want.every((w, i) => notes[i].startsWith(w)) && last.startsWith(hung) && codes === 'code 124\ncode 0\ncode 1'
-    && steps.length === 24 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
+    && steps.length === 25 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
     JSON.stringify({ notes, codes, last: last.slice(0, 60), steps: steps.length, bare: bare(check).length, planted: bare(planted).length }));
 }
 // Every step that runs a tool's self-test runs under a limit through run, and every step run under a limit has a comment naming the pass
@@ -1512,5 +1513,25 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   ok(`docs/RULES-AUDIT-HISTORY.md keeps section 8's row on the grown-up's card as pass NT left it (digest ${dig(q85)}), unchanged; the row, corrected in place under Q85 since EARMARKS A172 counts Ready's margin from the Walkthrough Mode tab's foot, says so once and names the tab, and section 9's row for Q85 names it (pass NU, round two's records read; a letter edited inside the block, planted, caught)`,
     dig(q85) === '40e03ed6' && rows.length === 1 && rows[0].startsWith("| **The grown-up's card on a device with no voice") && corrected === 1 && tab && named && plants.every(Boolean),
     JSON.stringify({ c: dig(q85), rows: rows.length, corrected, tab, named, plants })); }
+// Pass NV's record (check.sh's first run of the pass): section 8's row on no word under the scroll cue, corrected in place under Mikey's
+// answer to Q85, since five of the cue's words test's floors, pass NR's counts, moved with the five pre-K yes or no banks EARMARKS A158
+// grew, kept as pass NU left it in docs/RULES-AUDIT-HISTORY.md's pass NV block and held by its digest; the row saying so once and giving
+// pass NV's counts, and section 9's row for Q85 naming it. One letter edited inside the block, planted, is caught.
+{ const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const cName = "RULES-AUDIT rows as pass NU left them, before pass NV corrected them under Q85, word for word";
+  const inside = (t, name) => { const a = t.indexOf(`<!-- ${name}: begin -->\n`); const b = t.indexOf(`<!-- ${name}: end -->`); return a < 0 || b < a ? '' : t.slice(a + `<!-- ${name}: begin -->\n`.length, b); };
+  const dig = (t) => createHash('sha256').update(t, 'utf8').digest('hex').slice(0, 8);
+  const plant = (t, name, from, to) => { const a = t.indexOf(`<!-- ${name}: begin -->`); const b = t.indexOf(`<!-- ${name}: end -->`); const i = a < 0 ? -1 : t.indexOf(from, a); return i < 0 || i > b ? t : t.slice(0, i) + to + t.slice(i + from.length); };
+  const q85 = inside(hist, cName); const rows = q85.split('\n').filter(Boolean);
+  const cue = audit.split('\n').find((l) => l.startsWith('| **No word under the scroll cue on a short phone')) || '';
+  const corrected = cue.split("Corrected in place in pass NV, under Mikey's answer to Q85 (check.sh's first run of the pass found three of its floors over the counts the code has), its pass NU words in docs/RULES-AUDIT-HISTORY.md.").length - 1;
+  const counts = cue.includes("since pass NV the five that moved are pass NV's counts") && cue.includes('3,536 and 3,645 states the reach reads') && !rows.join('').includes('pass NV');
+  const s9 = audit.slice(audit.indexOf('## 9. Process'), audit.indexOf('\n## 10.'));
+  const named = s9.includes("Corrected in pass NV, under Mikey's answer to Q85, saying so, its pass NU words in docs/RULES-AUDIT-HISTORY.md's pass NV block: section 8's row on no word under the scroll cue on a short phone,");
+  const plants = [dig(inside(plant(hist, cName, 'the reach reads', 'the reech reads'), cName)) !== dig(q85)];
+  ok(`docs/RULES-AUDIT-HISTORY.md keeps section 8's row on no word under the scroll cue as pass NU left it (digest ${dig(q85)}), unchanged; the row, corrected in place under Q85 since five of the cue's words test's floors are pass NV's counts, says so once and gives them, and section 9's row for Q85 names it (pass NV, check.sh's first run; a letter edited inside the block, planted, caught)`,
+    dig(q85) === 'b7701f71' && rows.length === 1 && rows[0].startsWith('| **No word under the scroll cue on a short phone') && corrected === 1 && counts && named && plants.every(Boolean),
+    JSON.stringify({ c: dig(q85), rows: rows.length, corrected, counts, named, plants })); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

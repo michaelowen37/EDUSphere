@@ -549,7 +549,8 @@
             "restates the question",
             "repeats the question",
             "circular",
-            "only the (question|answer)"
+            "only the (question|answer)",
+            "restates (its|the) answer"
           ]
         },
         {
@@ -570,7 +571,8 @@
             "restates the question",
             "repeats the question",
             "circular",
-            "only the (question|answer)"
+            "only the (question|answer)",
+            "restates (its|the) answer"
           ]
         }
       ],
@@ -594,7 +596,8 @@
         ],
         "on": "every wording: light tests on --variant 1 and --variant 2 builds before and after the merges of round one and on the seed-1 and seed-2 copies; the whole rules test on the first --variant 1 and --variant 2 builds and the seed-1 copy, built before the merges, and the rules test blocks of round one on the --variant builds after them (pass NQ)",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
-      }
+      },
+      "history": "Pass NX: round two's Opus checklist read (seed 2) named this defect as a should consider in words the catch words did not foresee (the explanation restates its answer), settled by hand as caught; 'restates (its|the) answer' added to both wordings."
     },
     {
       "id": "P08",
@@ -743,7 +746,8 @@
         ],
         "on": "every wording: light tests on --variant 1 and --variant 2 builds before and after the merges of round one and on the seed-1 and seed-2 copies; the whole rules test on the first --variant 1 and --variant 2 builds and the seed-1 copy, built before the merges, and the rules test blocks of round one on the --variant builds after them (pass NQ)",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
-      }
+      },
+      "history": "Pass NX: round two's Opus checklist read (seed 3) faulted this wording by the lesson brief's item 3, since the line names frogs and its picture shows none (pictures show what the line names), a true finding of the near miss's own words, settled by hand as no false alarm; the wording is rewritten before the set's next lesson round so it names only what its picture shows (EARMARKS L19)."
     },
     {
       "id": "N02",
@@ -899,7 +903,17 @@
         "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
       },
-      "history": "Pass NR: two real defects round one of pass NQ found in this item (the close question asked about kindness, which the lesson never names, and two reasons said \"at once\" and \"finish\", which no line says) were fixed in the project, so neither joins the known list."
+      "history": "Pass NR: two real defects round one of pass NQ found in this item (the close question asked about kindness, which the lesson never names, and two reasons said \"at once\" and \"finish\", which no line says) were fixed in the project, so neither joins the known list. Pass NX: round two's reads found the real defects on its known list in this item, each read against the project; they wait for the next lesson pass (EARMARKS L19 and tools/planted/REAL-FINDINGS.md).",
+      "known": [
+        {
+          "what": "p3-talk-yesno asks 'Can you take turns talking with your teacher too?', a question about ability whose 'too' assumes its answer (found in pass NX's round two by the critic and the Opus checklist read on seed 2)",
+          "words": [
+            "take turns talking with your teacher",
+            "about ability",
+            "assumes (its|the) answer"
+          ]
+        }
+      ]
     },
     {
       "id": "K02",
@@ -924,7 +938,28 @@
         }
       ],
       "correct": "Changed in pass NR (EARMARKS A154): the yes or no bank gains three No rows in the lesson's words, four Yes rows to four No; the new-idea row's More right answers is empty; and either part of a plan may be yours in the who-does-which-part bank, so a question's words never give its answer. Still clean.",
-      "known": [],
+      "known": [
+        {
+          "what": "p4-plan-what's two echo rows, where the friend's line names what the question asks (the pizza, a block), so the answer is heard in the question: a listening check no record names, to be recorded as kept or by design or asked another way (found in pass NX's round two by both Fable reads)",
+          "words": [
+            "answered by the echo",
+            "by the echo alone",
+            "say their answers",
+            "listening (check|bank)",
+            "pizza shop"
+          ]
+        },
+        {
+          "what": "p4-play-part's scenes the lesson's lines never say: the tea party, the bus and its bell, the one big picture and the store (found in pass NX's round two by the critic and both Opus reads)",
+          "words": [
+            "tea party",
+            "bus and (its |the )?bell",
+            "said in no line",
+            "never said in the script",
+            "big.picture"
+          ]
+        }
+      ],
       "tests": {
         "passed": [
           "scripts",
@@ -938,7 +973,7 @@
         "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
       },
-      "history": "Pass NR: its two known defects (the yes or no bank leaning Yes, and the new-idea row's More right answers) and the critic's finding on the who-does-which-part bank were fixed in the project, so the known list is empty."
+      "history": "Pass NR: its two known defects (the yes or no bank leaning Yes, and the new-idea row's More right answers) and the critic's finding on the who-does-which-part bank were fixed in the project, so the known list is empty. Pass NX: round two's reads found the real defects on its known list in this item, each read against the project; they wait for the next lesson pass (EARMARKS L19 and tools/planted/REAL-FINDINGS.md)."
     },
     {
       "id": "K03",
@@ -975,7 +1010,18 @@
         "on": "changed in pass NR (EARMARKS A154); pass NQ's copies passed these before the change, and pass NR's light tests and rules test read the changed item",
         "browser": "not run; tests/e2e searched for this item by its ids and names: three lesson items are opened there by checks that do not read the planted words"
       },
-      "history": "Pass NR: the real defect round one of pass NQ found in this item (three say-alongs in a tiny mouse's voice) was fixed in the project, so it does not join the known list."
+      "history": "Pass NR: the real defect round one of pass NQ found in this item (three say-alongs in a tiny mouse's voice) was fixed in the project, so it does not join the known list. Pass NX: round two's reads found the real defects on its known list in this item, each read against the project; they wait for the next lesson pass (EARMARKS L19 and tools/planted/REAL-FINDINGS.md).",
+      "known": [
+        {
+          "what": "p3-two-at-once says 'at the same time' for sounds the voice plays one after another, and its prompt names the sound to tap, so the question alone answers it (found in pass NX's round two by both Opus reads)",
+          "words": [
+            "at the same time",
+            "one after (another|the other)",
+            "question alone",
+            "names the sound"
+          ]
+        }
+      ]
     },
     {
       "id": "P09",
@@ -3287,6 +3333,858 @@
         "browser": "not run; tests/e2e searched for this item by its id, with no hit"
       },
       "history": "Pass NR: the real defect round one of pass NQ found in this item (the skeptic doubting the prompt's own words) was fixed in the project, so it does not join the known list."
+    },
+    {
+      "id": "P31",
+      "kind": "plant",
+      "class": "C10",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "voice-tells-more",
+        "aliases": [
+          "My voice tells more",
+          "p4-tone-ask",
+          "p4-tone-feel",
+          "p4-tone-strong",
+          "p4-tone-which",
+          "p4-tone-yesno"
+        ]
+      },
+      "about": "My voice tells more (pre-K 4, First sounds and letters): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-tone-ask, p4-tone-feel, p4-tone-strong, p4-tone-which, p4-tone-yesno).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['When you talk with a doctor you have just met, do you say your words slowly and clearly?', 'Yes', 'Yes. Say your words slowly and clearly, and turn toward them, so they can understand you.', 'would mean you talk very fast to someone new, but slow, clear words help them understand you.'],",
+              "replace": "['When you talk with a doctor you have just met, do you look in their eyes?', 'Yes', 'Yes. Look in their eyes, so they can understand you.', 'would mean you look away from someone new, but looking in their eyes helps them understand you.'],"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'When you talk with a doctor you have just met, do you say your words slowly and clearly?': 'Yes' };",
+              "replace": "'When you talk with a doctor you have just met, do you look in their eyes?': 'Yes' };"
+            }
+          ],
+          "catch": [
+            "look in their eyes",
+            "in their eyes",
+            "eye contact",
+            "eyes on",
+            "looks? away",
+            "looking away",
+            "fixed rule",
+            "listen(s|ing)? (in different ways|while looking away)",
+            "autis",
+            "neurodiverg",
+            "listener'?s body"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['Can how something is said tell you how someone feels?', 'Yes', 'Yes. Listen to how something is said, and you can tell if someone feels happy or sad.', 'would mean how something is said tells you nothing, but it can tell you how someone feels.'],",
+              "replace": "['When a friend talks in a sad voice, is it okay to look away?', 'No', 'No. When a friend talks in a sad voice, look at your friend, so your friend knows you are listening.', 'would mean looking away is okay, but your friend needs you to look at them.'],"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'Can how something is said tell you how someone feels?': 'Yes', ",
+              "replace": "'When a friend talks in a sad voice, is it okay to look away?': 'No', "
+            }
+          ],
+          "catch": [
+            "okay to look away",
+            "look away",
+            "looking away",
+            "eye contact",
+            "eyes on",
+            "fixed rule",
+            "look at (your|the|a) friend",
+            "listen(s|ing)? (in different ways|while looking away)",
+            "autis",
+            "neurodiverg",
+            "listener'?s body"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C10",
+        "pass": "NV",
+        "line": 6409,
+        "words": "whose No made a child's turning away a wrong answer"
+      },
+      "defect": "A p4-tone-yesno row keys looking into a person's eyes as the right way: 'When you talk with a doctor you have just met, do you look in their eyes?' answers Yes, its reason says No would mean you look away, and its explanation tells the child to look in their eyes (wording 2: 'When a friend talks in a sad voice, is it okay to look away?' answers No, and its explanation tells the child to look at the friend), so a child who talks or listens looking away, as many autistic children do, answers truthfully and is marked wrong, where the lesson's own line 11 says to turn toward them. The lesson brief's item 2 (a lesson asks a child to turn toward a friend rather than look at one, since eye contact distresses some autistic children) and RULES-AUDIT's row 'A listener's body is never a fixed rule' (some people listen best looking away, moving or holding something), whose rules check reads only three phrasings (eyes on the speaker, every eye on, your eyes look at the person); the lesson brief's pass NV line (a new row is read against its rules on a child's body before it ships); MISTAKE-CLASSES C10.",
+      "fix": "Ask what the lesson says, as it was: 'When you talk with a doctor you have just met, do you say your words slowly and clearly?', explained 'Yes. Say your words slowly and clearly, and turn toward them, so they can understand you.' (wording 2: put back 'Can how something is said tell you how someone feels?'), in the bank and in the rules test's table of its answers.",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation (more lesson entries, weighted to harm 3 and to the kinds only judgment finds), from pass NV's finding named in origin.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX); its bank's best one-word read unchanged by either wording, inside its ONE_WORD_WAITS cap",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: question-screens plays its line 5's strong word and reads no bank row; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning; both new prompts are within the lengths other yes or no banks pass at"
+      }
+    },
+    {
+      "id": "P32",
+      "kind": "plant",
+      "class": "C10",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "say-it-to-fit",
+        "aliases": [
+          "Say it to fit",
+          "p4-fit-voice",
+          "p4-fit-why",
+          "p4-fit-say",
+          "p4-fit-enough",
+          "p4-fit-yesno"
+        ]
+      },
+      "about": "Say it to fit (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-fit-voice, p4-fit-why, p4-fit-say, p4-fit-enough, p4-fit-yesno).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "a whisper fits.'], ['On the playground, can you use a big outside voice?', 'Yes', 'Yes. On the playground, you can use a big outside voice, so a friend far away can hear you.', 'would mean you cannot use a big outside voice on the playground, but you can.']",
+              "replace": "a whisper fits.'], ['On the playground, can a friend far away hear your big outside voice?', 'Yes', 'Yes. On the playground, a friend far away can hear your big outside voice.', 'would mean a friend far away cannot hear it, but a big outside voice is loud.']"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'On the playground, can you use a big outside voice?': 'Yes', 'Can you use words to say how you feel?'",
+              "replace": "'On the playground, can a friend far away hear your big outside voice?': 'Yes', 'Can you use words to say how you feel?'"
+            }
+          ],
+          "catch": [
+            "friend far away hear",
+            "asks? about hearing",
+            "about (their |a friend'?s |your )?hearing",
+            "hard of hearing",
+            "can (a|your) friend .{0,20}hear",
+            "whether .{0,40}hear",
+            "a child who cannot hear",
+            "hearing",
+            "deaf",
+            "ability"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['When a baby is sleeping, do you use a big outside voice?', 'No', 'No. When a baby is sleeping, use a whisper, so the baby keeps sleeping.', 'would mean a big outside voice fits while a baby sleeps, but it is too loud.']",
+              "replace": "['On the playground, does a friend far away hear your whisper?', 'No', 'No. A whisper is too soft for a friend far away. On the playground, you can use a big outside voice.', 'would mean a friend far away hears a whisper, but a whisper is too soft.']"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'When a friend is sad, does a kind, soft voice fit?': 'Yes', 'When a baby is sleeping, do you use a big outside voice?': 'No' };",
+              "replace": "'When a friend is sad, does a kind, soft voice fit?': 'Yes', 'On the playground, does a friend far away hear your whisper?': 'No' };"
+            }
+          ],
+          "catch": [
+            "friend far away hear",
+            "asks? about hearing",
+            "about (their |a friend'?s |your )?hearing",
+            "hard of hearing",
+            "does a friend .{0,20}hear",
+            "whether .{0,40}hear",
+            "a child who cannot hear",
+            "hearing",
+            "deaf",
+            "ability",
+            "twin"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C10",
+        "pass": "NV",
+        "line": 6409,
+        "words": "A voice to fit the place's slide row asked whether a friend can hear"
+      },
+      "defect": "A p4-fit-yesno row asks about hearing, which the fair yes or no row reads as ability: 'On the playground, can a friend far away hear your big outside voice?' (wording 2, a No twin kept while its Yes twin asks which voice you use, as round two's records read of pass NV found the slide row's twin still asking about hearing, DECISIONS line 6412: 'On the playground, does a friend far away hear your whisper?'), so a child who is deaf or hard of hearing, or whose friend is, is asked about a body rather than about which voice fits the place, as the rest of the bank and the lesson ask. RULES-AUDIT's row 'A yes or no bank is balanced and fair' (it never asks about ability, 'Can we clap once for each word?', which a child who cannot clap answers No truthfully), the lesson brief's item 18 (a yes or no bank is read for questions that ask about ability) and its pass NV line ('Can a friend far away hear' asked about hearing); MISTAKE-CLASSES C10.",
+      "fix": "Ask which voice fits, as it was: 'On the playground, can you use a big outside voice?' (wording 2: put back 'When a baby is sleeping, do you use a big outside voice?'), in the bank and in the rules test's table of its answers.",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation, from pass NV's findings named in origin and in its defect (the slide row and its twin).",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX); its bank's best one-word read unchanged by either wording, inside its ONE_WORD_WAITS cap",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: no test names the item or its banks; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning; prompt-hyphens' count is unchanged (no hyphenated word added to or taken from a prompt)"
+      }
+    },
+    {
+      "id": "P33",
+      "kind": "plant",
+      "class": "C13",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "feelings-show",
+        "aliases": [
+          "Feelings and what we do",
+          "p4-feel-does",
+          "p4-feel-tells",
+          "p4-feel-say",
+          "p4-feel-okay",
+          "p4-feel-calm"
+        ]
+      },
+      "about": "Feelings and what we do (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-feel-does, p4-feel-tells, p4-feel-say, p4-feel-okay, p4-feel-calm).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Tight fists can show you feel mad, so Rosa might feel mad.', 'tight fists can show you feel mad',",
+              "replace": "'Tight fists can show you feel mad, so Rosa might feel mad.', 'tight fists can show you feel scared',"
+            }
+          ],
+          "catch": [
+            "fists can show you feel scared",
+            "tight fists.{0,40}scared",
+            "scared.{0,40}tight fists",
+            "(names?|says?|gives?) (the |a )?(wrong|another|other) feeling",
+            "wrong feeling",
+            "fists (show|mean|go with|are) (mad|anger)",
+            "reason (says|names|gives) scared"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Hiding', 'is what you might do when you feel scared, not mad.'",
+              "replace": "'Hiding', 'is what you might do when you feel sad, not mad.'"
+            }
+          ],
+          "catch": [
+            "you feel sad, not mad",
+            "hid(e|ing).{0,50}feel sad",
+            "sad.{0,40}hid(e|ing)",
+            "(names?|says?|gives?) (the |a )?(wrong|another|other) feeling",
+            "wrong feeling",
+            "hid(e|ing) (goes with|is|means|shows) (feeling )?scared",
+            "reason (says|names|gives) sad"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C13",
+        "pass": "NV",
+        "line": 6402,
+        "words": "Two new lines had named the other feeling"
+      },
+      "defect": "A More Info line names the wrong feeling for what a child does: after a tap on the sad face for 'How might Rosa feel when her hands make tight fists?', the reason says tight fists can show you feel scared, where the lesson's line 3 and the question's own explanation say tight fists show mad (wording 2: after a tap on Hide for 'What might you do when you feel mad?', the reason says hiding is what you might do when you feel sad, where line 4 says you might hide when you feel scared), so a lesson that teaches the signs of each feeling teaches a false one. The lesson brief's item 7 (every wrong choice's reason is true, said in the lesson's own words) and item 4 (nothing a lesson teaches contradicts itself); the rules test reads a face's own sign and a More right answers line's feeling, and never the clause after a reason's sign; MISTAKE-CLASSES C13.",
+      "fix": "Say the feeling the lesson pairs with the act, as it was: 'tight fists can show you feel mad' (wording 2: 'is what you might do when you feel scared, not mad.').",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation, from pass NV's finding named in origin.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX)",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: question-screens reads its line 11's hyphenated word and no reason; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning"
+      }
+    },
+    {
+      "id": "P34",
+      "kind": "plant",
+      "class": "C9",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "how-friends-feel",
+        "aliases": [
+          "How do friends feel?",
+          "p4-same-or-different",
+          "p4-friend-feels",
+          "p4-new-feeling-moment",
+          "p4-new-feeling-face",
+          "p4-friends-yesno"
+        ]
+      },
+      "about": "How do friends feel? (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-same-or-different, p4-friend-feels, p4-new-feeling-moment, p4-new-feeling-face, p4-friends-yesno).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "prompt: `You feel ${a}, and your friend feels ${b}. Are your feelings the same, or different?`",
+              "replace": "prompt: `You feel ${a}, ${same ? 'and' : 'but'} your friend feels ${b}. Are your feelings the same, or different?`"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "/^You feel (\\w+), and your friend feels (\\w+)\\. Are your feelings the same, or different\\?$/",
+              "replace": "/^You feel (\\w+), (?:and|but) your friend feels (\\w+)\\. Are your feelings the same, or different\\?$/"
+            }
+          ],
+          "catch": [
+            "but your friend feels",
+            "(the )?word but",
+            "says but",
+            "\\bbut\\b.{0,60}(different|tells|gives|answer)",
+            "(gives|tells) (the |its )?answer( away)?",
+            "gives? (it )?away",
+            "one word (tells|gives|answers)",
+            "every different (question|row|one)",
+            "(without|never) (comparing|listening to|hearing) (the )?feelings",
+            "conjunction"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "prompt: `You feel ${a}, and your friend feels ${b}. Are your feelings the same, or different?`",
+              "replace": "prompt: `You feel ${a}, and your friend feels ${b}${same ? ' too' : ''}. Are your feelings the same, or different?`"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "/^You feel (\\w+), and your friend feels (\\w+)\\. Are your feelings the same, or different\\?$/",
+              "replace": "/^You feel (\\w+), and your friend feels (\\w+)(?: too)?\\. Are your feelings the same, or different\\?$/"
+            }
+          ],
+          "catch": [
+            "the word too",
+            "says too",
+            "feels \\w+ too",
+            "\\btoo\\b.{0,60}(same|tells|gives|answer)",
+            "(gives|tells) (the |its )?answer( away)?",
+            "gives? (it )?away",
+            "one word (tells|gives|answers)",
+            "every (the )?same (question|row|one)",
+            "(without|never) (comparing|listening to|hearing) (the )?feelings"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C9",
+        "pass": "NV",
+        "line": 6397,
+        "words": "five older yes or no banks that one word gave away"
+      },
+      "defect": "One word gives p4-same-or-different's answer away: every question whose answer is Different joins its two feelings with but ('You feel worried, but your friend feels sad.') and every one whose answer is The same with and, so a child who hears but taps Different without comparing the feelings and is right every time (wording 2: every The same question ends with too, 'and your friend feels worried too', and no Different question does). The bank's two choices are not Yes and No, so the rules test's one-word check (no word in every question of one answer and none of the other, read in every pre-K yes or no bank since pass NV) never reads it. The lesson brief's item 13 (a question's own words never give its answer away) and item 25 (a bank's words are read over every seed for a pattern a child could learn without the idea); RULES-AUDIT's row on no one word telling a yes or no answer (EARMARKS A158); MISTAKE-CLASSES C9.",
+      "fix": "Join the two feelings one way whatever the answer, as it was: 'You feel ${a}, and your friend feels ${b}.', with the rules test's pattern for the question as it was.",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation, from pass NV's finding named in origin.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX)",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: no test names the item or its banks; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning; the prompt grows by one word at most"
+      }
+    },
+    {
+      "id": "P35",
+      "kind": "plant",
+      "class": "C10",
+      "harm": 3,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "two-steps",
+        "aliases": [
+          "Two steps",
+          "p3-steps-things",
+          "p3-steps-sounds",
+          "p3-steps-say-them",
+          "p3-steps-which",
+          "p3-steps-yesno"
+        ]
+      },
+      "about": "Two steps (pre-K 3, Listen and point): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-steps-things, p3-steps-sounds, p3-steps-say-them, p3-steps-which, p3-steps-yesno).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['Can saying the steps to yourself help you remember them?', 'Yes', 'Yes. Say the steps to yourself, like cup, spoon. Saying them can help you remember both.', 'would mean saying the steps cannot help you remember them, but it can.']",
+              "replace": "['Is it okay to tap your feet while you listen to both steps?', 'No', 'No. Keep your feet still while you listen to both steps, and then do them in order.', 'would mean tapping your feet is okay, but you keep your feet still to listen.']"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'Can saying the steps to yourself help you remember them?': 'Yes', ",
+              "replace": "'Is it okay to tap your feet while you listen to both steps?': 'No', "
+            }
+          ],
+          "catch": [
+            "tap your feet while you listen",
+            "feet still",
+            "still body",
+            "keep (your )?(feet|body|hands) still",
+            "whole body listening",
+            "listen(s|ing)? (in different ways|while (moving|they move|you move))",
+            "moving while",
+            "a child'?s (own )?way",
+            "fixed rule",
+            "listener'?s body",
+            "fidget",
+            "wiggl",
+            "adhd",
+            "autis"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['Get a cup, and then get a spoon. Is getting the spoon the first step?', 'No', 'No. The first step is, get a cup. The second step is, get a spoon.', 'would mean getting the spoon is the first step, but it is the second.']",
+              "replace": "['Is it okay to hold your cup while you listen to both steps?', 'No', 'No. Put your cup down while you listen to both steps, and then do them in order.', 'would mean holding your cup is okay, but your hands stay still to listen.']"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'Get a cup, and then get a spoon. Is getting the spoon the first step?': 'No', ",
+              "replace": "'Is it okay to hold your cup while you listen to both steps?': 'No', "
+            }
+          ],
+          "catch": [
+            "hold your cup while you listen",
+            "holding (a |the |your )?(cup|toy|something)",
+            "put (your|the) cup down",
+            "hands (stay )?still",
+            "whole body listening",
+            "listen(s|ing)? (in different ways|while holding)",
+            "a child'?s (own )?way",
+            "fixed rule",
+            "listener'?s body",
+            "fidget",
+            "autis"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C10",
+        "pass": "NV",
+        "line": 6409,
+        "words": "When your friend talks, do you turn away?"
+      },
+      "defect": "A p3-steps-yesno row makes a child's own way of listening the wrong answer: 'Is it okay to tap your feet while you listen to both steps?' answers No, and its explanation says to keep your feet still (wording 2: 'Is it okay to hold your cup while you listen to both steps?' answers No, and says to put the cup down), so a child who listens best moving or holding something, as many children with ADHD or autism do, answers truthfully and is marked wrong; whole body listening's still body is a tool, never a rule. RULES-AUDIT's row 'A listener's body is never a fixed rule' (some people listen best looking away, moving or holding something), whose rules check reads only three phrasings about the eyes; the lesson brief's item 2 (a child's own way is never a wrong choice) and its pass NV line ('When your friend talks, do you turn away?' made a child's turning away wrong); MISTAKE-CLASSES C10.",
+      "fix": "Ask what the lesson teaches, as it was: 'Can saying the steps to yourself help you remember them?' (wording 2: 'Get a cup, and then get a spoon. Is getting the spoon the first step?'), in the bank and in the rules test's table of its answers.",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation, from pass NV's finding named in origin.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX); its bank's best one-word read unchanged by either wording, inside its ONE_WORD_WAITS cap",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: question-screens reads its line 7's gold numbers and no bank row; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning"
+      }
+    },
+    {
+      "id": "P36",
+      "kind": "plant",
+      "class": "C34",
+      "harm": 2,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "people-and-events",
+        "aliases": [
+          "Words for people",
+          "p3-people-tap",
+          "p3-people-who",
+          "p3-people-yesno",
+          "p3-people-group",
+          "p3-people-grownup"
+        ]
+      },
+      "about": "Words for people (pre-K 3, Listen and point): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-people-tap, p3-people-who, p3-people-yesno, p3-people-group, p3-people-grownup).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'would mean a baby is not very little, but a baby is.'",
+              "replace": "'would mean a baby cannot drink milk from a bottle, but a baby can.'"
+            }
+          ],
+          "catch": [
+            "cannot drink milk",
+            "question never (asks|asked|says|said)",
+            "never asked",
+            "not what (the|its) question (asks|asked|says|said)",
+            "does not (fit|match|answer) (its|the) (own )?question",
+            "(another|a different|some other) question",
+            "about (milk|drinking)",
+            "off topic",
+            "non.?sequitur",
+            "unrelated"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'would mean a teacher does not help children learn, but a teacher does.'",
+              "replace": "'would mean a teacher cannot read stories to the class, but a teacher can.'"
+            }
+          ],
+          "catch": [
+            "cannot read stories",
+            "question never (asks|asked|says|said)",
+            "never asked",
+            "not what (the|its) question (asks|asked|says|said)",
+            "does not (fit|match|answer) (its|the) (own )?question",
+            "(another|a different|some other) question",
+            "about (stories|reading)",
+            "off topic",
+            "non.?sequitur",
+            "unrelated"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C34",
+        "pass": "NV",
+        "line": 6409,
+        "words": "a cannot under a question that asks okay"
+      },
+      "defect": "A p3-people-yesno reason answers a question its own question never asked: after a tap on No for 'Is a baby very little?', the child hears 'No would mean a baby cannot drink milk from a bottle, but a baby can.', about drinking and about what a baby can do, where the question asks only how big a baby is (wording 2: after No for 'Does a teacher help children learn at school?', 'No would mean a teacher cannot read stories to the class, but a teacher can.'). The rules test asks only that a yes or no reason share one word with its question, and baby or teacher does. The lesson brief's item 11 (a yes-or-no reason names what its own question asks) and item 3 (explanations give the reason); MISTAKE-CLASSES' other class 'A reason that does not fit its question' (pass MQ), which has no number, entered under C34, the nearest numbered class (a composed sentence that reads wrong).",
+      "fix": "Say what No would mean for this question, as it was: 'would mean a baby is not very little, but a baby is.' (wording 2: 'would mean a teacher does not help children learn, but a teacher does.').",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation, from pass NV's finding named in origin.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX); its bank's best one-word read unchanged by either wording, under the one-word check's 80 percent bound",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: no test names the item or its banks; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning"
+      }
+    },
+    {
+      "id": "P37",
+      "kind": "plant",
+      "class": "C34",
+      "harm": 2,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "patterns",
+        "aliases": [
+          "Patterns",
+          "pp-what-next",
+          "pp-which-repeats",
+          "pp-missing"
+        ]
+      },
+      "about": "Patterns (pre-K 4, First steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (pp-what-next, pp-which-repeats, pp-missing).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "alsoRight: ['Clap, stomp, clap, stomp, so a clap comes next.'] };",
+              "replace": "alsoRight: ['Say the pattern out loud as you point to each one, and you will hear what comes next.'] };"
+            }
+          ],
+          "catch": [
+            "say the pattern out loud as you point",
+            "(is |gives |offers )?advice",
+            "a tip",
+            "how to (answer|find|work it out)",
+            "a (method|strategy)",
+            "not (another|a) right answer",
+            "(the )?heading (promises|says)",
+            "instead of (another|a) (right answer|example)"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'Clap, stomp, clap, stomp repeats the same way each time.'",
+              "replace": "'Say each one out loud, and listen for the part that comes back.'"
+            }
+          ],
+          "catch": [
+            "listen for the part that comes back",
+            "(is |gives |offers )?advice",
+            "a tip",
+            "how to (answer|find|work it out)",
+            "a (method|strategy)",
+            "not (another|a) right answer",
+            "(the )?heading (promises|says)",
+            "instead of (another|a) (right answer|example)"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C34",
+        "pass": "NV",
+        "line": 6410,
+        "words": "a More right answers line offering a strategy"
+      },
+      "defect": "pp-what-next's More right answers line is a tip on how to answer, not another right answer: 'Say the pattern out loud as you point to each one, and you will hear what comes next.' (wording 2: pp-which-repeats' line under a row that repeats, 'Say each one out loud, and listen for the part that comes back.'), where the heading promises another right answer or a true example of the same idea, as the old line, a clap and stomp pattern, was. The rules test's advice pattern reads a line's first word against a list (Count, Look at, Point, Try and the rest) and a few phrases, and Say is not on it. The lesson brief's item 2 (More right answers is read as its heading promises, never advice on how to answer) and item 9 (a method or a tip in any words); MISTAKE-CLASSES' other class 'A heading whose lines are not what it promises' (pass MO), which has no number, entered under C34, the nearest numbered class.",
+      "fix": "Give another right answer, as it was: 'Clap, stomp, clap, stomp, so a clap comes next.' (wording 2: 'Clap, stomp, clap, stomp repeats the same way each time.').",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation, from pass NV's finding named in origin (round one's screen read).",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX)",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: question-screens shows pp-which-repeats and pp-what-next for their pattern rows' layout and color, never their More right answers line; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning"
+      }
+    },
+    {
+      "id": "P38",
+      "kind": "plant",
+      "class": "C34",
+      "harm": 2,
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "things-we-do",
+        "aliases": [
+          "Things we do",
+          "p4-act-thing",
+          "p4-act-word",
+          "p4-act-when",
+          "p4-act-yesno",
+          "p4-act-use"
+        ]
+      },
+      "about": "Things we do (pre-K 4, First sounds and letters): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p4-act-thing, p4-act-word, p4-act-when, p4-act-yesno, p4-act-use).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['At the park, can you go down the slide?', 'Yes', 'Yes. At the park, you can kick a ball and go down the slide.', 'would mean you cannot go down the slide at the park, but you can.']",
+              "replace": "['At the park, can you go down it?', 'Yes', 'Yes. At the park, you can kick a ball and go down the slide.', 'would mean you cannot go down it at the park, but you can.']"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'At the park, can you go down the slide?': 'Yes', ",
+              "replace": "'At the park, can you go down it?': 'Yes', "
+            }
+          ],
+          "catch": [
+            "go down it",
+            "names nothing",
+            "(the |its )?(word )?it (names|means|refers to|stands for) nothing",
+            "never (says|said|names|named) what",
+            "no (antecedent|referent)",
+            "(pronoun|the word) it",
+            "unclear what (it|is)",
+            "what .{0,20}\\bit\\b (is|means|stands for)"
+          ]
+        },
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "['At art time, do you draw with a crayon?', 'Yes', 'Yes. At art time, you draw with a crayon.', 'would mean you do not draw at art time, but you do.']",
+              "replace": "['At art time, do you draw with it?', 'Yes', 'Yes. At art time, you draw with a crayon.', 'would mean you do not draw with it at art time, but you do.']"
+            },
+            {
+              "file": "tests/logic.test.mjs",
+              "find": "'At art time, do you draw with a crayon?': 'Yes', ",
+              "replace": "'At art time, do you draw with it?': 'Yes', "
+            }
+          ],
+          "catch": [
+            "draw with it",
+            "names nothing",
+            "(the |its )?(word )?it (names|means|refers to|stands for) nothing",
+            "never (says|said|names|named) what",
+            "no (antecedent|referent)",
+            "(pronoun|the word) it",
+            "unclear what (it|is)",
+            "what .{0,20}\\bit\\b (is|means|stands for)"
+          ]
+        }
+      ],
+      "origin": {
+        "class": "C34",
+        "pass": "NV",
+        "line": 6409,
+        "words": "the third frame's it, now the problem where it named nothing"
+      },
+      "defect": "A p4-act-yesno question's it names nothing: 'At the park, can you go down it?', with no picture and no line before it (wording 2: 'At art time, do you draw with it?'), so a child cannot tell what is asked and answers by guessing, and only the explanation heard after the answer says the slide (wording 2: the crayon). The lesson brief's item 8 (a setup line and its question are read as one sentence, every fact kept) and item 2 (a question asks only what the lesson says first, in its words); MISTAKE-CLASSES C34 (a composed sentence reads broken).",
+      "fix": "Name the thing, as it was: 'At the park, can you go down the slide?' (wording 2: 'At art time, do you draw with a crayon?'), in the bank and in the rules test's table of its answers.",
+      "history": "Added in pass NX, the week's tools pass, at its weekly flow review's second recommendation, from pass NV's finding named in origin.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX); its bank's best one-word read unchanged by either wording, under the one-word check's 80 percent bound",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: no test names the item or its banks; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning; both prompts are shorter than before"
+      }
+    },
+    {
+      "id": "N11",
+      "kind": "near miss",
+      "class": "C10",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "talk-about-it",
+        "aliases": [
+          "Talk about it",
+          "p3-talk-say-back",
+          "p3-talk-topic",
+          "p3-talk-about-yesno",
+          "p3-talk-why",
+          "p3-talk-feel"
+        ]
+      },
+      "about": "Talk about it (pre-K 3, Very first steps): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-talk-say-back, p3-talk-topic, p3-talk-about-yesno, p3-talk-why, p3-talk-feel).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "{ say: 'Talking with a friend is like rolling a ball back and forth. Your friend talks, and then it is your turn.'",
+              "replace": "{ say: 'Talking with a friend is like rolling a ball back and forth. Turn toward your friend while your friend talks, and then it is your turn.'"
+            }
+          ]
+        }
+      ],
+      "trap": [
+        "eye contact",
+        "eyes on",
+        "look at (your|the|a) friend",
+        "looking at (your|the|a) friend",
+        "autis",
+        "listener'?s body",
+        "whole body listening",
+        "fixed rule"
+      ],
+      "origin": {
+        "class": "C10",
+        "pass": "NV",
+        "line": 6409,
+        "words": "When your friend talks, do you turn away?",
+        "beside": true
+      },
+      "correct": "Line 1 asks the child to turn toward a friend while the friend talks, the body turned toward the speaker that RULES-AUDIT's row 'A listener's body is never a fixed rule' names (never eyes on the speaker), as Talking with a friend says it; it asks nothing of the child's eyes, no question marks a way of listening wrong, and the lesson's citation, which names turning toward a friend as taught in Talking with a friend, stays true.",
+      "history": "Added in pass NX, the week's tools pass, beside P31 and P35.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "every wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX)",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: no test names the item or its banks; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning; line 1 grows by about 34 characters, within the lengths of other pre-K lines"
+      }
+    },
+    {
+      "id": "N12",
+      "kind": "near miss",
+      "class": "C34",
+      "brief": "lesson",
+      "item": {
+        "type": "module",
+        "id": "things-that-happen",
+        "aliases": [
+          "Things that happen",
+          "p3-event-what",
+          "p3-event-tap",
+          "p3-event-yesno",
+          "p3-event-name",
+          "p3-event-picture"
+        ]
+      },
+      "about": "Things that happen (pre-K 3, Listen and point): its citations, its written lesson, its spoken script line by line with its pictures, and its banks (p3-event-what, p3-event-tap, p3-event-yesno, p3-event-name, p3-event-picture).",
+      "variants": [
+        {
+          "edits": [
+            {
+              "file": "src/logic.mjs",
+              "find": "'would mean you play on the slide at bedtime, but you sleep then.'",
+              "replace": "'would mean you play on the slide at bedtime, but at bedtime you sleep in your bed.'"
+            }
+          ]
+        }
+      ],
+      "trap": [
+        "never asked",
+        "question never (says|said|asks|asked)",
+        "not what (the|its) question (asks|asked|says|said)",
+        "does not (fit|match|answer) (its|the) (own )?question",
+        "names? (a |the |your )?bed",
+        "off topic",
+        "unrelated"
+      ],
+      "origin": {
+        "class": "C34",
+        "pass": "NV",
+        "line": 6409,
+        "words": "a cannot under a question that asks okay",
+        "beside": true
+      },
+      "correct": "The reason after a tap on Yes for 'Do you play on the slide at bedtime?' says 'Yes would mean you play on the slide at bedtime, but at bedtime you sleep in your bed.': it names a bed, which the question does not, but it answers the question it is under, what you do at bedtime, in the lesson's own line 3, as the lesson brief's item 11 asks (a yes-or-no reason names what its own question asks).",
+      "history": "Added in pass NX, the week's tools pass, beside P36.",
+      "tests": {
+        "passed": [
+          "scripts",
+          "stories",
+          "spelling",
+          "ledger",
+          "coverage",
+          "pictures",
+          "logic"
+        ],
+        "on": "its one wording: the light tests on pass NX's --variant 1 and --variant 2 builds (scripts 93, stories 6,975, spelling 80, ledger 48, coverage 386 and pictures 2 on each), the rules test's parts 58, 60, 76, 77, 80 to 85 and 162 to 164 on each by tools/rules-block.mjs, and the whole rules test once on each, 3,320 passed and 0 failed on each (pass NX); its bank's best one-word read unchanged by its one wording, inside its ONE_WORD_WAITS cap",
+        "browser": "not run (no browser test runs on a built copy); tests/e2e read for this item by its ids, names, banks and planted words: no test names the item or its banks; the fold check and the cue's words walk every pre-K line and question for layout alone, and no browser test reads a planted word's meaning"
+      }
     }
   ]
 }

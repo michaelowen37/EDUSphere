@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 22, 2026 (a close for More Info, and notes you won't miss)
+
+- More Info now has a close button at its top right. On a small phone the sheet runs taller than the screen and its Got it button sat out of sight below, and a phone has no Escape key, so there was no sure way out: a tap on the thin dark strip beside the sheet usually lands on the sheet itself. The Read it to me speaker moved to the top left, so a tap in the corner closes the sheet instead of reading it aloud.
+- What's new now tells you when more notes are below. On a phone held sideways its box is short, and a note could sit out of sight under the others with nothing to say it was there. Now a line at the bottom says how many more are below, like "1 more note below", until you scroll to the end.
+- The Quick Review card's exit now sits clear of its title. On a narrow phone the × had landed on the title's last letter. Now it's a bigger button in the card's own corner, and a title that needs two lines never leaves one word alone.
+- The Action Item's close button is easier to tap now. Two pop-ups also keep their last words together, so "for review." and "comes first" never sit alone on a line.
+
 ## November 19, 2026 (yes or no questions with nothing to give the answer away)
 
 - Five pre-K lessons' yes or no questions no longer give away their answers. In Happy, sad, mad and scared, every No question used to say "when you feel mad", so a child who said No whenever they heard "when" was always right. Now "when" comes with Yes questions too, like "Is it okay to use your words when you feel mad?"

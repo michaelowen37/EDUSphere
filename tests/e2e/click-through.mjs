@@ -162,6 +162,24 @@ ok('searching narrows the course list to what was typed', t.includes('Numbers to
 await page.fill('input[aria-label="Search courses"]', 'Growing up healthy'); await page.waitForTimeout(300);
 await page.locator('[data-course-row="sexual-health-6"] input[type=checkbox]').click(); await page.waitForTimeout(300);
 ok("assigning human sexuality instruction asks for a parent's written consent first", (await page.getByRole('dialog', { name: 'Consent required' }).count()) === 1 && (await text()).includes('28.004'));
+// The consent box's title keeps its last two words together (pass NX, round one's screen read: "A parent's consent comes / first" from 320
+// to 340 pixels wide): read at every width from 320 to 440 in steps of 2, its last line never holds one word (the box sits in a pop-up fixed
+// to the screen, so the test page's margin does not narrow it); the title drawn with a plain space before its last word is planted at 320,
+// caught.
+{ const titleBreaks = () => page.evaluate(() => {
+    const d = document.querySelector('[role="dialog"][aria-label="Consent required"]'); const p = d && [...d.querySelectorAll('p')].find((x) => /consent comes/.test(x.textContent)); if (!p) return null;
+    const words = []; const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let tn;
+    while ((tn = walk.nextNode())) for (const m of tn.textContent.matchAll(/[^\s\u00a0]+/g)) { const rg = document.createRange(); rg.setStart(tn, m.index); rg.setEnd(tn, m.index + m[0].length); const r = [...rg.getClientRects()].find((q) => q.width > 0.5); if (r) words.push(Math.round(r.top)); }
+    const tops = [...new Set(words)].sort((a, b) => a - b); return { lines: tops.length, onLast: words.filter((x) => x === tops[tops.length - 1]).length };
+  });
+  const lone = []; let read = 0;
+  for (let w = 320; w <= 440; w += 2) { await page.setViewportSize({ width: w, height: 844 }); await page.waitForTimeout(60); const b = await titleBreaks(); if (b) { read++; if (b.lines > 1 && b.onLast < 2) lone.push(w); } }
+  await page.setViewportSize({ width: 320, height: 844 }); await page.waitForTimeout(100);
+  const plant = await page.evaluate(() => { const d = document.querySelector('[role="dialog"][aria-label="Consent required"]'); const p = d && [...d.querySelectorAll('p')].find((x) => /consent comes/.test(x.textContent)); if (!p) return false; window.__titleWas = p.innerHTML; p.textContent = p.textContent.replace(/\u00a0/g, ' '); return true; });
+  const planted = await titleBreaks();
+  await page.evaluate(() => { const d = document.querySelector('[role="dialog"][aria-label="Consent required"]'); const p = d && [...d.querySelectorAll('p')].find((x) => /consent comes/.test(x.textContent)); if (p && window.__titleWas !== undefined) p.innerHTML = window.__titleWas; delete window.__titleWas; });
+  await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(200);
+  ok(`the consent box's title never leaves its last word alone on a line at any width from 320 to 440 (pass NX, round one's screen read; ${read} widths read, its old plain space planted at 320, caught)`, read === 61 && lone.length === 0 && plant && !!planted && planted.lines > 1 && planted.onLast === 1, { read, lone, planted }); }
 await page.getByRole('button', { name: 'Cancel', exact: true }).click(); await page.waitForTimeout(200);
 ok('cancelling leaves the course unassigned', (await page.getByRole('dialog', { name: 'Consent required' }).count()) === 0 && !(await page.locator('[data-course-row="sexual-health-6"] input[type=checkbox]').isChecked()));
 await page.fill('input[aria-label="Search courses"]', 'grade 1 math'); await page.waitForTimeout(300);

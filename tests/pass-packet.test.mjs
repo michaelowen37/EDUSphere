@@ -226,6 +226,16 @@ const copiedOf = (opts) => checkPacket(T.packet(opts)).copied;
   ok('the pass packet names the earmark rows every screen brief names, each open in EARMARKS, every open row waiting for the next screen read among them, with the screen brief and not without it (pass NK; an open row waiting for the next screen read left off the list, planted, caught)',
     T.SCREEN_BRIEF_ROWS.every(open) && missing(ea).length === 0 && waiting(ea).length >= 5 && withScreen.includes('## The earmark rows every screen brief names') && T.SCREEN_BRIEF_ROWS.every((id) => withScreen.includes('\n- ' + id + ' ') && !withScreen.includes('\n- ' + id + ' (not found')) && !without.includes('## The earmark rows every screen brief names') && checkPacket(withScreen).faults.length === 0 && missing(planted).join() === 'A999',
     { notOpen: T.SCREEN_BRIEF_ROWS.filter((id) => !open(id)), missing: missing(ea) }); }
+// Since pass NX: every row on that list is still Waiting in EARMARKS, so a row a read has taken comes off it. A155 stayed on the list after
+// pass NR fixed it and two screen reads saw it fixed, since its status, Fixed in pass NR, said it stayed open only while the list named it.
+// Put back on the list, planted, it is caught, and so is a listed row whose status says Done, planted in a copy of EARMARKS.
+{ const ea = TEXTS.EA.split('\n');
+  const statusOf = (lines, id) => { const l = lines.find((x) => x.startsWith('| ' + id + ' |')) || ''; return ((l.match(/\| ([^|]*) \|\s*$/) || [])[1] || '').trim(); };
+  const notWaiting = (list, lines = ea) => list.filter((id) => !/^Waiting\b/.test(statusOf(lines, id)));
+  const done = [...ea, '| A998 | A planted row (the pass packet test) | NX | Done in pass ZZ |'];
+  ok(`every row on the list of earmark rows every screen brief names is still Waiting in EARMARKS, so a row a read has taken comes off (pass NX; ${T.SCREEN_BRIEF_ROWS.length} rows; A155, fixed in pass NR, put back on the list, planted, and a listed row whose status says Done, planted, each caught)`,
+    notWaiting(T.SCREEN_BRIEF_ROWS).length === 0 && notWaiting([...T.SCREEN_BRIEF_ROWS, 'A155']).join() === 'A155' && notWaiting([...T.SCREEN_BRIEF_ROWS, 'A998'], done).join() === 'A998',
+    { notWaiting: notWaiting(T.SCREEN_BRIEF_ROWS), a155: statusOf(ea, 'A155').slice(0, 60) }); }
 // A task packet (Q120 (a), pass NS): one agent's rows alone, read whole. Its faults against the files' texts, for the options it was made
 // with: a copy that differs from its file, a line every packet copies that its own words, areas and briefs did not choose, an index, a
 // row its words name left out, and a head whose count is not its own bytes, or that says over or not as its bytes are.
@@ -281,8 +291,8 @@ const copiedOf = (opts) => checkPacket(T.packet(opts)).copied;
     const under = run(['--match', TASKS[2].match]); const over = run(['--match', TASKS[2].match, '--briefs', 'code']);
     const fine = (r, isOver) => r.status === 0 && r.stdout.startsWith('# Task packet\n') && Buffer.byteLength(r.stdout) === headCount(r.stdout)
       && /\. Over the about 40,000 bytes/.test(r.stdout) === isOver && /NOTE: this task packet holds [\d,]+ bytes, over/.test(r.stderr) === isOver;
-    ok(`the command line prints a task packet whose file holds the very bytes its head counts, and says over on the terminal only when it is over (${Buffer.byteLength(under.stdout).toLocaleString('en-US')} bytes under, ${Buffer.byteLength(over.stdout).toLocaleString('en-US')} over with the code brief, which it says to give by line range; round one's code read of pass NS)`,
-      fine(under, false) && fine(over, true) && /give a reader its brief by its line range/.test(over.stderr) && /give the reader its brief by its line range and leave --briefs out/.test(over.stdout),
+    ok(`the command line prints a task packet whose file holds the very bytes its head counts, and says over on the terminal only when it is over (${Buffer.byteLength(under.stdout).toLocaleString('en-US')} bytes under, ${Buffer.byteLength(over.stdout).toLocaleString('en-US')} over with the code brief, which it says to give by its heading; round one's code read of pass NS)`,
+      fine(under, false) && fine(over, true) && /give a reader its brief by its heading/.test(over.stderr) && /give the reader its brief by its heading and leave --briefs out/.test(over.stdout),
       { under: [under.status, Buffer.byteLength(under.stdout), headCount(under.stdout), under.stderr.slice(0, 200)], over: [over.status, Buffer.byteLength(over.stdout), headCount(over.stdout), over.stderr.slice(0, 200)] });
     const none = run([]); const missed = run(['--match', 'zzzqqq|^The pass packet']);
     ok('words of --match that name no row are named in the head and on the terminal, the rest kept, and a task packet with no row at all exits 2 with a plain note (round one\'s code read of pass NS)',
@@ -296,6 +306,24 @@ const copiedOf = (opts) => checkPacket(T.packet(opts)).copied;
     && T.unmatchedWords('^' + T.SCREEN_BRIEF_ROWS[0]).length === 0 && T.unmatchedWords("GROWN-UP'S CARD ON A DEVICE").length === 0);
   ok('a task packet whose briefs take the screen brief holds the earmark rows every screen brief names, and one without it does not (round one\'s code read of pass NS)',
     made[1][1].includes('## The earmark rows every screen brief names') && T.SCREEN_BRIEF_ROWS.every((id) => made[1][1].includes('\n- ' + id + ' ')) && !made[0][1].includes('## The earmark rows every screen brief names') && !made[2][1].includes('## The earmark rows every screen brief names'));
+  // Since pass NX, --screen-rows: the same rows without the screen brief, so a screen read's task packet holds them under its 40,000 bytes,
+  // where --briefs screen takes it over and the lead, told to drop --briefs, dropped the rows with it. Made from the grown-up's card task's
+  // words above: with the flag the packet holds the rows once, every listed row by its title, no line of INDEPENDENT-CHECKS and no fault, and
+  // its head names the flag; with --briefs screen it is over; with both the rows come once; a whole packet (no --task) made with the flag
+  // holds them, its screen brief left to the index; and the command line with the flag prints the very packet made here.
+  { const words = { match: TASKS[1].match }; const rowsOnly = T.packet({ ...words, task: true, screenRows: true }); const withBrief = made[1][1];
+    const both = T.packet({ ...words, briefs: ['screen'], task: true, screenRows: true }); const whole = T.packet({ areas: ['banks'], screenRows: true });
+    const heading = '## The earmark rows every screen brief names'; const times = (t) => String(t).split(heading).length - 1;
+    const listed = (t) => T.SCREEN_BRIEF_ROWS.every((id) => t.includes('\n- ' + id + ' ') && !t.includes('\n- ' + id + ' (not found'));
+    const icLines = (t) => (t.match(/^\[IC \d+\] /gm) || []).length;
+    const screenBrief = TEXTS_LINES.IC.filter((l) => l.section === 'The screen brief' && l.kind !== 'blank'); const wholeCopied = checkPacket(whole).copied.IC;
+    const cl = spawnSync(process.execPath, [fileURLToPath(new URL('../tools/pass-packet.mjs', import.meta.url)), '--task', '--match', TASKS[1].match, '--screen-rows'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    ok(`--screen-rows gives a task packet the earmark rows every screen brief names without the brief (pass NX): ${Buffer.byteLength(rowsOnly).toLocaleString('en-US')} bytes with the rows alone, against ${Buffer.byteLength(withBrief).toLocaleString('en-US')} with --briefs screen, over; every listed row by its title and no line of INDEPENDENT-CHECKS; the flag named in its head; both flags print the rows once; a whole packet made with the flag holds them, its screen brief left to the index; and the command line prints the same packet`,
+      times(rowsOnly) === 1 && listed(rowsOnly) && icLines(rowsOnly) === 0 && taskFaults(rowsOnly, words).length === 0 && !T.taskOver(Buffer.byteLength(rowsOnly)) && T.taskOver(Buffer.byteLength(withBrief))
+        && /^Made by node tools\/pass-packet\.mjs --task --match '[^\n]*' --screen-rows\.$/m.test(rowsOnly) && times(both) === 1 && times(made[0][1]) === 0
+        && times(whole) === 1 && listed(whole) && checkPacket(whole).faults.length === 0 && screenBrief.length > 0 && screenBrief.every((l) => !wholeCopied.has(l.n)) && /^Made by node tools\/pass-packet\.mjs --areas banks --screen-rows\.$/m.test(whole)
+        && cl.status === 0 && cl.stdout === rowsOnly,
+      { rowsOnly: [Buffer.byteLength(rowsOnly), times(rowsOnly), icLines(rowsOnly), taskFaults(rowsOnly, words).slice(0, 2)], withBrief: Buffer.byteLength(withBrief), both: times(both), whole: [times(whole), checkPacket(whole).faults.slice(0, 2)], cl: [cl.status, cl.stdout === rowsOnly, String(cl.stderr).slice(0, 200)] }); }
   // The edge, with a planted row padded until its packet holds exactly 40,000 bytes: that packet is not over, and one byte more of its
   // row is (the over words then lengthen the head, so no packet holds exactly 40,001).
   { const plant = (pad) => ({ ...TEXTS, RA: TEXTS.RA + `\n| **Zqedge, a planted row (pass ZZ)** | ${'x'.repeat(pad)} |\n` });

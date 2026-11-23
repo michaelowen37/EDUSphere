@@ -18,10 +18,23 @@
 //                                                      --into); check.sh's times_write runs it with --into $CHECK_TIMES_FILE,
 //                                                      and a run made without it leaves its record in /tmp/edu_times.txt,
 //                                                      which this adds by hand the same way.
-// The record is check.sh's own: a line "began", a line "step" for each step (its name, seconds, limit, its command's exit code
-// where run timed it, whether check.sh failed it, and its summary line), and a line "ended" with the total seconds and the
-// verdict, the fields split by tabs. tests/docs-sync.test.mjs runs check.sh's helpers and this writer on a fake run, and
-// tests/floor-guard.test.mjs reads the file with parseTimes.
+//      node tools/check-times.mjs --resume <record> --from <step> --script <check.sh> --copy <its folder> --plan <file> [--slow <file>]
+//                                                      check.sh --from <step>'s first move (pass NX): reads the killed run's
+//                                                      record, keeps its finished steps before <step>, or refuses (exit 2)
+// The record is check.sh's own: a line "began" (since pass NX with the copy's folder), a line "step" for each step as it ends (its
+// name, seconds, limit, its command's exit code where run timed it, whether check.sh failed it, and its summary line), a line
+// "resumed" for each time check.sh --from took the run up again (pass NX), and a line "ended" with the total seconds and the
+// verdict, the fields split by tabs. tests/docs-sync.test.mjs runs check.sh's helpers and this writer on a fake run, a killed run
+// resumed by --from among them, and tests/floor-guard.test.mjs reads the file with parseTimes.
+//
+// A run a restart of the machine kills (pass NX, the week's flow review's sixth recommendation, after restarts killed check.sh in
+// passes NQ, NS and NW): each step's line is in the record from the moment the step ends, in /tmp, outside the tree, so the run's
+// finished steps outlive it; check.sh --from <step>, on the same copy, hands this tool the record (--resume), which checks that it
+// is this copy's run, killed before its end, its steps check.sh's own in their order, and that <step> is the one it was killed in or
+// one before it; it keeps the lines of the steps before <step> (and the notes check.sh prints before its verdict for those steps),
+// drops the rest, and tells check.sh where to start, whether a kept step failed and whether the steps it skips made the build or the
+// test page. check.sh makes them again first, writes its "resumed" line and runs the rest, so the run's end writes one run, its
+// finished steps the killed run's, each as it ended, and its note naming where it was resumed.
 // -----------------------------------------------------------------------------------------------------------------
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -68,18 +81,95 @@ export function statusOf(code, failedByCheck) {
 }
 
 // check.sh's record of one run (its tab-split lines) as a run: when it began and ended, its verdict, its minutes, its steps.
+// Since pass NX a run check.sh --from took up again after a kill has a "resumed" line for each time (when, the step it started
+// from, and the seconds and status of the build it made again first, and what it made); such a run's minutes are the seconds
+// measured in each part (the steps before the last resume, each earlier resume's rebuild, and the last part's own seconds), never
+// the clock from began to ended, which holds the time the machine was down, and its note names each resume.
 export function readRecord(text) {
-  const run = { began: '', ended: '', minutes: null, about: false, verdict: '', note: '', steps: [] };
+  const run = { began: '', ended: '', minutes: null, about: false, verdict: '', note: '', steps: [] }; const resumes = []; let total = null;
   for (const line of String(text).split('\n')) {
     const f = line.split('\t');
     if (f[0] === 'began') run.began = f[2] || '';
     else if (f[0] === 'step' && f.length >= 7) {
       const seconds = Number(f[2]); const limit = f[3] === '' ? null : Number(f[3]);
       run.steps.push({ name: f[1], seconds: Number.isFinite(seconds) ? seconds : null, limit: Number.isFinite(limit) ? limit : null, status: statusOf(f[4], f[5] === '1'), summary: f.slice(6).join(' ') });
-    } else if (f[0] === 'ended') { run.ended = f[2] || ''; const total = Number(f[3]); run.minutes = Number.isFinite(total) ? Math.round(total / 60) : null; run.verdict = f.slice(4).join(' ').trim(); }
+    } else if (f[0] === 'resumed') resumes.push({ date: f[2] || '', from: f[3] || '', seconds: Number(f[4]) || 0, status: f[5] || '', made: f[6] || '', kept: run.steps.length });
+    else if (f[0] === 'ended') { run.ended = f[2] || ''; total = Number(f[3]); run.minutes = Number.isFinite(total) ? Math.round(total / 60) : null; run.verdict = f.slice(4).join(' ').trim(); }
   }
   if (!run.began || !run.ended || !run.verdict) throw new Error('the record has no began line, ended line or verdict: check.sh writes all three');
+  if (resumes.length && Number.isFinite(total)) {
+    const last = resumes[resumes.length - 1];
+    const before = run.steps.slice(0, last.kept).reduce((n, s) => n + (s.seconds || 0), 0) + resumes.slice(0, -1).reduce((n, r) => n + r.seconds, 0);
+    run.minutes = Math.round((before + total) / 60);
+    const made = (r) => (r.made ? `, ${r.made} made again first in ${r.seconds} second${r.seconds === 1 ? '' : 's'}${r.status === 'failed' ? ', and that failed' : ''}` : '');
+    const parts = resumes.map((r, i) => `${i ? 'again ' : ''}at ${r.date} from ${r.from} (${r.kept} step${r.kept === 1 ? '' : 's'} kept from before it${made(r)})`);
+    run.note = `Resumed by check.sh --from after the run was killed, ${parts.join(', and ')}: each kept step is the killed run's, as it ended, and the minutes are the seconds each part measured.`;
+  }
   return run;
+}
+
+// check.sh's steps, read from its own text (pass NX, for --from): each step's name as it echoes it, its name in run where it runs
+// under a limit, and whether its line makes the build (./build.sh) or the test page step 10 makes (tests/e2e/make-page.mjs), since a
+// resumed run that skips such a step makes it again first.
+export function stepsOfScript(text) {
+  return String(text || '').split('\n').filter((l) => /^step "/.test(l)).map((l) => {
+    const name = /^step "([^"]+)"/.exec(l)[1]; const rest = l.slice(name.length + 7); const r = / run "([^"]+)" \d+ /.exec(l);
+    return { name, run: r ? r[1] : '', build: /(?:^|[\s;&|{])\.\/build\.sh\b/.test(rest), page: /\bnode tests\/e2e\/make-page\.mjs\b/.test(rest) }; });
+}
+
+// The step a --from names: its number without its "/13" ("13e"), or else the start of its name, its whole name or its number
+// with its "/13" too ("13e/13", "10/13 license"), and only when one step answers; otherwise the reason (five steps are numbered
+// 10/13, so "10" names none of them alone).
+export function stepNamed(steps, from) {
+  const f = String(from || '').trim(); if (!f) return { error: 'no step was named after --from' };
+  const id = (s) => s.name.split(' ')[0];
+  const ways = [(s) => id(s).split('/')[0] === f, (s) => s.name.startsWith(f)];
+  for (const way of ways) {
+    const hits = steps.map((s, index) => ({ s, index })).filter((x) => way(x.s));
+    if (hits.length === 1) return { index: hits[0].index, step: hits[0].s };
+    if (hits.length > 1) return { error: `"${f}" names ${hits.length} steps (${hits.map((x) => x.s.name).join('; ')}): give more of the step's name` };
+  }
+  return { error: `no step of check.sh is named "${f}"; its steps are ${steps.map(id).join(', ')}` };
+}
+
+// What check.sh --from keeps of a killed run (pass NX), or why it refuses, from the run's record, check.sh's steps, the step named
+// and the copy's folder. It refuses a record with no run, a run on another copy or one whose record names no copy, a run that
+// ended (only a killed run is resumed; a run the lead stopped looks like a killed one here, so --from is for a run a restart
+// killed, as RULES-AUDIT section 9's row on such a run reads), a record whose steps are not check.sh's in their order, and a step
+// after the one the run was killed in (the first step with no line), so no step is ever left unrun. It keeps the began line, the
+// lines of the steps before the step named, and any earlier resumed line from before it, in their order, and says whether a kept
+// step failed (the resumed run then fails, so a run with a failed step never counts as passed) and whether a skipped step made the
+// build or the test page.
+export function resumePlan(recordText, steps, from, copy) {
+  const lines = String(recordText || '').split('\n').filter((l) => l.length); const f = lines.map((l) => l.split('\t'));
+  const began = f.find((x) => x[0] === 'began');
+  if (!began) return { error: 'the record holds no run, so there is nothing to resume' };
+  if ((began[3] || '') !== copy) return { error: began[3] ? `the record is the run on ${began[3]}, not this copy (${copy}): resume it there` : 'the record names no copy (check.sh names its copy there since pass NX), so it cannot be told from another copy\'s run' };
+  const ended = f.find((x) => x[0] === 'ended');
+  if (ended) return { error: `the run that began ${began[2]} ended, its verdict ${ended.slice(4).join(' ')}: --from resumes only a run killed before its end` };
+  const recorded = f.filter((x) => x[0] === 'step').map((x) => x[1]);
+  const wrong = recorded.findIndex((name, i) => !steps[i] || steps[i].name !== name);
+  if (wrong >= 0) return { error: `the record's step ${wrong + 1} is "${recorded[wrong]}", where check.sh's is ${steps[wrong] ? `"${steps[wrong].name}"` : 'none'}: the record is not this check.sh's run, in its order` };
+  const named = stepNamed(steps, from); if (named.error) return { error: named.error };
+  const killed = recorded.length;
+  if (named.index > killed) return { error: `the run was killed in ${steps[killed].name}, the first step with no line in its record, so it is resumed from that step or one before it, never from ${named.step.name}` };
+  const keep = []; let k = 0; let keptFailed = false;
+  lines.forEach((line, i) => { const x = f[i];
+    if (x[0] === 'began') keep.push(line);
+    else if (x[0] === 'step') { if (k < named.index) { keep.push(line); if (x[5] === '1') keptFailed = true; } k += 1; }
+    else if (x[0] === 'resumed') { const at = steps.findIndex((s) => s.name === x[3]); if (at >= 0 && at < named.index) keep.push(line); } });
+  const skipped = steps.slice(0, named.index);
+  return { index: named.index, step: named.step, killed: steps[killed] ? steps[killed].name : '', began: began[2] || '', record: keep.join('\n') + '\n', keptFailed,
+    rebuild: skipped.some((s) => s.build), remake: skipped.some((s) => s.page), kept: keep.filter((l) => l.startsWith('step\t')) };
+}
+
+// The notes check.sh prints before its verdict (slow_file: a step stopped at its limit, or one past two thirds of it) that a resumed
+// run keeps: a note is its step's by the step's name in run, and is kept only when that step is kept, so a step run again is noted
+// once, by its new run; a note of no step's name is kept.
+export function keptNotes(slowText, steps, fromIndex) {
+  return String(slowText || '').split('\n').filter((l) => l.length).filter((line) => {
+    const i = steps.findIndex((s) => s.run && (line.startsWith(`NOTE: ${s.run} took `) || line.startsWith(`TIMEOUT: ${s.run} was stopped `)));
+    return i < 0 || i < fromIndex; });
 }
 
 // docs/CHECK-TIMES.md as runs (newest first) and the folded table. A file whose run headings the parser cannot all read is an
@@ -194,7 +284,29 @@ export function report(doc, file) {
 // the file being run and its flag is given, inside this block (CLAUDE-PART-2's rule for a tool another tool may import).
 if (process.argv[1] && process.argv[1].endsWith('check-times.mjs')) {
   const args = process.argv.slice(2); const option = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
-  if (process.argv.includes('--write')) {
+  // check.sh --from's first move (pass NX): the killed run's record, check.sh's own steps and the step named give the plan, or the
+  // reason it is refused (exit 2, nothing written, so the record stays as the killed run left it). On a plan it writes the kept
+  // record over the old one and the kept notes over the notes file, both in /tmp, never in the tree, prints for the log what it
+  // kept, and writes the plan's one line (the step to start at, whether a kept step failed, whether to make the build and the test
+  // page again first) to --plan for check.sh to read.
+  if (process.argv.includes('--resume')) {
+    const record = option('--resume'); const slow = option('--slow');
+    try {
+      const steps = stepsOfScript(readFileSync(option('--script'), 'utf8'));
+      const plan = resumePlan(record && existsSync(record) ? readFileSync(record, 'utf8') : '', steps, option('--from'), option('--copy'));
+      if (plan.error) { console.log(`check.sh --from: not resumed, and no step run: ${plan.error}.`); process.exitCode = 2; }
+      else {
+        writeFileSync(record, plan.record);
+        if (slow) writeFileSync(slow, keptNotes(existsSync(slow) ? readFileSync(slow, 'utf8') : '', steps, plan.index).map((l) => l + '\n').join(''));
+        writeFileSync(option('--plan'), [plan.step.name, plan.keptFailed ? 1 : 0, plan.rebuild ? 1 : 0, plan.remake ? 1 : 0].join('\t') + '\n');
+        const where = plan.step.name === plan.killed ? 'the step it was killed in' : `before ${plan.killed || 'its end'}, where it was killed`;
+        console.log(`check.sh --from: resuming the run that began ${plan.began} on this copy from ${plan.step.name}, ${where}; its ${plan.kept.length} steps before that one are kept from its record (${record}), each as it ended:`);
+        // Each kept step, as it ended: one second said as one, and no template literal inside another (the house's code rule).
+        for (const line of plan.kept) { const f = line.split('\t'); const secs = f[2] === '1' ? '1 second' : f[2] + ' seconds'; const limit = f[3] ? ' of its ' + f[3] : '';
+          console.log(`  kept: ${f[1]}, ${statusOf(f[4], f[5] === '1')} in ${secs}${limit}: ${f.slice(6).join(' ') || 'no summary line'}`); }
+      }
+    } catch (e) { console.log(`check.sh --from: not resumed, and no step run: ${e.message}`); process.exitCode = 2; }
+  } else if (process.argv.includes('--write')) {
     const into = option('--into') || TIMES_FILE; const record = option('--write');
     try {
       const doc = existsSync(into) ? parseTimes(readFileSync(into, 'utf8')) : { runs: [], folded: { runs: 0, from: '', to: '', steps: [] } };

@@ -3557,16 +3557,20 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
   return (
     <Overlay role="dialog" modal="true" label="More Info" z={45} onClick={onClose} scroll>
       <div data-more-info="" onClick={(e) => e.stopPropagation()} style={{ ...card, maxWidth: 560, width: '100%', margin: 'auto', textAlign: 'left' }}>
-        {/* The title truly centered, the speaker in a column of its own on the right and an empty one of the same width on the left (pass LS's rule). */}
+        {/* The title truly centered between two columns of 44 pixels (pass LS's rule): the speaker in the left one, and the close in the right
+            one (pass NX, EARMARKS A177, round one's screen read: at 320 by 568 the sheet opened with Got it wholly below the fold on 5 of 10
+            openings and partly on 3 more, and the top right corner, where every other pop-up keeps its close, held the speaker, which reads
+            aloud instead). DESIGN gives a pop-up that scrolls on a short phone a close at its top right as well as Got it; the sheet opens at
+            its top, so the close is in view as it opens. Until pass NX the speaker sat on the right and the left column stood empty. */}
         <div style={{ display: 'grid', gridTemplateColumns: '44px 1fr 44px', alignItems: 'center', margin: '0 0 6px' }}>
-          <span aria-hidden="true" />
-          <p style={{ margin: 0, fontSize: 19, fontWeight: 700, textAlign: 'center' }}>More Info</p>
           {canSpeak() ? (
             <button type="button" onClick={read} aria-label={reading ? 'Stop reading' : 'Read it to me'} title={reading ? 'Stop reading' : 'Read it to me'} className="edu-press" data-more-info-speaker=""
               style={{ width: 44, height: 44, borderRadius: 999, border: C.mode === 'dark' ? 'none' : `3px solid ${C.gold}`, background: C.mode === 'dark' ? 'transparent' : (reading ? C.gold : C.goldSoft), cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill={C.ink} /><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke={C.ink} strokeWidth="1.8" strokeLinecap="round" /></svg>
             </button>
           ) : <span aria-hidden="true" />}
+          <p style={{ margin: 0, fontSize: 19, fontWeight: 700, textAlign: 'center' }}>More Info</p>
+          <button type="button" onClick={onClose} aria-label="Close" data-more-info-x="" style={{ width: 44, height: 44, background: 'none', border: 'none', padding: 0, fontSize: 30, lineHeight: '44px', color: C.ink, cursor: 'pointer', fontFamily: FONT }}>×</button>
         </div>
         {/* The question's own picture (the lesson check, pass MH): the reasons say "these are all blue" and "this shape". */}
         {visual && <div data-more-info-picture="" style={{ maxWidth: 240, margin: '0 auto 4px' }}><Picture visual={visual} note={false} /></div>}
@@ -5839,7 +5843,9 @@ const TOUR = [
   ['Student Summaries', 'rows', 'class', 'right-at-search', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> lets you know who might need a little guidance.</>],
   ['Story Log', 'storylog-page', 'storylog', 'bottom-right', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
   ['Transcripts', 'transcript', 'report', 'above', <>Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.</>],
-  // Pass LG (Mikey): a red Action Item link on a student's card when something needs the educator; Roger's popup shows it.
+  // Pass LG (Mikey): a red Action Item link on a student's card when something needs the educator. Pass LG's tour showed it in Roger's
+  // popup; since pass LI the card shows the classroom itself, and since pass LK its made-up students are drawn by the real classroom card
+  // code (TOUR_SAMPLE_ROSTER), Roger's card the one with the link.
   ['Action Items', 'action-demo', null, 'under-action', <>When something needs your attention, an Action Item link appears.<br /><br />This feature is tied to written papers ready for your review and students who need help sooner rather than later.</>],
 ];
 // Emphasized titles: the sentences from logic wrap a lesson title in asterisks, shown here in bold. Since round three's screen read of pass
@@ -5849,8 +5855,9 @@ function Emphasized({ text }) {
   return <>{parts.map((p, i) => (/^\*[^*]+\*$/.test(p) ? <strong key={i}>{wholeHyphens(p.slice(1, -1))}</strong> : <span key={i}>{wholeHyphens(p)}</span>))}</>;
 }
 // The Action Item popup (pass LG, Mikey): what needs the educator for one student, in whole sentences, with the one action the
-// app can offer (Move forward on a lesson that is stuck after its review) and an X. The border breathes red. The tour shows it
-// for a made-up student, Roger, where the buttons only close it.
+// app can offer (Move forward on a lesson that is stuck after its review) and an X. The border breathes red. Pass LG's tour showed it
+// for a made-up student, Roger; since pass LI the tour's card shows the classroom instead, and since pass LK Roger's card is drawn by the
+// real classroom card code (TOUR_SAMPLE_ROSTER), where nothing takes a tap, so the tour opens no popup.
 // The card of an Action Item popup: the red breathing border, the X, a title, and whatever the popup carries.
 // How many separate things need the educator for one student (pass LJ): each stuck lesson is one, and waiting papers are one
 // together, since a single Review button opens them all in the report.
@@ -5858,7 +5865,9 @@ function actionCount(items) { return items ? items.stuck.length + (items.writing
 function ActionCard({ children, onClose, inline = false, style = {}, step = null }) {
   return (
     <div className={inline ? 'edu-alert-box' : 'edu-rise edu-alert-box'} role={inline ? undefined : 'dialog'} aria-label={inline ? undefined : 'Action Item'} style={{ width: 'min(440px, 100%)', background: C.surface, borderRadius: 16, padding: '18px 20px 20px', textAlign: 'center', position: 'relative', pointerEvents: 'auto', boxSizing: 'border-box', ...style }} onClick={(e) => e.stopPropagation()}>
-      {onClose && <button type="button" aria-label="Close" onClick={onClose} style={{ position: 'absolute', top: 10, right: 12, background: 'none', border: 'none', fontSize: 22, lineHeight: 1, color: C.muted, cursor: 'pointer', fontFamily: FONT }}>×</button>}
+      {/* The close is a 44-pixel target in the card's top right corner, its × drawn about where it was (pass NX, round one's screen read:
+          it was 27 by 24 pixels, under the 44 a finger needs, EARMARKS A36's rule). */}
+      {onClose && <button type="button" aria-label="Close" onClick={onClose} style={{ position: 'absolute', top: 0, right: 0, width: 44, height: 44, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', fontSize: 22, lineHeight: 1, color: C.muted, cursor: 'pointer', fontFamily: FONT }}>×</button>}
       <p style={{ margin: step ? '0 0 2px' : '0 0 10px', fontSize: 19, fontWeight: 700, color: '#D64541' }}>Action Item</p>{step && <p style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 600, color: C.muted }} data-action-step={`${step.at}/${step.of}`}>{step.at} of {step.of}</p>}
       {children}
     </div>
@@ -5883,10 +5892,13 @@ function ActionItemPopup({ stuck = [], onPush, onClose, busy = false, step = nul
 // A paper waiting for a mark gets its own popup (Mikey, pass LG): a one-line summary and Review, which opens the report at
 // the writing section; marking the paper there is what makes the Action Item link go away.
 function ActionWritingPopup({ name, count = 1, onReview, onClose, busy = false, step = null }) {
+  // Its sentence keeps its last two words together (pass NX, round one's screen read: "S-1 has submitted a paper for / review." at 320 to
+  // 340 pixels wide, and a longer label moves the break to other widths).
+  const said = count === 1 ? `${name} has submitted a paper for review.` : `${name} has submitted ${countWords(count)} papers for review.`;
   return (
     <Overlay onClick={onClose}>
       <ActionCard onClose={onClose} step={step}>
-        <p style={{ margin: '0 0 12px', fontSize: 15, lineHeight: 1.5 }}>{count === 1 ? `${name} has submitted a paper for review.` : `${name} has submitted ${countWords(count)} papers for review.`}</p>
+        <p style={{ margin: '0 0 12px', fontSize: 15, lineHeight: 1.5 }}>{lastTwoTogether(said, said)}</p>
         <Btn full onClick={onReview} disabled={busy}>Review</Btn>
       </ActionCard>
     </Overlay>
@@ -6151,6 +6163,66 @@ function ScrollCue({ target, watch, whole = false, hidden = 0, scrollTo = null }
         {[0, 1, 2].map((k) => <polyline key={k} className="edu-chevron" points={`8,${7 + k * 13} 20,${18 + k * 13} 32,${7 + k * 13}`} fill="none" stroke={C.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" style={{ animationDelay: `${k * 0.2}s` }} />)}
       </svg>
     </button>
+  );
+}
+// NewsNotes (pass NX, EARMARKS A175, round one's screen read). In plain terms: What's new's notes, which scroll inside its box above Got
+// it and More Details (pass NU), with a cue that more notes follow. On a phone held sideways the box is short, and a note could sit
+// wholly below the scroll's foot or show only its first line cut in half, with nothing to say more followed (at 740 by 360 the third of
+// three notes was hidden and the box looked complete; at 667 by 375 only the tops of its letters showed, at 844 by 390 its first line).
+// Now, while anything runs past the scroll's foot, the foot fades into the box and a line on the box's own color under the fade says
+// how many notes have not begun to show ("1 more note below"), or "More below" when what is left is the rest of a note already begun.
+// Scrolled to the end, the cue goes and the last note shows whole. The cue lies over the scroll's foot (NEWS_CUE_BAND pixels), so it
+// moves nothing as it comes and goes, and a note counts as begun only when more than NEWS_BEGUN pixels of it show above the cue, about
+// the space above its first line's letters. It lets every touch and wheel through to the notes, so a finger on it still scrolls them,
+// and leaves a laptop's scrollbar uncovered. It is for the eye alone, hidden from a screen reader, which reads every note in order
+// whatever shows. Where the notes stand is read as the pop-up is drawn, on every scroll of the notes and whenever their size or the
+// list's changes (a phone turned, a note added), so the count is right at every moment. It has its own state, so a scroll draws this
+// box again and not the whole classroom page.
+const NEWS_FADE = 12;        // the fade at the scroll's foot, in pixels
+const NEWS_CUE_BAND = 32;    // the whole cue: the fade, a 16-pixel line of words and 4 pixels under it
+const NEWS_BEGUN = 6;        // a note with no more than this much showing above the cue has not begun to show
+const NEWS_PAST = 4;         // what runs past the scroll's foot by no more than this is the space under a line's letters, not words
+function NewsNotes({ children }) {
+  const wrapRef = useRef(null);
+  const [left, setLeft] = useState({ more: false, notes: 0, bar: 0 });   // anything below the foot, the notes not begun, a scrollbar's width
+  React.useLayoutEffect(() => {
+    const wrap = wrapRef.current; const sc = wrap && wrap.querySelector('[data-news-scroll]');
+    if (!sc || typeof window === 'undefined') return undefined;
+    const read = () => {
+      const foot = sc.getBoundingClientRect().top + sc.clientHeight;   // the foot of what the scroll shows
+      // Anything whose box runs more than NEWS_PAST pixels past the foot, beyond the space under a line's letters (the line that sends a
+      // fifth note to More Details counts too), so a note whose letters all show never brings the cue.
+      const more = [...sc.children].some((el) => el.getBoundingClientRect().bottom > foot + NEWS_PAST);
+      const notes = more ? [...sc.querySelectorAll('[data-news-brief] > li')].filter((li) => li.getBoundingClientRect().top + NEWS_BEGUN >= foot - NEWS_CUE_BAND).length : 0;
+      const bar = Math.max(0, sc.offsetWidth - sc.clientWidth);   // a laptop's scrollbar, which the cue leaves uncovered
+      setLeft((was) => (was.more === more && was.notes === notes && was.bar === bar ? was : { more, notes, bar }));
+    };
+    read();
+    sc.addEventListener('scroll', read, { passive: true });
+    // The notes' size and the list's are watched (a phone turned, a note added), as FitText watches its tile: by a ResizeObserver, or by the
+    // window's resize, which a turned phone sends, in a browser that has none (before Safari 13.4).
+    const watch = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(read);
+    if (watch) { watch.observe(sc); const list = sc.querySelector('[data-news-brief]'); if (list) watch.observe(list); } else window.addEventListener('resize', read);
+    return () => { sc.removeEventListener('scroll', read); if (watch) watch.disconnect(); else window.removeEventListener('resize', read); };
+  }, []);
+  const words = left.notes ? `${left.notes} more note${left.notes === 1 ? '' : 's'} below` : 'More below';
+  return (
+    <div ref={wrapRef} style={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, flex: '1 1 auto' }}>
+      <div data-news-scroll="" style={{ overflowY: 'auto', minHeight: 0, flex: '1 1 auto' }}>
+      {children}
+      </div>
+      {/* The cue: a fade from the box's own color at the scroll's foot, and under it the words on the box's own color, so they are read on
+          a plain ground in both themes (C.muted on C.surface, about 6.2 to 1 in the light theme and 7.5 in the dark). */}
+      {left.more && (
+        <div aria-hidden="true" data-news-more={left.notes} style={{ position: 'absolute', left: 0, right: left.bar, bottom: 0, height: NEWS_CUE_BAND, display: 'flex', flexDirection: 'column', pointerEvents: 'none' }}>
+          <div data-news-fade="" style={{ flex: 'none', height: NEWS_FADE, background: `linear-gradient(${C.surface}00, ${C.surface})` }} />
+          <p style={{ flex: '1 1 auto', margin: 0, padding: '0 0 4px', background: C.surface, fontSize: 13, lineHeight: '16px', fontWeight: 600, color: C.muted, textAlign: 'center' }}>
+            <svg viewBox="0 0 12 8" width="12" height="8" style={{ marginRight: 6, verticalAlign: 'middle' }}><polyline points="1,1 6,6 11,1" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            {words}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
 // The room the scroll cue keeps (pass NE, EARMARKS A63). In plain terms: a block of words that sits where the cue can show (a lesson
@@ -14030,7 +14102,7 @@ function EduSphereScreens() {
       const twoCol = !!(lifeR && expR && Math.abs(lifeR.top - expR.top) < 8);    // Experiments and Life Skills side by side
       const farEnd = r.top + r.height / 2 > (T + B) / 2 ? T + 12 : low;            // the end of the screen away from the target
       let box = null;
-      if (where === 'under-action') {   // card 11 (pass LG, Mikey): centered close under Roger's Action Item popup, above it if the screen is short
+      if (where === 'under-action') {   // card 11 (pass LG, Mikey): centered close under Roger's card, above it if the screen is short (pass LG's tour placed it under his popup; since pass LK his card is drawn by the real classroom card code, TOUR_SAMPLE_ROSTER)
         const under = r.bottom + 10; const fits = under + cardH <= B - 8;
         box = { left: clamp(r.left + r.width / 2 - cardW / 2, 12, flushRight), top: fits ? under : Math.max(T + 8, r.top - 10 - cardH), width: cardW };
       } else if (where === 'below-add') {   // card 1 (pass JW, Mikey): centered close under Add someone new, over Who Needs Help when it shows
@@ -14266,7 +14338,12 @@ function EduSphereScreens() {
       return (
         <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={false} /><div className="edu-wrap" style={{ ...wrap }}>
           <div className="edu-rise" style={{ ...card, textAlign: 'center', marginTop: 36 }} data-light-review-card={lookBack.moduleId} data-light-review-count={lbList.length}>
-            <h1 style={{ fontSize: 24, margin: '0 0 10px' }}>{lbHead}</h1>
+            {/* The title keeps clear of the exit (pass NX, EARMARKS A176, round one's screen read: the × sat on the last letter of "First, A
+                Quick Review" at 320 and 340 pixels wide and of "One More Quick Review" at 360 and 375, in both themes, motion on and off).
+                It keeps 26 pixels at each side, so it stays centered and its words end where the exit's 44-pixel corner begins; its last
+                two words stay together, and the article A stays with the word after it, so a title that wraps breaks where it reads well,
+                "First, / A Quick Review" and "One More / Quick Review", never with "Review" alone or a line ending on A. */}
+            <h1 style={{ fontSize: 24, margin: '0 0 10px', padding: '0 26px' }}>{lastTwoTogether(lbHead.replace(/ A /, ' A\u00A0'), lbHead)}</h1>
             <p style={{ margin: '0 0 12px', fontSize: 17, lineHeight: 1.5 }}>{lbBody} {lbTail}</p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, margin: '0 0 16px' }}>
               {/* A course after a shared title (pass NU, EARMARKS A161) is one block after a space, balanced, its "from" held to the next
@@ -14276,7 +14353,9 @@ function EduSphereScreens() {
             </div>
             {youngLearner && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}><SpeakButton mini text={lbSay} label="Hear it" /></div>}
             <Btn full onClick={() => startLightReview(lookBack)} style={{ width: 'min(320px, 100%)' }}>Start</Btn>
-            <div style={{ marginTop: 14 }}><button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 10, right: 14, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }} aria-label="Exit"><span aria-hidden="true" style={{ fontSize: 22, lineHeight: 1 }}>×</span></button></div>
+            {/* The exit is a 44-pixel target in the card's top right corner (pass NX, A176: it was 27 by 25 pixels and lay over the title's
+                line), its × drawn about where it was, in the middle of the corner. */}
+            <div style={{ marginTop: 14 }}><button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 0, right: 0, width: 44, height: 44, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }} aria-label="Exit"><span aria-hidden="true" style={{ fontSize: 22, lineHeight: 1 }}>×</span></button></div>
           </div>
           {youngLearner && <VoiceNote />}
         </div></div>
@@ -16736,14 +16815,15 @@ function EduSphereScreens() {
     const newsPopup = newsOpen && news && !backupNudgeOpen && tourStep < 0 && !tourPending ? (
       <Overlay className="edu-no-print">
         <div className="edu-rise" style={{ width: 'min(484px, 100%)', maxHeight: '85vh', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
-          <div data-news-scroll="" style={{ overflowY: 'auto', minHeight: 0, flex: '1 1 auto' }}>
+          {/* The notes scroll in NewsNotes, which says how many are still below its foot on a phone held sideways (pass NX, A175). */}
+          <NewsNotes>
           <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700 }}>What's new</p>
           <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{news.date}</p>
           {/* Each note keeps its last two words together and wraps evenly (pass NT, round one's screen read: the worked example ended on "4."
               alone at 320 pixels, and a note on "sentence." alone at 390 and 393, the widths most iPhones have). */}
           <ul data-news-brief="" style={{ margin: '0 0 18px', padding: '0 0 0 22px', textAlign: 'left', fontSize: 15, lineHeight: 1.6 }}>{newsBrief.slice(0, 4).map((t, k) => <li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>)}</ul>
           {newsBrief.length > 4 && <p style={{ margin: '-8px 0 14px', fontSize: 14, color: C.muted }}>And {newsBrief.length - 4} more in More Details.</p>}
-          </div>
+          </NewsNotes>
           <div data-news-foot="" style={{ flex: 'none' }}>
           <Btn onClick={dismissNews}>Got it</Btn>
           <p style={{ margin: '14px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 15 }} onClick={async () => { await dismissNews(); setScreen('whats-new'); }}>More Details</button></p>
@@ -17921,7 +18001,8 @@ function EduSphereScreens() {
           {consentAsk && (
             <Overlay role="dialog" modal="true" label="Consent required" className="edu-no-print" z={120}>
               <div className="edu-rise" style={{ maxWidth: 440, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
-                <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>A parent's consent comes first</p>
+                {/* The title's last two words stay together (pass NX, round one's screen read: "A parent's consent comes / first" at 320 to 340). */}
+                <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>{lastTwoTogether("A parent's consent comes first", "A parent's consent comes first")}</p>
                 <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.55 }}>{consentAsk.title} is human sexuality instruction. Texas requires schools to get a parent's written consent before a student receives it (Texas Education Code §28.004). Assign it only with a parent's consent.</p>
                 <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
                   <button type="button" onClick={() => { setEnabled(enabled.includes(consentAsk.id) ? enabled : [...enabled, consentAsk.id]); setConsentAsk(null); }} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 16px', borderRadius: 10, border: 'none', background: C.green, color: C.onAccent, cursor: 'pointer' }}>A parent has consented</button>

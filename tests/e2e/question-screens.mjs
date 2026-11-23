@@ -281,6 +281,67 @@ const rowLook = () => page.evaluate(() => {
   ok('worded choices are named by their sentences alone, never broken into a narrow box, and the answer is named above its reason', sheet.rows === 5 && sheet.boxed === 0 && sheet.answer, sheet);
   await tapIf('Got it'); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
+// 5b. More Info's way out as it opens on a 320 by 568 phone (pass NX, EARMARKS A177, round one's screen read: on these ten openings the
+//     sheet opened at its top with Got it wholly below the fold on 5 and partly on 3 more, in both themes, and its top right corner, where
+//     every other pop-up keeps its close, held the speaker, which reads aloud; Escape and a tap on the scrim's narrow edges were the only
+//     other ways out). Since pass NX the close sits in the header's right column and the speaker in its left. On each opening, as a
+//     reader's wrong answer opens the sheet, in both themes, laid out as a phone lays it out (the scrollbar drawn over the page, as a
+//     phone draws it): the close shows whole on the screen before anything scrolls, a 44 by 44 target at the right end of the title's row,
+//     the title centered in the card and the speaker to its left; and a finger's tap at the close's middle closes the sheet. Planted on the
+//     first opening, each caught: the close hidden, and the close moved below the screen's foot; since round one's code read of pass NX
+//     each other bound too: the close at 30 by 30, the close moved 40 pixels in from the row's right end, the title moved off center and
+//     the speaker moved to the title's right.
+{ const OPEN = [['s3-which-state', 1], ['s3-which-state', 2], ['s3-which-force', 1], ['s3-which-force', 2], ['s4-which-form', 1], ['s4-which-form', 2], ['s4-which-step', 1], ['s4-which-step', 2], ['c3-which-level', 1], ['c3-which-level', 2]];
+  const sheetRead = () => page.evaluate(() => {
+    const box = document.querySelector('[data-more-info]'); if (!box) return null; const H = window.innerHeight; const c = box.getBoundingClientRect(); const cs = getComputedStyle(box);
+    const x = [...box.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') === 'Close'); const sp = box.querySelector('[data-more-info-speaker]');
+    const title = [...box.querySelectorAll('p')].find((p) => p.textContent.trim() === 'More Info'); const tr = document.createRange(); if (title) tr.selectNodeContents(title); const t = title ? tr.getBoundingClientRect() : null;
+    const got = box.querySelector('[data-more-info-close] button'); const g = got ? got.getBoundingClientRect() : null;
+    const r = x ? x.getBoundingClientRect() : null; const seen = !!r && getComputedStyle(x).display !== 'none' && getComputedStyle(x).visibility !== 'hidden' && r.width > 0 && r.height > 0;
+    const inRight = c.left + box.clientLeft + box.clientWidth - parseFloat(cs.paddingRight);   // the right edge of the card's words, where its header row ends
+    return { x: r ? { t: Math.round(r.top), b: Math.round(r.bottom), w: Math.round(r.width), h: Math.round(r.height), mx: (r.left + r.right) / 2, my: (r.top + r.bottom) / 2 } : null, seen,
+      whole: !!r && r.top >= 0 && r.bottom <= H, corner: !!r && !!t && Math.abs(inRight - r.right) <= 1 && r.top < t.bottom && r.bottom > t.top,
+      // The speaker is drawn wherever the device can speak (the app's canSpeak in src/ui.jsx reads these same two), so it is required
+      // there, to the title's left.
+      centered: !!t && Math.abs((t.left + t.right) / 2 - (c.left + c.right) / 2) <= 1.5, speakerLeft: (!!window.speechSynthesis && typeof window.SpeechSynthesisUtterance === 'function') ? (!!sp && !!t && sp.getBoundingClientRect().right <= t.left) : !sp, gotWhole: !!g && g.top >= 0 && g.bottom <= H };
+  });
+  const sheetFaults = (m) => (!m ? ['no sheet'] : [!m.x && 'no close', m.x && !m.seen && 'the close hidden', m.x && m.seen && !m.whole && 'the close not whole on the screen', m.x && (m.x.w < 44 || m.x.h < 44) && `the close ${m.x.w} by ${m.x.h}`,
+    m.x && !m.corner && 'the close off the right end of the title row', !m.centered && 'the title off center', !m.speakerLeft && 'the speaker not left of the title'].filter(Boolean));
+  const was = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light');
+  const faults = []; const gotWhole = { dark: 0, light: 0 }; let opened = 0; let closed = 0; let plants = null;
+  for (const theme of ['dark', 'light']) {
+    await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(400); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+    await page.getByLabel(theme === 'dark' ? 'Dark theme' : 'Light theme').first().click({ force: true }); await page.waitForTimeout(400);
+    await walk('Walk through elementary'); await page.setViewportSize({ width: 320, height: 568 }); const tag = await page.addStyleTag({ content: '::-webkit-scrollbar { display: none; }' }); await page.waitForTimeout(300);
+    for (const [gen, seed] of OPEN) {
+      const q = await show(gen, seed); const wrong = q.choices.filter((c) => c !== q.answer).pop();
+      await settle(); await page.getByRole('button', { name: wrong, exact: true }).first().click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(800);
+      const m = await sheetRead(); if (m) opened++; if (m && m.gotWhole) gotWhole[theme]++; for (const f of sheetFaults(m)) faults.push(`${theme} ${gen} ${seed}: ${f}`);
+      if (plants === null && m) {
+        // One plant at a time on the close, the title or the speaker, its own style put back after it (or none, where it had none).
+        const plant = async (which, style) => { await page.evaluate(([w, st]) => { const box = document.querySelector('[data-more-info]');
+            const el = !box ? null : w === 'close' ? [...box.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') === 'Close') : w === 'title' ? [...box.querySelectorAll('p')].find((p) => p.textContent.trim() === 'More Info') : box.querySelector('[data-more-info-speaker]');
+            window.__plantEl = el || null; if (el) { window.__plantWas = el.getAttribute('style'); Object.assign(el.style, st); } }, [which, style]);
+          const f = sheetFaults(await sheetRead()); const found = await page.evaluate(() => { const el = window.__plantEl; if (el) { if (window.__plantWas === null) el.removeAttribute('style'); else el.setAttribute('style', window.__plantWas); } delete window.__plantEl; delete window.__plantWas; return !!el; });
+          return found ? f : ['no ' + which + ' to plant on']; };
+        plants = { hidden: await plant('close', { display: 'none' }), below: await plant('close', { transform: 'translateY(600px)' }),
+          small: await plant('close', { width: '30px', height: '30px', minWidth: '0px', minHeight: '0px', padding: '0px' }), inset: await plant('close', { position: 'relative', right: '40px' }),
+          offCenter: await plant('title', { position: 'relative', left: '24px' }), speakerRight: await plant('speaker', { position: 'relative', left: '200px' }), after: sheetFaults(await sheetRead()) };
+      }
+      // A finger's tap at the close's middle, where it shows; Got it closes a sheet that has none, so the walk goes on.
+      if (m && m.x && m.whole) await page.touchscreen.tap(m.x.mx, m.x.my); else await page.locator('[data-more-info-close] button').first().click({ force: true }).catch(() => {});
+      await page.waitForTimeout(300); if (m && m.x && m.whole && (await page.locator('[data-more-info]').count()) === 0) closed++;
+      if (await page.locator('[data-more-info]').count()) await page.keyboard.press('Escape');
+    }
+    await tag.evaluate((el) => el.remove()); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300);
+  }
+  if (was !== 'light') { await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(400); await page.getByLabel('Dark theme').first().click({ force: true }); await page.waitForTimeout(400); }
+  const caught = !!plants && plants.after.length === 0 && plants.hidden.includes('the close hidden') && plants.below.includes('the close not whole on the screen')
+    && plants.small.some((f) => /^the close \d+ by \d+$/.test(f)) && plants.inset.includes('the close off the right end of the title row')
+    && plants.offCenter.includes('the title off center') && plants.speakerRight.includes('the speaker not left of the title');
+  ok(`at 320 by 568 More Info opens with its close whole on the screen at the right end of its title's row, a 44 by 44 target, the title centered and the speaker to its left, in both themes, and a tap there closes it (pass NX, EARMARKS A177; ${opened} openings read, Got it whole on ${gotWhole.dark} in the dark theme and ${gotWhole.light} in the light; the close hidden, moved below the foot, at 30 by 30 and 40 pixels in from the row's end, the title off center and the speaker to its right planted, each caught)`,
+    opened === 20 && closed === 20 && faults.length === 0 && caught, { opened, closed, faults: faults.slice(0, 6), gotWhole, plants }); }
+
 // 6. The Wonder voices: four portraits in the cast's order, the question shown above each, a closing card under a rotating title,
 //    and the pondering pictures inside the card, above and below its words and never beside them (Mikey, 08:05: "inside of the
 //    card and around the text, not outside of the card"), drawn as line art in the card's own ink with nothing filled ("as if

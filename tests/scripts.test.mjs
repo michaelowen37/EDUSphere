@@ -19,6 +19,70 @@ const START_WAITS = ['letter-names 4']; const startWaited = [];   // Big letters
 // to both steps", Colours' coat on "Look at your clothes.").
 const PAIR_PICTURE_WAITS = ['two-steps:cup', 'two-steps:spoon', 'three-steps:cup', 'three-steps:spoon', 'three-steps:chair', 'colours:coat', 'listen-and-tap-pictures:cup', 'listen-and-tap-pictures:bird', 'listen-and-tap-pictures:flower', 'two-steps:tree', 'sort-by-looks:ball', 'sort-by-looks:sock', 'kinds-of-rocks:flatrock', 'rocks-soil-and-water:drop', 'people-who-shaped-us:quarter', 'people-who-shaped-us:globe', 'land-water-and-weather:sun', 'land-water-and-weather:ocean', 'tools-that-help:fridge', 'tools-that-help:tablet', 'tools-that-help:ball', 'helpers-all-around:fire', 'helpers-all-around:doctor', 'helpers-all-around:whiteboard', 'helpers-all-around:plate', 'helpers-all-around:spoon', 'helpers-all-around:teddy', 'good-friend:block', 'good-friend:ball', 'longer-and-heavier:teacup'];
 const pairPictureWaited = new Set();
+// Sign-in animals older lessons show and never name (EARMARKS A159, pass NX; they wait on A185): until pass NX the check of a picture's name read icons and
+// art alone, so each of these passed. Each waits by module and name, as A49's drawn things do above, until its course's review names it,
+// shows what the line says, or calls it by the word the line uses. Most are a bear and a rabbit drawn as "your friend" or "two friends" in
+// the social lessons; the rest are animals a line calls animals or a story's friends, names by their sound alone (meow, quack, hoot), or
+// leaves unnamed in a lesson's closing line. Whether a friend, the animals or a sound names a drawn animal is Claude's reading, for
+// Mikey to settle (A185, Q130). The list may only shrink.
+const SIGN_IN_PICTURE_WAITS = ['please-and-thank-you:bear', 'please-and-thank-you:rabbit', 'join-in-play:bear', 'join-in-play:rabbit', 'talk-with-a-friend:rabbit', 'talk-with-a-friend:bear', 'talk-about-it:rabbit', 'talk-about-it:bear',
+  'animal-sounds:cat', 'animal-sounds:duck', 'two-ideas-more:cat', 'two-ideas-more:duck', 'listen-to-the-story:duck', 'listen-to-the-story:bear', 'listen-to-the-story:cat', 'act-it-out:frog', 'act-it-out:bear', 'act-it-out:duck',
+  'taking-turns:bear', 'taking-turns:rabbit', 'how-friends-feel:bear', 'how-friends-feel:rabbit', 'good-friend:bear', 'good-friend:rabbit', 'play-together:rabbit', 'play-together:bear', 'play-with-a-plan:rabbit', 'play-with-a-plan:bear',
+  'which-came-first:duck', 'which-came-first:cat', 'which-came-second:owl', 'which-came-second:bee', 'which-came-second:frog', 'three-steps:bear', 'three-steps:rabbit', 'opposites-and-same:cat', 'opposites-and-same:duck', 'opposites-and-same:bear',
+  'story-questions:fox', 'story-questions:owl', 'story-questions:rabbit', 'tell-it-again:fox', 'tell-it-again:owl'];
+const signInPictureWaited = new Set();
+// What names each kind of picture a lesson line can show (EARMARKS A159, pass NX). Until pass NX the check of drawn pictures read icons
+// and art alone, a lone picture only if it was an icon, so a sign-in animal shown and never named passed (two lines of That reminds me!
+// showed Owl and Bear and never said them, until pass NR's second-wave engineer named them); and the other kinds were read by checks of
+// their own, each at some depths only (a solid only alone, a shape, a color or an item never in a row inside a pair, a face never in a pair
+// inside a pair). Since pass NX one judge reads them all at every depth, unnamedPictures below, for the live read and for every planted
+// line after the loop. Each kind a lesson line shows is placed once: in PICTURE_NAMES with what names it, or in PICTURES_NOT_NAMED with its
+// reason; a kind on neither fails, so a new kind is placed before it ships. A kind marked every is read on every line. The rest are read on
+// every line but an instruction line, which asks the child to act on a shape, a solid, a color, an item or a count ("say which one does not
+// belong", "find the one that fits them both", "count the corners with me"), so naming it there would give the answer away (the rule these
+// kinds had before pass NX); a drawn picture or a face is never a word to read, so those are read on instruction lines too (pass MD's faces
+// and pass MQ's icons). A name is matched inside the line's words, as pass MQ's icons were: what that leaves unseen is said after the loop.
+const SOLID_THING = { sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone', box: 'box', prism: 'prism' };   // box and prism (pass KY)
+// A look after a ~ is the same thing drawn another way: an icon's (pass MP: plate~food, the plate with its food groups; block~wood), a
+// sign-in animal's (cat~asleep, a cat asleep is a cat, pass MW) and an item's shape (pass NK: rectangle~thin, a rectangle long and thin).
+const nameBase = (n) => String(n).split('~')[0];
+const PICTURE_NAMES = {
+  icon: { every: true, unnamed: (h, said) => (said.includes(nameBase(h.name)) ? [] : [`the ${h.name}`]) },
+  art: { every: true, unnamed: (h, said) => (said.includes(nameBase(h.name)) ? [] : [`the ${h.name}`]) },
+  pic: { every: true, unnamed: (h, said) => (said.includes(nameBase(h.name)) ? [] : [`the ${h.name}`]) },
+  face: { every: true, unnamed: (h, said) => (new RegExp(`\\b${h.feeling}\\b`).test(said) ? [] : [`a ${h.feeling} face`]) },
+  faces: { every: true, unnamed: (h, said) => (h.feelings || []).filter((f) => !new RegExp(`\\b${f}\\b`).test(said)).map((f) => `a ${f} face`) },
+  shape: { every: false, unnamed: (h, said) => (said.includes(h.name) ? [] : [`the ${h.name}`]) },
+  solid: { every: false, unnamed: (h, said) => (said.includes(h.name) || (SOLID_THING[h.name] && said.includes(SOLID_THING[h.name])) ? [] : [`the ${h.name}`]) },
+  swatch: { every: false, unnamed: (h, said) => (said.includes(h.colour) ? [] : [`the color ${h.colour}`]) },
+  item: { every: false, unnamed: (h, said) => (said.includes(nameBase(h.shape)) || said.includes(h.colour) ? [] : [`the ${h.colour} ${h.shape}`]) },   // by its shape or its color
+  '': { every: false, unnamed: (h, said) => (said.includes(h.shape) ? [] : [`the ${h.shape}`]) },   // a pair's half with no kind, drawn as an item from its shape and color, named by its shape
+  dots: { every: false, unnamed: (h, said) => (said.includes(NUMBER_WORDS[h.count]) || said.includes(String(h.count)) || /count|one, two|more|less|fewer|away|left|dots|tap|group/.test(said) ? [] : [`${h.count} dots`]) },
+};
+// Every other kind a lesson line shows, with its reason: none is a drawn thing a word names. A pair and a row are on neither list, since
+// they only hold other pictures, which the judge walks into.
+const PICTURES_NOT_NAMED = Object.fromEntries([
+  ['writing to read, never a thing a word names: letters and a trace are read for what the line says by their own checks below, at the top of a line only; a printed word is read for a name by no check here, since a reading lesson must not speak it', ['letters', 'print', 'trace']],
+  ['a row of shapes or colors in a pattern: the size trap and the counted row in the loop below read it, for size and count, never for a name', ['pattern']],
+  ['a diagram or a symbol, a count, a time, an order, a length, a place or a sign, which a line describes in its own words: no check of this file or of the rules test reads one for a name (a blind spot, named here)', ['flow', 'tenframe', 'tens', 'openline', 'joined', 'shares', 'clock', 'digital', 'measure', 'bars', 'bar', 'bargraph', 'map', 'picto', 'twoway', 'pans', 'dice', 'domino', 'tally', 'sign', 'sets', 'daynight', 'numberline', 'compass', 'growthbars', 'loop', 'stack', 'flag']],
+].flatMap(([why, kinds]) => kinds.map((k) => [k, why])));
+// A line that opens with an instruction word: the checks below the skip in the loop, and the judge's kinds not marked every, leave it out.
+const INSTRUCTION = /^(read|find|look|listen|touch|say|tap|sound|count|start|try|watch|now|what)\b/i;
+// Every drawn thing a picture holds, at every depth: the picture itself, a pair's two halves and a row's items, a row or a pair inside a
+// pair too. A pair and a row only hold other pictures, so they are walked through, never read as things of their own.
+const drawnThings = (v, out = []) => { if (!v || typeof v !== 'object') return out;
+  if (v.kind === 'pair') { drawnThings(v.a, out); drawnThings(v.b, out); } else if (v.kind === 'row') { for (const x of v.items || []) drawnThings(x, out); } else out.push(v);
+  return out; };
+// The judge: every thing a line's picture shows that its words never name, and every kind it shows that neither list places, each with its
+// kind and its name before any ~ (for the waits). A kind read is counted in reads, when given, so the live read can show it read each kind.
+const unnamedPictures = (line, reads = null) => { const said = String(line.say || '').toLowerCase(); const instruction = INSTRUCTION.test(String(line.say || '').trim()); const out = [];
+  for (const h of drawnThings(line.show)) { const kind = h.kind || ''; const rule = Object.hasOwn(PICTURE_NAMES, kind) ? PICTURE_NAMES[kind] : null;
+    if (!rule) { if (!Object.hasOwn(PICTURES_NOT_NAMED, kind)) out.push({ kind, what: `a picture of a kind neither list places (${kind || 'no kind'})`, unplaced: true }); continue; }
+    if (instruction && !rule.every) continue;   // an instruction line asks the child to act on it: the reason above PICTURE_NAMES
+    if (reads) reads.set(kind, (reads.get(kind) || 0) + 1);
+    for (const what of rule.unnamed(h, said)) out.push({ kind, what, base: nameBase(h.name || h.shape || '') }); }
+  return out; };
+const pictureReads = new Map();
 for (const mod of L.MODULES) {
   for (const line of mod.lesson.script || []) {
     // Natural speech: at least one real sentence of four or more words, unless the line only names letters or counts aloud.
@@ -28,12 +92,11 @@ for (const mod of L.MODULES) {
     const said = line.say.toLowerCase();
     const show = line.show;
     if (!show) continue;
-    // Feeling faces (pass MD): a face, a grid of faces or a pair of them shows only feelings the words name, and a grid holds
-    // two to four faces, which the screen draws two to a row. A face is never a word to read, so this runs before the skip for
-    // instruction lines below (the code check, pass MD: a Say or Tap line could show a face it never names).
-    { const faces = show.kind === 'face' ? [show.feeling] : show.kind === 'faces' ? (show.feelings || []) : show.kind === 'pair' ? [show.a, show.b].filter((h) => h && h.kind === 'face').map((h) => h.feeling) : [];
-      for (const f of faces) if (!new RegExp(`\\b${f}\\b`).test(said)) mismatches.push(`${mod.id}: "${line.say}" shows a ${f} face`);
-      if (show.kind === 'faces' && !(Array.isArray(show.feelings) && show.feelings.length >= 2 && show.feelings.length <= 4)) mismatches.push(`${mod.id}: "${line.say}" shows a grid of faces the screen cannot draw`); }
+    // Feeling faces (pass MD): a grid holds two to four faces, which the screen draws two to a row. That a face, a grid of faces or a
+    // pair of them shows only feelings the words name is read by the judge below with every other picture (unnamedPictures, since pass
+    // NX, at every depth), on every line, since a face is never a word to read (the code check, pass MD: a Say or Tap line could show a
+    // face it never names).
+    if (show.kind === 'faces' && !(Array.isArray(show.feelings) && show.feelings.length >= 2 && show.feelings.length <= 4)) mismatches.push(`${mod.id}: "${line.say}" shows a grid of faces the screen cannot draw`);
     // A highlight names the part to light ('first' or a spelling): 0 lights nothing (pass MC found A and B's words unlit).
     if (show.kind === 'letters' && show.highlight !== undefined && (typeof show.highlight !== 'string' || !show.highlight)) mismatches.push(`${mod.id}: "${line.say}" lights nothing (highlight ${JSON.stringify(show.highlight)})`);
     // A line that says which words start with a letter shows each word it names, first letters lit, and each starts with that
@@ -66,20 +129,22 @@ for (const mod of L.MODULES) {
     // counted rows (the code check's second read, pass MG: six little circles there passed every test).
     { const parts = show.kind === 'pair' ? [show.a, show.b] : [show]; const counted = parts.filter((h) => h && h.kind === 'pattern' && h.size);
       if (counted.some((h) => !(h.items.length >= 1 && h.items.length <= 5 && !h.items.includes('?')) || (parts.some((x) => x && x.kind === 'dots') && h.size !== 34))) mismatches.push(`${mod.id}: "${line.say}" shows a counted row the screen cannot line up`); }
-    // A drawn icon, alone or in a pair or a row, and a drawn picture in a pair or a row, is named by its line (pass MQ). This runs
-    // before the skip for instruction lines below (round two's lesson read, pass MQ: the skip came first, so "Listen for learning
-    // words." showed a teacher it never named, and an unnamed cup added to that line passed), since the skip keeps a reading lesson
-    // from speaking a printed word, and a drawn picture is never one. An older line waits by name (PAIR_PICTURE_WAITS, EARMARKS A49).
-    { const drawn = show.kind === 'icon' ? [show] : show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? (show.items || []) : [];
-      for (const h of drawn) {
-        if (!h || !(h.kind === 'icon' || h.kind === 'art')) continue;
-        const base = String(h.name).split('~')[0]; if (said.includes(base)) continue;
-        const key = `${mod.id}:${base}`;
-        if (PAIR_PICTURE_WAITS.includes(key)) pairPictureWaited.add(key); else mismatches.push(`${mod.id}: "${line.say}" shows a ${h.name} it never names`);
-      } }
+    // Every picture a line shows is named by its words (pass MQ for a drawn icon and art; since pass NX, EARMARKS A159, every kind, at
+    // every depth, by the judge above). This runs before the skip for instruction lines below (round two's lesson read, pass MQ: the skip
+    // came first, so "Listen for learning words." showed a teacher it never named, and an unnamed cup added to that line passed); the
+    // judge leaves out of an instruction line only the kinds a line asks the child to act on. An older line's drawn picture waits by name:
+    // an icon or art in PAIR_PICTURE_WAITS (EARMARKS A49), a sign-in animal in SIGN_IN_PICTURE_WAITS (A159).
+    for (const p of unnamedPictures(line, pictureReads)) {
+      if (p.unplaced) { mismatches.push(`${mod.id}: "${line.say}" shows ${p.what}`); continue; }
+      const key = `${mod.id}:${p.base}`;
+      if (p.kind === 'pic' && SIGN_IN_PICTURE_WAITS.includes(key)) signInPictureWaited.add(key);
+      else if ((p.kind === 'icon' || p.kind === 'art') && PAIR_PICTURE_WAITS.includes(key)) pairPictureWaited.add(key);
+      else mismatches.push(`${mod.id}: "${line.say}" shows ${p.what} it never names`);
+    }
     // An instruction ("Read this word", "Find the one that matches") shows the thing to act on,
-    // which must not be spoken in a reading lesson. Only lines that describe what is shown are matched word for word.
-    if (/^(read|find|look|listen|touch|say|tap|sound|count|start|try|watch|now|what)\b/i.test(line.say.trim())) continue;
+    // which must not be spoken in a reading lesson. Only lines that describe what is shown are matched word for word. The words that
+    // open such a line are INSTRUCTION, above, one rule for this skip and the judge's (since pass NX).
+    if (INSTRUCTION.test(line.say.trim())) continue;
     if (show.kind === 'letters') {
       const words = show.text.split(' ').filter(Boolean);
       const spelled = words.every((w) => w.length > 1 && /^[a-z]+$/.test(w)) && words.join('').length >= 3 && new Set(words.map((w) => w.length)).size === 1 && words.length >= 2 && !words.some((w) => said.includes(w));
@@ -101,24 +166,14 @@ for (const mod of L.MODULES) {
         if (!fine) mismatches.push(`${mod.id}: "${line.say}" shows ${t} drawing itself`);
       }
     }
-    if (show.kind === 'shape' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
-    // An icon's look after a ~ (pass MP: plate~food, the plate with its food groups; block~wood) is the same thing drawn another way;
-    // the lone icon is read with the drawn pictures above the instruction skip (round two's lesson read, pass MQ).
-    if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone', box: 'box', prism: 'prism' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);   // box and prism (pass KY)
+    // A shape and a solid alone, and every half of a pair or a row below, are named by the judge above the skip (since pass NX), which
+    // leaves the instruction lines out for these kinds as this place did.
     // Every sign-in animal the words name must be on screen too, so a line never mentions a creature the child cannot see.
     { const shownPics = (show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items : [show]).filter((h) => h && h.kind === 'pic').map((h) => String(h.name).split('~')[0]);   // a cat asleep is a cat (pass MW)
       if (shownPics.length) { const named = L.PICTURES.filter((n) => new RegExp(`\\b${n}s?\\b`).test(said)); const missing = named.filter((n) => !shownPics.includes(n)); if (missing.length) mismatches.push(`${mod.id}: "${line.say}" names ${missing.join(', ')} but shows ${shownPics.join(', ')}`); } }
-    // A pair is two pictures side by side; each half must be named by the words, by its own kind.
-    const halves = show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items : [show];   // a row (pass MA) is read like a pair
-    for (const h of halves) {
-      if (show.kind === 'pair' && !h.kind && !said.includes(h.shape)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.shape}`);
-      if (h.kind === 'swatch' && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows ${h.colour}`);
-      // A shape's look after a ~ (pass NK: rectangle~thin, a rectangle long and thin) is the same shape drawn another way, as an icon's is.
-      if (h.kind === 'item' && !said.includes(String(h.shape).split('~')[0]) && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.colour} ${h.shape}`);
-      if (h.kind === 'dots' && !(said.includes(NUMBER_WORDS[h.count]) || said.includes(String(h.count)) || /count|one, two|more|less|fewer|away|left|dots|tap|group/.test(said))) mismatches.push(`${mod.id}: "${line.say}" shows ${h.count} dots`);
-      if ((show.kind === 'pair' || show.kind === 'row') && h.kind === 'shape' && !said.includes(h.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.name}`);
-      // A drawn icon or picture inside a pair or a row is read above the instruction skip (pass MQ).
-    }
+    // A pair is two pictures side by side, and a row (pass MA) is read like a pair: each half is named by the words, by its own kind
+    // (a half with no kind by its shape, a color, an item by its shape or its color, dots by their count or a counting word, a shape),
+    // since pass NX by the judge above (PICTURE_NAMES), at every depth, where this loop read a pair's or a row's own halves alone.
   }
 }
 // Questions too: in every read-aloud course, the picture beside a question must be named or
@@ -240,6 +295,58 @@ const nestedRowProblems = (line) => { const show = line.show; const said = Strin
   ok(`a row inside a lesson pair is in a stacked pair, holds what a row can draw, and names its pictures (${rows} rows read; four near misses caught, the right one passed)`, real.length === 0 && rows >= 12 && plants.every(Boolean), [...real.slice(0, 6), `near misses ${plants}`].join(' | ')); }
 // The waiting list only falls (pass MQ): every entry still waits on a line, so a fixed line takes its name off the list.
 ok('the drawn things older lessons show without naming them wait by name, on every line, and every name on the list still waits', PAIR_PICTURE_WAITS.every((k) => pairPictureWaited.has(k)), PAIR_PICTURE_WAITS.filter((k) => !pairPictureWaited.has(k)).join(', '));
+// The judge of every picture's name (EARMARKS A159, pass NX). Its near misses are made lines run through unnamedPictures, the function the
+// live read above uses, each held to exactly what it must report, so none passes on another problem: That reminds me!'s line with Owl and
+// Bear taken out, the mistake pass NR's second wave fixed, which the check passed before pass NX since it read icons and art alone; each
+// kind or depth it did not read before (a sign-in animal alone and on an instruction line, art alone, an icon and a face in a pair inside a
+// pair, a solid in a pair, a shape in a row inside a pair); each rule the loop's own checks held before (a grid of faces, two colors, an item by neither
+// word and by its color alone, dots with no count, a pair's halves with no kind); Rectangles' instruction line, whose items are left
+// out, and the same row on a plain line, read; and a kind neither list places, one named like an object's own key, and one placed as
+// named by no word. Every kind PICTURE_NAMES names is read on some real line, so no rule here holds nothing; the two lists share no kind.
+// What it does not see, by design: a name found inside another word passes (as pass MQ's icons did: "hat" inside "that" in Rhymes and
+// shapes, and the owl inside "slowly" in Second and last, where whole words would fail "sunny", "bedtime" and "raining"); a
+// diagram or a symbol is read for no name (PICTURES_NOT_NAMED); and a lesson's example, outside its script, is read here only for a row
+// inside a pair (below).
+{ const scriptOf = (id) => (L.MODULES.find((m) => m.id === id) || { lesson: {} }).lesson.script || [];
+  const real = scriptOf('that-reminds-me').find((l) => l.say.includes('the stories of Owl and Bear')) || null;
+  const planted = real ? { ...real, say: real.say.replace('the stories of Owl and Bear', 'the two stories') } : null;
+  const rect = scriptOf('rectangles-too').find((l) => l.say === 'Now you try. Look at these three, and say which one does not belong.') || null;
+  const cup = { kind: 'icon', name: 'cup' }; const rabbit = { kind: 'pic', name: 'rabbit' }; const face = (feeling) => ({ kind: 'face', feeling });
+  const got = (line) => (line ? unnamedPictures(line).map((p) => (p.unplaced ? 'unplaced:' + p.kind : p.kind + ':' + p.what)).join('; ') : 'no line');
+  const PLANTS = [
+    ["That reminds me!'s line with Owl and Bear taken out", planted, 'pic:the owl; pic:the bear'],
+    ['the same line as it stands', real, ''],
+    ['a sign-in animal alone', { say: 'Here is our friend.', show: rabbit }, 'pic:the rabbit'],
+    ['a sign-in animal on an instruction line', { say: 'Listen to our friend.', show: rabbit }, 'pic:the rabbit'],
+    ['art alone', { say: 'Here is a picture to color.', show: { kind: 'art', name: 'kite' } }, 'art:the kite'],
+    ['an icon in a pair inside a pair', { say: 'Here is a cup, and here is a cup.', show: { kind: 'pair', a: { kind: 'pair', a: cup, b: { kind: 'icon', name: 'dog' } }, b: cup } }, 'icon:the dog'],
+    ['a face in a pair inside a pair', { say: 'I feel happy.', show: { kind: 'pair', a: { kind: 'pair', a: face('happy'), b: face('sad') }, b: face('happy') } }, 'face:a sad face'],
+    ['a grid of faces, one feeling never named', { say: 'I feel happy.', show: { kind: 'faces', feelings: ['happy', 'sad'] } }, 'faces:a sad face'],
+    ['a solid in a pair', { say: 'Here is a ball.', show: { kind: 'pair', a: { kind: 'solid', name: 'sphere' }, b: { kind: 'solid', name: 'cube' } } }, 'solid:the cube'],
+    ['a shape in a row inside a pair', { say: 'Here is one circle.', show: { kind: 'pair', stack: true, a: { kind: 'shape', name: 'circle' }, b: { kind: 'row', items: [{ kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'triangle' }] } } }, 'shape:the triangle'],
+    ['two colors', { say: 'Here are two of them.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } }, 'swatch:the color red; swatch:the color blue'],
+    ['an item named by neither its shape nor its color', { say: 'Here is one more.', show: { kind: 'item', shape: 'square', colour: 'blue' } }, 'item:the blue square'],
+    ['an item named by its color alone', { say: 'Here is something blue.', show: { kind: 'item', shape: 'square', colour: 'blue' } }, ''],
+    ['dots with no count and no counting word', { say: 'Here is the picture for you.', show: { kind: 'dots', count: 3 } }, 'dots:3 dots'],
+    ["a pair's halves with no kind", { say: 'Here are two green things.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'circle', colour: 'green' } } }, ':the circle; :the circle'],
+    ["Rectangles' instruction line", rect, ''],
+    ['the same row on a plain line', rect && { say: 'Here are three of them.', show: rect.show }, 'item:the green triangle~thin; item:the red triangle~turned; item:the blue square'],
+    ['a kind neither list places', { say: 'Here is a made thing.', show: { kind: 'zqmade' } }, 'unplaced:zqmade'],
+    ["a kind named like an object's own key", { say: 'Here is a made thing.', show: { kind: 'constructor' } }, 'unplaced:constructor'],
+    ['a kind placed as named by no word (a clock)', { say: 'Here it is.', show: { kind: 'clock', hour: 3, minute: 0 } }, ''],
+  ];
+  const wrong = PLANTS.filter(([, line, want]) => got(line) !== want).map(([what, line, want]) => what + ': gave "' + got(line) + '", wants "' + want + '"');
+  // A kind of PICTURE_NAMES that no real line was read for holds nothing here: the live reads with the solids taken out, planted, name it.
+  const unreadOf = (reads) => Object.keys(PICTURE_NAMES).filter((k) => !(reads.get(k) > 0)); const unread = unreadOf(pictureReads);
+  const shared = (a, b) => Object.keys(a).filter((k) => Object.hasOwn(b, k));
+  ok(`every picture a lesson line shows is named by its words, every kind at every depth, by one judge (EARMARKS A159, pass NX; read: ${[...pictureReads].map(([k, n]) => (k || 'no kind') + ' ' + n).join(', ')}; ${PLANTS.length} planted lines each give exactly what they must, That reminds me!'s line with Owl and Bear taken out among them; every kind read on a real line, the solids taken out, planted, caught; the two lists share no kind, one planted in both caught)`,
+    wrong.length === 0 && unread.length === 0 && unreadOf(new Map([...pictureReads].filter(([k]) => k !== 'solid'))).join() === 'solid' && shared(PICTURE_NAMES, PICTURES_NOT_NAMED).length === 0 && shared(PICTURE_NAMES, { ...PICTURES_NOT_NAMED, icon: 'planted' }).join() === 'icon',
+    [...wrong, ...(unread.length ? ['no real line read ' + unread.join(', ')] : [])].join(' | ')); }
+// The sign-in animals' waiting list only falls too (EARMARKS A159, pass NX): every entry still waits on a line, so a fixed line takes its name
+// off the list; a name that no longer waits (That reminds me!'s owl, which its lines name), planted, is caught.
+{ const stale = (list) => list.filter((k) => !signInPictureWaited.has(k));
+  ok(`the sign-in animals older lessons show without naming them wait by name (${SIGN_IN_PICTURE_WAITS.length} names), on every line, and every name on the list still waits (EARMARKS A159; a name that no longer waits, planted, caught)`,
+    stale(SIGN_IN_PICTURE_WAITS).length === 0 && stale([...SIGN_IN_PICTURE_WAITS, 'that-reminds-me:owl']).join() === 'that-reminds-me:owl', stale(SIGN_IN_PICTURE_WAITS).join(', ')); }
 // A thing to look at is drawn (pass LU): every picture a lesson shows or a question offers as art has a line drawing in
 // src/ui.jsx, so while its Leonardo coloring page is on the way a lesson or a question draws it instead of a placeholder card.
 {
@@ -337,8 +444,10 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
 // hears, said count past). Read here: each read-aloud lesson's questions over 60 seeds, their explanations and More Info reasons,
 // for the counting phrases count past and count on, which the lesson's script must say whenever its questions do.
 { const PHRASES = ['count past', 'count on'];
-  { const stale = START_WAITS.filter((x) => !startWaited.includes(x));
-    ok('the two start-with lines that wait for their grades (EARMARKS A27) still wait, and come off the list once fixed', stale.length === 0, `fixed ${stale.join('; ')}`); }
+  // The start-with lines that wait for their grade's pass (START_WAITS, EARMARKS A27) all still wait. The label counts the list itself,
+  // never a number written by hand: it said "the two" while the list held one, since pass MM gave Big letters' apple a line of its own.
+  { const stale = START_WAITS.filter((x) => !startWaited.includes(x)); const one = START_WAITS.length === 1;
+    ok('the ' + (one ? 'one start-with line that waits for its grade' : START_WAITS.length + ' start-with lines that wait for their grades') + ' (EARMARKS A27) ' + (one ? 'still waits, and comes' : 'still wait, and come') + ' off the list once fixed', stale.length === 0, `fixed ${stale.join('; ')}`); }
   // Kindergarten's four wait for its sweep (EARMARKS A25); the list may only shrink, and a lesson fixed comes off it.
   const WAITING = ['comparing-numbers: count past', 'sorting: count past', 'more-and-fewer-10: count past', 'picture-graphs-k: count on'];
   const missing = [];

@@ -30,6 +30,13 @@
 // in a stack trace is the line in tests/logic.test.mjs. The copy is written to the system's temporary folder, never into the tree (the
 // docs test fails on a scratch file in tests/), with its relative imports and import.meta.url pointed at the real test's place, run
 // from the project folder as `node tests/logic.test.mjs` is, and removed afterward, even when the run fails.
+// The copy's heap (pass NX): the copy is a new node process, so a heap flag given to this tool (node --max-old-space-size=4096
+// tools/rules-block.mjs ..., as the briefs write it) set the tool's own heap and, until pass NX, never the copy's, which ran with V8's
+// default of about 2 GB, or what NODE_OPTIONS gave, where a large set of parts can need more (engineer heap's finding, EARMARKS L36:
+// part 87 run through the tool given 4,096 MB had 2,096). Since pass NX each flag that sizes V8's heap, the old space, the young
+// generation's semi-space and the whole heap, written with - or _, is handed on to the copy as the tool was given it (heapFlags), so
+// the copy has the tool's limit; NODE_OPTIONS reaches the copy by its environment as before, and a flag on the command line wins over
+// it in both. --selftest runs the tool with each of them, and with none, and the copy reads its own limit.
 //
 // Run (from the project folder):
 //   node tools/rules-block.mjs --list [--file tests/logic.test.mjs]    every part, numbered, with its lines, kind, section and first comment
@@ -150,12 +157,19 @@ export function buildCopy(read, kept, realFile) {
   return text + read.source.slice(read.parts.length ? read.parts[read.parts.length - 1].end : 0).replace(/[^\n]/g, '');
 }
 
+// The flags among a node process's own (process.execArgv) that size V8's heap, each as it was written, so the copy can be given the
+// heap the tool was given (the header's paragraph on the copy's heap). A flag's name is read with _ as -, since V8 takes either; Node
+// takes a heap flag's value only after =, so a flag is one word.
+const HEAP_FLAGS = new Set(['--max-old-space-size', '--max-semi-space-size', '--max-heap-size']);
+export const heapFlags = (execArgv) => execArgv.filter((a) => HEAP_FLAGS.has(a.split('=')[0].replace(/_/g, '-')));
+
 // Runs a copy's text with node from the project folder and returns its summary line, its FAIL lines, its exit code and its stderr tail.
+// The copy runs in the tool's heap (heapFlags, above).
 export function runCopy(text) {
   const dir = mkdtempSync(join(tmpdir(), 'rules-block-')); const file = join(dir, 'rules-block-copy.mjs'); writeFileSync(file, text);
   const t0 = Date.now(); const cleanup = () => { try { rmSync(dir, { recursive: true, force: true }); } catch (e) { /* already gone */ } };
   return new Promise((done) => {
-    const child = spawn(process.execPath, [file], { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(process.execPath, [...heapFlags(process.execArgv), file], { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] });
     let buf = ''; const fails = []; let summary = null; let err = '';
     const eat = (line) => { if (/^FAIL\b/.test(line)) fails.push(line); else if (/^\d+ passed, \d+ failed$/.test(line)) summary = line; };
     child.stdout.on('data', (d) => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { eat(buf.slice(0, i)); buf = buf.slice(i + 1); } });
@@ -244,6 +258,26 @@ async function selfTest() {
   // A failing copy with a NOTE exits 1, and no line says "exit code 3" (pass NQ, F4).
   const r4 = cli('a check that fails on an empty table');
   ok('a failing run with a NOTE exits 1 and does not say "exit code 3"', r4.status === 1 && /0 passed, 1 failed/.test(r4.stdout) && /NOTE/.test(r4.stdout) && /exit code 1 /.test(r4.stdout) && !/exit code 3/.test(r4.stdout), [r4.status, r4.stdout]);
+  // 3c. The heap the tool is given reaches the copy (pass NX, engineer heap's finding: given --max-old-space-size=4096, the tool ran in
+  // 4 GB and its copy in V8's default 2 GB). A made test passes only when its own heap limit is the one a node given the same flags has,
+  // handed to it by the environment (HEAP_LIMIT). The tool is run with each flag that sizes the heap (the old space as the briefs write
+  // it, both flags with _, the young generation's beside the old space's, and the whole heap's), and with none, which must fail, since
+  // the copy then has V8's default. NODE_OPTIONS keeps its other options in these runs and loses its heap flags, so only the tool's own
+  // flags can size the copy, on any machine.
+  const heapMade = join(dir, 'heap.test.mjs');
+  writeFileSync(heapMade, ["import v8 from 'node:v8';", "let pass = 0, fail = 0;", "const ok = (l, c) => { console.log((c ? 'PASS' : 'FAIL') + ' - ' + l); c ? pass++ : fail++; };",
+    "{ // the copy has the heap the tool was given", "  ok('the copy has the heap the tool was given', v8.getHeapStatistics().heap_size_limit === Number(process.env.HEAP_LIMIT)); }",
+    "console.log(`\n${pass} passed, ${fail} failed`);", "process.exitCode = fail ? 1 : 0;", ''].join('\n'));
+  const quietOptions = (process.env.NODE_OPTIONS || '').split(/\s+/).filter((o) => o && !heapFlags([o]).length).join(' ');
+  const quietEnv = (extra) => ({ ...process.env, NODE_OPTIONS: quietOptions, ...extra });
+  const limitWith = (flags) => Number(spawnSync(process.execPath, [...flags, '-e', "console.log(require('node:v8').getHeapStatistics().heap_size_limit)"], { encoding: 'utf8', env: quietEnv({}) }).stdout.trim());
+  const heapRun = (flags, want) => spawnSync(process.execPath, [...flags, fileURLToPath(import.meta.url), '--file', heapMade, 'the copy has the heap'], { encoding: 'utf8', cwd: ROOT, env: quietEnv({ HEAP_LIMIT: String(want) }) });
+  const FORMS = [['--max-old-space-size=1536'], ['--max_old_space_size=1536', '--max_semi_space_size=2'], ['--max-heap-size=1700']];
+  const none = limitWith([]); const runs = FORMS.map((flags) => { const want = limitWith(flags); const r = heapRun(flags, want); return { flags, want, status: r.status, out: (r.stdout || '').trim().split('\n').slice(-3) }; });
+  const bare = heapRun([], runs[0].want);
+  ok(`the heap the tool is given reaches the copy, for each flag that sizes it, with - or _ (${runs.map((r) => r.flags.join(' ') + ': ' + Math.round(r.want / 1048576) + ' MB').join('; ')}), and a tool given none leaves the copy V8's default (${Math.round(none / 1048576)} MB), which the made test fails`,
+    runs.every((r) => r.want > 0 && r.want !== none && r.status === 0 && r.out.some((l) => l === '1 passed, 0 failed')) && new Set(runs.map((r) => r.want)).size === FORMS.length && none > 0 && bare.status === 1 && /0 passed, 1 failed/.test(bare.stdout),
+    { none, runs, bare: [bare.status, (bare.stdout || '').trim().split('\n').slice(-3)] });
   rmSync(dir, { recursive: true, force: true });
   // 4. The copy is not left behind, and nothing is written into the tree.
   ok('the copy is written outside the tree and removed (no rules-block file in tests/)', !readFileSync(new URL('../.gitignore', import.meta.url), 'utf8').includes('rules-block') && !(execSync('ls -a tests').toString().includes('rules-block')));

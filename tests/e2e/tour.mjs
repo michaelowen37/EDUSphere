@@ -63,7 +63,8 @@ async function walk(W, H, box = false) {   // box: false, 'root' (a box holds th
     if (step === 8) good = good && m.y === 0 && near(s.right, m.W, 14) && !!m.search && (near(s.top, m.search.top, 6) || (m.search.top + (s.bottom - s.top) > m.H - 12 && near(s.bottom, m.H - 12, 3) && s.top <= m.search.top));
     if (step === 9) good = good && m.y === 0 && near(s.right, m.W, 14) && near(s.bottom, m.H, 14);
     if (step === 10) good = good && !!m.transcript && s.bottom <= m.transcript.top + 2;
-    // Card 11 (pass LG, Mikey): centered close under Roger's Action Item popup, whole on the screen, the popup whole too.
+    // Card 11 (pass LG, Mikey): centered close under Roger's card (data-tour="action-demo"), whole on the screen, his card whole too; pass
+    // LG's tour placed it under his Action Item popup, and since pass LK his card is drawn by the real classroom card code (TOUR_SAMPLE_ROSTER).
     if (step === 11) good = good && !!m.action && m.action.top >= -1 && m.action.bottom <= m.H + 1 && near((s.left + s.right) / 2, (m.action.left + m.action.right) / 2, 8) && (s.top - m.action.bottom >= -1 && s.top - m.action.bottom <= 24 || m.action.top - s.bottom >= -1 && m.action.top - s.bottom <= 24);
     ok(`${tag}: card ${step} (${m.title}) sits where Mikey asked`, good, good ? null : m);
     await page.getByRole('button', { name: step < 11 ? 'Next' : 'Done' }).first().click();

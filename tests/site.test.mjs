@@ -312,6 +312,150 @@ ok("What's new stays closed after a reload, because Got it was remembered", news
   await p2.waitForTimeout(300); const longSide = await readSide(); await p2.evaluate(() => document.querySelectorAll('[data-planted]').forEach((x) => x.remove()));
   ok("on a phone held sideways (667 by 375) What's new shows Got it whole as it opens, its notes scrolling above it, and with a long note planted in its list Got it stays in the box (pass NU, round one's screen read and round two's records read)", inView(side) && planted && inView(longSide), { side, longSide });
   await ctx2.close(); }
+// What's new says that more notes follow (pass NX, EARMARKS A175, round one's screen read: on a phone held sideways the block's third note
+// sat wholly below the notes' foot at 740 by 360, so the box looked complete, and showed only the tops of its letters at 667 by 375 and its
+// first line, cut mid-sentence, at 844 by 390, in both themes, with nothing to say more followed). In each theme a touch phone held
+// sideways opens What's new at 667 by 375, past the ask to turn upright (Keep going sideways), and is then turned to 740 by 360 and 844 by
+// 390; at each size: while words run past the notes' foot a cue lies over it, and none shows when every word does; its words sit on the
+// box's own color, 4.5 to 1 or better, under a fade from that color; it covers neither Got it nor More Details, lets a finger's touch
+// through to the notes and is hidden from a screen reader; and its count is the notes no letter of which shows above it ("1 more note
+// below"), or "More below" when what is left is the rest of a note already begun. A long note planted after the pop-up opens is counted at
+// once (the list's size is watched); scrolled to their end, the cue goes and the last note shows whole. Turned upright (390 by 844), the
+// notes as delivered show no cue, and the long note planted brings it, with the two thresholds pinned on both sides (below). The phones are
+// three (one a theme, and one without ResizeObserver), turned rather than opened anew at each size, so the test stays well inside check.sh's limit
+// (240 seconds since pass NX; a phone opened anew at each size had taken it to about 160 on a busy machine).
+{ const newsRead = (p) => p.evaluate(() => {
+    const d = document.querySelector('[role="dialog"][aria-label="What\'s new"]'); if (!d) return null;
+    const sc = d.querySelector('[data-news-scroll]'); const s = sc.getBoundingClientRect(); const foot = s.top + sc.clientHeight;
+    // How far the lowest word of the notes' scroll runs past its foot, read from every word's own box.
+    const rects = []; const walk = document.createTreeWalker(sc, NodeFilter.SHOW_TEXT); let t;
+    while ((t = walk.nextNode())) { if (!t.textContent.trim()) continue; const rg = document.createRange(); rg.selectNodeContents(t); for (const q of rg.getClientRects()) if (q.width > 0.5) rects.push(q); }
+    const past = rects.length ? Math.max(...rects.map((q) => q.bottom)) - foot : null;
+    const cue = d.querySelector('[data-news-more]'); if (!cue) return { past, cue: null };
+    const parse = (c) => { const m = String(c).match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[\s,/]+/).filter(Boolean).map(Number); return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 }; };
+    const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; const lum = (c) => 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b);
+    const cr = cue.getBoundingClientRect(); const words = cue.querySelector('p'); const wcs = getComputedStyle(words); const fade = cue.firstElementChild; const fcs = getComputedStyle(fade);
+    const ink = parse(wcs.color); const ground = parse(wcs.backgroundColor); const box = parse(getComputedStyle(d).backgroundColor);
+    const ratio = ink && ground ? (Math.max(lum(ink), lum(ground)) + 0.05) / (Math.min(lum(ink), lum(ground)) + 0.05) : 0;
+    const same = (a, b2) => !!a && !!b2 && a.r === b2.r && a.g === b2.g && a.b === b2.b;
+    const stops = [...fcs.backgroundImage.matchAll(/rgba?\([^)]+\)/g)].map((m) => parse(m[0]));
+    // Each note by its first line's letters: how far above the cue's top they begin.
+    const above = [...sc.querySelectorAll('[data-news-brief] > li')].map((li) => { const rg = document.createRange(); rg.selectNodeContents(li); const first = [...rg.getClientRects()].find((q) => q.width > 0.5); return first ? cr.top - first.top : null; });
+    const g = [...d.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Got it').getBoundingClientRect();
+    const hit = document.elementFromPoint((cr.left + cr.right) / 2, (cr.top + cr.bottom) / 2);
+    return { past, cue: { words: words.textContent.trim(), n: cue.getAttribute('data-news-more'), above, ratio: Math.round(ratio * 100) / 100, ground: same(ground, box) && ground.a === 1,
+      fade: /linear-gradient/.test(fcs.backgroundImage) && stops.length === 2 && same(stops[0], box) && stops[0].a === 0 && same(stops[1], box) && stops[1].a === 1 && fade.getBoundingClientRect().height >= 8,
+      hidden: cue.getAttribute('aria-hidden') === 'true', through: !!hit && !cue.contains(hit) && sc.contains(hit), clear: cr.bottom <= g.top + 0.5 && cr.top >= s.top - 0.5 && cr.bottom <= foot + 0.5 } };
+  });
+  // What a read says is wrong (an empty list when nothing is): a cue that must show and does not, or shows and must not; then the cue's own
+  // look and its count, which may be any number between the notes surely not begun (no more than 2 pixels of their first line's letters show
+  // above it) and those that may not be (no more than 6).
+  const newsFaults = (m) => {
+    if (!m || m.past === null) return ['no notes'];
+    if (!m.cue) return m.past > 3 ? [`words run ${m.past.toFixed(1)} pixels past the notes' foot with no cue`] : [];
+    if (m.past < -1) return ['a cue with every word showing'];
+    const c = m.cue; const sure = c.above.filter((a) => a !== null && a <= 2).length; const maybe = c.above.filter((a) => a !== null && a < 6).length;
+    const said = /^(\d+) more notes? below$/.exec(c.words); const n = said ? Number(said[1]) : c.words === 'More below' ? 0 : -1;
+    return [n < 0 && `the cue says "${c.words}"`, n >= 0 && (n < sure || n > maybe) && `the cue counts ${n} where ${sure} to ${maybe} have not begun`, said && (Number(said[1]) === 1) !== !/notes/.test(c.words) && `"${c.words}"`,
+      String(n) !== c.n && 'its count and its words differ', c.ratio < 4.5 && `its words ${c.ratio} to 1`, !c.ground && 'its words not on the box\'s own color', !c.fade && 'no fade above its words',
+      !c.hidden && 'not hidden from a screen reader', !c.through && 'a touch on it stops there', !c.clear && 'it covers what lies below the notes'].filter(Boolean);
+  };
+  const plantLong = (p, times) => p.evaluate((k) => { const ul = document.querySelector('[data-news-brief]'); const li = document.createElement('li'); li.setAttribute('data-planted', ''); li.textContent = 'A note that runs long, as a block of notes can, so the list grows taller than the box. '.repeat(k); ul.appendChild(li); return true; }, times);
+  const toEnd = (p) => p.evaluate(() => { const sc = document.querySelector('[data-news-scroll]'); sc.scrollTop = sc.scrollHeight; });
+  // A plant or a scroll is heard within a frame or two (the list's size watched, the scroll heard), so a read waits 150 ms after one, and 300
+  // after a turn of the window.
+  const faults = []; const seen = []; let opened = 0;
+  // A new touch phone at a size and in a theme, past the ask to turn upright where it is held sideways, an account made, What's new open;
+  // noWatch takes the browser's ResizeObserver away before the page loads.
+  const openNews = async (theme, w, h, noWatch = false) => {
+    const ctx = await b.newContext({ viewport: { width: w, height: h }, screen: { width: w, height: h }, hasTouch: true, isMobile: true });
+    await ctx.addInitScript((t) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* storage may be off */ } }, theme);
+    if (noWatch) await ctx.addInitScript(() => { delete window.ResizeObserver; });
+    const p = await ctx.newPage(); await p.goto(url); await p.waitForTimeout(700);
+    const keep = p.getByRole('button', { name: 'Keep going sideways', exact: true }); const asked = w > h && (await keep.count()) === 1 && (await keep.isVisible()); if (asked) { await keep.tap(); await p.waitForTimeout(300); }
+    await p.getByRole('button', { name: 'Create account' }).click(); await p.fill('input[placeholder="PIN"]', '2468'); await p.fill('input[placeholder="PIN again"]', '2468');
+    await p.fill('input[placeholder="This device\'s name"]', 'Notes'); await p.selectOption('select[aria-label="Your state"]', 'CA');
+    await p.getByRole('button', { name: 'Create account', exact: true }).click();
+    { const skip = p.getByRole('button', { name: 'Skip tour' }); if (await skip.count()) await skip.click({ force: true }); }
+    await p.waitForTimeout(1600); if (await p.getByText('Make your first backup soon').count()) { await p.getByRole('button', { name: 'Later', exact: true }).first().click(); }
+    await p.waitForTimeout(900); const open = await newsRead(p); if (open) opened++; return { ctx, p, asked, open };
+  };
+  // At one size: the pop-up as it shows, then with a long note planted after it opened, then scrolled to the notes' end; then the plant taken
+  // out and the notes put back at their top for the next size.
+  const checkAt = async (p, at, now) => {
+    seen.push({ at, past: now && now.past !== null ? Math.round(now.past) : null, cue: now && now.cue ? now.cue.words : null });
+    for (const f of newsFaults(now)) faults.push(`${at}, as it shows: ${f}`);
+    await plantLong(p, 6); await p.waitForTimeout(150); const long = await newsRead(p);
+    if (!long || !long.cue) faults.push(`${at}: a long note planted and no cue`); for (const f of newsFaults(long)) faults.push(`${at}, a long note planted: ${f}`);
+    await toEnd(p); await p.waitForTimeout(150); const end = await newsRead(p);
+    if (!end || end.cue || end.past === null || end.past > -1) faults.push(`${at}: at the notes' end ${end && end.cue ? `the cue stays, "${end.cue.words}"` : `the last words ${end && end.past !== null ? end.past.toFixed(1) : '?'} pixels from the foot`}`);
+    await p.evaluate(() => { document.querySelectorAll('[data-planted]').forEach((x) => x.remove()); document.querySelector('[data-news-scroll]').scrollTop = 0; }); await p.waitForTimeout(150);
+  };
+  for (const theme of ['dark', 'light']) {
+    // Opened on a phone held sideways (667 by 375), then the window turned to the other two sideways sizes, the ask passed once.
+    const { ctx, p, asked, open } = await openNews(theme, 667, 375); if (!asked) faults.push(`${theme}: no ask to turn upright to go past`);
+    await checkAt(p, `${theme} 667x375`, open);
+    for (const [w, h] of [[740, 360], [844, 390]]) { await p.setViewportSize({ width: w, height: h }); await p.waitForTimeout(300); await checkAt(p, `${theme} ${w}x${h}`, await newsRead(p)); }
+    // Turned upright (390 by 844): every note shows and no cue does; the long note planted brings it.
+    await p.setViewportSize({ width: 390, height: 844 }); await p.waitForTimeout(300); const at = `${theme} 390x844`;
+    const up = await newsRead(p); if (!up || up.cue) faults.push(`${at}: ${up ? `a cue with every note showing, "${up.cue.words}"` : 'no pop-up'}`); for (const f of newsFaults(up)) faults.push(`${at}: ${f}`);
+    await plantLong(p, 15); await p.waitForTimeout(150); const long = await newsRead(p); if (!long || !long.cue) faults.push(`${at}: a long note planted and no cue`); for (const f of newsFaults(long)) faults.push(`${at}, a long note planted: ${f}`);
+    seen.push({ at, past: up && up.past !== null ? Math.round(up.past) : null, cue: up && up.cue ? up.cue.words : null, planted: long && long.cue ? long.cue.words : null });
+    // The cue's two thresholds, each pinned on both sides with the long note planted (a line's letters sit about 3 pixels inside its box):
+    // the note scrolled so its box ends 2 pixels past the foot, every letter showing, and no cue, then 7 past, its last letters cut, and a
+    // cue; and the notes' foot raised (the box made shorter) so the note's box begins 3 pixels above the cue, no letter of it above, and it
+    // is counted, then 12 above, its first letters' tops showing above the cue, and it is not.
+    const placed = (pp) => pp.evaluate(() => { const sc = document.querySelector('[data-news-scroll]'); const foot = sc.getBoundingClientRect().top + sc.clientHeight; const r = document.querySelector('[data-planted]').getBoundingClientRect(); return { top: r.top - foot, bottom: r.bottom - foot }; });
+    const scrollBy = (pp, y) => pp.evaluate((dy) => { document.querySelector('[data-news-scroll]').scrollTop += dy; }, y);
+    const footUp = (pp, y) => pp.evaluate((dy) => { const d = document.querySelector('[role="dialog"][aria-label="What\'s new"]'); d.style.maxHeight = dy ? `${d.getBoundingClientRect().height - dy}px` : '85vh'; }, y);
+    const edges = {};
+    { const a1 = await placed(p); await scrollBy(p, a1.bottom - 2); await p.waitForTimeout(150); edges.whole = await newsRead(p); await scrollBy(p, -5); await p.waitForTimeout(150); edges.cut = await newsRead(p);
+      await p.evaluate(() => { document.querySelector('[data-news-scroll]').scrollTop = 0; }); await p.waitForTimeout(150);
+      const b2 = await placed(p); await footUp(p, -(b2.top + 35)); await p.waitForTimeout(150); edges.under = await newsRead(p); await footUp(p, 0); await p.waitForTimeout(150);
+      const b3 = await placed(p); await footUp(p, -(b3.top + 44)); await p.waitForTimeout(150); edges.over = await newsRead(p); await footUp(p, 0); await p.waitForTimeout(150); }
+    const said = (m) => (m && m.cue ? m.cue.words : null);
+    if (!edges.whole || edges.whole.cue || edges.whole.past > -0.5) faults.push(`${at}: every letter showing (${edges.whole && edges.whole.past !== null ? edges.whole.past.toFixed(1) : '?'}), the cue "${said(edges.whole)}"`);
+    if (!edges.cut || !edges.cut.cue) faults.push(`${at}: the last letters cut (${edges.cut && edges.cut.past !== null ? edges.cut.past.toFixed(1) : '?'}) and no cue`);
+    if (said(edges.under) !== '1 more note below') faults.push(`${at}: the note's box 3 pixels above the cue, the cue "${said(edges.under)}"`);
+    if (said(edges.over) !== 'More below') faults.push(`${at}: the note's box 12 pixels above the cue, the cue "${said(edges.over)}"`);
+    for (const [k, m] of Object.entries(edges)) for (const f of newsFaults(m)) faults.push(`${at}, placed ${k}: ${f}`);
+    await ctx.close();
+  }
+  // Where the browser has no ResizeObserver (before Safari 13.4): opened on a phone held sideways where the notes run past their foot,
+  // the cue shows from the first draw; turned upright it goes, and turned back it comes again, each turn heard by the window's resize.
+  // The size is read from the reads above, since each update's block is its own length (the build the final read of pass NX asked for
+  // put the November 22 block into the page, which fits at 667 by 375 and 844 by 390 and runs past at 740 by 360): the sideways size
+  // where the dark theme's read saw a cue, the notes furthest past, or a window 844 by 300, where any block runs past, if no sideways read
+  // saw one. A cue the read saw, not the words' own reach, since the app shows the cue by the notes' box more than NEWS_PAST (4 pixels)
+  // past the foot, so words 3 to 5 pixels past can stand with none (the second read of pass NX).
+  const turned = {};
+  const furthest = seen.filter((s) => s.at.startsWith('dark ') && s.at !== 'dark 390x844' && s.cue).sort((a, b) => b.past - a.past)[0];
+  const [sideW, sideH] = furthest ? furthest.at.slice(5).split('x').map(Number) : [844, 300]; turned.size = `${sideW}x${sideH}`;
+  { const { ctx, p, asked, open } = await openNews('dark', sideW, sideH, true); const at = 'no ResizeObserver';
+    turned.watch = await p.evaluate(() => typeof window.ResizeObserver); if (turned.watch !== 'undefined') faults.push(`${at}: the browser still has one`); if (!asked) faults.push(`${at}: no ask to turn upright to go past`);
+    turned.open = open && open.cue ? open.cue.words : null; if (!open || !open.cue) faults.push(`${at}: opened sideways and no cue (${open && open.past !== null ? open.past.toFixed(1) : '?'} pixels past the foot)`); for (const f of newsFaults(open)) faults.push(`${at}, opened sideways: ${f}`);
+    await p.setViewportSize({ width: 390, height: 844 }); await p.waitForTimeout(300); const up = await newsRead(p); turned.up = up && up.cue ? up.cue.words : null;
+    if (!up || up.cue) faults.push(`${at}: turned upright, ${up ? `the cue stays, "${turned.up}"` : 'no pop-up'}`); for (const f of newsFaults(up)) faults.push(`${at}, turned upright: ${f}`);
+    await p.setViewportSize({ width: sideW, height: sideH }); await p.waitForTimeout(300); const back = await newsRead(p); turned.back = back && back.cue ? back.cue.words : null;
+    if (!back || !back.cue) faults.push(`${at}: turned back sideways and no cue`); for (const f of newsFaults(back)) faults.push(`${at}, turned back: ${f}`);
+    await ctx.close(); }
+  ok(`on a phone held sideways, past the ask to turn upright, What's new says that more notes follow while any run past its notes' foot, at 667 by 375 as it opens and at 740 by 360 and 844 by 390 as the phone turns, in both themes, counts the notes not begun, and goes at the notes' end; turned upright with every note showing it shows none (pass NX, EARMARKS A175; ${opened} pop-ups opened, a long note planted at each size, the cue's two thresholds each placed on both sides, and a browser without ResizeObserver opened sideways at ${turned.size}, where the notes run past, and turned)`,
+    opened === 3 && faults.length === 0, { faults: faults.slice(0, 8), seen, turned }); }
 await b.close();
+// What's new's cue leaves the notes' scrollbar uncovered where one is drawn beside them, as a laptop draws it (pass NX, EARMARKS A175). Playwright
+// starts headless Chromium with --hide-scrollbars, so no scrollbar takes room in the browser above; this one is started without it, once that
+// one is closed (one browser at a time), in a short window with no touch, as a laptop's. With a long note planted the notes scroll, their
+// scrollbar takes its room, and the cue's right edge is read against the notes' own.
+{ const lb = await chromium.launch({ ignoreDefaultArgs: ['--hide-scrollbars'] }); const lp = await (await lb.newContext({ viewport: { width: 667, height: 375 } })).newPage(); await lp.goto(url);
+  await lp.getByRole('button', { name: 'Create account' }).click(); await lp.fill('input[placeholder="PIN"]', '2468'); await lp.fill('input[placeholder="PIN again"]', '2468');
+  await lp.fill('input[placeholder="This device\'s name"]', 'Laptop'); await lp.selectOption('select[aria-label="Your state"]', 'CA');
+  await lp.getByRole('button', { name: 'Create account', exact: true }).click();
+  { const skip = lp.getByRole('button', { name: 'Skip tour' }); if (await skip.count()) await skip.click({ force: true }); }
+  await lp.waitForTimeout(1600); if (await lp.getByText('Make your first backup soon').count()) { await lp.getByRole('button', { name: 'Later', exact: true }).first().click(); } await lp.waitForTimeout(900);
+  const planted = await lp.evaluate(() => { const ul = document.querySelector('[data-news-brief]'); if (!ul) return false; const li = document.createElement('li'); li.setAttribute('data-planted', ''); li.textContent = 'A note that runs long, as a block of notes can, so the list grows taller than the box. '.repeat(6); ul.appendChild(li); return true; });
+  await lp.waitForTimeout(400);
+  const bar = await lp.evaluate(() => { const sc = document.querySelector('[data-news-scroll]'); const cue = document.querySelector('[data-news-more]'); if (!sc || !cue) return { sc: !!sc, cue: !!cue }; const s = sc.getBoundingClientRect(); const c = cue.getBoundingClientRect(); return { bar: sc.offsetWidth - sc.clientWidth, right: Math.round(c.right), edge: Math.round(s.left + sc.clientWidth) }; });
+  await lb.close();
+  ok("where the notes' scrollbar is drawn beside them, as on a laptop, What's new's cue that more notes follow leaves it uncovered (pass NX, EARMARKS A175)", planted && bar.bar > 0 && bar.right <= bar.edge, bar); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

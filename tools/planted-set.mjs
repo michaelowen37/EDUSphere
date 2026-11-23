@@ -425,8 +425,9 @@ export function findings(report) {
     const main = line.match(MAIN);
     if (main) {
       close(); section = /^MUST/i.test(main[1]) ? 'must' : 'should';
-      // Words after the label on its own line ("MUST FIX 2: module x ...") are a finding; a count or "none" is not.
-      const rest = line.replace(MAIN, '').replace(/^[\s*_:#.)\-\u2013\u2014]+/, '').replace(/^\((?:\d+|none)\)/i, '').replace(/^[\s*_:#.)\-\u2013\u2014\d]+(?=\D)/, '').trim();
+      // Words after the label on its own line ("MUST FIX 2: module x ...") are a finding; a count or "none" is not, nor a remark in
+      // brackets that is all the line holds ("## MUST FIX (added)", pass NX's critic, whose findings had all become one).
+      const rest = line.replace(MAIN, '').replace(/^[\s*_:#.)\-\u2013\u2014]+/, '').replace(/^\((?:\d+|none)\)/i, '').replace(/^[\s*_:#.)\-\u2013\u2014\d]+(?=\D)/, '').replace(/^\([^()]*\)[\s*_:.]*$/, '').trim();
       if (rest && !/^(none|nothing|no findings?)\b/i.test(rest)) cur = { section, text: rest, indent: -1 };
       continue;
     }
@@ -686,6 +687,11 @@ export function selftest() {
   // the head's finding (they had become findings that named no item), and a numbered should consider with deeper bullets.
   const shaped = findings('## MUST FIX\n\n**1. Red and blue, bank `p3-tap-red-blue`: a thing.**\n- Place: `src/logic.mjs` line 5000.\n- Problem: it is wrong.\n- Fix: say it right.\n\n**2. Taking turns: another.**\n**Place:** line 7.\n- Fix: a fix.\n\n## SHOULD CONSIDER\n\n1. **Colors: a third.**\n   - `pc-tap-colour`: a detail.\n2. **Animal sounds: a fourth.**\n\n## CLEAN\n- The rest.\n');
   const labelled = findings('MUST FIX\n**Red and blue:** the sea line.\n**Taking turns:** the idiom.\n- Fix: a fix.\n\nCLEAN\n- The rest.\n');
+  // Pass NX's critic: a remark in brackets after each label, all its line holds, is part of the label, so each numbered item under it is
+  // a finding of its own (they had all become one finding, its text the remark); words after a bracket are still a finding.
+  const remarked = findings('## MUST FIX (added)\n\n1. **Talk about it:** a thing.\n2. **Colors:** another.\n\n## SHOULD CONSIDER (added)\n\n1. **Patterns:** a third.\n\n## Findings of the read that are false\n\n- MUST FIX 4: none.\n');
+  const remarkedInline = findings('**MUST FIX (added):** module a-b line 3, a thing.\n\nCLEAN\n- The rest.\n');
+  ok('a remark in brackets after a section label is part of the label, and each numbered item under it is its own finding (pass NX\'s critic)', remarked.length === 3 && remarked.every((f) => !/^\(added\)/.test(f.text)) && /Colors/.test(remarked[1].text) && remarked[2].section === 'should' && !remarked.some((f) => /MUST FIX 4/.test(f.text)) && remarkedInline.length === 1 && /module a-b line 3/.test(remarkedInline[0].text), JSON.stringify(remarked.map((f) => f.text).concat(remarkedInline.map((f) => f.text))));
   ok('findings that each open with a bold label are findings of their own, each keeping its bullets', labelled.length === 2 && /Taking turns/.test(labelled[1].text) && /a fix/.test(labelled[1].text), JSON.stringify(labelled.map((f) => f.text)));
   ok('a numbered head keeps its Place, Problem and Fix bullets and bold labels as one finding with the item it names (the Fable lesson read\'s shape)', shaped.length === 4 && shaped[0].section === 'must' && /Red and blue/.test(shaped[0].text) && /Fix: say it right/.test(shaped[0].text) && /Place:\*\* line 7/.test(shaped[1].text) && /a fix/.test(shaped[1].text) && shaped[2].section === 'should' && /pc-tap-colour/.test(shaped[2].text), JSON.stringify(shaped.map((f) => f.text.split('\n')[0])));
   // A finding that names an item and complains of something else is never a catch (round one's code read): every wording of every plant

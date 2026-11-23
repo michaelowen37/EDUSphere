@@ -24,7 +24,7 @@
 // the same icons, pictures, faces, items and shapes on its tiles, and at seeds 1 to 400 each of them is also on a choice tile.
 // Since round three's screen read of pass NR it also reads the painted ink of a print question's drawings on their tiles, at two phone sizes
 // in each theme, so that in Words all around us's "Which one has a word on it?" and "Which one has no words on it?" no answer stands out by
-// its size (below, at INK_BANK).
+// its size (below, at INK_BANK), and since pass NX (EARMARKS L35) by its width too.
 import { createRequire } from 'node:module'; import { execSync } from 'node:child_process';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 const L = await import('../../src/logic.mjs');
@@ -70,16 +70,28 @@ const byQ = new Map(); for (const [key, w] of where) { const qk = w.gen + '|' + 
 // (each set of choices with its answer) is shown at 375 by 667 and at 320 by 568, in each theme, with the test page's margin taken off as
 // the product has none, and each tile's drawing is shot alone, its box and the tile made clear as the edges' shots are, and read from its
 // pixels: its height (the rows a pixel at least half opaque stands in), its width, and its painted area (every such pixel), in screen
-// pixels. Over seeds 1 to 2,000, in each size and theme, the answer may be the one tallest picture, or the one largest by painted area or
-// by the box its ink fills, where the question asks which one has a word on it, or the one shortest or smallest where it asks which one has
-// none, on no more than 45 percent of screens (chance is about a third); and the same the other way round, the tallest or largest where it
-// asks which one has none, since a cue that turned around would single out the answer as well. Plants, put in the page on a screen with the
-// tree and the dog in each size and theme, those two tiles read again and the 2,000 seeds scored with their ink: the tree without its
-// growth (PRINT_TILE_GROW in ui.jsx), the dog's face (as a tile in another bank draws it) in the sitting dog's place, and both, each caught.
+// pixels. Over seeds 1 to 2,000, in each size and theme, the answer may be the one tallest picture, the one widest (since pass NX, EARMARKS
+// L35), or the one largest by painted area or by the box its ink fills, where the question asks which one has a word on it, or the one
+// shortest, narrowest or smallest where it asks which one has none, on no more than 45 percent of screens (chance is about a third); and the
+// same the other way round, the tallest, widest or largest where it asks which one has none, since a cue that turned around would single
+// out the answer as well. Plants, put in the page on a screen with the tree and the dog in each size and theme, those two tiles read again
+// and the 2,000 seeds scored with their ink: the tree without its growth (PRINT_TILE_GROW in ui.jsx), the dog's face (as a tile in another
+// bank draws it) in the sitting dog's place, and both, each caught. Until pass NX the width was read and held by no measure (pass NR's last
+// short read found the answer the widest or narrowest its kind gives on 432 of 2,000 screens, 21.6 percent, and the other way on 667, 33.4,
+// in every size and theme); it is held at the same 45 percent, since those reads sit inside it as the other three measures' do. Its plant,
+// on a screen with the stop sign and the cubby (two of the answers where it asks for a word), in each size and theme: those two drawn
+// WIDE_PLANT times as wide and as many times less tall about their middle, so their painted area and their box's area stay as they were
+// and only their width and height move, read again and the 2,000 seeds scored with their ink, caught by the width alone (past the bound,
+// the other three measures inside it both ways); its near miss, the same drawn WIDE_NEAR times as wide, passed by the live verdict; and,
+// so the plant's own condition can fail, the same two drawn WIDE_PLANT times as wide at their own height, caught by more than the width
+// (their painted area and their box's area grow with it), so a plant like that one proves nothing about the width's own bound.
 const INK_BANK = 'p3-around-has'; const INK_MODULE = 'words-all-around'; const INK_SIZES = [[375, 667], [320, 568]]; const INK_BOUND = 0.45;
 const inkKey = (q) => `${q.choices.slice().sort().join(',')}>${q.answer}`;
 const INK_SEEDS = (() => { const first = new Map(); for (let s = 1; s <= 2000; s++) { const k = inkKey(L.generateQuestion(INK_BANK, s)); if (!first.has(k)) first.set(k, s); } return [...first.values()]; })();
-const inkRead = {}; const inkPlant = {};
+const inkRead = {}; const inkPlant = {}; const inkWide = {};
+// The width's plant and its near miss: how much wider the stop sign and the cubby are drawn, and as many times less tall (pass NX, above);
+// drawn WIDE_PLANT times as wide at their own height, they are the plant that is not the width's alone.
+const WIDE_PLANT = 1.2; const WIDE_NEAR = 1.05; const WIDE_TILES = ['icon:sign~stop', 'icon:cubby~name'];
 // The reading, in the page: a shot of one drawing (a PNG, its background clear) and the share of its edge that reads on each tile.
 const readEdge = (page, b64, tiles) => page.evaluate(async ([png, tl]) => {
   const img = new Image(); img.src = 'data:image/png;base64,' + png; await img.decode();
@@ -118,13 +130,17 @@ const shoot = async (page, token, plant = null) => {
 // A tile's drawing alone for its ink (the print question's check above): its svg, every background up its ancestors made clear and put back
 // after, as shoot does. A plant changes only what it puts back: ungrow takes the growth's transform off the drawing and sets it again after;
 // markup hides the drawing and draws another in its box (the old dog's face, as another tile drew it), then takes it away, so the nodes the
-// page's own code keeps are never replaced.
+// page's own code keeps are never replaced; and since pass NX wide, [across, down], draws the drawing that many times as wide and that many
+// times as tall about the box's middle (a transform on its own first node, put back after): [WIDE_PLANT, 1 / WIDE_PLANT] keeps its painted
+// area and its box's area as they were.
 const shootInk = async (page, token, plant = null) => {
   const handle = await page.evaluateHandle(([tok, pl]) => { const b = [...document.querySelectorAll('button[data-choice]')].find((e) => e.getAttribute('data-choice') === tok); const svg = b && b.querySelector('svg'); if (!svg) return null;
     window.__inkWas = []; for (let e = svg; e; e = e.parentElement) { window.__inkWas.push([e, e.getAttribute('style')]); e.style.setProperty('background', 'transparent', 'important'); e.style.setProperty('box-shadow', 'none', 'important'); }
     window.__inkWas.push([document.documentElement, document.documentElement.getAttribute('style')]); document.documentElement.style.setProperty('background', 'transparent', 'important');
     window.__inkUndo = [];
     if (pl && pl.ungrow) for (const g of svg.querySelectorAll('[data-print-grow]')) { const t = g.getAttribute('transform'); g.removeAttribute('transform'); window.__inkUndo.push(() => g.setAttribute('transform', t)); }
+    if (pl && pl.wide) { const own = svg.firstElementChild; const t = own.getAttribute('transform'); own.setAttribute('transform', 'translate(50 50) scale(' + pl.wide[0] + ' ' + pl.wide[1] + ') translate(-50 -50)' + (t ? ' ' + t : ''));
+      window.__inkUndo.push(() => { if (t === null) own.removeAttribute('transform'); else own.setAttribute('transform', t); }); }
     if (pl && pl.markup) { const own = svg.firstElementChild; const was = own.getAttribute('style'); own.style.display = 'none'; const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.innerHTML = pl.markup; svg.appendChild(g);
       window.__inkUndo.push(() => { g.remove(); if (was === null) own.removeAttribute('style'); else own.setAttribute('style', was); }); }
     return svg; }, [token, plant]);
@@ -197,6 +213,9 @@ for (const theme of ['light', 'dark']) {
       const q = L.generateQuestion(INK_BANK, seed); const tiles = {};
       for (const c of q.choices) tiles[c] = await readInk(page, await shootInk(page, c));
       inkRead[`${cfg} ${inkKey(q)}`] = tiles;
+      if (!inkWide[cfg] && WIDE_TILES.every((c) => q.choices.includes(c))) { inkWide[cfg] = { plant: {}, near: {}, flat: {} };
+        for (const c of WIDE_TILES) { inkWide[cfg].plant[c] = await readInk(page, await shootInk(page, c, { wide: [WIDE_PLANT, 1 / WIDE_PLANT] })); inkWide[cfg].near[c] = await readInk(page, await shootInk(page, c, { wide: [WIDE_NEAR, 1 / WIDE_NEAR] }));
+          inkWide[cfg].flat[c] = await readInk(page, await shootInk(page, c, { wide: [WIDE_PLANT, 1] })); } }
       if (!inkPlant[cfg] && q.choices.includes('icon:tree') && q.choices.includes('icon:dog~sit')) inkPlant[cfg] = { tree: await readInk(page, await shootInk(page, 'icon:tree', { ungrow: true })), dog: oldDog ? await readInk(page, await shootInk(page, 'icon:dog~sit', { markup: oldDog })) : null };
     }
   }
@@ -214,9 +233,9 @@ ok(`every drawing a bank puts on an answer tile reads at its edge, 3 to 1 or bet
 const tileSet = (t) => Array.isArray(TILES[t]) && TILES[t].length === 4 && TILES[t].every((h) => /^#[0-9A-F]{6}$/.test(h)) && new Set(TILES[t]).size === 4;
 ok(`each theme's resting, right, wrong and ruled-out tiles are read from the page, not typed into the test (light ${(TILES.light || []).join(', ')}; dark ${(TILES.dark || []).join(', ')}; every tile turned grey in the page, read as that grey, and the jar caught on it; since round two's code read the belt read against the old ruled-out tile, #2C4238, planted, caught)`, tileSet('light') && tileSet('dark') && Array.isArray(plantTiles) && plantGrey === true && plantRuled === true, { TILES, plantTiles, plantGrey, plantRuled });
 // The print question's ink: in each size and theme, over seeds 1 to 2,000, how often the answer is the one extreme its question's kind gives
-// (and the other way round), by its height, its painted area and the box its ink fills, each seed scored with the ink read on its own screen;
-// then the same with each plant's ink in the tree's or the dog's place.
-const INK_MEASURES = { height: (v) => v.h, 'painted area': (v) => v.area, 'box area': (v) => v.w * v.h };
+// (and the other way round), by its height, its painted area, the box its ink fills and, since pass NX, its width, each seed scored with the
+// ink read on its own screen; then the same with each plant's ink in the tree's or the dog's place.
+const INK_MEASURES = { height: (v) => v.h, 'painted area': (v) => v.area, 'box area': (v) => v.w * v.h, width: (v) => v.w };
 const inkRates = (cfg, swap = {}) => { const r = Object.fromEntries(Object.keys(INK_MEASURES).map((m) => [m, [0, 0]])); let n = 0; let unread = 0;
   for (let s = 1; s <= 2000; s++) { const q = L.generateQuestion(INK_BANK, s); const t = inkRead[`${cfg} ${inkKey(q)}`]; const ink = (c) => swap[c] || (t && t[c]);
     if (!t || q.choices.some((c) => !ink(c))) { unread += 1; continue; } n += 1; const big = !/no words/.test(q.prompt); const ai = q.choices.indexOf(q.answer);
@@ -231,10 +250,20 @@ const inkPlanted = Object.fromEntries(inkCfgs.map((c) => [c, Object.fromEntries(
 const inkPct = (k, n) => `${k} (${Math.round((1000 * k) / (n || 1)) / 10}%)`;
 const inkLine = (c) => `${c.replace(/ (\d+)x(\d+)$/, ' $1 by $2')}: ${Object.entries(inkNow[c].r).map(([m, [a, b]]) => `${m} ${inkPct(a, inkNow[c].n)}, the other way ${b}`).join('; ')}`;
 const inkPlants = inkCfgs.map((c) => Object.entries(inkPlanted[c]).map(([k, x]) => (x ? `${k} ${Math.round(1000 * inkNatural(x)) / 10}%` : `${k} not read`)).join(', ')).join(' | ');
-ok(`no answer of a print question stands out by its painted ink (pass NR, round three's screen read, MUST FIX 2): in Words all around us's which one has a word on it, or none, every tile's drawing read from its pixels on all ${INK_SEEDS.length} screens of seeds 1 to 2,000, the answer is the one tallest or largest where the question asks for a word, and the one shortest or smallest where it asks for none, on at most ${Math.round(INK_BOUND * 100)} percent of the 2,000, and the other way round too (${inkCfgs.map(inkLine).join('; ')}); the old drawings put back in the page, the tree without its growth, the dog's face in the sitting dog's place and both, each caught in every size and theme (its worst way: ${inkPlants})`,
+ok(`no answer of a print question stands out by its painted ink (pass NR, round three's screen read, MUST FIX 2): in Words all around us's which one has a word on it, or none, every tile's drawing read from its pixels on all ${INK_SEEDS.length} screens of seeds 1 to 2,000, the answer is the one tallest, widest or largest where the question asks for a word, and the one shortest, narrowest or smallest where it asks for none, on at most ${Math.round(INK_BOUND * 100)} percent of the 2,000, and the other way round too (${inkCfgs.map(inkLine).join('; ')}); the old drawings put back in the page, the tree without its growth, the dog's face in the sitting dog's place and both, each caught in every size and theme (its worst way: ${inkPlants})`,
   inkCfgs.every((c) => inkNow[c].n === 2000 && inkNow[c].unread === 0 && inkWorst(inkNow[c]) <= INK_BOUND) && Object.keys(inkRead).length === INK_SEEDS.length * inkCfgs.length && INK_SEEDS.length >= 30
     && inkCfgs.every((c) => Object.values(inkPlanted[c]).every((x) => x && inkNatural(x) > INK_BOUND)),
   { now: Object.fromEntries(inkCfgs.map((c) => [c, inkNow[c]])), read: Object.keys(inkRead).length, plants: inkPlants });
+// The width's plant, its near miss and the plant that is not the width's alone, each scored over the 2,000 seeds with its two drawings' ink
+// in their places, in every size and theme: the plant trips the width alone (past the bound, the other three measures inside it both
+// ways), the near miss passes the live verdict, and the drawings drawn wider at their own height are caught by more than the width.
+const inkWideRates = Object.fromEntries(inkCfgs.map((c) => [c, inkWide[c] && WIDE_TILES.every((t) => inkWide[c].plant[t] && inkWide[c].near[t] && inkWide[c].flat[t]) ? { plant: inkRates(c, inkWide[c].plant), near: inkRates(c, inkWide[c].near), flat: inkRates(c, inkWide[c].flat) } : null]));
+const widthAlone = (x) => !!x.r.width && Math.max(...x.r.width) / (x.n || 1) > INK_BOUND && Object.entries(x.r).filter(([m]) => m !== 'width').every(([, v]) => Math.max(...v) / (x.n || 1) <= INK_BOUND);
+const wideWord = (x) => (x.r.width ? 'width ' + inkPct(Math.max(...x.r.width), x.n) : 'no width measure') + ', the worst of the other three ' + inkPct(Math.max(...Object.entries(x.r).filter(([m]) => m !== 'width').flatMap(([, v]) => v)), x.n);
+const wideList = (k) => inkCfgs.map((c) => c + ': ' + (inkWideRates[c] ? wideWord(inkWideRates[c][k]) : 'not read')).join('; ');
+ok(`no answer of a print question stands out by its width either (pass NX, EARMARKS L35): the ink check holds each drawing's width at the same ${Math.round(INK_BOUND * 100)} percent, and the stop sign and the cubby drawn ${WIDE_PLANT} times as wide and as many times less tall, their painted area and their box's area as they were, are caught by the width alone in every size and theme (${wideList('plant')}), and drawn ${WIDE_NEAR} times as wide, passed (${wideList('near')}); drawn ${WIDE_PLANT} times as wide at their own height they are caught, and not by the width alone, so that plant would prove nothing of its own (${wideList('flat')})`,
+  inkCfgs.every((c) => inkWideRates[c] && ['plant', 'near', 'flat'].every((k) => inkWideRates[c][k].n === 2000) && widthAlone(inkWideRates[c].plant) && inkWorst(inkWideRates[c].near) <= INK_BOUND && inkWorst(inkWideRates[c].flat) > INK_BOUND && !widthAlone(inkWideRates[c].flat)),
+  { wide: inkWideRates });
 ok('no page errors along the way', errors.length === 0, errors);
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

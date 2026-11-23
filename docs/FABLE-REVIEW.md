@@ -200,11 +200,18 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NX (the week's pass for the checks' own tools)
+
+- A brief names the section a reader reads by its heading, never by its line numbers: round two's brief named the lesson brief by lines that the copies had outgrown, and one reader of four read only what the lines named.
+- A part of a fix is proven only by a check that fails without it, and the proof is run, not argued: tools/undo-alone.mjs does it for every hunk of a change, and an engineer's own runner that copied no fresh tests (a command missing on the machine) had to be run again.
+- A rule that compares choices reads them as a child sees them: two alike pictures tagged #0 and #1 are one picture, so a bank met the by-design rule only because its twins' tags made one picture two choices.
+- A reader's finding is read against the project before it is called a plant or a false alarm: about sixty findings of the measured lesson reads were real defects of today's lessons, among them banks a child can answer by habit (a yes or no bank answering Yes on 70 percent of seeds, two fixed off-topic replies) and a line that sends a child to the slide with no grown-up named; they wait for the next lesson pass (EARMARKS A181).
+
 ## Learned in pass NW (the blind read names its by-design marks)
 
 - A mark a reader judges by design is written where the tool that prints it reads it, with the share it was judged at and the reason, so the next reader reads the reason instead of judging the mark again. In Talking with a friend and Play with a plan, every question offers one of the lesson's right acts beside one that is not, so a child who always taps Listen, or always taps Give a high five, is right whenever that choice is shown: the habit is the lesson itself.
 - A tie is pinned by the rule its members share, never by one member's name: Play with a plan's five right ways to plan and play each show on about a fifth of its questions, so which one a blind read names best changes with the seeds.
-- A rule that holds a reader's judgment is a tripwire, never the judgment. Of the 135 pre-K banks whose "always the same choice" row leans, 58 show no right answer as a wrong choice, since a small two-choice bank of k rows, each with its own right answer, leans by arithmetic (0.5 + 0.5/k), so a reader still says which ones are the lesson itself (EARMARKS A180).
+- A rule that holds a reader's judgment is a tripwire, never the judgment. Of the 135 p3- and p4- banks whose "always the same choice" row leaned in pass NW (four of them grade 3 Philosophy banks), 58 showed no right answer as a wrong choice, and 57 do since pass NX read a twin as its picture (54 of the 131 pre-K), since a small two-choice bank of k rows, each with its own right answer, leans by arithmetic (0.5 + 0.5/k), so a reader still says which ones are the lesson itself (EARMARKS A180).
 
 ## Learned in pass NV (five older pre-K yes or no banks one word gave away, the one-word check widened, and a question's printed words kept whole)
 

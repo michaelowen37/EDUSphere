@@ -37,8 +37,9 @@
 //      node tools/coverage-receipt.mjs <report> --list <a file of the items the read was given, one a line, in the same form>
 //      node tools/coverage-receipt.mjs --selftest   (made reports on this tree's own ids; docs-sync runs it in check.sh)
 // -----------------------------------------------------------------------------------------------------------------
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { snapshot } from './content-snapshot.mjs';
@@ -52,6 +53,11 @@ const rangesIn = (s) => [...String(s).matchAll(/(\d+)\s*(?:-|to)\s*(\d+)|(\d+)/g
 // Ledger serials in words ("S4189-S4192", "S4189 to 4192", "D314"), each as its prefix and number.
 const serialsIn = (s) => { const out = []; for (const m of String(s).matchAll(/\b([A-Z]{1,2})(\d+)(?:\s*(?:-|to)\s*(?:[A-Z]{1,2})?(\d+))?/g)) { const a = Number(m[2]); const b = m[3] ? Number(m[3]) : a; for (let n = Math.min(a, b); n <= Math.max(a, b) && n - Math.min(a, b) < 5000; n++) out.push(`${m[1]}${n}`); } return out; };
 const inRanges = (n, rs) => rs.some(([a, b]) => n >= a && n <= b);
+// How many lines a text has, numbered as an editor and diff number them: the newline that ends a file's last line starts no line of its
+// own, and a text with no newline at its end still has its last line (an empty file is one empty line, as an editor shows it). Until pass
+// NX both counts below were split('\n').length, one too many for a file ending in a newline, so a report that read a whole file to its
+// last line was told it missed a line past the end. Both callers read this one count, and the self-test runs each.
+export const linesInText = (text) => { const s = String(text); return s.split('\n').length - (s.endsWith('\n') ? 1 : 0); };
 
 // One line of a list as an item: its kind and what it names, read forgivingly (a dash or a number before it, any spacing and case,
 // en and em dashes inside ranges, "by" and the times sign inside sizes).
@@ -89,7 +95,8 @@ export async function treeFacts(root = HERE) {
   if (existsSync(ledger)) for (const l of readFileSync(ledger, 'utf8').split('\n')) { const m = /^\| ([A-Z]+)(\d+) \| ([^|]*?) \|/.exec(l); if (m) art.set(`${m[1]}${m[2]}`, { prefix: m[1], owner: m[3].trim().replace(/^lesson-/, '') }); }
   const ui = existsSync(join(root, 'src/ui.jsx')) ? readFileSync(join(root, 'src/ui.jsx'), 'utf8') : '';
   const screens = new Set([...ui.matchAll(/screen === '([a-z][a-z0-9-]*)'/g)].map((m) => m[1]));
-  const lineCount = new Map(); const linesOf = (f) => { if (!lineCount.has(f)) { const p = join(root, f); lineCount.set(f, existsSync(p) && statSync(p).isFile() ? readFileSync(p, 'utf8').split('\n').length : null); } return lineCount.get(f); };
+  // A file's lines (linesInText, since pass NX), or null for no such file, read once a file.
+  const lineCount = new Map(); const linesOf = (f) => { if (!lineCount.has(f)) { const p = join(root, f); lineCount.set(f, existsSync(p) && statSync(p).isFile() ? linesInText(readFileSync(p, 'utf8')) : null); } return lineCount.get(f); };
   const bankExists = (g) => { if (gens.has(g)) return true; try { const q = L.generateQuestion(g, 1); return !!(q && (q.prompt || q.type)); } catch (e) { return false; } };
   const grades = new Map(L.COURSES.map((c) => [c.id, c.grade]));
   return { root, modules, gens, courses, grades, wonders, games, art, screens, stories: S.STORIES || {}, linesOf, bankExists };
@@ -154,7 +161,8 @@ export function fileChanges(base, here, files) {
   const out = [];
   for (const f of files) { const a = join(base, f); const b = join(here, f); const inA = existsSync(a); const inB = existsSync(b);
     if (!inA && !inB) continue; if (!inB) { out.push({ file: f, how: 'removed', ranges: [], points: [] }); continue; }
-    if (!inA) { out.push({ file: f, how: 'added', ranges: [[1, readFileSync(b, 'utf8').split('\n').length]], points: [] }); continue; }
+    // A file new since the base is changed on every line it has (linesInText, since pass NX), and none past its end.
+    if (!inA) { out.push({ file: f, how: 'added', ranges: [[1, linesInText(readFileSync(b, 'utf8'))]], points: [] }); continue; }
     if (readFileSync(a).equals(readFileSync(b))) continue;
     let text = ''; try { text = execFileSync('diff', ['-U0', a, b], { maxBuffer: 1 << 28 }).toString(); } catch (e) { text = String(e.stdout || ''); }
     const ranges = []; const points = [];
@@ -248,7 +256,9 @@ export async function changedSince(base, { scope = [], files = SOURCE_FILES } = 
 // Wonder question), held against made changes and a made list, so it needs no second copy and no snapshot. Each case names what it
 // expects: a report that opened everything misses nothing; one that skipped a Wonder question and part of a file names both; one
 // with a misspelled module names it and the module's items it then missed; in --list, a bank opened at half its seeds, a screen
-// in one theme of two, and a misspelled test; and, since round one's code read of pass NQ, a misspelled --scope id, refused.
+// in one theme of two, and a misspelled test; since round one's code read of pass NQ, a misspelled --scope id, refused; and since pass NX
+// a file's lines counted as an editor numbers them, in this tool's own file (treeFacts) and in two made files new since a made base, one
+// ending in a newline and one not (fileChanges, in the system's temp folder, removed after).
 export async function selfTest() {
   const facts = await treeFacts(HERE); const cases = [];
   const m = [...facts.modules].find(([id, x]) => ['PK3', 'PK4'].includes(facts.grades.get(x.course)) && x.gens.length >= 2 && [...facts.art.values()].some((a) => a.prefix === 'S' && a.owner === id));
@@ -278,6 +288,29 @@ export async function selfTest() {
   const course = facts.modules.get(mid).course; const ids = new Set(facts.courses.keys());
   let refused = ''; try { await changedSince(HERE, { scope: [course, `${course}x`] }); } catch (e) { refused = e.message; }
   cases.push({ name: 'a --scope id no course has is named and refused before either copy is read, and a real one is kept', ok: unknownScope([course, `${course}x`], ids).join() === `${course}x` && unknownScope([course], ids).length === 0 && refused.includes(`--scope names ${course}x,`), detail: refused || 'not refused' });
+  // Since pass NX, treeFacts' count of a file's lines, read on this tool's own file, which ends in a newline, so its last line is the one
+  // its last newline ends: in --list a report that read it from line 1 to that line, given by name alone, misses nothing, and a read one
+  // line past its end is named as past it (split('\n') had counted one line more, after the last newline).
+  { const own = 'tools/coverage-receipt.mjs'; const text = readFileSync(join(HERE, own), 'utf8'); const last = (text.match(/\n/g) || []).length;
+    const whole = listReceipt({ given: [parseItem(`file ${own}`)], opened: openedIn(report([`file ${own} 1-${last}`])), facts });
+    const past = nothingNamed(parseItem(`file ${own} 1-${last + 1}`), facts);
+    cases.push({ name: "a file's lines are counted as an editor numbers them: in --list a report that read this tool's own file to its last line misses nothing, and a read one line past its end is named (pass NX)",
+      ok: text.endsWith('\n') && last > 100 && facts.linesOf(own) === last && whole.missed.length === 0 && whole.nothing.length === 0 && String(past).includes(`lines past its end (${last} lines): 1-${last + 1}`),
+      detail: JSON.stringify({ last, counted: facts.linesOf(own), whole, past }) }); }
+  // And fileChanges' count of a file new since --base, on two made copies in the system's temp folder, the base with neither file and the
+  // copy with two of three lines each, one ending in a newline and one not: each is changed on lines 1 to 3 and on none past them, a report
+  // that read both to line 3 leaves no line unread, and one that read the first only to line 2 is told it missed line 3.
+  { const root = mkdtempSync(join(tmpdir(), 'receipt-selftest-')); let r = null;
+    try { const base = join(root, 'base'); const copy = join(root, 'copy'); mkdirSync(base); mkdirSync(copy);
+      writeFileSync(join(copy, 'ends.txt'), 'one\ntwo\nthree\n'); writeFileSync(join(copy, 'open.txt'), 'one\ntwo\nthree');
+      const ch = fileChanges(base, copy, ['ends.txt', 'open.txt']); const range = (f) => JSON.stringify((ch.find((c) => c.file === f && c.how === 'added') || {}).ranges);
+      const all = receipt({ keyed: [], files: ch, opened: openedIn(report(['file ends.txt 1-3', 'file open.txt 1-3'])), facts });
+      const short = receipt({ keyed: [], files: ch, opened: openedIn(report(['file ends.txt 1-2', 'file open.txt 1-3'])), facts });
+      r = { ends: range('ends.txt'), open: range('open.txt'), all: all.lines, short: short.lines };
+    } finally { rmSync(root, { recursive: true, force: true }); }
+    cases.push({ name: 'a file new since --base is changed on each line it has and on none past its end, ending in a newline or not: a report that read both made files to line 3 leaves no line unread, and one that read the first to line 2 misses line 3 (pass NX)',
+      ok: !!r && r.ends === '[[1,3]]' && r.open === '[[1,3]]' && r.all.length === 0 && r.short.length === 1 && r.short[0].file === 'ends.txt' && say(r.short[0].left) === '3',
+      detail: JSON.stringify(r) }); }
   return cases;
 }
 

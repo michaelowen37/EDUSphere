@@ -14,7 +14,7 @@ Its files are these.
 - `tools/planted/set-r1.json`, the set as round one of pass NQ read it (its copies were built at seed 1 before round one's fixes), with round one's fixed catch words, for scoring round one's reports only. Never build a copy from it.
 - `tools/planted/REAL-FINDINGS.md`, the real defects of today's content that scored reads found, each with its item beside the id of the entry that uses the item, which is why it lives here and in no copied record (EARMARKS A154 gives their counts and points to it).
 
-At pass NQ's end the set holds 50 entries for four briefs: the lesson brief (8 plants, 3 near misses, 3 controls), the story brief with the picture brief (9, 2, 3), the Wonder brief (6, 2, 3) and the code brief (7, 1, 3); N04 and N08 are retired. Plants are weighted to the worst harms and to the kinds only judgment finds. Every plant passes every test, since a plant a test catches measures the test, not the reader.
+At pass NQ's end the set held 50 entries. Since pass NX it holds 60 entries for four briefs, 38 plants, 18 of them at harm 3: the lesson brief (16 plants, 10 of them at harm 3, 5 near misses and 3 controls; pass NX added P31 to P38, five of them at harm 3, and N11 and N12), the story brief with the picture brief (9 plants, 3 at harm 3, 2 near misses, 3 controls), the Wonder brief (6 plants, 3 at harm 3, 2 near misses, 3 controls) and the code brief (7 plants, 2 at harm 3, 1 near miss, 3 controls); N04 and N08 are retired. Plants are weighted to the worst harms and to the kinds only judgment finds. Every plant passes every test, since a plant a test catches measures the test, not the reader.
 
 ## Why it is kept out of every file a reader loads
 

@@ -32,12 +32,16 @@
 // the share it read at and why, so later passes read the reason instead of judging the mark again. Its row prints "by design" in place
 // of the mark and is counted apart; it is marked again as soon as any group shows one of the bank's right answers as a wrong choice, a
 // group read leans past the share by the tool's own margin, or, where the entry names the choice it was judged on, a group's best same
-// choice is another; and an entry whose row is under its limit in every group is named stale. Only "always the same choice" can be
+// choice is another; and an entry whose row is under its limit in every group is named stale. Since pass NX (EARMARKS A180) each of
+// these compares choices without their # tags, the marks a bank of two alike pictures puts on them (icon:star#0 is icon:star), and a
+// share of 1 is taken, for a bank whose one answer is right on every question. Only "always the same choice" can be
 // judged so, by the rule an entry stands on: no right answer ever a wrong choice, at the seeds and rounds read (so a yes or no bank, each
 // answer the other's wrong choice, is never held). That rule is a tripwire for a change after a reader's
 // judgment, never the judgment itself: a two-choice bank of k rows, each with its own right answer, reads 0.5 + 0.5/k on this row, over
-// its limit for k up to 8, so many banks meet it (58 of the 135 pre-K banks that leaned on this row in pass NW, EARMARKS A180), and
-// only a reader can say the habit is the lesson.
+// its limit for k up to 8, so many banks meet it (58 of the 135 p3- and p4- banks that leaned on this row in pass NW; since pass NX,
+// with the tags read as one, 54 of the 131 pre-K banks over it at seeds 1 to 2,000 alone, and three of four grade 3 Philosophy banks
+// whose ids start p3-; EARMARKS A180), and only a reader can say the habit is the lesson: pass NX's reader judged 42 of them by design
+// and nine to grow, their marks waiting for a lesson pass.
 // A group of fewer than 30 questions is not read ("-"). A heard-only-the-question read can fall below chance (0 for a group where each prompt
 // is asked once and answered the same way, since the question's own answer is left out of the table); only a read above chance is a habit.
 //
@@ -59,6 +63,10 @@
 // read through a module id with a table of its own, its problems first and a bank with nothing to tap counted; and, since round two's
 // read, each condition read in every group, one case for each tripping it alone, an entry naming its choice beside a group under 30
 // questions held, an entry of the first button's habit holding nothing on a leaning same choice, and a best that is no choice named.
+// Since pass NX: the banks readers judged by design, each with its entry and no other, each read by design at seeds 1 to 2,000 alone,
+// and a sample of six in rounds at the tool's defaults (a whole read of the table in rounds takes many minutes, past step 3f's limit);
+// made banks whose # twins hide a slip from whole strings, marked again, with near misses held; a best compared without its tag, in a
+// read and in the table's own check, and a best given as a number still marking the row; and a share of 1 taken, one just over named.
 // -----------------------------------------------------------------------------------------------------------------
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -72,6 +80,11 @@ const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const isTap = (q) => q && Array.isArray(q.choices) && q.choices.length >= 2 && q.type !== 'order' && !q.pick && (typeof q.answer === 'string' || typeof q.answer === 'number');
 const isOrder = (q) => q && Array.isArray(q.choices) && q.pick && q.type === 'order';
 const same = (a, b) => String(a) === String(b);
+// A choice read without its # tag (pass NX, EARMARKS A180, its reader's finding). A bank that shows two alike pictures tags them, as in
+// icon:star#0 and icon:star#1, so the screen can tell the two buttons apart, but a child sees one picture twice; so wherever the by-design
+// rule compares choices (slipsOf, a group's best against the choice an entry names, and checkByDesign's best), icon:star#0 is icon:star.
+// Every # in the app's choices is such a tag, at a choice's end (eighteen banks deal them in pass NX).
+export const withoutTag = (c) => String(c).replace(/#\d+$/, '');
 
 // The margin over chance that marks a habit, in points, by chance level (see the header for where each number stands in the rules test).
 export function marginFor(chance, n) {
@@ -125,32 +138,90 @@ export function readOrders(qs) {
 // 1,500 rounds of each kind, its worst group) and why, and, where its reason names one choice, that choice (best), held as every read
 // group's best. A fourth bank pass NR named, p4-plan-what, reads under its limit (34.6 percent at most, in pass NW), so it has no entry;
 // an entry for a bank that no longer leans is named stale when the bank is read.
+// Pass NX (EARMARKS A180) adds the 42 its reader judged by design among the 55 p3- and p4- banks pass NW found leaning on this row with
+// no right answer ever a wrong choice (nx/reports/a180-fable.md in the pass's scratch folder), each share measured again at the tool's
+// defaults and each held by design there, its reason in the reader's words, cut to one sentence and tightened only where it said more
+// than the code does. The reader's other thirteen have none: ten it judged to grow (p3-ab-by-look, p3-learn-different, p3-learn-word-do,
+// p3-talk-say-back, p3-talk-why, p4-fit-enough, p3-sent-topic, p4-words-new, p4-wyn-next and p4-wyn-last), for a lesson pass, and three
+// that are grade 3 Philosophy banks, not pre-K (p3-wonder, p3-listen and p3-fair), for that course's review. Thirty-four of the 42 lean
+// by arithmetic alone, as their reasons say: k rows, each with its own right answer, read 0.5 + 0.5/k with two choices and 1/3 + 2/(3k)
+// with three.
 export const BY_DESIGN = {
   'p3-talk-listen': { habit: 'sameChoice', share: 0.752, best: 'Listen', why: 'Listen, what the lesson teaches a child to do while a friend talks, answers two of its four questions and is never a wrong choice' },
   'p4-play-plan': { habit: 'sameChoice', share: 0.605, why: 'each of its five questions offers one of the lesson\'s ways to plan and play together beside one that is not, and no right answer is ever a wrong choice' },
   'p4-plan-together': { habit: 'sameChoice', share: 0.681, why: 'each of its three questions offers one of the lesson\'s kind things to do or say together beside one that is not, and no right answer is ever a wrong choice' },
+  'p3-tap-one': { habit: 'sameChoice', share: 1, best: 'dots:1', why: 'one dot (dots:1) is the lesson\'s "one", shown beside a group of two or three on its single question, and the lesson\'s other banks (p3-tap-group, p3-more) show one dot as a wrong choice, so the habit fails in the round' },
+  'p3-ab-look-alike': { habit: 'sameChoice', share: 0.753, why: 'the letter asked for by name is the lesson\'s A or B beside a look-alike (H, V, P or D), told apart by the lesson\'s own words (its lines on H and P); two rows, so 75 by arithmetic, and Tap the letter A beside B is p3-tap-ab\'s job' },
+  'p4-real-middle': { habit: 'sameChoice', share: 0.478, why: 'the lesson teaches three fixed groups (tiny, middle-sized, huge) and each question shows one of each, so a middle-sized animal is right whenever shown; five answers, 46.7 by arithmetic, and p4-real-biggest shows the same animals as wrong choices' },
+  'p4-steps-tips': { habit: 'sameChoice', share: 0.681, why: 'each of its three questions offers one of the lesson\'s three tips (listen to all three steps, say them to yourself, ask to hear it again) beside its opposite; three rows, 66.7 by arithmetic' },
+  'p3-people-group': { habit: 'sameChoice', share: 0.483, why: 'one person beside two things (book, cake, bed), the lesson\'s own people and its own named things, so tapping the person is knowing; five answers, 46.7 by arithmetic, and the lesson\'s other banks show each person as a wrong choice' },
+  'p3-need-enough': { habit: 'sameChoice', share: 0.607, why: 'each of five tellings that say just what is wrong stands beside Uh oh! or I cannot find it., the lesson\'s own two that do not, one of them longer than three of the answers; five answers, 60 by arithmetic' },
+  'p3-need-who': { habit: 'sameChoice', share: 0.564, why: 'a grown-up the child knows (grandma, grandpa, teacher) beside the baby and the teddy bear, the lesson\'s own line on who can help and who cannot; three answers, 55.6 by arithmetic' },
+  'p3-vfit-kind': { habit: 'sameChoice', share: 0.738, why: 'a kind voice, or the kind words Are you okay?, beside the big outside voice or Over here!, for asking a turn or for a sad friend, as the lesson\'s lines say; the big outside voice is right in p3-vfit-voice, so avoiding it fails in the round' },
+  'p3-vfit-clear': { habit: 'sameChoice', share: 0.673, why: 'each of its three questions offers one of the lesson\'s ways to be understood (turn toward your friend, slowly and clearly) beside its opposite; three rows, 66.7 by arithmetic' },
+  'p3-sent-more': { habit: 'sameChoice', share: 0.581, why: 'each row sets the sentence with its telling word beside the same sentence without it, the lesson\'s own pair (I see a dog, I see a big dog); eight rows, 56.3 by arithmetic, and the answer is the longer choice on every seed, which is what one more word is' },
+  'p3-sent-word': { habit: 'sameChoice', share: 0.674, why: 'the word that tells more (big, little, red, yellow, brown) beside the name of the thing itself, which the question has just said, so the echo pulls toward the wrong one; five answers on seven rows' },
+  'p3-more-one': { habit: 'sameChoice', share: 0.582, why: 'each row sets one cat beside one cats, the form we say and the form the lesson says we do not, for the thing drawn; seven rows, 57.1 by arithmetic' },
+  'p4-sent-whole': { habit: 'sameChoice', share: 0.569, why: 'each row sets a whole sentence beside a part the lesson shows is not one, neither told by length (the longer is right on 51 percent); eight rows, 56.3 by arithmetic' },
+  'p4-form-past': { habit: 'sameChoice', share: 0.575, why: 'each row sets the form we say for yesterday beside the form the lesson says we do not (played and play, ran and runned, went and goed), the same sentence; eight rows, 56.3 by arithmetic' },
+  'p4-form-pronoun': { habit: 'sameChoice', share: 0.569, why: 'each row sets she, he, they or I beside her, him, them or me in the same sentence, the lesson\'s own pairs; eight rows, 56.3 by arithmetic' },
+  'p4-form-agree': { habit: 'sameChoice', share: 0.635, why: 'each row sets the verb that fits one or two beside the one that does not for the picture drawn, and each form (runs and run, rolls and roll) is right on one row and wrong on another, so no form can be learned; four rows, 62.5 by arithmetic' },
+  'p4-form-when': { habit: 'sameChoice', share: 0.57, why: 'each row sets what already happened beside the same sentence said for today, the lesson\'s own pairs; eight rows, 56.3 by arithmetic' },
+  'p4-they-be': { habit: 'sameChoice', share: 0.607, why: 'each row sets am, is or are that fits beside the one the lesson says we do not say, with is and are each right and wrong across rows; five rows, 60 by arithmetic' },
+  'p3-words-more': { habit: 'sameChoice', share: 0.593, why: 'each row sets a sentence beside the same one with a word or two fewer, which is all the lesson claims (when we add a word, a sentence has more words); six rows, 58.3 by arithmetic, and the longer to hear is right on every seed, as the lesson\'s claim makes it (pre-K 4 teaches the trap)' },
+  'p3-part-first': { habit: 'sameChoice', share: 0.635, why: 'each row sets the word\'s first part beside its own end (duh and og), the lesson\'s own two parts; four rows, 62.5 by arithmetic, and og is the wrong choice on three questions in four, since frog, dog and log share it' },
+  'p4-vfs-part': { habit: 'sameChoice', share: 0.755, why: 'each row sets the one very first sound beside the word\'s own two-sound first part (sss and sss-puh), the very contrast the lesson teaches; two answers, 75 by arithmetic, and p4-vfs-sound shows sss and fff as wrong choices' },
+  'p3-draw-tool': { habit: 'sameChoice', share: 0.565, why: 'a crayon, a pencil or a marker beside two of a sock, a ball and a spoon, the lesson\'s own tools and its own three that are not; three answers, 55.6 by arithmetic' },
+  'p4-tell-tool': { habit: 'sameChoice', share: 0.575, why: 'a crayon, a pencil or a marker beside two of a sock, a cup and a hat, the lesson\'s own tools and its own three that are not; three answers, 55.6 by arithmetic' },
+  'p4-mark-start': { habit: 'sameChoice', share: 0.569, why: 'each row sets a sentence with its big first letter beside the same one with a small letter, the lesson\'s own pair; nine rows, 55.6 by arithmetic, under the limit, so it is over only by its draw' },
+  'p3-print-read': { habit: 'sameChoice', share: 0.6, why: 'the words beside a picture of another thing, and words are what we read, the lesson\'s whole point; six prints, 58.3 by arithmetic, and the lesson\'s banks that ask for the picture show each print as a wrong choice' },
+  'p3-space-which': { habit: 'sameChoice', share: 0.635, why: 'each row sets the writing with its spaces beside the same words bumped together, the lesson\'s own pair; four rows, 62.5 by arithmetic' },
+  'p3-space-why': { habit: 'sameChoice', share: 0.765, why: 'either of the lesson\'s two reasons for a space (each word stands on its own, we can see where each word starts) beside a reason that says the opposite; two answers, 75 by arithmetic' },
+  'p4-space-which': { habit: 'sameChoice', share: 0.455, why: 'the writing with a space between every word beside the same words with one space or every space missing, the lesson\'s own game; six rows, 44.4 by arithmetic' },
+  'p3-look-real': { habit: 'sameChoice', share: 0.681, why: 'a real letter (M, S or B) beside a scribble or marks, the lesson\'s own contrast; three answers, 66.7 by arithmetic, and the lesson\'s other three banks show each letter as a wrong choice' },
+  'p4-wyn-first': { habit: 'sameChoice', share: 0.476, why: 'the big first letter of the name shown, kept since pass NI (the lesson brief\'s item 28: the big first letter is what the lesson and IV.C.1 teach, and the other banks cannot be passed by it); five names, 46.7 by arithmetic' },
+  'p4-wyn-right': { habit: 'sameChoice', share: 0.492, why: 'the name as the grown-up wrote it, which the picture shows, beside two tries with its letters mixed up, so matching it is the lesson\'s act; five names, 46.7 by arithmetic' },
+  'p3-help-kind': { habit: 'sameChoice', share: 0.75, best: 'Are you okay?', why: 'each of its four questions offers one of the lesson\'s kind things to do or say beside an unkind one, and Are you okay?, the lesson\'s words for a sad friend and a sad grown-up, answers two' },
+  'p3-help-grownup': { habit: 'sameChoice', share: 1, best: 'A grown-up', why: 'A grown-up, the lesson\'s one answer for every hard moment, kept by name since pass MM (SAME_KEPT in tests/logic.test.mjs, EARMARKS A31)' },
+  'p3-help-ball': { habit: 'sameChoice', share: 0.755, best: 'Get a grown-up', why: 'each of its four questions offers the lesson\'s act for a fight over a ball beside grabbing, pushing, Mine! or taking the ball away, and Get a grown-up, the lesson\'s own step, answers two' },
+  'p3-join-how': { habit: 'sameChoice', share: 0.604, why: 'each of its five questions offers one of the lesson\'s ways to join a game beside one that is not kind or not for the game; five rows, 60 by arithmetic' },
+  'p3-join-not-now': { habit: 'sameChoice', share: 0.677, why: 'each of its three questions offers one of the lesson\'s three things to do after not now (play something else, ask again later, find another friend) beside grabbing, knocking down or pushing; three rows, 66.7 by arithmetic' },
+  'p4-play-next': { habit: 'sameChoice', share: 0.673, why: 'each of its three questions offers the lesson\'s next friendly step beside a grab or go away!; three rows, 66.7 by arithmetic; the order itself is never asked, and no fair wrong choice could ask it (telling your name is never wrong)' },
+  'p4-kind-words': { habit: 'sameChoice', share: 0.76, best: 'Are you okay?', why: 'each of its four questions offers one of the lesson\'s kind things to say beside an unkind one, and Are you okay? answers two' },
+  'p4-help-friend': { habit: 'sameChoice', share: 0.675, why: 'each of its three questions offers one of the lesson\'s kind things to do beside laughing or walking away from a friend who needs help; three rows, 66.7 by arithmetic' },
+  'p4-fix-problem': { habit: 'sameChoice', share: 0.71, best: 'Take turns choosing', why: 'each of its five questions offers one of the lesson\'s steps to fix a problem (say what it is, a fair way, a grown-up) beside one that is not, and Take turns choosing answers two' },
+  'p4-play-start': { habit: 'sameChoice', share: 0.579, why: 'each of its seven questions offers one of the lesson\'s friendly ways to start beside a grab or a bossy line; seven rows, 57.1 by arithmetic' },
+  'p4-play-body': { habit: 'sameChoice', share: 0.607, why: 'each of its five questions offers one of the lesson\'s ways a face and a body talk (listen, wave, a smile, take turns, nod) beside its opposite; five rows, 60 by arithmetic' },
 };
 
-// The table's own check (pass NW): every entry names a bank the logic has, the one habit the tool can judge by design, a share between
-// 0 and 1, and a reason. Returns each problem in words, and an empty list when there is none.
+// The table's own check (pass NW): every entry names a bank the logic has, the one habit the tool can judge by design, a share over 0
+// and at most 1, and a reason. Returns each problem in words, and an empty list when there is none. Since pass NX a share of 1 is taken
+// (Counting to three's p3-tap-one and Helping a friend's p3-help-grownup read 100.0 in every group, the habit right on every question):
+// a read is never past 1, so at 1 the ceiling, the share plus the margin, holds every group, and such an entry is marked again only by a
+// right answer shown as a wrong choice, a group whose best is not the choice it names, or, stale, a row under every limit.
 export function checkByDesign(L, table = BY_DESIGN) {
   const problems = [];
   for (const [bank, e] of Object.entries(table)) {
     if (!Object.hasOwn(L.GENERATORS, bank)) problems.push(`BY_DESIGN names ${bank}, which is no bank`);
     if (!e || e.habit !== 'sameChoice') problems.push(`BY_DESIGN's ${bank} names the habit ${e && e.habit}, and only sameChoice can be judged by design`);
-    if (!e || !(e.share > 0 && e.share < 1)) problems.push(`BY_DESIGN's ${bank} gives the share ${e && e.share}, not one between 0 and 1`);
+    if (!e || !(e.share > 0 && e.share <= 1)) problems.push(`BY_DESIGN's ${bank} gives the share ${e && e.share}, not one over 0 and at most 1`);
     if (!e || typeof e.why !== 'string' || !e.why.trim()) problems.push(`BY_DESIGN's ${bank} gives no reason`);
-    // A best it names is a choice the bank offers in its first 40 seeds; one that is not would mark the row again on every read.
-    if (e && e.best !== undefined && Object.hasOwn(L.GENERATORS, bank) && !(typeof e.best === 'string' && Array.from({ length: 40 }, (_, i) => L.generateQuestion(bank, i + 1)).some((q) => q && Array.isArray(q.choices) && q.choices.some((c) => String(c) === e.best)))) problems.push(`BY_DESIGN's ${bank} names the best ${e.best}, which is no choice of the bank at seeds 1 to 40`);
+    // A best it names is a choice the bank offers in its first 40 seeds, each read without its # tag (pass NX); one that is not would
+    // mark the row again on every read.
+    if (e && e.best !== undefined && Object.hasOwn(L.GENERATORS, bank) && !(typeof e.best === 'string' && Array.from({ length: 40 }, (_, i) => L.generateQuestion(bank, i + 1)).some((q) => q && Array.isArray(q.choices) && q.choices.some((c) => withoutTag(c) === withoutTag(e.best))))) problems.push(`BY_DESIGN's ${bank} names the best ${e.best}, which is no choice of the bank at seeds 1 to 40`);
   }
   return problems;
 }
 
 // The bank's right answers shown as wrong choices, group by group (pass NW, round one's read): in each group, read or not, the questions
 // that show as a wrong choice a value that is the answer to some question of the bank, in any group. A by-design row stands on none.
+// Since pass NX each choice and each answer is read without its # tag (withoutTag), so a picture that is one question's answer and
+// another's alike pair is a slip (Learning words' p3-learn-different met the rule only by its tags: its stars tagged #0 and #1 read
+// as other choices than the star that was the answer). Only the question's own answer button, by its whole string, is not counted, so a
+// twin of a question's own answer shown as a wrong button would be counted too (no bank deals one in pass NX).
 export function slipsOf(groups) {
-  const answers = new Set(groups.flatMap((g) => g.qs.filter(isTap).map((q) => String(q.answer))));
-  return groups.map((g) => ({ name: g.name, n: g.qs.filter(isTap).filter((q) => q.choices.some((c) => answers.has(String(c)) && !same(c, q.answer))).length }));
+  const answers = new Set(groups.flatMap((g) => g.qs.filter(isTap).map((q) => withoutTag(q.answer))));
+  return groups.map((g) => ({ name: g.name, n: g.qs.filter(isTap).filter((q) => q.choices.some((c) => answers.has(withoutTag(c)) && !same(c, q.answer))).length }));
 }
 
 const HABITS = [['first', 'always the first button'], ['sameChoice', 'always the same choice'], ['oneKind', 'always a picture of one kind'], ['storyOnly', 'heard only the story'], ['questionOnly', 'heard only the question'], ['pictureOnly', 'saw only the picture']];
@@ -192,7 +263,9 @@ export function readBank(bank, groups, label = bank, design = null) {
       const again = !judged ? [] : [
         ...slips.filter((sl) => !(sl.n === 0)).map((sl) => `${sl.name} shows a right answer as a wrong choice on ${sl.n} questions`),
         ...reads.map((r, i) => { if (cells[i] === undefined) return ''; const cap = design.share + marginFor(design.share, r.n); return cells[i] <= cap ? '' : `${r.name} reads ${pc(cells[i])}, past ${shareOf(cap)}`; }).filter(Boolean),
-        ...(design.best === undefined ? [] : reads.filter((r, i) => cells[i] !== undefined && !(r[key].name === design.best)).map((r) => `${r.name}'s best choice is ${r[key].name}, where the entry was judged on ${design.best}`)),
+        // The named choice is compared without its # tag on either side (pass NX), and only a best written as words can match, so a
+        // broken best still marks the row again.
+        ...(design.best === undefined ? [] : reads.filter((r, i) => cells[i] !== undefined && !(typeof design.best === 'string' && withoutTag(r[key].name) === withoutTag(design.best))).map((r) => `${r.name}'s best choice is ${r[key].name}, where the entry was judged on ${design.best}`)),
       ];
       const held = judged && over.some(Boolean) && !again.length;
       const mark = over.some(Boolean) && !held ? ' <<' : held ? ' by design' : ''; if (mark === ' <<') marks++; if (held) byDesign++;
@@ -313,14 +386,26 @@ async function selfTest() {
   const cli = spawnSync(process.execPath, [fileURLToPath(import.meta.url), 'what-happens-next-typo', '--seeds', '60'], { encoding: 'utf8' }); const good = spawnSync(process.execPath, [fileURLToPath(import.meta.url), 'p3-next-check', '--seeds', '60'], { encoding: 'utf8' });
   ok('an unknown id is named and the command exits 2; a known bank exits 0', mod.unknown.length === 1 && cli.status === 2 && /unknown bank or module id: what-happens-next-typo/.test(cli.stdout) && good.status === 0, { status: cli.status, out: cli.stdout, good: good.status });
   // 7. The by-design table (pass NW, EARMARKS A157): every entry a bank the logic has, with the habit, share and reason the tool needs; a
-  // planted table naming a bank that is not one, a habit the tool cannot judge, a share of 1 and a blank reason names each problem.
-  const probs = checkByDesign(L); const bad = checkByDesign(L, { 'no-such-bank': { habit: 'sameChoice', share: 0.6, why: 'made' }, 'p3-talk-listen': { habit: 'storyOnly', share: 1, why: ' ' }, 'p4-play-plan': { habit: 'sameChoice', share: 0, why: 5 }, 'p4-plan-together': { habit: 'sameChoice', share: 0.68, best: 'Nod', why: 'made' } });
-  ok(`the by-design table names ${Object.keys(BY_DESIGN).length} banks the logic has, each with the habit, share and reason the tool needs; a planted bad table is named for each of its seven problems`, probs.length === 0 && Object.keys(BY_DESIGN).length >= 1 && bad.length === 7 && bad.some((p) => /p4-plan-together names the best Nod, which is no choice of the bank/.test(p)) && bad.some((p) => /no-such-bank, which is no bank/.test(p)) && bad.some((p) => /habit storyOnly/.test(p)) && bad.some((p) => /p3-talk-listen gives the share 1,/.test(p)) && bad.some((p) => /p3-talk-listen gives no reason/.test(p)) && bad.some((p) => /p4-play-plan gives the share 0,/.test(p)) && bad.some((p) => /p4-play-plan gives no reason/.test(p)), { probs, bad });
-  // 8. The banks it names read by design at the tool's defaults, alone and in rounds: no mark, each row counted by design, none stale.
+  // planted table naming a bank that is not one, a habit the tool cannot judge, a share just over 1 (since pass NX, when a share of 1
+  // is taken) and a blank reason names each problem.
+  const probs = checkByDesign(L); const bad = checkByDesign(L, { 'no-such-bank': { habit: 'sameChoice', share: 0.6, why: 'made' }, 'p3-talk-listen': { habit: 'storyOnly', share: 1.001, why: ' ' }, 'p4-play-plan': { habit: 'sameChoice', share: 0, why: 5 }, 'p4-plan-together': { habit: 'sameChoice', share: 0.68, best: 'Nod', why: 'made' } });
+  ok(`the by-design table names ${Object.keys(BY_DESIGN).length} banks the logic has, each with the habit, share and reason the tool needs; a planted bad table is named for each of its seven problems`, probs.length === 0 && Object.keys(BY_DESIGN).length >= 1 && bad.length === 7 && bad.some((p) => /p4-plan-together names the best Nod, which is no choice of the bank/.test(p)) && bad.some((p) => /no-such-bank, which is no bank/.test(p)) && bad.some((p) => /habit storyOnly/.test(p)) && bad.some((p) => /p3-talk-listen gives the share 1\.001, not one over 0 and at most 1$/.test(p)) && bad.some((p) => /p3-talk-listen gives no reason/.test(p)) && bad.some((p) => /p4-play-plan gives the share 0, not one over 0 and at most 1$/.test(p)) && bad.some((p) => /p4-play-plan gives no reason/.test(p)), { probs, bad });
+  // 8. The banks it names read by design at the tool's defaults: since pass NX, every bank a reader judged by design has its entry and
+  // every entry is a bank a reader judged so (pass NW's three and pass NX's 42, from its reader's judgment of A180's 55; the ten it judged
+  // to grow and the three grade 3 Philosophy banks among those 55 have none), each reads by design at seeds 1 to 2,000 alone, none stale
+  // and none marked again, and a sample reads by design in rounds too, at 1,500 rounds of each kind: pass NW's three and Helping a
+  // friend's three, four of them naming their best and p3-help-grownup at 100.0 (Counting to three's rounds, about 8 seconds of the
+  // self-test on a busy machine, are left to the read alone, where p3-tap-one is held at 1 as well). A whole read of the 45 in rounds took
+  // 411 to 860 seconds in pass NX, on its shared two-CPU machine by the other agents' runs beside it, many times step 3f's limit of 60
+  // seconds, so it is a reader's run (node tools/blind-read.mjs <the table's banks> --rounds), not the self-test's.
   // Each bank's own block of lines, from its first line to the blank line after it, so one bank's row is never read in the next one's.
-  const named = await blindRead(L, Object.keys(BY_DESIGN), { rounds: true });
-  const blockOf = (b) => { const i = named.lines.findIndex((l) => l.startsWith(`bank ${b}:`)); const j = named.lines.indexOf('', i); return i < 0 ? [] : named.lines.slice(i, j < 0 ? undefined : j); };
-  ok(`the ${Object.keys(BY_DESIGN).length} banks BY_DESIGN names read by design at the tool's defaults, alone and in rounds (${named.lines[named.lines.length - 1]})`, named.marks === 0 && named.byDesign === Object.keys(BY_DESIGN).length && named.stale === 0 && Object.keys(BY_DESIGN).every((b) => blockOf(b).some((l) => /always the same choice.* by design/.test(l))) && /, \d+ by design \(BY_DESIGN\)$/.test(named.lines[named.lines.length - 1]), named.lines);
+  const blockIn = (r, b) => { const i = r.lines.findIndex((l) => l.startsWith(`bank ${b}:`)); const j = r.lines.indexOf('', i); return i < 0 ? [] : r.lines.slice(i, j < 0 ? undefined : j); };
+  const JUDGED = ['p3-talk-listen', 'p4-play-plan', 'p4-plan-together', 'p3-tap-one', 'p3-ab-look-alike', 'p4-real-middle', 'p4-steps-tips', 'p3-people-group', 'p3-need-enough', 'p3-need-who', 'p3-vfit-kind', 'p3-vfit-clear', 'p3-sent-more', 'p3-sent-word', 'p3-more-one', 'p4-sent-whole', 'p4-form-past', 'p4-form-pronoun', 'p4-form-agree', 'p4-form-when', 'p4-they-be', 'p3-words-more', 'p3-part-first', 'p4-vfs-part', 'p3-draw-tool', 'p4-tell-tool', 'p4-mark-start', 'p3-print-read', 'p3-space-which', 'p3-space-why', 'p4-space-which', 'p3-look-real', 'p4-wyn-first', 'p4-wyn-right', 'p3-help-kind', 'p3-help-grownup', 'p3-help-ball', 'p3-join-how', 'p3-join-not-now', 'p4-play-next', 'p4-kind-words', 'p4-help-friend', 'p4-fix-problem', 'p4-play-start', 'p4-play-body'];
+  const entered = Object.keys(BY_DESIGN); const alone = await blindRead(L, JUDGED);
+  ok(`the ${JUDGED.length} banks readers judged by design each have an entry, every entry is one of them, and each reads by design at seeds 1 to 2,000 alone, none stale and none marked again (${alone.lines[alone.lines.length - 1]})`, JUDGED.every((b) => entered.includes(b)) && entered.every((b) => JUDGED.includes(b)) && alone.banks === JUDGED.length && alone.byDesign === JUDGED.length && alone.stale === 0 && JUDGED.every((b) => blockIn(alone, b).some((l) => /always the same choice.* by design/.test(l))) && !alone.lines.some((l) => /and it is marked again:/.test(l)), alone.lines.filter((l) => /^bank |always the same choice|BY_DESIGN/.test(l)));
+  const SAMPLE = ['p3-talk-listen', 'p4-play-plan', 'p4-plan-together', 'p3-help-kind', 'p3-help-grownup', 'p3-help-ball'];
+  const named = await blindRead(L, SAMPLE, { rounds: true });
+  ok(`a sample of ${SAMPLE.length} entries reads by design at the tool's defaults in rounds as well, with no mark (${named.lines[named.lines.length - 1]})`, named.marks === 0 && named.byDesign === SAMPLE.length && named.stale === 0 && SAMPLE.every((b) => blockIn(named, b).some((l) => /always the same choice.* by design/.test(l))) && SAMPLE.every((b) => blockIn(named, b).some((l) => /^ {2}habit\s+alone\s+first\s+later\s+dose\s+review\s+worst$/.test(l))) && /, \d+ by design \(BY_DESIGN\)$/.test(named.lines[named.lines.length - 1]), named.lines);
   // 9. Made banks against made entries: a choice right whenever it is shown reads by design at its share, with no other row named by the
   // entry; past the share's margin it is marked again; shown once in ten as a wrong choice it is marked, though under the share; an entry
   // over a fair bank is stale; and a bank that leans on another row keeps that row's mark.
@@ -388,6 +473,42 @@ async function selfTest() {
   // entry's habit is read as well as the row's, so the same choice row stays marked.
   const caseE = readBank('made-e', [{ name: 'alone', qs: madeListen() }], 'made-e', { habit: 'first', share: 0.75, why: 'made' });
   ok('an entry of the first button\'s habit over a bank whose same choice leans holds nothing: the same choice row stays marked', caseE.marks === 1 && caseE.byDesign === 0 && caseE.lines.some((l) => /always the same choice\s+75\.0\*\s+75\.0 <</.test(l)), caseE.lines);
+  // 17. Pass NX (EARMARKS A180, its reader's finding on Learning words' p3-learn-different): the by-design rule reads each choice without
+  // its # tag, since two alike pictures tagged #0 and #1 are one picture to a child. Two made banks whose twin tags hide a slip from a
+  // reading by whole strings, which finds none in either: one shaped like p3-learn-different (two alike tagged #0 and #1 beside an
+  // untagged third, the answer, each picture the answer on some questions and the alike pair on others) and one shaped like the odd one
+  // out banks (the answer tagged #2 too). Each shows a right answer as a wrong choice on every question and is marked again under an
+  // entry, by that condition alone; their near misses, whose alike pairs are never an answer, are held. A twin of a question's own answer
+  // shown as a wrong button is a slip too, the answer's own button alone set aside, by its whole string.
+  const PICS = ['icon:star', 'icon:cup', 'icon:ball']; const NEVER = ['icon:sock', 'icon:hat']; const ORDERS = [[0, 1, 2], [2, 0, 1], [0, 2, 1]];
+  const madeTwins = (answers, pairs, tagged) => Array.from({ length: 2000 }, (_, i) => { const b = answers[i % answers.length]; const others = pairs.filter((p) => p !== b); const a = others[Math.floor(i / answers.length) % others.length];
+    const three = [`${a}#0`, `${a}#1`, tagged ? `${b}#2` : b]; return { type: 'choice', prompt: 'Tap the one that is different.', story: null, choices: ORDERS[Math.floor(i / 6) % 3].map((k) => three[k]), answer: three[2] }; });
+  const wholeSlips = (qs) => { const a = new Set(qs.map((q) => String(q.answer))); return qs.filter((q) => q.choices.some((c) => a.has(String(c)) && String(c) !== String(q.answer))).length; };
+  const twinPlain = madeTwins(PICS, PICS, false); const twinTagged = madeTwins(PICS, PICS, true); const nearPlain = madeTwins(PICS, NEVER, false); const nearTagged = madeTwins(PICS, NEVER, true);
+  const ownTwin = Array.from({ length: 40 }, (_, i) => ({ type: 'choice', prompt: 'Tap the star.', story: null, choices: i % 2 ? ['icon:star#0', 'icon:star#1'] : ['icon:star#1', 'icon:star#0'], answer: 'icon:star#0' }));
+  const twinRead = (qs, name) => readBank(name, [{ name: 'alone', qs }], name, entry(0.556)); const tP = twinRead(twinPlain, 'made-twins'); const tT = twinRead(twinTagged, 'made-twins-tagged'); const nP = twinRead(nearPlain, 'made-near'); const nT = twinRead(nearTagged, 'made-near-tagged');
+  const slipLine = /BY_DESIGN holds this row by design at 55\.6, and it is marked again: alone shows a right answer as a wrong choice on 2000 questions\)$/;
+  ok(`made banks whose # twins hide a slip (by whole strings none) show a right answer as a wrong choice on all 2,000 questions read without the tag, and are marked again under an entry (an untagged answer reading ${pc(readTaps(twinPlain).sameChoice.share)}, a tagged one ${pc(readTaps(twinTagged).sameChoice.share)}); their near misses, alike pairs never an answer, are held; and a twin of a question's own answer shown as a wrong button is a slip`, wholeSlips(twinPlain) === 0 && wholeSlips(twinTagged) === 0 && slipsOf([{ name: 'alone', qs: twinPlain }])[0].n === 2000 && slipsOf([{ name: 'alone', qs: twinTagged }])[0].n === 2000 && tP.marks === 1 && tP.byDesign === 0 && endsWith(tP, slipLine) && tT.marks === 1 && tT.byDesign === 0 && endsWith(tT, slipLine) && slipsOf([{ name: 'alone', qs: nearPlain }])[0].n === 0 && slipsOf([{ name: 'alone', qs: nearTagged }])[0].n === 0 && nP.byDesign === 1 && nP.marks === 0 && nT.byDesign === 1 && nT.marks === 0 && slipsOf([{ name: 'alone', qs: ownTwin }])[0].n === 40, { tP: tP.lines, tT: tT.lines, nP: nP.lines, nT: nT.lines });
+  // 18. Pass NX: the choice an entry names is compared without its # tag too, in a read and in the table's own check, so an odd one out
+  // bank's best, printed with its tag (item:circle-red#2), is the choice an entry names with or without it; another choice is still
+  // marked again, and a best given as a number, not words, still marks the row again and is never held, as before the tag was read.
+  const oddBest = madeTwins(['item:circle-red', 'item:circle-red', 'item:circle-blue'], ['item:square-green', 'item:triangle-yellow'], true);
+  const bestRead = (best) => readBank('made-odd', [{ name: 'alone', qs: oddBest }], 'made-odd', { ...entry(0.778), best });
+  const bPlain = bestRead('item:circle-red'); const bTagged = bestRead('item:circle-red#2'); const bOther = bestRead('item:circle-blue');
+  const fives = Array.from({ length: 2000 }, (_, i) => { const k = i % 10; return i % 2 ? { type: 'choice', prompt: `Question ${k}`, story: null, choices: i % 4 === 1 ? [`Right ${k}`, `Wrong ${k}`] : [`Wrong ${k}`, `Right ${k}`], answer: `Right ${k}` } : { type: 'choice', prompt: 'Tap five.', story: null, choices: i % 4 ? ['5', `Wrong ${k}`] : [`Wrong ${k}`, '5'], answer: '5' }; });
+  const fiveWords = readBank('made-five', [{ name: 'alone', qs: fives }], 'made-five', { ...entry(0.75), best: '5' }); const fiveNumber = readBank('made-five', [{ name: 'alone', qs: fives }], 'made-five', { ...entry(0.75), best: 5 });
+  const oddL = { GENERATORS: { 'made-odd': () => null }, generateQuestion: (id, seed) => oddBest[seed - 1] };
+  const oddOk = checkByDesign(oddL, { 'made-odd': { ...entry(0.778), best: 'item:circle-red' } }); const oddNo = checkByDesign(oddL, { 'made-odd': { ...entry(0.778), best: 'item:circle-green' } }); const oddTagged = checkByDesign(oddL, { 'made-odd': { ...entry(0.778), best: 'item:circle-red#2' } });   // a best named with its tag, as the tool prints it (round one's code read of pass NX)
+  ok(`an odd one out bank whose best prints with its tag (${readTaps(oddBest).sameChoice.name}, ${pc(readTaps(oddBest).sameChoice.share)}) is held under an entry naming it without the tag or with it, and marked again under one naming another choice; the table's own check takes the untagged best and names one that is no choice; a best given as the number 5 marks the row again where the words '5' hold it`, readTaps(oddBest).sameChoice.name === 'item:circle-red#2' && slipsOf([{ name: 'alone', qs: oddBest }])[0].n === 0 && bPlain.byDesign === 1 && bPlain.marks === 0 && bTagged.byDesign === 1 && bTagged.marks === 0 && bOther.marks === 1 && endsWith(bOther, /marked again: alone's best choice is item:circle-red#2, where the entry was judged on item:circle-blue\)$/) && oddOk.length === 0 && oddTagged.length === 0 && oddNo.length === 1 && /made-odd names the best item:circle-green, which is no choice of the bank at seeds 1 to 40$/.test(oddNo[0]) && fiveWords.byDesign === 1 && fiveWords.marks === 0 && fiveNumber.marks === 1 && fiveNumber.byDesign === 0 && endsWith(fiveNumber, /marked again: alone's best choice is 5, where the entry was judged on 5\)$/), { bPlain: bPlain.lines, bTagged: bTagged.lines, bOther: bOther.lines, oddOk, oddNo, fiveWords: fiveWords.lines, fiveNumber: fiveNumber.lines });
+  // 19. Pass NX: a share of 1 is taken and one just over it is named (p3-tap-one and p3-help-grownup read 100.0 in every group). At 1 the
+  // ceiling, the share plus the margin, is past any read, so a made bank reading 100.0 in each of its groups is held; the same bank with
+  // its one answer shown once as a wrong choice is marked again.
+  const atOne = checkByDesign(L, { 'p3-tap-one': { habit: 'sameChoice', share: 1, best: 'dots:1', why: 'made' } }); const overOne = checkByDesign(L, { 'p3-tap-one': { habit: 'sameChoice', share: 1.001, best: 'dots:1', why: 'made' } });
+  const oneDot = (slip) => Array.from({ length: 2000 }, (_, i) => { const other = `dots:${2 + Math.floor((i % 4) / 2)}`; if (slip && i === 1000) return { type: 'choice', prompt: 'Tap the group with two dots.', story: null, choices: ['dots:1', 'dots:2'], answer: 'dots:2' };
+    return { type: 'choice', prompt: 'Tap the group with just one dot.', story: null, choices: i % 2 ? ['dots:1', other] : [other, 'dots:1'], answer: 'dots:1' }; });
+  const oneHeld = readBank('made-one', [{ name: 'alone', qs: oneDot(false) }, { name: 'first', qs: oneDot(false).slice(0, 400) }], 'made-one', { ...entry(1), best: 'dots:1' });
+  const oneSlip = readBank('made-one-slip', [{ name: 'alone', qs: oneDot(true) }, { name: 'first', qs: oneDot(false).slice(0, 400) }], 'made-one-slip', { ...entry(1), best: 'dots:1' });
+  ok(`a share of 1 is taken and one just over it (1.001) is named; a made bank reading 100.0 in each group is held at 1, and marked again when its one answer is shown once as a wrong choice`, atOne.length === 0 && overOne.length === 1 && /p3-tap-one gives the share 1\.001, not one over 0 and at most 1$/.test(overOne[0]) && oneHeld.byDesign === 1 && oneHeld.marks === 0 && oneHeld.lines.some((l) => /always the same choice\s+100\.0\*\s+100\.0\*\s+100\.0 by design \(best: dots:1\)/.test(l)) && oneHeld.lines.some((l) => /read at 100\.0, judged on dots:1;/.test(l)) && oneSlip.marks === 1 && oneSlip.byDesign === 0 && endsWith(oneSlip, /and it is marked again: alone shows a right answer as a wrong choice on \d+ questions/), { atOne, overOne, oneHeld: oneHeld.lines, oneSlip: oneSlip.lines });
   console.log(`\n${passed} passed, ${failed} failed`);
   return failed ? 1 : 0;
 }

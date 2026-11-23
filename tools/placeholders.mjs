@@ -24,7 +24,9 @@ export function docTexts() {
 }
 
 // Every name in capitals the code has: src, tools and tests (scripts of every kind), build.sh, check.sh and sw.js. This tool and
-// the docs sync test are left out, since they hold KEPT and the planted placeholders.
+// the docs sync test are left out, since they hold KEPT and the planted placeholders; of the docs sync test only the names it
+// declares are read (const, let or var NAME =), since pass NX, whose Loosened bullet names CLAUDE_NAMES_FLOOR, a floor that test
+// alone holds, while its planted placeholders stand in strings and stay unread.
 export function codeNames() {
   const skip = new Set(['tools/placeholders.mjs', 'tests/docs-sync.test.mjs']);
   const code = /\.(mjs|js|jsx|py|sh)$/; const names = new Set(); const files = ['build.sh', 'check.sh', 'sw.js'];
@@ -34,6 +36,8 @@ export function codeNames() {
   for (const d of ['src/', 'tools/', 'tests/']) walk(d);
   for (const rel of files) { if (skip.has(rel)) continue; let text = ''; try { text = readFileSync(new URL(rel, ROOT), 'utf8'); } catch { continue; }
     for (const m of text.matchAll(NAME)) names.add(m[0]); }
+  let sync = ''; try { sync = readFileSync(new URL('tests/docs-sync.test.mjs', ROOT), 'utf8'); } catch { sync = ''; }
+  for (const m of sync.matchAll(/\b(?:const|let|var)\s+([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+)\s*=/g)) names.add(m[1]);
   return names;
 }
 

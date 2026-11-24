@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-11-17 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 14288 clips, 2,111,275 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 281 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-23 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 14302 clips, 2,112,605 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 281 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -21,7 +21,7 @@ Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to st
 
 | Build | What it holds | Clips | Characters |
 |---|---|---|---|
-| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9729 | 1,095,534 |
+| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 9743 | 1,096,864 |
 | 2 | Grade 2 and up | 4559 | 1,015,741 |
 
 ## Emphasis, sounds and descriptions (pass MW)
@@ -76,7 +76,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 9982 | 1,127,187 |
+| Pre-K to grade 2 | 9996 | 1,128,517 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,910 |
@@ -104,7 +104,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 744 |
 | story | 4927 |
-| lesson line | 7233 |
+| lesson line | 7247 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -550,7 +550,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3886-6: [urgently] Owen ran to get Miss Rae, their teacher. [breathless] We both pulled, and Tess fell, he said. Her hand hurts.
 - S3886-7: [kindly] Miss Rae saw it was a little sore. [gently] Can I hug you? she asked. Tess nodded. [warmly] When a friend is hurt, or you start to fight, get a grown-up, Miss Rae told them.
 - S3886-8: [cheerful] Then she helped them take turns with the ball, Tess first and Owen next. [happy] Soon both friends were smiling.
-- S3886-9: [slowly, warmly] Look at a friend's face, and ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.
+- S3886-9: [slowly, warmly] When a friend looks sad, ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.
 
 ### Arlo's turn (S3899, join-in-play)
 
@@ -683,7 +683,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3907-2: [eagerly] Come on, Talia, it's so fun! he called, and he pulled her by the hand toward the ladder.
 - S3907-3: [nervously] But Talia's feet stopped. Her eyebrows went up in the middle, and her mouth went wiggly.
 - S3907-4: [insistent] Rafi pulled harder. It's fun, I promise! he said. [quietly] But Talia shook her head and would not climb.
-- S3907-5: [calmly] Rafi's mom was watching from her bench, and she called to him, ask Talia how she feels. [thoughtful] So Rafi let go of Talia's hand and looked at her face.
+- S3907-5: [calmly] Rafi's mom was watching from her bench, and she called to him, ask Talia how she feels. [thoughtful] So Rafi let go of Talia's hand and turned toward her.
 - S3907-6: [kindly] How do you feel? he asked. [worried] I feel worried, said Talia, because it's so tall and I might fall.
 - S3907-7: [surprised] Rafi felt happy at the big slide, and Talia felt worried. [warmly] That's okay, said Rafi. We can feel different.
 - S3907-8: [cheerful] So they found a little slide and went down it, one after the other, laughing. [excited] Then Talia cheered while Rafi zoomed down the big one.

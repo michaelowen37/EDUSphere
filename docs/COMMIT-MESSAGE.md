@@ -1,18 +1,14 @@
-NW and NX: by-design marks (A157), and the week's tools pass
+NY: 12 pre-K lessons fixed, story picture moods, a shorter play clock
 
-- Pass NW (committed through NV): a micro pass at the end of the week, building EARMARKS A157, with one read of the code and the records on Fable.
-- A157: tools/blind-read.mjs names, in its BY_DESIGN table, the three older social banks whose "always the same choice" mark is the lesson itself (Talking with a friend's p3-talk-listen, and Play with a plan's p4-play-plan and p4-plan-together), each with the share it was judged at and why. Such a row prints by design and is counted apart, and is marked again once any of its right answers is shown as a wrong choice or it leans past its share by the tool's margin; an entry whose row no longer leans is named stale. p4-plan-what reads under its limit and has no entry.
-- The tool's self-test grows from 9 checks to 24, each part of the fix undone alone failing one.
-- Round one's read on Fable: the rule now reads every right answer of a bank, in every group, as the reason it prints says; each of the fix's 34 parts fails a check undone alone, round two's read adding five conditions planted in a group other than the first; the records call the rule a tripwire, never the judgment, and EARMARKS A180 holds the 55 other pre-K banks that share the shape.
-- check.sh: a restart of the machine killed the run in step 13e after every earlier step had passed; 13e and every later step then passed alone on the same copy, at Mikey's word of pass NQ.
-- Pass NX (committed through NV, so this commit carries pass NW too): the week's pass for the checks' own tools, at Mikey's answer to Q124 ("About 45").
-- New tools: tools/undo-alone.mjs (each part of a change undone alone, its test run) and tools/ripple-manifest.mjs (the ripple read's manifest, EARMARKS L28); check.sh resumable after a restart (--from); tools/usage-by-model.mjs reads the lead's table of the agents (L33).
-- Checks: tests/e2e/print-drawings.mjs (a print question's drawings read in the page, L35); tile-edges holds width; the docs sync test holds a Screen words bullet (L29); one picture judge for every kind (A159); 42 more banks named by design (A180).
-- Screens: What's new's cue over its notes' foot, More Info's close, the Quick Review card's exit clear of its title (A175 to A177), and two lone last words.
-- Records: the six whole reads applied (106 RULES-AUDIT lines corrected under Q85, Q117's first two moves); the planted set grown to 60 and round two scored, about sixty real findings recorded for the next lesson pass (A181); Q125 to Q130 asked.
-- check.sh: ALL CHECKS PASSED in one run of 203 minutes on November 23 (the rules test 3,320, docs sync 143, and four new steps: 3h undo-alone 33, 3i the ripple manifest 67, 3j the usage count 27, 13s the print drawings 3).
+- Pass NY (committed through NX): a lesson pass, the first of the week's two after the tools pass, building Mikey's answers Q125 to Q133 and the first twelve lessons of pass NX's measured lesson findings (EARMARKS A181), in two waves of engineers with three rounds of reads.
+- Q128 (c) and his "all rows should be updated throughout": every story picture row in docs/ART-REQUESTS.md now carries its subject's whole style cell from docs/LEONARDO-BRIEF.md and then a mood for its scene (4,733 rows), the story tools write no row without one, and the ledger test holds every row. Two mood writers on Fable gave the 4,445 older rows their moods; build 1's 1,078 were read again on Opus, which named the faces in their hard moments. At his answers to Q132 and Q133: the 64 hard moments in Math courses take Math's words without "cheerful and", and the 1,446 rows of the ten subjects with no words of their own take Reading's words for people (1,033) and Science's for things (413), by the spreadsheet's own person reading, which a reader on Opus checked row by row and the lead corrected (45 words and their catches; EARMARKS A197 keeps the 31 rows it left for the picture check). The course stories' 58 older rows took the template, 151 rows their subject's anchor (A45 done), and the spreadsheet's person reading no longer takes the mood word patient for a patient.
+- The play clock (his note under Q129): a page or a game plays 3, 2.5, 2 or 1.5 minutes by grade band (was 5, 4, 3 and 2.5), the rests unchanged. Q131: a page keeps the colors the child put on through its rest, every writer storing a page's colors within a size budget, thinned by their bends, and a game's none.
+- Twelve lessons: Can I play too?, Helping a friend, Being a good friend, Say it to fit, Feelings and what we do, How do friends feel?, Talk about it, Things that happen, Things we do, My voice tells more, Words for people and Two steps, their yes or no banks grown to answer Yes on about half their rows, their unfair rows and reasons rewritten, and round one's reads' findings fixed.
+- Screens: a lesson's Next and Go back open the new line at its top on a phone; a grid's faces are one width in the dark theme; a picture's or a game's clock bar shows its own time from its first frame.
+- Q125 (L43, waiting), Q126, Q127, Q129 and Q130 written into the records; Q132 and Q133 asked in the pass and answered at 3:08 PM; none open.
+- check.sh: ALL CHECKS PASSED, the second run, 207 minutes; the first failed two test checks that still named lesson content the pass had moved, both tests fixed with their reasons.
 
-Passes: NW, NX
+Passes: NY
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01NP3XVQFqoqVrJzNx4E9Gc9
+Claude-Session: https://claude.ai/code/session_01NP3XVNTbg5Qt6gHEVHLRBi

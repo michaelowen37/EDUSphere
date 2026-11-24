@@ -21,14 +21,17 @@ const PAIR_PICTURE_WAITS = ['two-steps:cup', 'two-steps:spoon', 'three-steps:cup
 const pairPictureWaited = new Set();
 // Sign-in animals older lessons show and never name (EARMARKS A159, pass NX; they wait on A185): until pass NX the check of a picture's name read icons and
 // art alone, so each of these passed. Each waits by module and name, as A49's drawn things do above, until its course's review names it,
-// shows what the line says, or calls it by the word the line uses. Most are a bear and a rabbit drawn as "your friend" or "two friends" in
-// the social lessons; the rest are animals a line calls animals or a story's friends, names by their sound alone (meow, quack, hoot), or
-// leaves unnamed in a lesson's closing line. Whether a friend, the animals or a sound names a drawn animal is Claude's reading, for
-// Mikey to settle (A185, Q130). The list may only shrink.
-const SIGN_IN_PICTURE_WAITS = ['please-and-thank-you:bear', 'please-and-thank-you:rabbit', 'join-in-play:bear', 'join-in-play:rabbit', 'talk-with-a-friend:rabbit', 'talk-with-a-friend:bear', 'talk-about-it:rabbit', 'talk-about-it:bear',
-  'animal-sounds:cat', 'animal-sounds:duck', 'two-ideas-more:cat', 'two-ideas-more:duck', 'listen-to-the-story:duck', 'listen-to-the-story:bear', 'listen-to-the-story:cat', 'act-it-out:frog', 'act-it-out:bear', 'act-it-out:duck',
-  'taking-turns:bear', 'taking-turns:rabbit', 'how-friends-feel:bear', 'how-friends-feel:rabbit', 'good-friend:bear', 'good-friend:rabbit', 'play-together:rabbit', 'play-together:bear', 'play-with-a-plan:rabbit', 'play-with-a-plan:bear',
-  'which-came-first:duck', 'which-came-first:cat', 'which-came-second:owl', 'which-came-second:bee', 'which-came-second:frog', 'three-steps:bear', 'three-steps:rabbit', 'opposites-and-same:cat', 'opposites-and-same:duck', 'opposites-and-same:bear',
+// shows what the line says, or calls it by the word the line uses. Since pass NY, at Mikey's answer to Q130, "Q130 - A" ("Yes for a friend
+// or the animals; a line that gives only a sound, or no word for the animal, names it in its course's review"), a line that calls the drawn
+// animal a friend or the animals names it (FRIEND_OR_ANIMALS, below), so the bear and the rabbit the social lessons draw as "your friend"
+// or "two friends", and the animals a line calls the animals or a story's friends, came off the list: pass NX's 92 animals on 48 lines of
+// 19 lessons, 43 names, were 30 animals on 16 lines of 10 lessons in pass NY, 23 names. What waits is an animal a line names by its
+// sound alone (meow, quack, hoot) or gives no word at all, most of them in a lesson's closing line, each for its course's review to name.
+// The list may only shrink: a name no line needs fails, and so does an unnamed animal no name holds (the waits check after the judge).
+const SIGN_IN_PICTURE_WAITS = ['please-and-thank-you:bear', 'please-and-thank-you:rabbit', 'join-in-play:bear', 'join-in-play:rabbit',
+  'two-ideas-more:cat', 'two-ideas-more:duck', 'listen-to-the-story:duck', 'listen-to-the-story:bear', 'listen-to-the-story:cat',
+  'play-with-a-plan:rabbit', 'play-with-a-plan:bear',
+  'which-came-first:duck', 'which-came-first:cat', 'which-came-second:owl', 'which-came-second:bee', 'which-came-second:frog', 'three-steps:bear', 'three-steps:rabbit',
   'story-questions:fox', 'story-questions:owl', 'story-questions:rabbit', 'tell-it-again:fox', 'tell-it-again:owl'];
 const signInPictureWaited = new Set();
 // What names each kind of picture a lesson line can show (EARMARKS A159, pass NX). Until pass NX the check of drawn pictures read icons
@@ -42,14 +45,19 @@ const signInPictureWaited = new Set();
 // belong", "find the one that fits them both", "count the corners with me"), so naming it there would give the answer away (the rule these
 // kinds had before pass NX); a drawn picture or a face is never a word to read, so those are read on instruction lines too (pass MD's faces
 // and pass MQ's icons). A name is matched inside the line's words, as pass MQ's icons were: what that leaves unseen is said after the loop.
+// Since pass NY a sign-in animal is also named by a line that calls it a friend or the animals (Mikey's answer to Q130; FRIEND_OR_ANIMALS).
 const SOLID_THING = { sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone', box: 'box', prism: 'prism' };   // box and prism (pass KY)
 // A look after a ~ is the same thing drawn another way: an icon's (pass MP: plate~food, the plate with its food groups; block~wood), a
 // sign-in animal's (cat~asleep, a cat asleep is a cat, pass MW) and an item's shape (pass NK: rectangle~thin, a rectangle long and thin).
 const nameBase = (n) => String(n).split('~')[0];
+// The words that name a drawn sign-in animal without saying its name (pass NY, Mikey's answer to Q130, "Q130 - A": "Yes for a friend or
+// the animals"): friend or friends, or animals, each as a whole word, so "friendly" alone or "animal" alone names none, and a sound alone
+// ("meow") never does. They name a sign-in animal only, never an icon, art or any other kind.
+const FRIEND_OR_ANIMALS = /\b(?:friends?|animals)\b/;
 const PICTURE_NAMES = {
   icon: { every: true, unnamed: (h, said) => (said.includes(nameBase(h.name)) ? [] : [`the ${h.name}`]) },
   art: { every: true, unnamed: (h, said) => (said.includes(nameBase(h.name)) ? [] : [`the ${h.name}`]) },
-  pic: { every: true, unnamed: (h, said) => (said.includes(nameBase(h.name)) ? [] : [`the ${h.name}`]) },
+  pic: { every: true, unnamed: (h, said) => (said.includes(nameBase(h.name)) || FRIEND_OR_ANIMALS.test(said) ? [] : [`the ${h.name}`]) },   // by its name, or since pass NY as a friend or the animals
   face: { every: true, unnamed: (h, said) => (new RegExp(`\\b${h.feeling}\\b`).test(said) ? [] : [`a ${h.feeling} face`]) },
   faces: { every: true, unnamed: (h, said) => (h.feelings || []).filter((f) => !new RegExp(`\\b${f}\\b`).test(said)).map((f) => `a ${f} face`) },
   shape: { every: false, unnamed: (h, said) => (said.includes(h.name) ? [] : [`the ${h.name}`]) },
@@ -274,14 +282,17 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
 // row would draw its pictures far smaller than the one beside it; the row holds two or three of a row's kinds, as a row alone does;
 // and every icon or sign-in picture in it is named by its line, as in a row alone. The checks above read a pair's two halves and
 // never looked inside a row there, so this one does, lesson lines and lesson examples alike, and four near misses prove it: an
-// unnamed icon in the row, a row in a side-by-side pair, a row of four and a face in a row.
+// unnamed icon in the row, a row in a side-by-side pair, a row of four and a face in a row. Since pass NY a sign-in animal in the row is
+// named as the judge names one in a row alone, by its name or as a friend or the animals (PICTURE_NAMES' pic, Mikey's answer to Q130),
+// so a lesson's example and its lines read one rule: a bear and a rabbit in a row under "two friends", named, and a bear in a row under
+// a line about cups, unnamed, are two more near misses.
 const nestedRowProblems = (line) => { const show = line.show; const said = String(line.say || '').toLowerCase(); const out = [];
   if (!show || show.kind !== 'pair') return out;
   for (const h of [show.a, show.b]) { if (!h || h.kind !== 'row') continue;
     if (!show.stack) out.push('a row in a side-by-side pair');
     const items = Array.isArray(h.items) ? h.items : [];
     if (!(items.length >= 2 && items.length <= 3 && items.every((x) => x && ['pic', 'shape', 'icon', 'item'].includes(x.kind)))) out.push('a row the screen cannot draw whole');   // a shape item since pass NK
-    for (const x of items) if (x && (x.kind === 'icon' || x.kind === 'pic') && !said.includes(String(x.name).split('~')[0])) out.push(`a ${x.name} it never names`); }
+    for (const x of items) if (x && (x.kind === 'icon' ? !said.includes(String(x.name).split('~')[0]) : x.kind === 'pic' && PICTURE_NAMES.pic.unnamed(x, said).length > 0)) out.push(`a ${x.name} it never names`); }
   return out; };
 { const real = []; let rows = 0;
   for (const mod of L.MODULES) { const ex = mod.lesson && mod.lesson.example; const lines = [...((mod.lesson && mod.lesson.script) || []), ...(ex ? [{ say: ex.caption || '', show: ex }] : [])];
@@ -291,18 +302,25 @@ const nestedRowProblems = (line) => { const show = line.show; const said = Strin
     nestedRowProblems({ say, show: { kind: 'pair', a: cup, b: { kind: 'row', items: [cup, cup] } } }).includes('a row in a side-by-side pair'),
     nestedRowProblems({ say, show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, cup, cup, cup] } } }).includes('a row the screen cannot draw whole'),
     nestedRowProblems({ say: say + ' I am happy.', show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, { kind: 'face', feeling: 'happy' }] } } }).includes('a row the screen cannot draw whole'),
-    nestedRowProblems({ say, show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, cup] } } }).length === 0];
-  ok(`a row inside a lesson pair is in a stacked pair, holds what a row can draw, and names its pictures (${rows} rows read; four near misses caught, the right one passed)`, real.length === 0 && rows >= 12 && plants.every(Boolean), [...real.slice(0, 6), `near misses ${plants}`].join(' | ')); }
+    nestedRowProblems({ say, show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, cup] } } }).length === 0,
+    nestedRowProblems({ say, show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, { kind: 'pic', name: 'bear' }] } } }).join() === 'a bear it never names',
+    nestedRowProblems({ say: 'Here is one friend, and here are two friends.', show: { kind: 'pair', stack: true, a: { kind: 'pic', name: 'bear' }, b: { kind: 'row', items: [{ kind: 'pic', name: 'bear' }, { kind: 'pic', name: 'rabbit' }] } } }).length === 0];
+  ok(`a row inside a lesson pair is in a stacked pair, holds what a row can draw, and names its pictures, a sign-in animal by the judge's own rule (${rows} rows read; five near misses caught, a bear under a line about cups among them, and the right row and two friends in a row passed)`, real.length === 0 && rows >= 12 && plants.every(Boolean), [...real.slice(0, 6), `near misses ${plants}`].join(' | ')); }
 // The waiting list only falls (pass MQ): every entry still waits on a line, so a fixed line takes its name off the list.
 ok('the drawn things older lessons show without naming them wait by name, on every line, and every name on the list still waits', PAIR_PICTURE_WAITS.every((k) => pairPictureWaited.has(k)), PAIR_PICTURE_WAITS.filter((k) => !pairPictureWaited.has(k)).join(', '));
 // The judge of every picture's name (EARMARKS A159, pass NX). Its near misses are made lines run through unnamedPictures, the function the
 // live read above uses, each held to exactly what it must report, so none passes on another problem: That reminds me!'s line with Owl and
-// Bear taken out, the mistake pass NR's second wave fixed, which the check passed before pass NX since it read icons and art alone; each
+// Bear taken out, the mistake pass NR's second wave fixed, which the check passed before pass NX since it read icons and art alone (since
+// pass NY that line still calls them "Both friends", which names them at Mikey's answer to Q130, so it passes, and the same line with its
+// friends taken out too is the plant that names neither); each
 // kind or depth it did not read before (a sign-in animal alone and on an instruction line, art alone, an icon and a face in a pair inside a
 // pair, a solid in a pair, a shape in a row inside a pair); each rule the loop's own checks held before (a grid of faces, two colors, an item by neither
 // word and by its color alone, dots with no count, a pair's halves with no kind); Rectangles' instruction line, whose items are left
 // out, and the same row on a plain line, read; and a kind neither list places, one named like an object's own key, and one placed as
-// named by no word. Every kind PICTURE_NAMES names is read on some real line, so no rule here holds nothing; the two lists share no kind.
+// named by no word. Since pass NY (Q130 (a)), the friend and animals reading's own: a bear a line calls a friend, a bear and a rabbit
+// under "two friends" and a cat and a duck under "many animals", named; a cat under a line that gives only its sound ("Meow, meow!"),
+// a bear under "friendly" alone, a duck under "animal" alone and a cup under "your friend" (the reading names sign-in animals alone),
+// unnamed. Every kind PICTURE_NAMES names is read on some real line, so no rule here holds nothing; the two lists share no kind.
 // What it does not see, by design: a name found inside another word passes (as pass MQ's icons did: "hat" inside "that" in Rhymes and
 // shapes, and the owl inside "slowly" in Second and last, where whole words would fail "sunny", "bedtime" and "raining"); a
 // diagram or a symbol is read for no name (PICTURES_NOT_NAMED); and a lesson's example, outside its script, is read here only for a row
@@ -310,14 +328,24 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
 { const scriptOf = (id) => (L.MODULES.find((m) => m.id === id) || { lesson: {} }).lesson.script || [];
   const real = scriptOf('that-reminds-me').find((l) => l.say.includes('the stories of Owl and Bear')) || null;
   const planted = real ? { ...real, say: real.say.replace('the stories of Owl and Bear', 'the two stories') } : null;
+  const unfriended = planted && planted.say.includes('Both friends could not sleep') ? { ...planted, say: planted.say.replace('Both friends could not sleep', 'They both could not sleep') } : null;
   const rect = scriptOf('rectangles-too').find((l) => l.say === 'Now you try. Look at these three, and say which one does not belong.') || null;
   const cup = { kind: 'icon', name: 'cup' }; const rabbit = { kind: 'pic', name: 'rabbit' }; const face = (feeling) => ({ kind: 'face', feeling });
+  const bear = { kind: 'pic', name: 'bear' }; const cat = { kind: 'pic', name: 'cat' }; const duck = { kind: 'pic', name: 'duck' };
   const got = (line) => (line ? unnamedPictures(line).map((p) => (p.unplaced ? 'unplaced:' + p.kind : p.kind + ':' + p.what)).join('; ') : 'no line');
   const PLANTS = [
-    ["That reminds me!'s line with Owl and Bear taken out", planted, 'pic:the owl; pic:the bear'],
+    ["That reminds me!'s line with Owl and Bear taken out, which still calls them Both friends (Q130 (a))", planted, ''],
+    ['the same line with its friends taken out too', unfriended, 'pic:the owl; pic:the bear'],
     ['the same line as it stands', real, ''],
-    ['a sign-in animal alone', { say: 'Here is our friend.', show: rabbit }, 'pic:the rabbit'],
-    ['a sign-in animal on an instruction line', { say: 'Listen to our friend.', show: rabbit }, 'pic:the rabbit'],
+    ['a sign-in animal alone', { say: 'Here is someone new.', show: rabbit }, 'pic:the rabbit'],
+    ['a sign-in animal on an instruction line', { say: 'Listen to someone new.', show: rabbit }, 'pic:the rabbit'],
+    ['a bear a line calls a friend (Q130 (a))', { say: 'Say hi to your friend.', show: bear }, ''],
+    ['a bear and a rabbit under two friends (Q130 (a))', { say: 'Two friends both want one swing.', show: { kind: 'pair', a: bear, b: rabbit } }, ''],
+    ['a cat and a duck under many animals (Q130 (a))', { say: 'Many animals have a sound of their own.', show: { kind: 'pair', a: cat, b: duck } }, ''],
+    ['a cat under a line that gives only its sound', { say: 'Here is a sound. Meow, meow!', show: cat }, 'pic:the cat'],
+    ['a bear under friendly alone, which is not friend', { say: 'Asking is a friendly way to start.', show: bear }, 'pic:the bear'],
+    ['a duck under animal alone, which is not animals', { say: 'Which animal is near?', show: duck }, 'pic:the duck'],
+    ['a cup under your friend, since the reading names sign-in animals alone', { say: 'Here is your friend.', show: cup }, 'icon:the cup'],
     ['art alone', { say: 'Here is a picture to color.', show: { kind: 'art', name: 'kite' } }, 'art:the kite'],
     ['an icon in a pair inside a pair', { say: 'Here is a cup, and here is a cup.', show: { kind: 'pair', a: { kind: 'pair', a: cup, b: { kind: 'icon', name: 'dog' } }, b: cup } }, 'icon:the dog'],
     ['a face in a pair inside a pair', { say: 'I feel happy.', show: { kind: 'pair', a: { kind: 'pair', a: face('happy'), b: face('sad') }, b: face('happy') } }, 'face:a sad face'],
@@ -339,14 +367,32 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // A kind of PICTURE_NAMES that no real line was read for holds nothing here: the live reads with the solids taken out, planted, name it.
   const unreadOf = (reads) => Object.keys(PICTURE_NAMES).filter((k) => !(reads.get(k) > 0)); const unread = unreadOf(pictureReads);
   const shared = (a, b) => Object.keys(a).filter((k) => Object.hasOwn(b, k));
-  ok(`every picture a lesson line shows is named by its words, every kind at every depth, by one judge (EARMARKS A159, pass NX; read: ${[...pictureReads].map(([k, n]) => (k || 'no kind') + ' ' + n).join(', ')}; ${PLANTS.length} planted lines each give exactly what they must, That reminds me!'s line with Owl and Bear taken out among them; every kind read on a real line, the solids taken out, planted, caught; the two lists share no kind, one planted in both caught)`,
+  ok(`every picture a lesson line shows is named by its words, every kind at every depth, by one judge (EARMARKS A159, pass NX; read: ${[...pictureReads].map(([k, n]) => (k || 'no kind') + ' ' + n).join(', ')}; ${PLANTS.length} planted lines each give exactly what they must, That reminds me!'s line with Owl, Bear and its friends taken out, and since pass NY a friend and the animals named, a sound alone, friendly alone and animal alone unnamed, among them; every kind read on a real line, the solids taken out, planted, caught; the two lists share no kind, one planted in both caught)`,
     wrong.length === 0 && unread.length === 0 && unreadOf(new Map([...pictureReads].filter(([k]) => k !== 'solid'))).join() === 'solid' && shared(PICTURE_NAMES, PICTURES_NOT_NAMED).length === 0 && shared(PICTURE_NAMES, { ...PICTURES_NOT_NAMED, icon: 'planted' }).join() === 'icon',
     [...wrong, ...(unread.length ? ['no real line read ' + unread.join(', ')] : [])].join(' | ')); }
 // The sign-in animals' waiting list only falls too (EARMARKS A159, pass NX): every entry still waits on a line, so a fixed line takes its name
-// off the list; a name that no longer waits (That reminds me!'s owl, which its lines name), planted, is caught.
+// off the list; a name that no longer waits (That reminds me!'s owl, which its lines name), planted, is caught. Since pass NY it is read both
+// ways, by the one judge (unnamedPictures) over every lesson's lines: every name on the list is a sign-in animal some line leaves unnamed,
+// so a line its course's review names, or one that calls the animal a friend or the animals (Mikey's answer to Q130 (a)), takes its name
+// off; and every sign-in animal a line leaves unnamed has its name on the list, so a new unnamed animal fails here by name as well as in
+// the loop's mismatches. Plants: That reminds me!'s owl and Talk with a friend's bear (which "your friend" names since pass NY), each a
+// name no line needs, and That reminds me!'s line with Owl, Bear and its friends taken out, whose owl and bear no name holds, each caught.
 { const stale = (list) => list.filter((k) => !signInPictureWaited.has(k));
-  ok(`the sign-in animals older lessons show without naming them wait by name (${SIGN_IN_PICTURE_WAITS.length} names), on every line, and every name on the list still waits (EARMARKS A159; a name that no longer waits, planted, caught)`,
-    stale(SIGN_IN_PICTURE_WAITS).length === 0 && stale([...SIGN_IN_PICTURE_WAITS, 'that-reminds-me:owl']).join() === 'that-reminds-me:owl', stale(SIGN_IN_PICTURE_WAITS).join(', ')); }
+  const unnamedIn = (modules) => new Set(modules.flatMap((mod) => ((mod.lesson && mod.lesson.script) || []).flatMap((line) => unnamedPictures(line).filter((p) => p.kind === 'pic').map((p) => `${mod.id}:${p.base}`))));
+  const waitFaults = (list, unnamed) => [...list.filter((k) => !unnamed.has(k)).map((k) => `${k} no longer waits`), ...[...unnamed].filter((k) => !list.includes(k)).map((k) => `${k} is unnamed and on no list`)];
+  const live = unnamedIn(L.MODULES);
+  const remind = L.MODULES.find((m) => m.id === 'that-reminds-me'); const told = remind && remind.lesson.script.find((l) => l.say.includes('the stories of Owl and Bear'));
+  const bare = told && { ...told, say: told.say.replace('the stories of Owl and Bear', 'the two stories').replace('Both friends could not sleep', 'They both could not sleep') };
+  const withBare = told ? L.MODULES.map((m) => (m === remind ? { ...m, lesson: { ...m.lesson, script: m.lesson.script.map((l) => (l === told ? bare : l)) } } : m)) : [];
+  const PLANTS = [
+    ["That reminds me!'s owl, which its lines name", waitFaults([...SIGN_IN_PICTURE_WAITS, 'that-reminds-me:owl'], live), 'that-reminds-me:owl no longer waits'],
+    ["Talk with a friend's bear, which your friend names since pass NY", waitFaults([...SIGN_IN_PICTURE_WAITS, 'talk-with-a-friend:bear'], live), 'talk-with-a-friend:bear no longer waits'],
+    ["That reminds me!'s line with Owl, Bear and its friends taken out", waitFaults(SIGN_IN_PICTURE_WAITS, unnamedIn(withBare)), 'that-reminds-me:owl is unnamed and on no list; that-reminds-me:bear is unnamed and on no list'],
+  ];
+  const wrong = PLANTS.filter(([, got, want]) => got.join('; ') !== want).map(([what, got]) => `${what}: ${got.join('; ') || 'nothing'}`);
+  ok(`the sign-in animals older lessons show without naming them wait by name (${SIGN_IN_PICTURE_WAITS.length} names), on every line: every name on the list still waits, and every sign-in animal a line leaves unnamed has its name on the list (EARMARKS A159 and A185; since pass NY a friend or the animals names one, Mikey's answer to Q130 (a); ${PLANTS.length + 1} plants caught: That reminds me!'s owl, a name no line needs, read by the loop's waits and by the judge, Talk with a friend's bear, which your friend names since pass NY, and That reminds me!'s line with Owl, Bear and its friends taken out, whose owl and bear no name holds)`,
+    stale(SIGN_IN_PICTURE_WAITS).length === 0 && stale([...SIGN_IN_PICTURE_WAITS, 'that-reminds-me:owl']).join() === 'that-reminds-me:owl' && waitFaults(SIGN_IN_PICTURE_WAITS, live).length === 0 && wrong.length === 0,
+    [...stale(SIGN_IN_PICTURE_WAITS), ...waitFaults(SIGN_IN_PICTURE_WAITS, live), ...wrong].join(', ')); }
 // A thing to look at is drawn (pass LU): every picture a lesson shows or a question offers as art has a line drawing in
 // src/ui.jsx, so while its Leonardo coloring page is on the way a lesson or a question draws it instead of a placeholder card.
 {
@@ -1172,7 +1218,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     const qs = EAR.flatMap((g) => Array.from({ length: 400 }, (_, i) => ({ ...L.generateQuestion(g, i + 1), __g: g }))).filter((q) => Array.isArray(q.voices) && q.voices.length === 1);
     const now = alike(qs); const plant = alike(qs.filter((q) => q.__g === 'p4-tone-feel').map((q) => { const { printedStory, ...rest } = q; return rest; }));
     ok(`a question asked by ear prints the same setup whatever its answer while the device can speak, so the screen holds no sign of it (pass MV, round two's alignment read; ${EAR.length} banks with voices, ${now.both} heard sentences with both answers; near miss caught)`, EAR.length >= 8 && now.both >= 18 && now.apart === 0 && plant.apart > 0, JSON.stringify({ banks: EAR.length, now, plant })); }
-  const LESSON_FLOW_WAITS = { 'red-and-blue': 1, 'find-the-match': 1, 'big-and-small': 1, 'one-and-two': 1, 'more-or-fewer': 5, 'first-marks': 1, 'yellow-and-green': 1, 'triangles-too': 2, 'big-and-little': 1, 'one-more-one-fewer': 27, 'join-in-play': 2, 'talk-with-a-friend': 4, 'talk-about-it': 4, 'rhymes-with-pictures': 7, 'circle-and-square': 2, 'a-and-b': 4, 'not-the-same': 1, 'listen-and-tap-pictures': 4, 'animal-sounds': 1, 'two-steps': 2, 'two-steps-more': 3, 'two-ideas': 2, 'two-ideas-more': 6, 'learning-words': 1, 'count-and-sort-words': 2, 'people-and-events': 1, 'colours': 1, 'same-and-different': 1, 'match-the-vehicles': 2, 'match-the-things': 1, 'match-the-water-animals': 1, 'match-the-land-animals': 3, 'match-the-shapes': 1, 'match-the-solids': 2, 'more-and-fewer-5': 2, 'bigger-and-smaller': 2, 'patterns': 12, 'count-to-3': 5, 'connect-the-dots': 1, 'taking-turns': 3, 'big-bigger-biggest': 2, 'helpers-all-around': 1, 'feelings-show': 3, 'how-friends-feel': 1, 'good-friend': 3, 'play-together': 1, 'listen-for-rhymes': 2, 'first-sounds': 1, 'which-came-first': 3, 'which-came-second': 5, 'big-letters': 1, 'first-letter-tracing': 1, 'more-big-letters': 2, 'trace-straight-letters': 3, 'three-steps': 1, 'three-steps-more': 3, 'more-learning-words': 2, 'sort-and-shape-words': 3, 'words-go-together': 1 };
+  const LESSON_FLOW_WAITS = { 'red-and-blue': 1, 'find-the-match': 1, 'big-and-small': 1, 'one-and-two': 1, 'more-or-fewer': 5, 'first-marks': 1, 'yellow-and-green': 1, 'triangles-too': 2, 'big-and-little': 1, 'one-more-one-fewer': 27, 'join-in-play': 1, 'talk-with-a-friend': 4, 'talk-about-it': 4, 'rhymes-with-pictures': 7, 'circle-and-square': 2, 'a-and-b': 4, 'not-the-same': 1, 'listen-and-tap-pictures': 4, 'animal-sounds': 1, 'two-steps': 2, 'two-steps-more': 3, 'two-ideas': 2, 'two-ideas-more': 6, 'learning-words': 1, 'count-and-sort-words': 2, 'people-and-events': 1, 'colours': 1, 'same-and-different': 1, 'match-the-vehicles': 2, 'match-the-things': 1, 'match-the-water-animals': 1, 'match-the-land-animals': 3, 'match-the-shapes': 1, 'match-the-solids': 2, 'more-and-fewer-5': 2, 'bigger-and-smaller': 2, 'patterns': 12, 'count-to-3': 5, 'connect-the-dots': 1, 'taking-turns': 3, 'big-bigger-biggest': 2, 'helpers-all-around': 1, 'feelings-show': 3, 'good-friend': 3, 'play-together': 1, 'listen-for-rhymes': 2, 'first-sounds': 1, 'which-came-first': 3, 'which-came-second': 5, 'big-letters': 1, 'first-letter-tracing': 1, 'more-big-letters': 2, 'trace-straight-letters': 3, 'three-steps': 1, 'three-steps-more': 3, 'more-learning-words': 2, 'sort-and-shape-words': 3, 'words-go-together': 1 };
   const all = youngLessons(); const over = all.map((x) => [x.mod.id, lessonFlowFlags(x.mod)]).filter(([id, f]) => f.length > (LESSON_FLOW_WAITS[id] || 0)).map(([id, f]) => `${id}: ${f.join('; ')}`);
   // A count that fell is written down at once, so it can never rise again unseen (round three's code read: a wait above a lesson's
   // count let it grow back), and a wait names a lesson that is still read.
@@ -1183,13 +1229,17 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const oldAct = act && { lesson: { ...act.mod.lesson, script: act.mod.lesson.script.map((l, k) => (k === 7 ? { ...l, say: 'At story time, you read a book together. At bedtime, you sleep in your bed.' } : l)) } };
   const near = !!oldFit && !!oldAct && lessonFlowFlags(oldFit).some((f) => /monotone/.test(f)) && lessonFlowFlags(oldAct).some((f) => /open with "at"/.test(f));
   ok(`the young lessons read for flow: no lesson over its count as pass MS found it, none under it either (a fallen count is written down), and none in a lesson built since (${all.length} lessons; near misses caught)`, all.length >= 70 && over.length === 0 && stale.length === 0 && staleCaught && near, [...over, ...stale].join(' | ')); }
-// A moment with a second wrong voice offers both in turn (pass MS, round two's code check: with its branch never taken, no check
-// failed): across its seeds, p4-fit-voice offers each moment's every wrong voice the tables give it, the far-away friend both a whisper
-// and an inside voice, and every other moment its one.
-{ const offered = new Map();
-  for (let seed = 1; seed <= 600; seed++) { const q = L.generateQuestion('p4-fit-voice', seed); const s = offered.get(q.story) || new Set(); for (const c of q.choices) if (c !== q.answer) s.add(c); offered.set(q.story, s); }
-  const far = offered.get('Your friend is far away on the playground.') || new Set();
-  ok('the far-away friend meets both wrong voices, a whisper and an inside voice, and each other moment its one (pass MS, round two)', offered.size === 6 && far.has('A whisper') && far.has('An inside voice') && far.size === 2 && [...offered].filter(([s]) => s !== 'Your friend is far away on the playground.').every(([, v]) => v.size === 1), JSON.stringify([...offered].map(([s, v]) => [s, [...v]]))); }
+// A moment with more than one wrong voice offers each in turn (pass MS, round two's code check: with its branch never taken, no check
+// failed): across its seeds, p4-fit-voice offers each moment's every wrong voice the lesson's words give it. Since pass NY (EARMARKS
+// A181: the big outside voice was the wrong choice in five of six rows) the three loud moments, the far-away friend, the call of over
+// here! and the friend far away from the slide, each meet a whisper, an inside voice and a kind, soft voice, every quiet moment meets
+// the big outside voice alone, and a loud moment is dealt about as often as a quiet one, between 40 and 60 percent of the seeds.
+{ const offered = new Map(); let loud = 0;
+  const LOUD = ['Your friend is far away on the playground.', 'You call to your friend far away, over here!', 'You are by the slide, and your friend is far away.'];
+  for (let seed = 1; seed <= 600; seed++) { const q = L.generateQuestion('p4-fit-voice', seed); if (LOUD.includes(q.story)) loud += 1; const s = offered.get(q.story) || new Set(); for (const c of q.choices) if (c !== q.answer) s.add(c); offered.set(q.story, s); }
+  const soft = ['A whisper', 'An inside voice', 'A kind, soft voice'];
+  ok('each loud moment meets all three softer voices, and each quiet moment the big outside voice alone, a loud moment dealt about half the time (pass MS, round two; pass NY)', offered.size === 8 && LOUD.every((s) => offered.has(s) && offered.get(s).size === 3 && soft.every((v) => offered.get(s).has(v)))
+    && [...offered].filter(([s]) => !LOUD.includes(s)).every(([, v]) => v.size === 1 && v.has('A big outside voice')) && loud >= 240 && loud <= 360, JSON.stringify({ loud, offered: [...offered].map(([s, v]) => [s, [...v]]) })); }
 // Every look a picture names is drawn (pass MW, round two's code read: with 'crayon~broken' taken out of ICON_LOOKS and 'cat~asleep'
 // out of StudentPicture's faces, the crayon drew whole and the cat drew nothing, and every check passed). An icon's look (name~look)
 // must be a key of ICON_LOOKS and a drawn animal's a key of StudentPicture's faces, both read from ui.jsx, for every lesson line's

@@ -10,10 +10,10 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 // Names the docs keep on purpose though no code has them: code a pass retired (pass MR's say-with-me, the held sounds, the review
-// backlog's old limits; pass NA's CB4_START, the blend bank's first sounds before its split, and THINK_TURN_MS, a wait that never ran; pass NS's WAITS_Q122, the rules test's note row that waited for Q122 until pass NS built it)
+// backlog's old limits; pass NA's CB4_START, the blend bank's first sounds before its split, and THINK_TURN_MS, a wait that never ran; pass NS's WAITS_Q122, the rules test's note row that waited for Q122 until pass NS built it; pass NY's COLOR_LOCKOUT_MINUTES, an export nothing read, FV_VOICE_ALSO, Say it to fit's second wrong reason for a far-away friend, which engineer content-b's work took out, and engineer fix1's dead TN4_SAME_WORDS, TN4_SAY and TK_WHY_ELSE)
 // and checks proposed in docs/MISTAKE-CLASSES.md. A name added here is still in a doc and in no code (the
 // docs sync test reads both ways).
-export const KEPT = ['ALSO_FITS', 'CB4_START', 'HELD_SOUND', 'LIGHT_REVIEWS_BUSY_DAY', 'LIGHT_REVIEW_BACKLOG', 'ROGER_SENTENCE', 'SAY_WITH_ME', 'SAY_WITH_ME_LESSONS', 'SOUND_CARRIERS', 'THINK_TURN_MS', 'WAITS_Q122'];
+export const KEPT = ['ALSO_FITS', 'CB4_START', 'COLOR_LOCKOUT_MINUTES', 'FV_VOICE_ALSO', 'HELD_SOUND', 'LIGHT_REVIEWS_BUSY_DAY', 'LIGHT_REVIEW_BACKLOG', 'ROGER_SENTENCE', 'SAY_WITH_ME', 'SAY_WITH_ME_LESSONS', 'SOUND_CARRIERS', 'THINK_TURN_MS', 'TK_WHY_ELSE', 'TN4_SAME_WORDS', 'TN4_SAY', 'WAITS_Q122'];
 const NAME = /\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/g;
 const ROOT = new URL('../', import.meta.url);
 

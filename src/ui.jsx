@@ -2567,9 +2567,11 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={at(typeof visual.size === 'number' ? visual.size : 110)} /></div>;
   // A feeling face, or a grid of two to four of them two to a row (pass MD), each face its own drawing (FeelingFace).
   if (visual.kind === 'face') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><FeelingFace feeling={visual.feeling} size={at(140)} /></div>;
-  // An odd last face spans both columns, so three faces sit two above and one centered below.
+  // An odd last face spans both columns, so three faces sit two above and one centered below. Since round one's screen read of pass NY
+  // (its M2) its cell is one column wide, half the row less the gap, so every face of a group is one size: in the dark theme's narrower
+  // paper at 320 by 568 the two above had shrunk to their columns (100 pixels) while the one below, the row wide, kept its 120.
   if (visual.kind === 'faces') { const fs = (visual.feelings || []).slice(0, 4);
-    return <div key={animKey} data-faces="" style={{ padding: '6px 0', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10, justifyItems: 'center', maxWidth: 300, margin: '0 auto' }}>{fs.map((f, i) => <div key={`${animKey}-${f}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.35}s`, width: '100%', maxWidth: 120, gridColumn: fs.length % 2 && i === fs.length - 1 ? '1 / -1' : undefined }}><FeelingFace feeling={f} size={120} /></div>)}</div>; }
+    return <div key={animKey} data-faces="" style={{ padding: '6px 0', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10, justifyItems: 'center', maxWidth: 300, margin: '0 auto' }}>{fs.map((f, i) => <div key={`${animKey}-${f}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.35}s`, width: fs.length % 2 && i === fs.length - 1 ? 'calc((100% - 10px) / 2)' : '100%', maxWidth: 120, gridColumn: fs.length % 2 && i === fs.length - 1 ? '1 / -1' : undefined }}><FeelingFace feeling={f} size={120} /></div>)}</div>; }
   // A shape with no color of its own takes the paper's green, B.green, in both themes (pass MA): the dark theme's mint was 1.7
   // to 1 on the almond paper, and pass CY's rule gives every drawing on paper the light palette.
   if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || B.green} size={at(visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110)} /></div>;
@@ -6112,14 +6114,21 @@ function ScrollCue({ target, watch, whole = false, hidden = 0, scrollTo = null }
     const before = decide && !fresh ? [...document.querySelectorAll('[data-cue-room]')].map((b) => [b, parseFloat(b.style.getPropertyValue('--cue-room')) || 0, !!b.__cuePair]) : null;
     if (decide) clearCueRoom();
     const el = document.querySelector(target); if (!el) { setShow(false); return; }
-    const r = el.getBoundingClientRect(); const band = visibleBand();
-    const want = hidden ? r.bottom - band.bottom > r.height * hidden : whole ? r.bottom > band.bottom + 4 : r.top > band.bottom - 24;
+    const band = visibleBand();
+    const wanted = (r) => (hidden ? r.bottom - band.bottom > r.height * hidden : whole ? r.bottom > band.bottom + 4 : r.top > band.bottom - 24);
+    const want = wanted(el.getBoundingClientRect());
     // Since pass NF the cue's place follows the foot of what shows, set on the button already drawn as well, so the room below is
     // measured beside the cue where it now stands.
     const up = cueLift(band); setLift(up); if (cue.current) cue.current.style.bottom = cueBottom(up);
     setShow(want);
     if (decide && want) { if (cue.current) mine.current = keepCueRoom(cue.current.getBoundingClientRect()); else roomDue.current = true; }
-    else if (before) for (const [b, px, held] of before) { setCueRoom(b, px); if (held && px > 0) holdStoryPair(b); }
+    else if (before) {
+      for (const [b, px, held] of before) { setCueRoom(b, px); if (held && px > 0) holdStoryPair(b); }
+      // Since round two's screen read of pass NY the target is read again with the rooms put back, as the page now stands: words
+      // keeping their room can hold it hidden as the rule says where without the room it showed enough (a quick Next during the cue's
+      // glide left How do friends feel?'s line 7 at 320 by 568 6 to 13 pixels down, Next 68 to 79 percent hidden and no cue).
+      if (!want && wanted(el.getBoundingClientRect())) setShow(true);
+    }
   };
   // A new state (a line, a tap's reason, a retry): decided at once, before the page is painted.
   React.useLayoutEffect(() => {
@@ -9124,8 +9133,10 @@ function FitText({ children, size = 12, min = 9, style = null, className = undef
 // it, joined by a no-break space ("80 percent", "adds 1 more"). Since round one's screen read it holds a number to any word after it, not
 // only to percent ("adds 1 / more." parted on the card), and What's new's notes are drawn through it too, where "from pre- / K 3 math"
 // and "grown- / up's" broke. EXPLANATIONS and docs/WHATS-NEW.md keep their words as written, which the tests read; only the screens draw
-// them so.
-function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\d) (?=[a-z])/g, '$1\u00A0')); }
+// them so. Since round two's screen read of pass NY a number keeps the word before it too where that word is grade, grades or to
+// (a pre-K grade is whole already, in WHOLE_WORD), since What's new's note of November 23 parted "to grade / 2", "3 to / 5" and
+// "in grades / 6 to 8" on More Details at 15 of 61 widths from 320 to 440 pixels.
+function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\d) (?=[a-z])/g, '$1\u00A0').replace(/\b(grades?|to) (?=\d)/gi, '$1\u00A0')); }
 function wholeHyphens(text) { return String(text).split(WHOLE_WORD).map((w, i) => (i % 2 ? <span key={i} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w)); }
 function WordFit({ children }) {
   const words = wholeHyphens(children);
@@ -10767,8 +10778,19 @@ function introPlayable(game, modules) {
   if (game.kind === 'sprint') return sprintPool(modules, game).length > 0;
   return true;
 }
+// A clock bar slides from one second to the next, never from the last picture's or game's time (pass NY, round one's screen read, its
+// S6): it starts still and slides only from the frame after its first one is drawn. The clock's opening value is set before the first
+// frame (the layout effect beside the clock), but a layout read before that gave the bar the last one's width first, and a slide from
+// there still showed the last one's time for its first second (read in a real page, 32.8 percent sliding to 99, with the opening value
+// set in the layout effect or after the first frame alike).
+function useBarSlidesAfterFirstFrame() {
+  const [slides, setSlides] = useState(false);
+  useEffect(() => { let next = 0; const first = requestAnimationFrame(() => { next = requestAnimationFrame(() => setSlides(true)); }); return () => { cancelAnimationFrame(first); cancelAnimationFrame(next); }; }, []);
+  return slides;
+}
 function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false, grade = null, intro = true, onPhase = null }) {
   const [round, setRound] = useState(1);
+  const barSlides = useBarSlidesAfterFirstFrame();   // the clock bar starts still (pass NY, its hook above)
   const [showHow, setShowHow] = useState(false);
   // The Instructions pop-up (round three's screen read, pass MQ, older than the pass): Got it takes the focus and Escape closes it, as
   // the touch pop-up does, and the box says it is modal; a keyboard had stayed on the link behind it, and Tab reached the speaker
@@ -10793,7 +10815,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
   useEffect(() => () => { speechTicket += 1; restUntil = 0; try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a game */ } stopSound(); }, []);
   // Where the game is (pass MP): its welcome (intro), the Begin cover (ready), or the game itself (play). Every visit opens on the
   // welcome; the browser tests that play a game open it straight to play (the way it opened before pass MP), and a moving game
-  // still waits for Begin there. The play clock runs only in play (onPhase), so a welcome never eats into a child's five minutes.
+  // still waits for Begin there. The play clock runs only in play (onPhase), so a welcome never eats into a child's play time.
   // A game with nothing to play (a map not yet painted, Quick fire with nothing to ask) opens straight to its board's note and is
   // told to its owner as empty, never as play (round one's code check, pass MQ): a visit that saw only "This map is being painted."
   // is no game break (Mikey's answer to Q63) and uses none of the play clock.
@@ -10873,7 +10895,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
         </button>
       </div>
       <div style={{ margin: '8px 0 12px', height: 10, borderRadius: 5, background: C.line, overflow: 'hidden' }}>
-        <div data-play-left={secondsLeft} style={{ height: '100%', width: `${Math.min(100, Math.max(0, (secondsLeft / total) * 100))}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
+        <div data-play-left={secondsLeft} style={{ height: '100%', width: `${Math.min(100, Math.max(0, (secondsLeft / total) * 100))}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: barSlides ? 'width 1s linear' : 'none' }} />
       </div>
       {phase === 'intro' ? <GameIntro game={game} Game={Game} gameProps={gameProps} onEnd={() => setPhase('ready')} onSize={(size) => { boardSize.current = size; }} />
         : phase === 'ready' ? <BeginCover onBegin={() => setPhase('play')} moving={MOVING_GAMES.has(game.kind)} size={boardSize.current} />
@@ -10997,10 +11019,9 @@ function GameThumb({ kind, game = null }) {
 }
 // Coloring: play, not work. Tap a part to fill it with the color you picked. Nothing is scored,
 // nothing is recorded; a picture is simply there to enjoy once the student has earned it.
-const COLOR_BREAK_SECONDS = 300;
-// A picture's five minutes and its rest afterwards live on the device, next to the settings, never
-// in the student's record: coloring is play and leaves no history. Leaving and coming back picks up
-// where the timer stopped, and a picture that ran its five minutes rests for fifteen.
+// A picture's play time and its rest afterwards (each by the student's age, playSecondsFor and restMinutesFor in logic.mjs) live on the
+// device, next to the settings, never in the student's record: coloring is play and leaves no history. Leaving and coming back picks up
+// where the timer stopped, never past today's play time (playSecondsAtOpen), and a picture whose play time ran out rests.
 const colorKey = (studentId) => `edusphere_v1_coloring:${studentId}`;
 async function loadColorState(studentId) { return safeJson((await storageGet(colorKey(studentId))) || '{}') || {}; }
 async function saveColorState(studentId, state) { return storageSet(colorKey(studentId), JSON.stringify(state)); }
@@ -11505,6 +11526,7 @@ function paperMove(pxPerMs) { if (paper) paper.gain.gain.setTargetAtTime(Math.mi
 function paperStop() { if (paper) paper.gain.gain.setTargetAtTime(0, paper.ctx.currentTime, 0.05); }
 function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose }) {
   const [crayon, setCrayon] = useState(CRAYONS[0]);
+  const barSlides = useBarSlidesAfterFirstFrame();   // the clock bar starts still (pass NY, useBarSlidesAfterFirstFrame)
   const [nib, setNib] = useState(NIB_DEFAULT);
   const [eraser, setEraser] = useState(null);   // an eraser width while erasing, null while coloring
   const [zoom, setZoom] = useState(1);
@@ -11535,7 +11557,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   const limit = 100 - span;
   const clamp = (v) => Math.max(0, Math.min(limit, v));
   const view = { x: clamp(pan.x), y: clamp(pan.y) };
-  const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return [view.x + ((e.clientX - r.left) / r.width) * span, view.y + ((e.clientY - r.top) / r.height) * spanY]; };
+  // A point in the picture's own units, each number to one decimal of its 100 (artPoint, pass NY: a page keeps its strokes for good, and
+  // two full-precision numbers a point made a three-minute visit about 418,000 characters to store).
+  const at = (e) => { const r = svgRef.current.getBoundingClientRect(); return artPoint(view.x + ((e.clientX - r.left) / r.width) * span, view.y + ((e.clientY - r.top) / r.height) * spanY); };
   // Zooming keeps the middle of what they were looking at, so the picture does not jump under them.
   const changeZoom = (dir) => {
     const next = ZOOMS[Math.max(0, Math.min(ZOOMS.length - 1, ZOOMS.indexOf(zoom) + dir))];
@@ -11548,9 +11572,16 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   // An eraser is a stroke of paper color: it lifts crayon without touching the outline, which is drawn on top. Since pass MH
   // (the alignment read) it is kept as 'paper' and drawn in the paper's own color, so in the dark theme it no longer leaves white
   // streaks on the light green paper; an older saved eraser stroke (white, which no crayon is) is drawn the same way.
-  const start = (e) => { if (!freeDraw) return; drawing.current = true; lastPt.current = [e.clientX, e.clientY, performance.now()]; paperStart(); setStrokes((list) => [...list, eraser ? { colour: 'paper', width: eraser, points: [at(e)] } : { colour: crayon, width: nib, points: [at(e)] }]); };
-  const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); const [lx, ly, lt] = lastPt.current; const now = performance.now(); paperMove(Math.hypot(e.clientX - lx, e.clientY - ly) / Math.max(1, now - lt)); lastPt.current = [e.clientX, e.clientY, now]; setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, at(e)] }]; }); };
-  const stop = () => { drawing.current = false; paperStop(); };
+  // A stroke keeps a point only once the finger has moved ART_STEP from the last point it kept (artStepKept, pass NY), so a slow or
+  // resting finger adds nothing; a move held back is kept as the stroke's end when the stroke ends there, so a line ends where it was
+  // drawn and a small wiggle still shows. keptPt is the last point kept, heldPt the last one held back.
+  const keptPt = useRef(null); const heldPt = useRef(null);
+  const start = (e) => { if (!freeDraw) return; drawing.current = true; lastPt.current = [e.clientX, e.clientY, performance.now()]; paperStart(); const p = at(e); keptPt.current = p; heldPt.current = null; setStrokes((list) => [...list, eraser ? { colour: 'paper', width: eraser, points: [p] } : { colour: crayon, width: nib, points: [p] }]); };
+  const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); const [lx, ly, lt] = lastPt.current; const now = performance.now(); paperMove(Math.hypot(e.clientX - lx, e.clientY - ly) / Math.max(1, now - lt)); lastPt.current = [e.clientX, e.clientY, now];
+    const p = at(e); if (!artStepKept(keptPt.current, p)) { heldPt.current = p; return; } keptPt.current = p; heldPt.current = null;
+    setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, p] }]; }); };
+  const stop = () => { const held = drawing.current ? heldPt.current : null; heldPt.current = null; drawing.current = false; paperStop();
+    if (held) setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return last ? [...rest, { ...last, points: [...last.points, held] }] : list; }); };
   return (
     <div className={`edu-pad${freeDraw ? '' : ' edu-pad-fill'}`}>
       {/* Start over on the left, close on the right, both sitting on the picture's own width. */}
@@ -11568,7 +11599,7 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
       {typeof secondsLeft === 'number' && (
         <div className="edu-pad-bar edu-pad-col" style={{ margin: '8px auto 12px' }}>
           <div style={{ height: 14, borderRadius: 999, background: C.line, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${Math.min(100, Math.max(0, (secondsLeft / total) * 100))}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
+            <div style={{ height: '100%', width: `${Math.min(100, Math.max(0, (secondsLeft / total) * 100))}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: barSlides ? 'width 1s linear' : 'none' }} />
           </div>
         </div>
       )}
@@ -12803,7 +12834,7 @@ function EduSphereScreens() {
   const [mapKind, setMapKind] = useState('core');                   // the standards map, by grade: core courses or electives
   const [quickChecks, setQuickChecks] = useState(true);             // may a student skip a module by passing five questions?
   const [coloring, setColoring] = useState(null);                    // the picture being colored, when the coloring screen is up
-  // A coloring break lasts five minutes. The bar empties, then the courses come back; a student
+  // A coloring break lasts the play time for the student's age (playSecondsFor in logic.mjs). The bar empties, then the courses come back; a student
   // can leave earlier with the button, and start the picture over as often as they like.
   const [showRequirements, setShowRequirements] = useState(false);   // a writing assignment's requirements popup
   const [storyOpen, setStoryOpen] = useState(false);                // the story fold under a lesson's key idea
@@ -12902,14 +12933,16 @@ function EduSphereScreens() {
   const [cheer, setCheer] = useState(0);                      // bumped to replay the celebration
   const [record, setRecord] = useState(null);      // { name, events, ... } for the current learner
   const [colorState, setColorState] = useState({});                  // per picture: seconds left, and when its rest ends
-  const [colorLeft, setColorLeft] = useState(COLOR_BREAK_SECONDS);
+  // The play clock's seconds left. Its first value, before the clock's effect below sets the student's own, is the youngest band's play
+  // time read from the logic (playSecondsFor), so the screens keep no copy of the number (pass NY; until then a constant of 300 here).
+  const [colorLeft, setColorLeft] = useState(() => playSecondsFor(GRADES[0]));
   const [colorNow, setColorNow] = useState(Date.now());               // ticks while the overview is up, so a resting picture fills
   const colorArt = useRef({ fills: {}, strokes: [] });                // the colors on the picture open right now
   // The saved play state as it is now (pass MI, the game check): the play clock's saves and a game's score run from closures made
   // when the game opened, and wrote back the state of that moment, so a best set since was lost after five seconds.
   const colorStateNow = useRef(colorState); colorStateNow.current = colorState;
   // A game's welcome and its Begin cover are not play (pass MP): the play clock waits until Begin, so a welcome never eats into the
-  // five minutes. A game opens on its welcome when a child taps its tile; the browser tests open it straight to play (gameIntroNext).
+  // play time. A game opens on its welcome when a child taps its tile; the browser tests open it straight to play (gameIntroNext).
   const playPaused = useRef(false); const gameIntroNext = useRef(true);
   // Whether this visit to a game has reached play, Begin tapped or the game opened straight to play (pass MQ, Mikey's answer to Q63,
   // "Q63 - A"): the played event records it (begun), so the report's game breaks and the weekly note count only the visits that
@@ -12917,23 +12950,35 @@ function EduSphereScreens() {
   const gameBegun = useRef(false);
   useEffect(() => { if (!record || !record.name) return; loadColorState(record.name).then(setColorState); }, [record && record.name]);
   useEffect(() => { if (screen !== 'overview') return undefined; const id = setInterval(() => setColorNow(Date.now()), 5000); return () => clearInterval(id); }, [screen]);
+  // The clock's first value for the picture or game opening now, set before its first paint (pass NY, round one's screen read, its S6):
+  // set in the clock's effect below, which runs after the pad has drawn, the bar showed the last picture's time for its first frames.
+  // The bar itself starts still (useBarSlidesAfterFirstFrame), since a slide from the last one's width showed that time for a second.
+  // The clock picks up where this picture or game was left, never past today's play time (playSecondsAtOpen in logic.mjs, pass NY).
+  React.useLayoutEffect(() => {
+    if (screen !== 'coloring' || !coloring || !record) return;
+    const topGrade = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
+    setColorLeft(playSecondsAtOpen((colorState[coloring] || {}).left, topGrade));
+  }, [screen, coloring]);
   useEffect(() => {
     if (screen !== 'coloring' || !coloring || !record) return undefined;
     const topGrade = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
     const playSecs = playSecondsFor(topGrade); const restMins = restMinutesFor(topGrade);
-    const start = (colorState[coloring] || {}).left;
-    setColorLeft(typeof start === 'number' ? start : playSecs);
     const id = setInterval(() => setColorLeft((n) => {
       if (playPaused.current) return n;
       const next = n - 1;
-      if (next <= 0) { // the five minutes are up: this picture rests, and the courses come back
-        // The five minutes are up: the picture rests, and next time it starts blank again.
-        const latest = colorStateNow.current; const state = { ...latest, [coloring]: { ...(latest[coloring] || {}), left: playSecs, restUntil: Date.now() + restMins * 60000, art: null } };
+      if (next <= 0) { // the play time is up: this picture rests, and the courses come back
+        // The play time is up: the picture rests. Since pass NY a page keeps the colors the child put on, so after its rest it opens
+        // with them again (Mikey: "Yes, the color pages can keep the colors from the child's previous coloring time even after timer
+        // resets."); until then it came back blank. A game keeps no colors. Since round one's code read of pass NY every writer stores
+        // through keptArt (logic.mjs): a game's colors none, a page's its own, thinned to ART_BUDGET.
+        const latest = colorStateNow.current; const state = { ...latest, [coloring]: { ...(latest[coloring] || {}), left: playSecs, restUntil: Date.now() + restMins * 60000, art: keptArt(coloring, colorArt.current) } };
         setColorState(state); saveColorState(record.name, state);
         if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString(), gameBegun.current) : makeColoredEvent(coloring, new Date().toISOString()));
         setColoring(null); setScreen('overview'); return playSecs;
       }
-      if (next % 5 === 0) { const latest = colorStateNow.current; const state = { ...latest, [coloring]: { ...(latest[coloring] || {}), left: next, art: colorArt.current } }; setColorState(state); colorStateNow.current = state; saveColorState(record.name, state); }
+      // Every five seconds the time left and the colors so far are saved (keptArt: a game's none, though colorArt still holds the last
+      // page colored, since a game's pad hands up no art; a page's own, thinned).
+      if (next % 5 === 0) { const latest = colorStateNow.current; const state = { ...latest, [coloring]: { ...(latest[coloring] || {}), left: next, art: keptArt(coloring, colorArt.current) } }; setColorState(state); colorStateNow.current = state; saveColorState(record.name, state); }
       return next;
     }), 1000);
     return () => clearInterval(id);
@@ -12942,10 +12987,11 @@ function EduSphereScreens() {
   // new pad says where it is (React clears the old effects first), and a game opened later opens on its welcome again.
   useEffect(() => () => { playPaused.current = false; gameBegun.current = false; }, [screen, coloring]);
   useEffect(() => { if (screen !== 'coloring') gameIntroNext.current = true; }, [screen]);
-  // Leaving early keeps the time that is left, so the picture is not handed back a fresh five minutes.
+  // Leaving early keeps the time that is left, so the picture is not handed back a fresh play time, and its colors as every writer
+  // keeps them (keptArt: a game's none, a page's own, thinned).
   const leaveColoring = () => {
     if (record && coloring) {
-      const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: colorLeft, art: colorArt.current } };
+      const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: colorLeft, art: keptArt(coloring, colorArt.current) } };
       setColorState(state); saveColorState(record.name, state);
       // A game session is a game break and a picture a coloring break (pass MB): both are play, never marked.
       if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString(), gameBegun.current) : makeColoredEvent(coloring, new Date().toISOString()));
@@ -14015,6 +14061,9 @@ function EduSphereScreens() {
     // Test-only (pass ME): draws the current trace question along its own strokes, the way a steady hand would, so a browser
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
     traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic, opts = null) => { gameIntroNext.current = !!(opts && opts.intro); setColoring(pic); setScreen('coloring'); }, setColoringLeft: (n) => setColorLeft(n), openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setStoryVoiceOn(canSpeak()); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setStoryVoiceOn(canSpeak()); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
+    // Test-only (pass NY, round one's code read, its S6): sets a picture's saved play state as the screens save it (the time left, its
+    // rest), so a browser walk can run a page's clock out in seconds and open the page again after its rest.
+    seedColoring: (pic, entry) => { const latest = colorStateNow.current; const state = { ...latest, [pic]: { ...(latest[pic] || {}), ...entry } }; setColorState(state); colorStateNow.current = state; if (record && !record.preview) saveColorState(record.name, state); return state[pic]; },
     // Test-only (pass MH): one round of a single named question, so a browser check can look at any kind of question on screen.
     showQuestion: (genId, seed = 1, fromModule = null) => { const home = (fromModule && getModule(fromModule)) || COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [moduleQuestion(genId, seed, home.id)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), quietFor: (ms) => { studentQuietSince.current = Date.now() - Number(ms || 0); return onStudentScreen; }, educatorQuietFor: (ms) => { setLastActive(Date.now() - Number(ms || 0)); return true; }, goTo: (name, arg) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
@@ -14502,7 +14551,8 @@ function EduSphereScreens() {
           );
         })}
         {/* Let's Color: a grid of drawings, no words. One more picture for every module passed.
-            A picture rests for fifteen minutes after its five, and fills with color while it rests. */}
+            A picture rests after its play time, for as long as the student's age gives it (playSecondsFor and restMinutesFor in
+            logic.mjs), and fills with color while it rests. */}
         {(() => {
           // Coloring is for pre-K through grade 2. Once a student has graduated the early years it goes.
           if (!youngLearner) return null;
@@ -14851,7 +14901,12 @@ function EduSphereScreens() {
             of its own above the arrows, which put Next under a 375 by 667 phone's fold on 72 of the older pre-K lines; the row's tops
             line up, so the dots under the speaker never push Next down. */}
         <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <BigTap dir="back" label="Go back" disabled={lessonStep === 0} onClick={() => setLessonStep(Math.max(0, lessonStep - 1))} />
+          {/* A line opens at its top, its picture first, as a pre-reader's next question does (pass NY, round one's screen read: after the
+              cue's tap, Next left the page scrolled and the next line's picture above the screen), and since round two's screen read in
+              the claude.ai preview's page-tall frame too, where the page around the frame is asked as a new screen asks it
+              (scrollToTop(true), which asks only a page-tall frame or one whose top is off the screen): once that page had moved, 12 of 24
+              lines at 1280 by 480 and 19 of 24 at 800 by 450 opened with their card's top above the screen. */}
+          <BigTap dir="back" label="Go back" disabled={lessonStep === 0} onClick={() => { setLessonStep(Math.max(0, lessonStep - 1)); scrollToTop(true); }} />
           <div data-lesson-middle="" style={{ flex: '1 1 0', minWidth: 0, margin: '0 5px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
             {/* One tap repeats the line, in case they missed it. Since pass MZ it holds still in the row, so only Next, pulsing, moves
                 (round one's screen check: two moving controls side by side). */}
@@ -14882,7 +14937,7 @@ function EduSphereScreens() {
               </button>
             </span>
           ) : (
-            <span data-lesson-next="" style={{ display: 'inline-flex' }}><BigTap dir="next" label="Next" onClick={() => setLessonStep(lessonStep + 1)} /></span>
+            <span data-lesson-next="" style={{ display: 'inline-flex' }}><BigTap dir="next" label="Next" onClick={() => { setLessonStep(lessonStep + 1); scrollToTop(true); }} /></span>
           )}
         </div>
         {/* The cue shows while a third of Next (or the last line's star) or more is below the fold (round three's screen check, pass

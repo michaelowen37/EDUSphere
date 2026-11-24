@@ -152,8 +152,11 @@ step "12/13 dark theme: every word readable, paper screens light" /tmp/edu_dark.
 # two thirds of 150, so its limit is 240, about twice its time (run, above).
 step "13/13 standalone page keeps its data" /tmp/edu_site.txt && { run "the standalone page" 240 node tests/site.test.mjs 2>&1 | tail -1 | tee /tmp/edu_site.txt; grep -q " 0 failed" /tmp/edu_site.txt || failed; }
 # The scroll cue on a phone lesson (tests/e2e/scroll-cue.mjs, a new check in pass KA): no record pass NQ found gives the time its
-# 120-second limit was set from (the same search); its times are in docs/CHECK-TIMES.md from pass NQ on.
-step "13b/13 the scroll cue on a phone lesson" /tmp/edu_cue.txt && { run "the scroll cue" 120 node tests/e2e/scroll-cue.mjs 2>&1 | tail -1 | tee /tmp/edu_cue.txt; grep -q " 0 failed" /tmp/edu_cue.txt || failed; }
+# 120-second limit was set from (the same search); its times are in docs/CHECK-TIMES.md from pass NQ on. Since pass NY its limit is 240:
+# round one's screen read's two checks and round two's (a quick Next during the cue's glide on the built page as a phone, and Next and
+# Go back in the claude.ai preview's page-tall frame, each with a browser of its own) took it to 129 seconds alone on the pass's
+# two-CPU machine, where it had taken 40, past the 120; 240 is about twice that time (run, above).
+step "13b/13 the scroll cue on a phone lesson" /tmp/edu_cue.txt && { run "the scroll cue" 240 node tests/e2e/scroll-cue.mjs 2>&1 | tail -1 | tee /tmp/edu_cue.txt; grep -q " 0 failed" /tmp/edu_cue.txt || failed; }
 # The quick look back and Action Items (tests/e2e/review-walk.mjs, a new check in pass LM): no record pass NQ found gives the time its
 # 240-second limit was set from (the same search); its times are in docs/CHECK-TIMES.md from pass NQ on.
 step "13c/13 the quick look back and Action Items, walked as a student and an educator" /tmp/edu_review.txt && { run "the quick look back" 240 node tests/e2e/review-walk.mjs 2>&1 | tail -1 | tee /tmp/edu_review.txt; grep -q " 0 failed" /tmp/edu_review.txt || failed; }

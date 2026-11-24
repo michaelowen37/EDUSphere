@@ -137,13 +137,44 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   ok('a character-sheet note leaves the folded prompt, and its sheets reach their column when the scene shows a person', noteLeft.length === 0 && sheetsLost.length === 0, [...noteLeft, ...sheetsLost].slice(0, 6).join(','));
   // Hands and skin are said only where a person is drawn: a clock's hands, a fox's face, a cube's flat face, a mother duck or a
   // class garden is not a person, and the model draws what the words name (the accuracy check, pass MC). These rows were wrong
-  // once, both ways.
+  // once, both ways. A scene's mood of patient is no patient (pass NY: the moods put the word in seven rows that attach a sheet
+  // and in S2015's, and the fold had read each as a person). Since Mikey's answer to Q133 (pass NY, "Q133 - A") the same reading
+  // gives the ten subjects' story rows Reading's words or Science's, and the person reader's rows are named on both sides: people
+  // the list had missed (a band voting, a speaker at a lectern, listeners, a crowded cafeteria, everyone laughing, two classes on a
+  // rug, a bookkeeper, a manager, an official, experts, helpers, a guide, a club or a group at work, a figure speaking, a parade,
+  // running legs, visitors walking) and no one where a person word is written or named (a list of customers, a letter signed by
+  // students, a chart by student, a card's lines, bean children, family messages, a speech card's audience), each word's catch
+  // planted beside it.
   const by = Object.fromEntries(all.map((r) => [r[0], r]));
-  const noOne = ['P111', 'P18', 'P85', 'S874', 'S1188', 'S1706', 'S1707', 'S3826', 'S2', 'S31', 'P11', 'P75', 'S484', 'S1373', 'S2358', 'S96', 'S168', 'S1427', 'S3107', 'S2015', 'S1430', 'CS540', 'P81', 'S3807', 'S570', 'S3175', 'S3556', 'S3241', 'S1715', 'S3362', 'CS389', 'CS518', 'CS375', 'P127', 'S3653', 'CS280'];
-  const someone = ['S273', 'S442', 'S1450', 'P59', 'S57', 'S804', 'S2402', 'S1500', 'S1695', 'S1605', 'S2903', 'S2545', 'S1773', 'P46', 'S958', 'S40', 'CS412', 'CS477', 'CS583', 'S1208', 'S1418'];
+  const noOne = ['P111', 'P18', 'P85', 'S874', 'S1188', 'S1706', 'S1707', 'S3826', 'S2', 'S31', 'P11', 'P75', 'S484', 'S1373', 'S2358', 'S96', 'S168', 'S1427', 'S3107', 'S2015', 'S1430', 'CS540', 'P81', 'S3807', 'S570', 'S3175', 'S3556', 'S3241', 'S1715', 'S3362', 'CS389', 'CS518', 'CS375', 'P127', 'S3653', 'CS280',
+    'S2877', 'S2973', 'S3115', 'S3209', 'S3273', 'S3588', 'CS494', 'S2423', 'S2562', 'S3137', 'S2462', 'S1991', 'S1992', 'S2768'];
+  const someone = ['S273', 'S442', 'S1450', 'P59', 'S57', 'S804', 'S2402', 'S1500', 'S1695', 'S1605', 'S2903', 'S2545', 'S1773', 'P46', 'S958', 'S40', 'CS412', 'CS477', 'CS583', 'S1208', 'S1418',
+    'S577', 'S2924', 'S2964', 'S2975', 'S3022', 'S3024', 'S3096', 'S3195', 'S3365', 'S3448', 'S3453', 'S3506', 'S3523', 'S3573', 'S3574', 'S3575', 'S3612',
+    'S3619', 'S3626', 'S3627', 'S3630', 'S3641', 'S3727', 'CS96', 'S1246', 'S1257', 'CS437', 'CS515', 'S2405', 'S1216'];
+  // Each new word's catch, planted: [the words, whether a person is drawn].
+  const CATCHES = [['a rubber band holding the sticks', false], ['a thin band of silt', false], ['A band room with a jar', false], ['A band voting behind a curtain', true],
+    ['sound coming from its speaker', false], ['a small round speaker between them', false], ['A speaker pushing sound waves', false], ['A speaker pausing at a lectern', true],
+    ['A crowded page of words', false], ['A crowded hall at night', true], ['a password manager open', false], ['A manager pinning a schedule', true],
+    ['an official map of the county', false], ['An official painting a cross on a wheel', true], ['helper nineteen on the chart', false], ['Two medical helpers at a door', true],
+    ['A school guide with a heading over each paragraph', false], ['a guide dog in a harness', false], ['A cave guide with a flashlight', true], ['a group chat on a phone', false], ['with a group practicing', true],
+    ['a club roster', false], ['A robotics club counting money', true], ['A welded figure of bicycle parts', false], ['one figure speaking', true],
+    ['a loud parade drum', false], ['The big drum booming in the parade', true], ['a table on four sturdy legs', false], ['his legs hanging off the dog bed', false], ['blood carrying oxygen to running legs', true],
+    ['a good conductor of heat', false], ['a conductor holding up a flute', true], ['the names home and visitors ready', false], ['home 4, visitors 2', false], ['visitors walking', true],
+    ['Two thought bubbles over a game: everyone will think I am bad', false], ['Three circles labeled everyone, some and one', false], ['a robot while everyone laughs', true],
+    ['Two classes on a rug saying hello', true], ['A lifeguard chair beside the pool', false], ['A list of steps with a finger on the third one', true],
+    ['a list of ten thousand customers', false], ['a letter signed by three students at the bottom', false], ['One chart of hours of sleep by student', false],
+    ['A card with three lines: tell someone who has stood in the light', false], ['a row of tall bean children', false], ['A phone lighting up with family messages', false],
+    ['Three questions on a note card, audience, occasion, purpose', false], ['a speaker\'s final question over a silent audience', true],
+    ['a villager carrying water from the well', true], ['the classes schedule pinned to a board', false],
+    // Round two's code read of pass NY: a card's lines end where something is set beside the card, a list's names where a word like a
+    // begins someone new, and the family words and everybody each have a case.
+    ['A card with two lines: stop, breathe, beside a girl reading it', true], ['a list of chores a mom holds up', true], ['a family chat on a phone', false],
+    ['a family calendar on the fridge', false], ['family texts on a screen', false], ['everybody clapping', true]];
+  const catchesMissed = CATCHES.filter(([words, drawn]) => hasPerson(words) !== drawn).map(([words]) => words);
   const handed = (s) => / Hands have five fingers/.test(foldPrompt(by[s][3], by[s][4]).prompt);
   const wrong = [...noOne.filter((s) => !by[s] || handed(s)), ...someone.filter((s) => !by[s] || !handed(s))];
-  ok('hands and skin are said where a person is drawn and nowhere else (clock hands, animal faces, solid faces, a class garden, a grown-up\'s shoe)', wrong.length === 0 && hasPerson('a crossing guard waving') && !hasPerson('the long hand on the 3') && !hasPerson('A clock with hands pointing to 3') && !hasPerson('a round clock with a plain white face, its only marks two black hands') && !hasPerson("a grown-up's big shoe") && hasPerson("a little boy's toes"), wrong.join(','));
+  ok(`hands and skin are said where a person is drawn and nowhere else (clock hands, animal faces, solid faces, a class garden, a grown-up's shoe; since pass NY the person reader's rows and ${CATCHES.length} catches of its words)`, wrong.length === 0 && hasPerson('a crossing guard waving') && !hasPerson('the long hand on the 3') && !hasPerson('A clock with hands pointing to 3') && !hasPerson('a round clock with a plain white face, its only marks two black hands') && !hasPerson("a grown-up's big shoe") && hasPerson("a little boy's toes")
+    && !hasPerson('A row of jars on a windowsill, wonder-filled and vibrant, stylized, curious, curious and patient') && !hasPerson('A progress bar on a laptop, wonder-filled and vibrant, stylized, curious, patient and hopeful') && hasPerson('a young patient on a clinic bed') && hasPerson('a patient and a chart on a clinic bed') && catchesMissed.length === 0, [...wrong, ...catchesMissed].join(','));
   // A picture EARMARKS A6 lists asks for drawn writing its bans forbid, so its row waits to be re-planned.
   const replan = replanSerials(earmarks); const csv = readFileSync('docs/LEONARDO-PROMPTS.csv', 'utf8').trim(); const want = csvText(ledger, earmarks);
   const waiting = want.split('\n').filter((l) => l.endsWith(',"Re-plan first (A6)"')).length;
@@ -291,8 +322,9 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   const LOOK = { Mike: ['brown eyes', 'sturdy', 'half-smile', 'shaved', 'bald', 'beard', 'black ring', 'rolled'], Chloe: ['wavy dark hair', 'patterned', 'paint'], Frederick: ['neat dark hair', 'glasses', 'gray hair', 'handlebar', 'mustache', 'lab coat'], Georgette: ['auburn', 'red button-front coat', 'red coat', 'knowing smile'], Savanah: ['copper-red', 'copper red', 'high bun', 'freckles', 'tattoo', 'tortoiseshell'], Jaxon: ['sandy', 'checkered', 'sly'], Harlow: ['blonde', 'pigtails', 'sage-green', 'blue eyes'] };
   const sheetOf = Object.fromEntries(sheetsListed.map((s) => [s, Object.keys(LOOK).find((n) => by[s][2].startsWith(n))]));
   // 121 since pass MK (124 before): Mike's three rows in The ball that rolled away write him out now. 118 since pass ML: Three
-  // stones' S1, S29 and S1448 write him out too.
-  const UNWRITTEN_SHEET_LIMIT = 118; let attached = 0; const unwrittenSheets = [];
+  // stones' S1, S29 and S1448 write him out too. 117 since pass NY: CS494's speech card, whose word audience the person reading
+  // no longer takes for a person (Q133), attaches no sheet.
+  const UNWRITTEN_SHEET_LIMIT = 117; let attached = 0; const unwrittenSheets = [];
   for (const [serial, , , prompt, bans] of all) {
     const f = foldPrompt(prompt, bans); const body = f.prompt.toLowerCase();
     for (const s of (f.sheets || '').split(/[,\s]+/).filter(Boolean)) { attached++; const who = sheetOf[s]; if (!who || !LOOK[who].some((w) => body.includes(w))) unwrittenSheets.push(`${serial}:${s}`); }
@@ -315,20 +347,271 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
 // A story picture takes its course subject's style (pass MO, round one's picture check: Listen and Point's and First Sounds and
 // Letters' twelve new rows took Math's "distinct geometric shapes" where their subject is Reading's "character-focused, dreamy
 // lighting", the slip pass MM made on the long stories' rows). The anchors are tools/stories/batch.py's MOD table, read from the
-// file, so the batches and this check share one source. Every pre-K story row ends its style on its subject's anchor; the rows of
-// kindergarten and up that do not wait as a count that only falls (141 in pass MO, kindergarten's and grade 1's), for their
-// courses' reviews. Proven failing on pass MO's frozen copy (the twelve) and on a row given another subject's anchor.
+// file, so the batches and this check share one source. Every story row (S and CS) of a subject the table gives words ends its
+// style on its subject's anchor. Until pass NY the check read pre-K's S rows alone and let 141 rows of kindergarten and grade 1
+// wait as a count (EARMARKS A45); pass NY, putting every row's subject words and mood in at Mikey's word ("all rows should be
+// updated throughout"), ended those 141 on their own anchors, and the nine pre-K course rows of the picnic the check had never read
+// (CS613 to CS634, Science's anchor on a Math course) and CS37 (none). The picnic's three wide views, a composition written for
+// the whole blanket, are named. Proven failing on pass MO's frozen copy (the twelve) and on a row given another subject's anchor.
+// Since Mikey's answer to Q133 (pass NY, "Q133 - A") the check reads every story row: a subject the table gives no words of its own
+// ends on Reading's anchor where the spreadsheet's reading (tools/prompts-csv.mjs, hasPerson, on the prompt's words before its
+// style) finds a person and on Science's where it finds none; planted, a row of people given Science's anchor and a row of things
+// given Reading's, each caught.
 {
   const py = readFileSync(new URL('../tools/stories/batch.py', import.meta.url), 'utf8');
   const modLine = py.split('\n').find((l) => l.startsWith('MOD = {')) || '';
   const anchors = Object.fromEntries([...modLine.matchAll(/'([A-Za-z]+)': \('[^']+', '([^']+)'\)/g)].map((m) => [m[1], m[2]]));
-  const courseOf = {}; for (const c of COURSES) for (const m of c.modules) courseOf[m.id] = c;
-  const offRows = (text) => text.split('\n').filter((l) => /^\| S\d+ \|/.test(l)).map((l) => l.split(' | ')).filter((cols) => { const c = courseOf[(cols[1] || '').trim()]; const anchor = c && anchors[c.subject]; return anchor && !(cols[3] || '').includes(`uncluttered layout, ${anchor}.`); })
+  // A course story's rows name their course (math-9), the other story rows their module.
+  const courseOf = {}; for (const c of COURSES) { courseOf[c.id] = c; for (const m of c.modules) courseOf[m.id] = c; }
+  const OWN_VIEW = new Set(['CS632', 'CS635', 'CS636']);   // the picnic's wide views from a little above, the whole blanket in view
+  const { hasPerson } = await import('../tools/prompts-csv.mjs');
+  // A row's anchor: its subject's, or for a subject with none of its own Reading's or Science's by the person reading (Q133).
+  const anchorOf = (subject, prompt) => anchors[subject] || (hasPerson(String(prompt).split(/\s*Style:/)[0]) ? anchors.Reading : anchors.Science);
+  const offRows = (text) => text.split('\n').filter((l) => /^\| C?S\d+ \|/.test(l)).map((l) => l.split(' | ')).filter((cols) => { const c = courseOf[(cols[1] || '').trim()]; const anchor = c && anchorOf(c.subject, cols[3] || ''); return anchor && !OWN_VIEW.has(cols[0].slice(2)) && !(cols[3] || '').includes(`uncluttered layout, ${anchor}.`); })
     .map((cols) => ({ serial: cols[0].slice(2), grade: courseOf[cols[1].trim()].grade }));
-  const off = offRows(ledger); const early = off.filter((r) => r.grade === 'PK3' || r.grade === 'PK4'); const later = off.filter((r) => r.grade !== 'PK3' && r.grade !== 'PK4');
+  const off = offRows(ledger);
   const swapped = ledger.replace(/(\| S3919 \|[^\n]*?)uncluttered layout, character-focused, dreamy lighting\./, '$1uncluttered layout, distinct geometric shapes.');
-  const caught = offRows(swapped).some((r) => r.serial === 'S3919');
-  ok(`every pre-K story picture takes its course subject's style anchor (${Object.keys(anchors).length} subjects read from batch.py; ${later.length} rows of kindergarten and up wait as a count that only falls)`, Object.keys(anchors).length >= 5 && early.length === 0 && later.length <= 141 && caught, `pre-K off: ${early.map((r) => r.serial).join(',')}; later ${later.length}`);
+  // S494 (an Art row of a girl drawing cups, Reading's) given Science's anchor, and S496 (an Art row of cups alone, Science's) Reading's.
+  const people = ledger.replace(/(\| S494 \|[^\n]*?)uncluttered layout, character-focused, dreamy lighting\./, '$1uncluttered layout, dynamic close-up, soft shadows.');
+  const things = ledger.replace(/(\| S496 \|[^\n]*?)uncluttered layout, dynamic close-up, soft shadows\./, '$1uncluttered layout, character-focused, dreamy lighting.');
+  const caught = offRows(swapped).some((r) => r.serial === 'S3919') && people !== ledger && offRows(people).some((r) => r.serial === 'S494') && things !== ledger && offRows(things).some((r) => r.serial === 'S496');
+  const rowsRead = ledger.split('\n').filter((l) => /^\| C?S\d+ \|/.test(l) && courseOf[(l.split(' | ')[1] || '').trim()]).length;
+  ok(`every story picture (S and CS) takes its course subject's style anchor, a subject the table gives none Reading's for people and Science's for things (Mikey's answer to Q133), but the picnic's three wide views (${Object.keys(anchors).length} subjects read from batch.py; ${rowsRead} rows read; none waits since pass NY, EARMARKS A45)`, Object.keys(anchors).length >= 5 && rowsRead >= 4733 && off.length === 0 && caught, `off: ${off.map((r) => r.serial).join(',')}`);
+}
+// A story row's modifier, Mikey's answer to Q128 (pass NY, November 23, 2026: "Q128- C (let's prioritize this because I will be
+// working on images soon)."): a story scene or a long story's scene carries its subject's whole "Playful modifier" cell from
+// docs/LEONARDO-BRIEF.md's table and then the scene's mood, two to four words of tools/stories/batch.py's MOOD_WORDS, in that order:
+// "<scene>, imaginative and expressive, storybook style, delighted and warm. Style: ...". A scene holds commas, so the words before
+// ". Style:" are read from their end: the mood is the last piece after a comma (a mood holds none), and the subject's cell stands
+// just before it. Since his word of the same morning ("all rows should be updated throughout") every story row carries both: the
+// 4,250 rows that had carried their subject's first clause alone, the 116 that had carried another subject's (Math's on
+// kindergarten's civics, health, technology and letters rows and on grade 1's S350), the course stories' 58 first pictures in their
+// older form ("warm and detailed, a scene that could hold a whole course") and 21 rows whose mood named a look took a mood each from
+// two mood writers, who read every scene (pass NY). At Mikey's answers to Q132 and Q133 (the same afternoon: "Q132 - A", "Q133 - A")
+// a beat in a Math course (its mood "gentle and warm") carries Math's words without the "cheerful and" a beat gave up in pass MN
+// (RULES-AUDIT's row on each face named), "..., neat, colorful, geometric, gentle and warm", where 64 such rows had carried the mood
+// alone, held by name until his answer; and a subject the table gives no words of its own carries Reading's words where the
+// spreadsheet's reading finds a person and Science's where it finds none. Every row without its words and a mood fails, a new
+// one too. The tools' table is the brief's: batch.py's MOD
+// holds each subject's whole cell as the brief's table has it, word for word, and long-batch.py reads MOD and the mood words from
+// batch.py. And the two tools write the rule: each runs with python3 on a copy of the files it reads and writes, as a writer runs it.
+// Near misses, each caught: a mood row without the table's words, the table's words after the mood, a mood before the first clause
+// alone, a cell of the wrong subject, a row with the table's words and no mood, a row in the older form (a new one and one of the
+// rows that carried it until pass NY), a new row whose mood names a thing, a Math beat with "cheerful and" and one with its mood alone,
+// as until Q132, a row of people of a subject with no words of its own given Science's and a row of things Reading's, and MOD's
+// cell and the brief's each changed alone; and a new row with both passes.
+{
+  const py = readFileSync(new URL('../tools/stories/batch.py', import.meta.url), 'utf8');
+  const lb = readFileSync(new URL('../tools/stories/long-batch.py', import.meta.url), 'utf8');
+  const brief = readFileSync(new URL('../docs/LEONARDO-BRIEF.md', import.meta.url), 'utf8');
+  // The tools' table: each subject's whole cell from batch.py's MOD line; and a list of words from a line of batch.py.
+  const modOf = (text) => Object.fromEntries([...((text.split('\n').find((l) => l.startsWith('MOD = {')) || '').matchAll(/'([A-Za-z]+)': \('([^']+)', '[^']+'\)/g))].map((m) => [m[1], m[2]]));
+  const wordsOf = (text, name) => ((new RegExp('^' + name + " = '([a-z ]+)'\\.split\\(\\)$", 'm').exec(text) || [])[1] || '').split(' ').filter(Boolean);
+  // The brief's table: the playful modifier of each subject its first column names in words ("Reading and Writing" is two). A row
+  // whose cell begins "as" gives no words of its own (the ten subjects of the table's last row), and the tools give such a subject Reading's for people and Science's for things.
+  const briefCells = (text) => { const lines = text.split('\n'); const at = lines.findIndex((l) => /^\| Subject \| Playful modifier \|/.test(l)); const out = {};
+    if (at < 0) return out;
+    for (const l of lines.slice(at + 2)) { if (!l.startsWith('| ')) break; const cells = l.slice(2, -2).split(' | '); if (/^as /.test(cells[1])) continue; for (const s of cells[0].split(/, | and /)) out[s] = cells[1]; }
+    return out; };
+  const MOD = modOf(py); const BRIEF = briefCells(brief);
+  const sameTable = (mod, cells) => Object.keys(mod).length >= 5 && Object.keys(cells).length === Object.keys(mod).length && Object.keys(mod).every((s) => mod[s] === cells[s]);
+  const WORDS = new Set(wordsOf(py, 'MOOD_WORDS')); const JOIN = new Set(wordsOf(py, 'MOOD_JOINERS'));
+  // A mood: two to four words of MOOD_WORDS, a joining word only between two of them (batch.py's mood_problem, the same rule), and
+  // since round one's code read of pass NY never two joining words together and no word said twice, and since round two's never with
+  // no joining word at all.
+  const moodOk = (mood) => { const w = String(mood).split(' '); const said = w.filter((x) => !JOIN.has(x));
+    return WORDS.size >= 20 && w.length >= 2 && w.length <= 4 && w.every((x) => WORDS.has(x) || JOIN.has(x)) && !JOIN.has(w[0]) && !JOIN.has(w[w.length - 1])
+      && !w.some((x, i) => i > 0 && JOIN.has(x) && JOIN.has(w[i - 1])) && new Set(said).size === said.length
+      && w.some((x) => JOIN.has(x)); };
+  const subjectOf = {}; for (const c of COURSES) { subjectOf[c.id] = c.subject; for (const m of c.modules) subjectOf[m.id] = c.subject; }
+  // A row's words (Mikey's answers to Q132 and Q133): its subject's cell, a Math beat's without "cheerful and", and a subject with no
+  // words of its own Reading's or Science's by the spreadsheet's reading of a person in the words before its style.
+  const { hasPerson } = await import('../tools/prompts-csv.mjs');
+  const cellFor = (subject, head, mood, mod) => {
+    if (!(subject in mod)) return hasPerson(head) ? mod.Reading : mod.Science;
+    return mood === 'gentle and warm' && mod[subject].startsWith('cheerful and ') ? mod[subject].slice('cheerful and '.length) : mod[subject]; };
+  const judge = (text, mod = MOD) => { const out = { both: 0, bad: [] };
+    for (const line of text.split('\n')) {
+      const m = /^\| ((S|CS)(\d+)) \| ([^|]+?) \| /.exec(line); if (!m) continue;
+      const prompt = line.split(' | ')[3] || ''; const at = prompt.indexOf('. Style:'); const subject = subjectOf[m[4]];
+      if (at < 0 || subject === undefined || !mod.Reading || !mod.Science) { out.bad.push(m[1] + ' (unread)'); continue; }
+      const head = prompt.slice(0, at); const pieces = head.split(', '); const last = pieces[pieces.length - 1]; const cell = cellFor(subject, head, last, mod); const tail = ', ' + cell + ', ' + last;
+      if (head.endsWith(tail) && head.length > tail.length) { if (moodOk(last)) out.both++; else out.bad.push(m[1] + ' (its words after the cell are not two to four words of MOOD_WORDS)'); continue; }
+      out.bad.push(m[1] + ' (without its words and a mood)');
+    }
+    return out; };
+  const now = judge(ledger);
+  // The near misses, on S3923 (Listen and Point, Reading) as the rows carry it since pass NY, on S3886 (held), and on rows added
+  // after the day's last serials.
+  const rowS3923 = ledger.split('\n').find((l) => l.startsWith('| S3923 |')) || ''; const MINE = ', imaginative and expressive, storybook style, gentle and warm. Style:';
+  const asS3923 = (words) => (rowS3923.includes(MINE) ? ledger.split(rowS3923).join(rowS3923.split(MINE).join(words + '. Style:')) : '');
+  const added = (serial, module, modifier) => ledger + '\n| ' + serial + ' | ' + module + ' | A planted row | A small girl reading on a rug, ' + modifier + '. Style: Clean 3D vector illustration, balanced lighting, uncluttered layout, character-focused, dreamy lighting. | text, words | Needed |';
+  const caught = (text, serial) => !!text && judge(text).bad.some((b) => b.split(' ')[0] === serial);
+  const rowS3886 = ledger.split('\n').find((l) => l.startsWith('| S3886 |')) || ''; const BEAT_WORDS = ', neat, colorful, geometric, gentle and warm. Style:';
+  const asRow = (row, from, to) => (row && row.includes(from) ? ledger.split(row).join(row.split(from).join(to)) : '');
+  const rowS494 = ledger.split('\n').find((l) => l.startsWith('| S494 |')) || ''; const rowS496 = ledger.split('\n').find((l) => l.startsWith('| S496 |')) || '';
+  const NEAR = {
+    'a mood row without the table\'s words': caught(asS3923(', gentle and warm'), 'S3923'),
+    'the table\'s words after the mood': caught(asS3923(', gentle and warm, imaginative and expressive, storybook style'), 'S3923'),
+    'a mood before the first clause alone': caught(asS3923(', gentle and warm, imaginative and expressive'), 'S3923'),
+    'a cell of the wrong subject': caught(asS3923(', cheerful and neat, colorful, geometric, gentle and warm'), 'S3923'),
+    'a new row with the table\'s words and no mood': caught(added('S4229', 'two-ideas', 'imaginative and expressive, storybook style'), 'S4229'),
+    'a new row in the older form': caught(added('CS661', 'listen-and-point-pk3', 'imaginative and expressive'), 'CS661'),
+    'a row in the older form, as 4,250 were until pass NY': caught(asS3923(', imaginative and expressive'), 'S3923'),
+    'a new row whose mood names a thing': caught(added('S4229', 'two-ideas', 'imaginative and expressive, storybook style, a red ball'), 'S4229'),
+    'a new row whose mood says two joining words together': caught(added('S4229', 'two-ideas', 'imaginative and expressive, storybook style, calm and and warm'), 'S4229'),
+    'a new row whose mood says one word twice': caught(added('S4229', 'two-ideas', 'imaginative and expressive, storybook style, calm calm'), 'S4229'),
+    'a new row whose mood has no joining word': caught(added('S4229', 'two-ideas', 'imaginative and expressive, storybook style, calm patient'), 'S4229'),
+    'a new row with both passes': !!rowS3923 && !caught(added('S4229', 'two-ideas', 'imaginative and expressive, storybook style, calm and warm'), 'S4229'),
+    'a Math beat with "cheerful and", the whole cell': caught(asRow(rowS3886, BEAT_WORDS, ', cheerful and neat, colorful, geometric, gentle and warm. Style:'), 'S3886'),
+    'a Math beat with its mood alone, as until Q132': caught(asRow(rowS3886, BEAT_WORDS, ', gentle and warm. Style:'), 'S3886'),
+    'a row of people of a subject with no words of its own given Science\'s (Q133)': caught(asRow(rowS494, ', imaginative and expressive, storybook style, ', ', wonder-filled and vibrant, stylized, curious, '), 'S494'),
+    'a row of things of a subject with no words of its own given Reading\'s (Q133)': caught(asRow(rowS496, ', wonder-filled and vibrant, stylized, curious, ', ', imaginative and expressive, storybook style, '), 'S496') };
+  const missed = Object.keys(NEAR).filter((k) => !NEAR[k]);
+  ok(`every story row carries its subject's whole modifier from docs/LEONARDO-BRIEF.md's table and then a mood, in that order (Mikey's answer to Q128, "Q128- C", and his word of pass NY, "all rows should be updated throughout"), a Math beat Math's words without "cheerful and" (Q132) and a subject with no words of its own Reading's for people and Science's for things (Q133) (${now.both} rows carry both; near misses caught: ${Object.keys(NEAR).length - missed.length} of ${Object.keys(NEAR).length})`,
+    now.bad.length === 0 && now.both >= 4733 && missed.length === 0, `wrong: ${now.bad.slice(0, 8).join(', ')}; near misses missed: ${missed.join('; ')}`);
+  // The tools' table is the brief's, and long-batch.py takes it and the mood words from batch.py. Planted: MOD's Reading cell
+  // changed alone, and the brief's, each caught.
+  const PY_CELL = "'Reading': ('imaginative and expressive, storybook style', "; const BRIEF_CELL = '| Reading and Writing | imaginative and expressive, storybook style |';
+  const modAlone = py.includes(PY_CELL) && !sameTable(modOf(py.split(PY_CELL).join("'Reading': ('imaginative and expressive, picture-book style', ")), BRIEF);
+  const briefAlone = brief.includes(BRIEF_CELL) && !sameTable(MOD, briefCells(brief.split(BRIEF_CELL).join('| Reading and Writing | imaginative and expressive, picture-book style |')));
+  const longReads = lb.includes("open('tools/stories/batch.py')") && /^b = .*MOD = eval\(re\.search\(r'\^MOD = /m.test(lb) && /MOOD_WORDS = re\.search\(r"\^MOOD_WORDS = /.test(lb);
+  ok(`the story tools' table is the brief's: tools/stories/batch.py's MOD holds each subject's whole playful modifier as docs/LEONARDO-BRIEF.md's table has it, word for word (${Object.keys(MOD).join(', ')}), and long-batch.py reads MOD and the mood words from batch.py; MOD's cell and the brief's, each changed alone, planted, caught (Q128 (c))`,
+    sameTable(MOD, BRIEF) && modAlone && briefAlone && longReads, JSON.stringify({ MOD, BRIEF, modAlone, briefAlone, longReads }));
+  // The two tools write the rule, each run with python3 on a copy of the files it reads and writes, beside the tree's src/logic.mjs
+  // (which imports nothing). batch.py is given tools/stories/batch-example.py itself, its main picture's alt and its last picture's
+  // changed and one picture added, so the example's own moods are read: it rewrites the main picture's older template row (an older
+  // row read as the template's; planted in that form, since no row carries it after pass NY) and the last picture's (its own mood), and adds S4229 at the end of the story scenes with one blank
+  // line before the Course stories heading (pass NY: the driver had stopped on any new row since S4228's row came to touch the
+  // heading), each with Science's whole cell and a mood, keeping the rows whose alts it kept, a hand-written one among them; with
+  // them, an Art story's main row (Elements of art, a subject with no words of its own in the table, its scene a girl at an art
+  // table) takes Reading's words, its mood and Reading's anchor (Mikey's answer to Q133, pass NY), and a Math story's beat, its alt
+  // changed with the mood "gentle and warm", Math's words without "cheerful and" (his answer to Q132), its other picture Math's whole
+  // cell. Given a mood of each wrong kind (a thing, one word, a joining word at the end, none), it stops, names each picture with
+  // why, and writes nothing, and given those beside a changed alt on a row with a check note, it names each under each of its two
+  // stops and writes nothing; given the main alt changed
+  // again, it rewrites the row it wrote (a row of the new form read as the template's, never as hand-written). long-batch.py, given
+  // reading-3's and art-3's long stories as they stand with a story mood and one picture's own, writes their rows with Reading's
+  // whole cell (art-3's of people too, Science's for its painting alone, by the person reading) and those moods, and given reading-3's with a mood of each wrong kind, stops and writes nothing.
+  const { mkdtempSync, mkdirSync, copyFileSync, symlinkSync, writeFileSync, rmSync } = await import('node:fs'); const { spawnSync } = await import('node:child_process');
+  const { tmpdir } = await import('node:os'); const { join } = await import('node:path'); const { fileURLToPath } = await import('node:url');
+  const root = fileURLToPath(new URL('..', import.meta.url)); const dirs = [];
+  // A copy of the files the story tools read and write, in a folder of its own.
+  const copy = () => { const dir = mkdtempSync(join(tmpdir(), 'edu-batch-')); dirs.push(dir);
+    for (const d of ['src', 'docs', 'tools/stories']) mkdirSync(join(dir, d), { recursive: true });
+    symlinkSync(join(root, 'src/logic.mjs'), join(dir, 'src/logic.mjs'));
+    // The person reading the drivers run (Q133): the spreadsheet's own, linked as logic.mjs is.
+    for (const f of ['tools/prompts-csv.mjs', 'tools/coloring-levels.mjs']) symlinkSync(join(root, f), join(dir, f));
+    for (const f of ['src/stories.mjs', 'docs/ART-REQUESTS.md', 'tools/stories/batch.py', 'tools/stories/long-batch.py']) copyFileSync(join(root, f), join(dir, f));
+    return dir; };
+  // A tool run on a copy with a batch file: its exit code and everything it printed.
+  const runTool = (dir, tool, batch) => { writeFileSync(join(dir, 'batch-file.py'), batch); const r = spawnSync('python3', ['tools/stories/' + tool, 'batch-file.py'], { cwd: dir, encoding: 'utf8', timeout: 120000 });
+    return { code: r.status, said: (r.stdout || '') + (r.stderr || '') + (r.error ? String(r.error) : '') }; };
+  const fileOf = (dir, f) => readFileSync(join(dir, f), 'utf8');
+  const rowOf = (dir, serial) => fileOf(dir, 'docs/ART-REQUESTS.md').split('\n').find((l) => l.startsWith('| ' + serial + ' |')) || '';
+  // The words a row's prompt carries after its scene and its subject's cell, up to ". Style:" (its mood), or null.
+  const moodAfter = (row, cell) => { const c = row.split(' | '); const lead = (c[2] || '').replace(/ \(check: .*\)$/, '') + ', ' + cell + ', '; return c[3] && c[3].startsWith(lead) ? c[3].slice(lead.length).split('. Style:')[0] : null; };
+  const example = readFileSync(new URL('../tools/stories/batch-example.py', import.meta.url), 'utf8');
+  // A story's words as a Python string the drivers read: apostrophes as APOS, every other mark kept.
+  const pyString = (v) => JSON.stringify(String(v).replace(/'/g, 'APOS')).replace(/[^\x00-\x7f]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
+  // An Art story (Elements of art, grade 3), a subject with no words of its own in the table, its main alt changed, with a mood.
+  const art = STORIES['elements-of-art'];
+  const artStory = "\nNEW['elements-of-art'] = dict(about=" + pyString(art.about) + ', title=' + pyString(art.title) + ", bg='art room', mood='curious and bright', alt=" + pyString(art.alt + ' in the sun')
+    + ', more=[' + art.more.map((m, i) => '(' + pyString(m.alt + (i === art.more.length - 1 ? ' in the sun' : '')) + ', ' + m.after + ')').join(', ') + '], words=[' + art.words.map(pyString).join(', ') + '])\n';
+  // Its last picture, cups pinned on a wall, shows no one: given a new alt too, its row takes Science's words and anchor (round two's
+  // code read of pass NY, its M2: with only the girl's row changed, a style_for that gave Reading's to every such subject passed).
+  const artThings = art.more[art.more.length - 1];
+  // The example's story with its main alt and its last picture's alt changed (the last keeps its own mood) and a picture added, and
+  // the Art story; or, with bad moods, one of each kind the driver refuses, a thing (the main picture's own), one word (the last
+  // picture's), a joining word at the end (the third extra picture's, its alt changed too) and none (the added picture, the story's
+  // mood taken out); and with a hand-written row too, a changed alt on S442, whose row is planted with a check note, so both of the
+  // driver's stops are printed.
+  const BAD_MOODS = "_d.pop('mood', None); _d['alt_mood'] = 'a red ball'\n_d['more'][2] = (_d['more'][2][0] + ' on the mat', _d['more'][2][1], None, 'warm and')\n_d['more'][3] = _d['more'][3][:3] + ('warm',)\n"
+    // Since round one's code read of pass NY, two pictures more whose moods say two joining words together and a word twice, and since
+    // round two's a third whose mood has no joining word.
+    + "_d['more'] = _d['more'] + [('The girl holding up the rock', 6, None, 'calm and and warm'), ('The girl holding up the pillow', 6, None, 'calm calm'), ('The girl holding up the cup', 6, None, 'calm patient')]\n";
+  // A hand-written row is one the template did not write: S442 carries a check note, and since round one's code read of pass NY S441's
+  // prompt carries a thing where its mood would be ("scene, cell, a red ball"), which template_start reads as no mood, so its alt
+  // changed stops the driver as a hand-written row's does, where its words would be overwritten.
+  const HAND_ALT = "_d['more'][0] = (_d['more'][0][0] + ' on the mat', _d['more'][0][1])\n_d['more'][1] = (_d['more'][1][0] + ' on the mat', _d['more'][1][1])\n";
+  const changed = (alt, bad = '') => example + "\n_d = NEW['hard-or-soft']\n_d['alt'] = _d['alt'] + ' " + alt + "'\n"
+    + "_d['more'] = _d['more'][:-1] + [(_d['more'][-1][0] + ' on the mat',) + tuple(_d['more'][-1][1:]), ('The girl smiling beside the sorted pairs', 6)]\n"
+    + (bad ? BAD_MOODS + (bad === 'moods and hand' ? HAND_ALT : '') : artStory);
+  let ran = {};
+  try {
+    const A = copy(); const S442 = rowOf(A, 'S442'); const handNote = ' | A hand pressing a hard rock and a soft pillow (check: one hand) | ';
+    writeFileSync(join(A, 'docs/ART-REQUESTS.md'), fileOf(A, 'docs/ART-REQUESTS.md').split(S442).join(S442.split(' | A hand pressing a hard rock and a soft pillow | ').join(handNote)));
+    // The main picture's row in the older form, its subject's first clause alone, as 4,250 rows were until pass NY.
+    const S440 = rowOf(A, 'S440'); const S440old = S440.split(', ' + MOD.Science + ', curious and playful. Style:').join(', ' + MOD.Science.split(', ')[0] + '. Style:');
+    writeFileSync(join(A, 'docs/ART-REQUESTS.md'), fileOf(A, 'docs/ART-REQUESTS.md').split(S440).join(S440old));
+    const plantedOld = S440old !== S440 && S440old.includes(', wonder-filled and vibrant. Style:');
+    // S441's prompt with a thing where its mood is, a hand-written row by template_start's reading (round one's code read of pass NY).
+    const S441 = rowOf(A, 'S441'); const S441hand = S441.split(', ' + MOD.Science + ', ').length === 2 ? S441.replace(/(, wonder-filled and vibrant, stylized, curious, )[a-z ]+(\. Style:)/, '$1a red ball$2') : '';
+    writeFileSync(join(A, 'docs/ART-REQUESTS.md'), fileOf(A, 'docs/ART-REQUESTS.md').split(S441).join(S441hand));
+    const plantedHand = !!S441hand && S441hand !== S441 && S441hand.includes(', curious, a red ball. Style:');
+    const ledgerA = fileOf(A, 'docs/ART-REQUESTS.md'); const storiesA = fileOf(A, 'src/stories.mjs'); const kept = ['S441', 'S442', 'S1740'].map((s) => rowOf(A, s));
+    const reasons = ['S440 (not words of MOOD_WORDS: a red ball)', 'S1740 (begins or ends on a joining word)', 'S1741 (not two to four words)', 'S4229 (no mood)', 'S4230 (two joining words together)', 'S4231 (one word said twice)', 'S4232 (no joining word)'];
+    const untouched = () => fileOf(A, 'docs/ART-REQUESTS.md') === ledgerA && fileOf(A, 'src/stories.mjs') === storiesA;
+    const refused = runTool(A, 'batch.py', changed('in the sun', 'moods'));
+    const refusedWell = refused.code === 1 && reasons.every((x) => refused.said.includes(x)) && !/hand-written/.test(refused.said) && untouched();
+    const refusedBoth = runTool(A, 'batch.py', changed('in the sun', 'moods and hand'));
+    const refusedBothWell = plantedHand && refusedBoth.code === 1 && rowOf(A, 'S442').includes('(check: one hand)') && /hand-written ledger rows and new alts[^\n]*S441, S442/.test(refusedBoth.said)
+      && reasons.every((x) => refusedBoth.said.includes(x)) && untouched();
+    const wrote = runTool(A, 'batch.py', changed('in the sun'));
+    const main = rowOf(A, 'S440'); const last = rowOf(A, 'S1741'); const fresh = rowOf(A, 'S4229'); const sci = MOD.Science;
+    const wroteWell = plantedOld && wrote.code === 0 && main.includes(' in the sun |') && moodOk(moodAfter(main, sci)) && moodOk(moodAfter(last, sci)) && moodAfter(last, sci) !== moodAfter(main, sci)
+      && last.includes('minimalist bathroom background') && moodAfter(fresh, sci) === moodAfter(main, sci) && fileOf(A, 'docs/ART-REQUESTS.md').includes(fresh + '\n\n## Course stories (CS serials)')
+      && kept.every((r, i) => !!r && rowOf(A, ['S441', 'S442', 'S1740'][i]) === r) && hasPerson(art.alt) && moodAfter(rowOf(A, art.art), MOD.Reading) === 'curious and bright' && rowOf(A, art.art).includes('uncluttered layout, character-focused, dreamy lighting.')
+      && !hasPerson(artThings.alt + ' in the sun') && moodAfter(rowOf(A, artThings.serial), sci) === 'curious and bright' && rowOf(A, artThings.serial).includes(' in the sun |') && rowOf(A, artThings.serial).includes('uncluttered layout, dynamic close-up, soft shadows.');
+    // Mikey's answers to Q132 and Q133 (pass NY): a Math story's beat whose alt changes, with the mood "gentle and warm", is written
+    // with Math's words without "cheerful and", and its other picture with its own mood with Math's whole cell.
+    const M = copy(); const tt = STORIES['telling-time'];
+    const ttMore = tt.more.map((m, i) => '(' + pyString(m.alt + (i < 2 ? ' in the rain' : '')) + ', ' + m.after + (i === 0 ? ", None, 'calm and warm'" : i === 1 ? ", None, 'gentle and warm'" : '') + ')');
+    const mathRan = runTool(M, 'batch.py', "NEW['telling-time'] = dict(about=" + pyString(tt.about) + ', title=' + pyString(tt.title) + ", bg='town square', mood='curious and bright', alt=" + pyString(tt.alt)
+      + ', more=[' + ttMore.join(', ') + '], words=[' + tt.words.map(pyString).join(', ') + '])\n');
+    const beatRow = rowOf(M, tt.more[1].serial); const calmRow = rowOf(M, tt.more[0].serial);
+    const mathWell = mathRan.code === 0 && beatRow.includes(' in the rain |') && moodAfter(beatRow, 'neat, colorful, geometric') === 'gentle and warm' && !beatRow.includes('cheerful')
+      && beatRow.includes('uncluttered layout, distinct geometric shapes.') && moodAfter(calmRow, MOD.Math) === 'calm and warm';
+    const again = runTool(A, 'batch.py', changed('in the shade'));
+    const againWell = again.code === 0 && rowOf(A, 'S440').includes(' in the shade |') && moodOk(moodAfter(rowOf(A, 'S440'), sci));
+    const F = copy(); const story = COURSE_STORIES['reading-3']; const art3 = COURSE_STORIES['art-3']; const ledgerF = fileOf(F, 'docs/ART-REQUESTS.md'); const storiesF = fileOf(F, 'src/stories.mjs');
+    // A long story as it stands, with a story mood and its third picture's own; or, for reading-3, no story mood and one picture's own
+    // of each kind the driver refuses (a thing, one word, a joining word at the start), the last two with none.
+    const own = (mood) => (mood ? ['', '', ", 'playful and bright'", '', ''] : [", 'a red ball'", ", 'warm'", ", 'and warm'", '', '']);
+    const entry = (id, s, mood, owns = own(mood), alt = s.alt) => pyString(id) + ': dict(about=' + pyString(s.about) + ', alt=' + pyString(alt) + (mood ? ", mood='" + mood + "'" : '') + ', more=['
+      + s.more.map((m, i) => '(' + pyString(m.alt) + ', ' + m.after + owns[i] + ')').join(', ') + '], words=[' + s.words.map(pyString).join(', ') + '])';
+    // Since round one's code read of pass NY art-3's main picture is given a new scene, so its row takes the story's mood with it, where it
+    // had kept "full of wonder", written for the scene it replaced; reading-3's keeps its scene and its own mood.
+    // art-3's main picture is given a new scene of things alone (round two's code read of pass NY, its M2: a new scene of people kept the
+    // old row's cell and anchor right by chance), so its row takes Science's words and anchor with the story's mood.
+    const ART3_THINGS = 'A large painting of a boat in a storm on a museum wall';
+    const longBatch = (mood) => 'NEW = { ' + entry('reading-3', story, mood) + (mood ? ', ' + entry('art-3', art3, mood, own(mood), ART3_THINGS) : '') + " }\nBG = { 'reading-3': 'classroom', 'art-3': 'museum' }\n";
+    // The two faults since round one's code read of pass NY: the story's own mood says two joining words together, and its main picture
+    // has a new scene, so the main row, which takes the story's mood, stops the driver (every picture has a mood of its own, all good
+    // but the first, which says a word twice, and, since round two's code read, the second, which has no joining word).
+    const longNew = 'NEW = { ' + entry('reading-3', story, 'calm and and warm', [", 'calm calm'", ", 'calm patient'", ", 'curious and warm'", ", 'curious and warm'", ", 'curious and warm'"], story.alt + ' in the sun') + " }\nBG = { 'reading-3': 'classroom' }\n";
+    const longRefused = runTool(F, 'long-batch.py', longBatch(null));
+    const longRefusedWell = longRefused.code === 1 && ['CS68 (not words of MOOD_WORDS: a red ball)', 'CS69 (not two to four words)', 'CS70 (begins or ends on a joining word)', 'CS71 (no mood)', 'CS72 (no mood)'].every((x) => longRefused.said.includes(x))
+      && fileOf(F, 'docs/ART-REQUESTS.md') === ledgerF && fileOf(F, 'src/stories.mjs') === storiesF;
+    const longNewRefused = runTool(F, 'long-batch.py', longNew);
+    const longNewWell = longNewRefused.code === 1 && [`${story.art} (two joining words together)`, 'CS68 (one word said twice)', 'CS69 (no joining word)'].every((x) => longNewRefused.said.includes(x)) && !/CS7[0-2] \(/.test(longNewRefused.said)
+      && fileOf(F, 'docs/ART-REQUESTS.md') === ledgerF && fileOf(F, 'src/stories.mjs') === storiesF;
+    // Mikey's answer to Q132 in long-batch.py too: math-4's second picture with its own mood "gentle and warm" takes Math's words
+    // without "cheerful and", its first the story's mood after Math's whole cell.
+    const G = copy(); const m4 = COURSE_STORIES['math-4'];
+    const mathLong = runTool(G, 'long-batch.py', 'NEW = { ' + entry('math-4', m4, 'curious and warm', ['', ", 'gentle and warm'", '', '', '']) + " }\nBG = { 'math-4': 'community center' }\n");
+    const mathLongWell = mathLong.code === 0 && m4.more.length === 5 && moodAfter(rowOf(G, m4.more[1].serial), 'neat, colorful, geometric') === 'gentle and warm' && !rowOf(G, m4.more[1].serial).includes('cheerful')
+      && moodAfter(rowOf(G, m4.more[0].serial), MOD.Math) === 'curious and warm';
+    const readingMain = rowOf(F, story.art);
+    const longWrote = runTool(F, 'long-batch.py', longBatch('curious and warm'));
+    const longWroteWell = longWrote.code === 0 && story.more.length === 5 && art3.more.length === 5
+      && [[story, () => MOD.Reading], [art3, (m) => (hasPerson(m.alt) ? MOD.Reading : sci)]].every(([s, cellOf]) => s.more.every((m, i) => moodAfter(rowOf(F, m.serial), cellOf(m)) === (i === 2 ? 'playful and bright' : 'curious and warm')))
+      && art3.more.some((m) => hasPerson(m.alt)) && art3.more.some((m) => !hasPerson(m.alt)) && art3.more.every((m) => rowOf(F, m.serial).includes('uncluttered layout, ' + (hasPerson(m.alt) ? 'character-focused, dreamy lighting' : 'dynamic close-up, soft shadows') + '.'))
+      && hasPerson(art3.alt) && !hasPerson(ART3_THINGS) && (rowOf(F, art3.art).split(' | ')[3] || '').startsWith(ART3_THINGS + ', ') && moodAfter(rowOf(F, art3.art), sci) === 'curious and warm' && rowOf(F, art3.art).includes('uncluttered layout, dynamic close-up, soft shadows.') && rowOf(F, story.art) === readingMain && moodAfter(readingMain, MOD.Reading) === 'proud and lively';
+    ran = { refusedWell, refusedBothWell, wroteWell, againWell, mathWell, longRefusedWell, longNewWell, longWroteWell, mathLongWell, said: [refused, refusedBoth, wrote, again, mathRan, longRefused, longNewRefused, longWrote, mathLong].map((r) => r.code + ' ' + r.said.trim().slice(-240)) };
+  } finally { for (const d of dirs) rmSync(d, { recursive: true, force: true }); }
+  ok('the story tools write a story row\'s subject words and then its mood, and stop without one, each run on a copy (Q128 (c)): batch.py, given tools/stories/batch-example.py with alts changed and a picture added, rewrites an older template row and the picture with its own mood and adds S4229 before the Course stories heading, each with Science\'s whole cell and a mood, as an Art story\'s row of a girl takes Reading\'s words and anchor and its row of cups alone Science\'s (Q133), keeps the rows whose alts it kept, stops with nothing written on a mood of each wrong kind, alone and beside a hand-written row\'s new alt, naming each, and rewrites a row it wrote when its alt changes again; given a Math story\'s beat, writes Math\'s words without "cheerful and" (Q132); long-batch.py writes reading-3\'s rows with Reading\'s whole cell and art-3\'s with Reading\'s for its people and Science\'s for its painting alone, its main row\'s new scene of a painting alone taking Science\'s words and anchor (Q133), and math-4\'s beat with Math\'s words without "cheerful and" (Q132), with their moods, and stops with nothing written on a mood of each wrong kind',
+    ran.refusedWell && ran.refusedBothWell && ran.wroteWell && ran.againWell && ran.mathWell && ran.longRefusedWell && ran.longNewWell && ran.longWroteWell && ran.mathLongWell, JSON.stringify(ran));
 }
 // Two people who look alike (pass MX, round two's content read: Gran's tangerine coat a lesson after a white-haired grandma's
 // marigold sweater, the look class every pass since MO has met, each time found by a person reading). tools/look-echoes.mjs reads

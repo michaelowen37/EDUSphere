@@ -1697,21 +1697,29 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     JSON.stringify({ c: dig(q85), rows: rows.length, corrected, counts, named, plants })); }
 // A screen change had its screen read, and every pass its alignment read (EARMARKS L29, pass NX; pass NR's weekly flow review, its second
 // recommendation: passes NN, NO and NQ changed words on learner and educator screens with no screen read, and pass NP left out the
-// alignment read for the third pass running). This test cannot run a diff, so from pass NX on each DECISIONS entry says what one showed in
-// one bullet, in one of two forms:
+// alignment read for the third pass running), or since pass NY, in a pass that changed nothing a learner or an educator sees, its final
+// read. Mikey's answer to Q127, "Q127- A", runs the alignment read "Only in a pass that changes a lesson, a bank, a story, a Wonder
+// question, a standard's record or a screen a learner or an educator sees; any other pass names the node tools/content-diff.mjs run that
+// shows it changed none of them, and its final read still reads conflicts, drift and the plan". This test cannot run a diff, so from pass
+// NX on each DECISIONS entry says what one showed in one bullet, in one of two forms:
 //   - **Screen words.** Changed: <what changed, on which screens>, read by <the read> screen read (<its model and count>; reports/<file>.md).
 //     The alignment read: <the read> alignment read (<its model and count>; reports/<file>.md).
 //   - **Screen words.** Unchanged: node tools/content-diff.mjs <the copy the pass began from> [--scope <courses>] changed no words a
-//     learner or an educator sees (<what it listed, and where its output is kept>). The alignment read: <as above>.
-// A changed bullet names a screen read with its report in the parenthesis after its name, an unchanged one the content-diff run with its
-// copy, and either the alignment read with its report the same way; "no screen read" and "no alignment read" are never a name, and an entry
-// holds exactly one such bullet. The content diff lists src/ui.jsx by its fingerprint alone (code:src/ui.jsx), so where that changed the
-// bullet says what changed in it. Every entry from pass NX on is held, and the newest entry once it is pass NX's or later, or names no pass
-// in the heading form, as the packet's honest count holds it; until pass NX's entry is written the newest is pass NW's, which is not held.
+//     learner or an educator sees (<what it listed, and where its output is kept>). The alignment read: <as above>; or, since Q127 (a),
+//     the final read: <the read> final read (<its model and count>; reports/<file>.md).
+// A changed bullet names a screen read and the alignment read, each with its report in the parenthesis after its name; an unchanged one
+// names the content-diff run with its copy, and the alignment read or the final read with its report the same way (either is enough, and
+// both may stand); "no screen read", "no alignment read" and "no final read" are never a name, and an entry holds exactly one such bullet.
+// The content diff lists src/ui.jsx by its fingerprint alone (code:src/ui.jsx), so where that changed the bullet says what changed in it.
+// Every entry from pass NX on is held, and the newest entry once it is pass NX's or later, or names no pass in the heading form, as the
+// packet's honest count holds it; until pass NX's entry is written the newest is pass NW's, which is not held.
 // Planted, each a made entry put before "## Open items" in a copy of the file and read as the newest, each giving exactly its faults: the
-// two forms, passed; a change that names no screen read, one that names it with no report, one whose report is the code read's, and one that
-// says no screen read; no change with no content-diff run, and with the tool named and not run; no alignment read, one named with no report,
-// and one that says no alignment read; no bullet, two bullets, a bullet that opens with neither word, a heading out of the form; a pass NX
+// two forms, passed, and since pass NY an unchanged bullet that names the final read with its report and no alignment read, and one that
+// says no alignment read and names the final read, passed; a change that names no screen read, one that names it with no report, one whose
+// report is the code read's, and one that says no screen read; no change with no content-diff run, and with the tool named and not run; no
+// alignment read, one named with no report, and one that says no alignment read; since pass NY, an unchanged bullet that names neither
+// read, one that names the final read with no report, one that says no final read, and a changed bullet that names the final read in place
+// of the alignment read, each caught; no bullet, two bullets, a bullet that opens with neither word, a heading out of the form; a pass NX
 // entry with no bullet under a pass NY entry in the form, caught, since every entry from pass NX on is held; and a pass NW entry with no
 // bullet, not held.
 { const { readFileSync: readText } = await import('node:fs');
@@ -1726,7 +1734,11 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     if (!how) out.push('opens with neither Changed nor Unchanged');
     if (how === 'Changed' && !readWith('screen read')) out.push('changed, and names no screen read with its report');
     if (how === 'Unchanged' && !/\bnode tools\/content-diff\.mjs \S+/.test(b)) out.push('unchanged, and names no content-diff run');
-    if (!readWith('alignment read')) out.push('names no alignment read with its report');
+    // The reads a bullet must name: a changed one (or one that opens with neither word) the alignment read; an unchanged one, since
+    // Mikey's answer to Q127 (a) in pass NY, the alignment read or the final read.
+    const aligned = readWith('alignment read');
+    if (how === 'Unchanged' && !aligned && !readWith('final read')) out.push('unchanged, and names neither the alignment read nor the final read with its report');
+    if (how !== 'Unchanged' && !aligned) out.push('names no alignment read with its report');
     return out; };
   const newestHeld = (text) => { const heads = [...text.matchAll(/^## (\d{4}-\d{2}-\d{2})[^\n]*$/gm)]; const last = heads[heads.length - 1];
     if (!last) return { owed: true, faults: ['no dated entry'], code: '' };
@@ -1738,10 +1750,18 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const al = ' The alignment read: round two\'s alignment read (Fable 5.2: 200,000 tokens; reports/r2-alignment-fable.md).';
   const changed = '- **Screen words.** Changed: the classroom card\'s Action Item line, read by round one\'s screen read (Opus 5.5: 300,000 tokens; reports/r1-screen-opus.md).';
   const unchanged = '- **Screen words.** Unchanged: node tools/content-diff.mjs /home/claude/nx/base changed no words a learner or an educator sees (its output in runs/content-diff.md).';
+  // The final read, which an unchanged bullet may name in place of the alignment read since Mikey's answer to Q127 (a), pass NY.
+  const fin = ' The final read: round one\'s final read (Fable 5.2: 180,000 tokens; reports/final-r1-fable.md).';
   const made = (bullet) => head + bullet + '\n';
   const PLANTS = [
     ['a change read by its screen read, and the alignment read', made(changed + al), ''],
     ['no change, by the content-diff run, and the alignment read', made(unchanged + al), ''],
+    ['no change, by the content-diff run, and the final read with its report and no alignment read (Q127 (a))', made(unchanged + fin), ''],
+    ['no change, a bullet that says no alignment read and names the final read with its report (Q127 (a))', made(unchanged + ' No alignment read ran, by Q127 (a).' + fin), ''],
+    ['no change, naming neither the alignment read nor the final read', made(unchanged), 'unchanged, and names neither the alignment read nor the final read with its report'],
+    ['no change, the final read named with no report', made(unchanged + ' The final read: round one\'s final read.'), 'unchanged, and names neither the alignment read nor the final read with its report'],
+    ['no change, a bullet that says no final read', made(unchanged + ' No final read (reports/final-r1-fable.md) ran.'), 'unchanged, and names neither the alignment read nor the final read with its report'],
+    ['a change that names the final read in place of the alignment read', made(changed + fin), 'names no alignment read with its report'],
     ['a change that names no screen read', made('- **Screen words.** Changed: the classroom card\'s Action Item line.' + al), 'changed, and names no screen read with its report'],
     ['a change whose screen read has no report', made('- **Screen words.** Changed: the classroom card\'s Action Item line, read by round one\'s screen read.' + al), 'changed, and names no screen read with its report'],
     ['a change whose only report is the code read\'s', made('- **Screen words.** Changed: the classroom card\'s Action Item line, read by round one\'s code read (Fable 5.2; reports/r1-code-fable.md).' + al), 'changed, and names no screen read with its report'],
@@ -1763,7 +1783,7 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const under = unkeptOf(withEntry(made('- **For future passes:** nothing new (made).') + '\n' + made(changed + al).replace('2026-11-22 (pass NX)', '2026-11-23 (pass NY)')));
   const held = entriesOf(dec).filter((e) => codeOf(e) >= FROM); const unkept = unkeptOf(dec);
   const now = newestHeld(dec);
-  ok(`from pass NX on, each DECISIONS entry's Screen words bullet says the pass changed screen words, with the screen read that read them, or changed none, with the content-diff run that shows it, and names its alignment read, each read with its report, and the newest entry is held once it is pass NX's or later (EARMARKS L29; ${held.length} entries held; the newest is pass ${now.code || '?'}'s, ${now.owed ? 'held' : 'not yet held'}; ${PLANTS.length} made entries each giving exactly its faults, a pass NX entry with no bullet under a pass NY entry caught, and a pass NW entry with no bullet not held)`,
+  ok(`from pass NX on, each DECISIONS entry's Screen words bullet says the pass changed screen words, with the screen read that read them and its alignment read, or changed none, with the content-diff run that shows it and its alignment read or, since Mikey's answer to Q127 (a), its final read, each read with its report, and the newest entry is held once it is pass NX's or later (EARMARKS L29; ${held.length} entries held; the newest is pass ${now.code || '?'}'s, ${now.owed ? 'held' : 'not yet held'}; ${PLANTS.length} made entries each giving exactly its faults, a pass NX entry with no bullet under a pass NY entry caught, and a pass NW entry with no bullet not held)`,
     dec.includes('\n## Open items') && unkept.length === 0 && now.faults.length === 0 && wrong.length === 0 && !older.owed && older.faults.length === 0 && under.length === 1 && under[0][1].join() === 'no Screen words bullet',
     JSON.stringify({ unkept, now, wrong, older, under })); }
 // Pass NX's corrections (the week's tools pass, under Mikey's answer to Q85, "Q85 - B"): the week's whole reads of RULES-AUDIT and
@@ -1993,6 +2013,64 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   ];
   const plants = PLANTS.map(([want, a, h]) => { const f = judge(a, h); return f.some((x) => x.startsWith(want)) ? '' : `${want}: ${f.join(' | ') || 'no fault'}`; });
   ok('docs/RULES-AUDIT-HISTORY.md keeps the ten rows pass NX corrected at its end as pass NW left them (digest d057e67e), each corrected in place and saying so once, the Q85 row naming them, and Q124 answered in one line in section 11 with its full text in the history (digest c959f3ee) (pass NX; a letter edited in each block, a row put back, its note taken out, the note on another row, the naming taken out and the answer changed, planted, each caught)',
+    live.length === 0 && plants.every((x) => x === ''), JSON.stringify({ live, plants: plants.filter(Boolean) })); }
+// Pass NY's records (the lead, at the pass's end): Mikey's answers Q125 to Q130, Q131 (asked and answered in the pass) and Q132 and
+// Q133 (raised in the pass and answered at 3:08 PM), each in one line in section 11 and in full, as it stood, in
+// docs/RULES-AUDIT-HISTORY.md's pass NY block for answered questions; the seven rows changed at his word (section 2's Let's Color line at his note under Q129 and his answer to Q131, section 3's row on
+// a story picture's style at Q128, Q132 and Q133, section 5's read-aloud row at Q130, section 8's UI row at Q129 (a), section 9's rows on the week's
+// passes at Q126, on triage at Q127 and, since round two's ripple read, on the checks in layers at Q127), their pass NX words in the pass NY block
+// for his word; and the eight rows corrected under Q85 (section 6's one-word row in the pass's records; sections 3, 5, 6 and 9's rows on each
+// face named, the prompts for Nano Banana 2, a question's own words, which model a task runs on, each agent's share and a blind read's
+// by-design marks at round two's final and ripple reads; section 8's on words kept whole at its screen read), their pass NX words in the pass NY block for Q85, the Q85 row naming them. Each block is held by its digest, in RULES-AUDIT's
+// order; each row is found today by its first 60 characters, carries its note once and differs from its old words. One judge reads the
+// live files and the plants: a letter edited in each block, a changed row put back, its note taken out, the Q85 row's naming taken out,
+// an answered line's answer changed, and Q133's answer changed.
+{ const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8'); const audit = readFileSync(new URL('../docs/RULES-AUDIT.md', import.meta.url), 'utf8');
+  const qName = "RULES-AUDIT section 11's answered questions in pass NY, word for word";
+  const wName = "RULES-AUDIT rows as pass NX left them, before pass NY changed them at Mikey's word, word for word";
+  const kName = "RULES-AUDIT rows as pass NX left them, before pass NY corrected them under Q85, word for word";
+  const WORD = "its pass NX words in docs/RULES-AUDIT-HISTORY.md's pass NY block.";
+  const NOTE85 = "Corrected in place in pass NY, under Mikey's answer to Q85, its pass NX words in docs/RULES-AUDIT-HISTORY.md's pass NY block for Q85.";
+  const NAMED = "Corrected in pass NY, under Mikey's answer to Q85, each saying so, their pass NX words in docs/RULES-AUDIT-HISTORY.md's pass NY block for Q85:";
+  const ANSWERS = { 125: '"Q125- A"', 126: '"Q126- the first pass after a reset can be the longest pass then we can move to your 30"', 127: '"Q127- A"', 128: '"Q128- C (let\'s prioritize this because I will be working on images soon).";', 129: '"A - Yes", "B - Yes", "C - Yes I wrote those.', 130: '"Q130 - A"', 132: '"Q132 - A"', 133: '"Q133 - A"', 131: '"Yes, the color pages can keep the colors from the child\'s previous coloring time even after timer resets."' };
+  const inside = (h, name) => { const a = h.indexOf(`<!-- ${name}: begin -->\n`); const b = h.indexOf(`<!-- ${name}: end -->`); return a < 0 || b < a ? '' : h.slice(a + `<!-- ${name}: begin -->\n`.length, b); };
+  const dig = (x) => createHash('sha256').update(x, 'utf8').digest('hex').slice(0, 8);
+  const judge = (a, h) => { const faults = []; const lines = a.split('\n');
+    const rowsOf = (name) => inside(h, name).split('\n').filter(Boolean);
+    if (dig(inside(h, qName)) !== '974f1a20') faults.push("the answered block is not pass NY's");
+    if (dig(inside(h, wName)) !== '3f3aa4e2') faults.push("the block for his word is not pass NY's");
+    if (dig(inside(h, kName)) !== 'ee9e52ed') faults.push("the block for Q85 is not pass NY's");
+    for (const [name, want, note] of [[wName, 7, WORD], [kName, 8, NOTE85]]) {
+      const rows = rowsOf(name); if (rows.length !== want) faults.push(`${rows.length} rows in a block`); let last = -1;
+      for (const r of rows) { const at = lines.map((l, i) => (l.startsWith(r.slice(0, 60)) ? i : -1)).filter((i) => i >= 0);
+        if (at.length !== 1) { faults.push(`a row found ${at.length} times: ${r.slice(0, 40)}`); continue; }
+        const now = lines[at[0]]; if (at[0] < last) faults.push(`out of order: ${r.slice(0, 40)}`); last = at[0];
+        if (now === r) faults.push(`not changed: ${r.slice(0, 40)}`);
+        if (now.split(note).length !== 2) faults.push(`its note not once: ${r.slice(0, 40)}`); } }
+    const q85 = lines.find((l) => l.startsWith('| **A row of this file that no longer says what the code does is corrected in place')) || '';
+    if (!q85.includes(NAMED)) faults.push('the Q85 row does not name it');
+    const qb = rowsOf(qName);
+    for (const n of [125, 126, 127, 128, 129, 130, 131, 132, 133]) {
+      if (!qb.some((l) => l.startsWith(`- Q${n}. Answered in pass NY (Mikey: ${ANSWERS[n]}`))) faults.push(`the history has no full Q${n}`);
+      if (!lines.some((l) => l.startsWith(`- Q${n}. Answered in pass NY (Mikey: ${ANSWERS[n]}`) && / Its rule lives in /.test(l))) faults.push(`section 11 has no Q${n} line in the form`); }
+    return faults; };
+  const live = judge(audit, hist);
+  const first = inside(hist, wName).split('\n')[0] || '';
+  const back = audit.split('\n').map((l) => (l.startsWith(first.slice(0, 60)) ? first : l)).join('\n');
+  const flip = (t, name) => { const b = inside(t, name); const at = Math.min(80, b.length - 1); return t.replace(b, b.slice(0, at) + (b[at] === 'x' ? 'y' : 'x') + b.slice(at + 1)); };
+  const PLANTS = [
+    ["the answered block is not pass NY's", audit, flip(hist, qName)],
+    ["the block for his word is not pass NY's", audit, flip(hist, wName)],
+    ["the block for Q85 is not pass NY's", audit, flip(hist, kName)],
+    ['not changed', back, hist],
+    ['its note not once', audit.replace(' ' + NOTE85, ''), hist],
+    ['the Q85 row does not name it', audit.replace(NAMED, 'Corrected in pass NY:'), hist],
+    ['section 11 has no Q126 line in the form', audit.replace('- Q126. Answered in pass NY (Mikey: "Q126- the first pass', '- Q126. Answered in pass NY (Mikey: "Q126- the second pass'), hist],
+    ['section 11 has no Q133 line in the form', audit.replace('- Q133. Answered in pass NY (Mikey: "Q133 - A")', '- Q133. Answered in pass NY (Mikey: "Q133 - B")'), hist],
+  ];
+  const plants = PLANTS.map(([want, a, h]) => { const f = judge(a, h); return f.some((x) => x.startsWith(want)) ? '' : `${want}: ${f.join(' | ') || 'no fault'}`; });
+  ok('docs/RULES-AUDIT-HISTORY.md keeps pass NY\'s three blocks: Q125 to Q133 answered, each in full as it stood (digest 974f1a20) and in one line in section 11; the seven rows changed at Mikey\'s word as pass NX left them (digest 3f3aa4e2); and the eight rows corrected under Q85 (digest ee9e52ed), each changed in place and saying so once, the Q85 row naming them (pass NY; a letter edited in each block, a row put back, its note taken out, the naming taken out, an answer changed and Q133 gone, each caught)',
     live.length === 0 && plants.every((x) => x === ''), JSON.stringify({ live, plants: plants.filter(Boolean) })); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

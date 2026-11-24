@@ -205,7 +205,7 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A brief names the section a reader reads by its heading, never by its line numbers: round two's brief named the lesson brief by lines that the copies had outgrown, and one reader of four read only what the lines named.
 - A part of a fix is proven only by a check that fails without it, and the proof is run, not argued: tools/undo-alone.mjs does it for every hunk of a change, and an engineer's own runner that copied no fresh tests (a command missing on the machine) had to be run again.
 - A rule that compares choices reads them as a child sees them: two alike pictures tagged #0 and #1 are one picture, so a bank met the by-design rule only because its twins' tags made one picture two choices.
-- A reader's finding is read against the project before it is called a plant or a false alarm: about sixty findings of the measured lesson reads were real defects of today's lessons, among them banks a child can answer by habit (a yes or no bank answering Yes on 70 percent of seeds, two fixed off-topic replies) and a line that sends a child to the slide with no grown-up named; they wait for the next lesson pass (EARMARKS A181).
+- A reader's finding is read against the project before it is called a plant or a false alarm: about sixty findings of the measured lesson reads were real defects of today's lessons, among them banks a child can answer by habit (a yes or no bank answering Yes on 70 percent of seeds, two fixed off-topic replies) and a line that sends a child to the slide with no grown-up named; they wait for the next lesson pass (EARMARKS A181; twelve lessons' fixed in pass NY).
 
 ## Learned in pass NW (the blind read names its by-design marks)
 

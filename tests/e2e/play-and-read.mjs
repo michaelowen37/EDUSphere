@@ -142,6 +142,86 @@ ok('a map not yet painted opens to its note, and its visit is logged as not begu
 ok("the story line is Mikey's, counting one elective read by name (not the first read, a read that never reached the end, or one left at once)", !endShown && (lines.find((x) => x.key === 'stories') || {}).text === "Elective stories: 1. Every module pairs with a short story and every course with a long. After these stories unlock, they're available to re-read. 1 represents how many times S-55 has read through a story more times than required.", { endShown, lines });
 ok("the student's name never breaks at its hyphen", (lines.find((x) => x.key === 'stories') || {}).whole === true, lines);
 ok('the coloring line still reads as before', (lines.find((x) => x.key === 'coloring') || {}).text === 'Coloring breaks taken: 1. Coloring is play; it is never marked and never appears on the transcript.', lines);
+// A page keeps its colors through its rest, read in the real page beside the rules test's read of the screens' writers (pass NY, round
+// one's code read, its S6 and M1; after the report above, so its breaks change no count there): S-55's star, a page brushed with a
+// crayon, is seeded with three seconds left (the test hook seeds the state the screens save, since the page reads its own copy of what
+// it saved this session, not the device's); a line is brushed on and the time runs out; the star's rest is seeded into the past, and the
+// star opened from its own tile shows the line, every point the device stored to one decimal at most. Then a game played past a
+// five-second save and left early stores no colors, though the star is the last page colored (colorArt still holds its line).
+{ const keyOf = () => page.evaluate(() => Object.keys(localStorage).find((k) => k.startsWith('fake:edusphere_v1_coloring:') && /"ball"/.test(localStorage.getItem(k) || '')) || null);
+  const signIn = async () => { await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
+    await page.getByRole('button', { name: 'Home' }).first().click(); await page.waitForTimeout(500); await page.getByRole('button', { name: /S-55$/ }).first().click(); await screenIs('overview'); await page.waitForTimeout(600); await tapIf('Later'); };
+  await signIn();
+  const KEY = await keyOf();
+  // What the device holds (the test page keeps the host's storage in localStorage under fake:), read after the app has written it.
+  const stored = () => page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), KEY);
+  const seed = (pic, entry) => page.evaluate(([p, e]) => window.__eduTest.seedColoring(p, e), [pic, entry]);
+  const lineShown = () => page.evaluate(() => [...document.querySelectorAll('.edu-pad svg[role=img] polyline')].some((l) => l.getAttribute('stroke') === '#D62828' && l.getAttribute('points').split(' ').length >= 2));
+  const t0 = Date.now();
+  await seed('star', { left: 3 });
+  await page.evaluate(() => window.__eduTest.openColoring('star')); await screenIs('coloring');
+  await page.waitForFunction(() => { const s = document.querySelector('.edu-pad svg[role=img]'); return !!s && s.getAttribute('aria-label') === 'A star to color'; });
+  const box = await page.locator('.edu-pad svg[role=img]').boundingBox();
+  await page.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.55); await page.mouse.down();
+  // A slow start first: three tiny moves (0.07 of a unit each) right after the finger goes down are measured from the line's start, so
+  // none is kept; measured from no point at all, the first of them would be, and the line would store 15.
+  for (let i = 1; i <= 3; i++) await page.mouse.move(box.x + box.width * 0.3 + i * box.width * 0.0007, box.y + box.height * 0.55);
+  for (let i = 1; i <= 12; i++) await page.mouse.move(box.x + box.width * (0.3 + i * 0.03), box.y + box.height * (0.55 + 0.02 * Math.sin(i)));
+  // Then six tiny moves, each 0.07 of a unit on (the picture is 100 units across its box), as a finger slowing to a stop: together they
+  // go 0.42 of a unit, under ART_STEP, so the step rule keeps none of them but the last, held back and kept as the line's end (round
+  // one's code read of pass NY, M2 (b)), and the line stores 14 points, its start, the 12 moves (each about 3 units on) and its end;
+  // every move kept would store 19, and an end dropped 13.
+  const endX = box.x + box.width * 0.66; const endY = box.y + box.height * (0.55 + 0.02 * Math.sin(12));
+  for (let i = 1; i <= 6; i++) await page.mouse.move(endX + i * box.width * 0.0007, endY);
+  await page.mouse.up(); await page.waitForTimeout(150);
+  const brushed = await lineShown();
+  await screenIs('overview');   // the three seconds run out, and the star rests
+  const afterTimeUp = (await stored()).star || {};
+  const ptsOf = (e) => ((e.art && e.art.strokes) || []).filter((st) => st.colour === '#D62828').flatMap((st) => st.points);
+  const keptAtTimeUp = ptsOf(afterTimeUp).length >= 2 && afterTimeUp.restUntil > Date.now();
+  const oneDecimal = ptsOf(afterTimeUp).every((p) => p.every((v) => Math.abs(v * 10 - Math.round(v * 10)) < 1e-9));
+  // The step rule and the held end: 14 points, each of the first 13 at least half a unit from the one before, and the last, the end, on
+  // the finger's last place, under half a unit from the 13th.
+  const linePts = ptsOf(afterTimeUp); const gap = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+  const stepped = linePts.length === 14 && linePts.slice(1, 13).every((p, i) => gap(p, linePts[i]) >= 0.5) && gap(linePts[13], linePts[12]) > 0 && gap(linePts[13], linePts[12]) < 0.5;
+  const restSeeded = await seed('star', { restUntil: Date.now() - 60000 });
+  const colorFold = page.getByRole('button', { name: "Let's Color", exact: true });
+  if ((await colorFold.getAttribute('aria-expanded')) !== 'true') { await colorFold.click(); await page.waitForTimeout(300); }
+  const tile = page.getByRole('button', { name: 'Color the star', exact: true });
+  await tile.waitFor({ timeout: 15000 });   // the overview's clock reads the rest as over at its next tick
+  await tile.click({ force: true }); await screenIs('coloring');
+  await page.waitForFunction(() => { const s = document.querySelector('.edu-pad svg[role=img]'); return !!s && s.getAttribute('aria-label') === 'A star to color'; });
+  const back = await lineShown();
+  await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true }); await screenIs('overview'); await page.waitForTimeout(300);
+  await page.evaluate(() => window.__eduTest.openColoring('play:dots-house')); await screenIs('coloring');
+  await page.waitForTimeout(6000);   // six ticks of its clock, so one is a five-second save
+  const gameSaved = (await stored())['play:dots-house'] || {};
+  await page.getByRole('button', { name: 'Close game' }).first().click({ force: true }); await screenIs('overview'); await page.waitForTimeout(300);
+  const gameLeft = (await stored())['play:dots-house'] || {};
+  ok('a page keeps its colors through its rest in the real page: a line brushed on the star is stored at its time-up, every point to one decimal, a slowing finger\'s tiny moves kept only as the line\'s end, and after its rest the star opened from its tile shows it (round one\'s code read of pass NY, S6 and M2)', !!KEY && brushed && keptAtTimeUp && oneDecimal && stepped && !!restSeeded && back, { KEY, brushed, keptAtTimeUp, oneDecimal, stepped, count: linePts.length, back, points: ptsOf(afterTimeUp).slice(-3) });
+  ok('a game stores no colors at its five-second save or when left early, though the star was the last page colored (round one\'s code read of pass NY, M1)', !!KEY && 'art' in gameSaved && gameSaved.art === null && 'art' in gameLeft && gameLeft.art === null, { gameSaved, gameLeft });
+  // The clock bar opens at the new picture's own time (round one's screen read of pass NY, its S6): the ball, opened with 60 of its
+  // seconds left, is closed, and the star, at its full time, opens; then the same before a game. Every frame of each one's first 2.2
+  // seconds, read as it is drawn, shows its own time, within two points, and the bar still slides from one second to the next (four
+  // widths or more, not a jump). The bar had shown the ball's time (about a third) for its first frames when the clock's opening value
+  // was set after the first paint, and slid from it over the first second when the bar slid from its first frame, though the value was
+  // set before it (each read in a page built that way: 32.8 percent at the first frames).
+  const barRead = async (pic) => {
+    await seed('ball', { left: 60 }); await seed(pic, { left: null });
+    await page.evaluate(() => window.__eduTest.openColoring('ball')); await screenIs('coloring'); await page.waitForTimeout(1500);
+    const ballBar = await page.evaluate(() => { const o = document.querySelector('.edu-pad-bar > div'); const i = o && o.firstElementChild; return i ? Math.round((i.getBoundingClientRect().width / o.getBoundingClientRect().width) * 1000) / 10 : null; });
+    await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true }); await screenIs('overview'); await page.waitForTimeout(600);
+    const frames = await page.evaluate((p) => new Promise((done) => { const out = []; const t0 = performance.now();
+      const read = () => { const g = document.querySelector('[data-play-left]'); const o = g ? g.parentElement : document.querySelector('.edu-pad-bar > div'); const i = g || (o && o.firstElementChild);
+        if (i) out.push([Math.round(performance.now() - t0), Math.round((i.getBoundingClientRect().width / o.getBoundingClientRect().width) * 1000) / 10]);
+        if (performance.now() - t0 < 2200) requestAnimationFrame(read); else done(out); };
+      window.__eduTest.openColoring(p); requestAnimationFrame(read); }), pic);
+    await page.getByRole('button', { name: pic.startsWith('play:') ? 'Close game' : 'Close coloring' }).first().click({ force: true }); await screenIs('overview'); await page.waitForTimeout(300);
+    return { pic, ballBar, frames: frames.length, first: frames.slice(0, 3), low: frames.length ? Math.min(...frames.map(([, w]) => w)) : null, widths: new Set(frames.map(([, w]) => w)).size };
+  };
+  const bars = [await barRead('star'), await barRead('play:dots-house')];
+  ok('a picture\'s and a game\'s clock bar shows its own time from its first frame, never the last one\'s (round one\'s screen read of pass NY, its S6: the ball left at a third, then the star and a game at their full time, every frame of their first 2.2 seconds at 98 percent or more, and the bar sliding between seconds)', bars.every((b) => b.ballBar !== null && b.ballBar < 50 && b.frames >= 40 && b.low >= 98 && b.widths >= 4), bars);
+  console.log(`  (the star's kept colors and the game's none, read in ${Math.round((Date.now() - t0) / 1000)} seconds)`); }
 // Pass MC: an Elementary student on day one sees Pong open, her own courses' games locked, and the line that says how they open,
 // in its strip and readable (the screen check measured the line at 2.74 to 1 when it sat on the moving wash).
 await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');

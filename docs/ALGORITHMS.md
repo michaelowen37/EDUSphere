@@ -849,3 +849,21 @@ done with it. A reload counts as activity: a note still fresh brings the student
 is never signed out, and the first week tour pauses the clock. Every screen the app uses is on exactly one of the student's list, the
 educator's (`EDUCATOR_SCREENS`, a quiet minute, counted down on a chip) and `UNTIMED_SCREENS`, the front door and six educator screens the
 educator's clock does not cover (EARMARKS A131), each with its reason.
+
+## Play and rest by age, and a page's colors kept (pass NY, Mikey's note under his answer to Q129 and his answer to Q131)
+
+A coloring page or a game plays `playSecondsFor` the student's highest grade and then rests `restMinutesFor` it, each picture and game
+on a clock of its own: 180 seconds of play and a 15-minute rest from pre-K 3 to grade 2, 150 and 30 for grades 3 to 5, 120 and 45 for
+grades 6 to 8, and 90 and 60 from grade 9 up. The play times are Claude's choice in pass NY, at Mikey's word that the five-minute timers
+ran long after a page was done ("I think they should all be shortened to whatever you recommend"), from brain-break guidance of one to
+five minutes; pass AP had set 300, 240, 180 and 150, and its rests stand. A picture opens with the time it had left when the child last
+left it early, never more than today's play time (`playSecondsAtOpen`), so a time saved under the older, longer clock opens as today's,
+and a saved time that is not above 0 opens whole. When the time runs out, a page keeps the colors the child put on (Mikey's answer to
+Q131: "Yes, the color pages can keep the colors from the child's previous coloring time even after timer resets."), so after its rest it
+opens with them again; a game keeps none. Every writer (the five-second save, leaving early and the time-up) stores a picture's colors
+through `keptArt`: each point taken to one decimal of the picture's 100 units (`artPoint`), a point of a stroke kept only once the finger
+has moved `ART_STEP` (half a unit) from the last one kept, and a page's colors thinned to `ART_BUDGET` (16,000 characters of JSON) by
+`thinArt`, which drops every other inner point of each stroke as often as needed, each stroke keeping its two ends and every fill kept.
+Measured in pass NY by script: a three-minute visit of steady scribbling at 60 pointer moves a second took about 418,000 characters
+before, and 10,600 to 15,300 after. A picture's or a game's clock bar shows its own time from the first frame the screen paints (set before the paint, in a layout
+effect, and held still until the second frame, so it never slides from the last picture's time; round one's screen read, its S6).

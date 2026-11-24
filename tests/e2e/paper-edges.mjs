@@ -102,8 +102,13 @@ const DEEP_GOLD = ((/const paperGold = \(\) => \(C\.mode === 'dark' \? '(#[0-9A-
 // the open door, the cubby's name, the closed box of crayons, the love note, the teacher's empty hands and the note about dogs), with 439
 // in 315 of More Info's sheets, the six of them a bank puts on a tile, read alone after its round three's fixes; the diagrams, guides and
 // palette unchanged. Since round three's fixes 1,534, the sitting dog (dog~sit) and the three clouds Owl counted (cloud~three) among
-// them, with 440 in 316 of More Info's sheets, read alone by the fix engineer after its fixes.
-const FLOORS = { drawings: 1534, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 440, sheets: 316, palette: 99 };
+// them, with 440 in 316 of More Info's sheets, read alone by the fix engineer after its fixes. Since pass NY 439 in More Info's 316 sheets:
+// engineer content-c's fix to Talk about it put the bus where the glass of water had been (the thing the lesson says is not about a
+// friend's news), so p3-talk-topic's More Info draws no glass, and the bus it draws instead is read in another sheet already; the boxes'
+// floor follows the code down, with this reason, named in DECISIONS' Loosened bullet for pass NY (check.sh's first run of the pass failed
+// here, and the drawings were listed by key on pass NX's tree and on pass NY's to find the one gone). The drawings rose to 1,537 with the
+// pass's new lines, and that floor stays.
+const FLOORS = { drawings: 1534, kinds: 21, diagrams: 2773, diagramKinds: 31, guides: 2377, boxes: 439, sheets: 316, palette: 99 };
 // A picture's fields that only place or size it (a pair's frame, a step's number, a lesson's caption) are no part of its drawing, and a
 // name's #2 only tells two of one picture apart.
 const LAYOUT = ['size', 'step', 'frame', 'snap', 'gap', 'grow', 'tight', 'align', 'caption', 'another'];

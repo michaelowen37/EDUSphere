@@ -1934,8 +1934,11 @@ const ponder = () => page.evaluate(() => {
   const choiceOff = choiceGroups.filter((x) => x.r.length < 2 || new Set(x.r.map((y) => y.size)).size !== 1 || x.r.some((y) => y.lines !== 1 || !y.inside));
   ok(`writings a question compares as its answers are drawn at one size, each on one line inside its box, at 320 by 568 in both themes (round one's screen read, pass NF; ${PRINT_BANKS.length} banks at seeds 1 to 8, ${choiceGroups.length} reads; each print fitted alone on p4-space-which seed 2, planted, caught)`,
     PRINT_BANKS.length >= 5 && choiceGroups.length >= 80 && choiceOff.length === 0 && plantChoices === true, { choiceOff: choiceOff.slice(0, 6).map((x) => [x.theme, x.g, x.seed, x.r]), plantChoices, banks: PRINT_BANKS, reads: choiceGroups.length });
-  // Section 17 (pass NE): every hyphenated word in a lesson line's words on one line, read by the rects of its own text.
-  const HYPHEN_LINES = [['write-by-sounds', 3], ['write-by-sounds', 13], ['say-what-you-need', 1], ['spaces-between-words', 13], ['space-between-words', 13], ['write-to-tell', 12], ['help-a-friend', 4], ['help-a-friend', 5], ['good-friend', 12], ['feelings-show', 11], ['big-bigger-biggest', 2], ['bigger-and-smaller', 11]];
+  // Section 17 (pass NE): every hyphenated word in a lesson line's words on one line, read by the rects of its own text. Lines are counted
+  // from 1. Since pass NY Helping a friend's two lines are its fifth and sixth (Grown-ups have feelings too, and get a grown-up): engineer
+  // content-a's fix put a line on the three faces second, and check.sh's first run of the pass found the fourth line, now You can sit
+  // beside your friend, with no hyphenated word to read.
+  const HYPHEN_LINES = [['write-by-sounds', 3], ['write-by-sounds', 13], ['say-what-you-need', 1], ['spaces-between-words', 13], ['space-between-words', 13], ['write-to-tell', 12], ['help-a-friend', 5], ['help-a-friend', 6], ['good-friend', 12], ['feelings-show', 11], ['big-bigger-biggest', 2], ['bigger-and-smaller', 11]];
   const lineSplits = (pg) => pg.evaluate(() => { const out = []; const host = document.querySelector('.edu-wrap .edu-rise'); if (!host) return ['no line']; let read = 0;
     const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT); let n; while ((n = walker.nextNode())) { if (n.parentElement && n.parentElement.closest('svg, button, [data-print]')) continue;
       for (const m of n.textContent.matchAll(/[A-Za-z]+-[A-Za-z]+/g)) { read += 1; const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const tops = [...new Set([...rg.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top)))]; if (tops.length > 1) out.push(m[0] + ' split across lines'); } }

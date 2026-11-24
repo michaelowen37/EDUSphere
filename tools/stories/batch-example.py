@@ -1,10 +1,13 @@
 # The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 # A batch file for tools/stories/batch.py: NEW is a dict per module id. Copy this to /tmp/batch.py, replace the example,
 # then run python3 tools/stories/batch.py /tmp/batch.py. Write apostrophes as APOS (Leo APOS s hat -> LeoAPOSs hat).
+# mood is the feeling of the story's scenes (Mikey's answer to Q128): two to four words of batch.py's MOOD_WORDS, written after
+# the subject's words in every row the driver writes. A picture whose feeling differs names its own as a fourth item (its third,
+# the background, None for the story's), as the last picture here does; alt_mood does it for the main picture.
 NEW = {
-'hard-or-soft': dict(about='a rock, a pillow, a sponge and a towel, and the girl who sorted them by feel', title='By feel', bg='bathroom',
+'hard-or-soft': dict(about='a rock, a pillow, a sponge and a towel, and the girl who sorted them by feel', title='By feel', bg='bathroom', mood='calm and warm',
   alt='A girl feeling a rock, a pillow, a wet sponge and a dry towel laid out on a mat',
-  more=[('Four things on a mat, the girl looking at them', 0), ('A hand pressing a hard rock and a soft pillow', 2), ('A wet sponge dripping next to a dry towel', 3), ('The four things sorted into pairs', 5)],
+  more=[('Four things on a mat, the girl looking at them', 0), ('A hand pressing a hard rock and a soft pillow', 2), ('A wet sponge dripping next to a dry towel', 3), ('The four things sorted into pairs', 5, None, 'proud and bright')],
   words=[
    'Mia had four things and one question. What are they like? A rock. A pillow. A sponge. A towel. She looked at them. Looking did not tell her much.',
    'So she touched them. One at a time. Slowly.',

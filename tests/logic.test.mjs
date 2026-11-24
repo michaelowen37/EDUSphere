@@ -80,7 +80,10 @@ const MO_SAYS = { meow: 'cat', quack: 'duck', buzz: 'bee', ribbit: 'frog', hoot:
 const MO_ROUTINES = { 'Get your hat, and then go to the door.': ['hat', 'door'], 'Get a book, and then sit in your chair.': ['book', 'chair'], 'Get your teddy, and then get into bed.': ['teddy', 'bed'], 'Get a cup, and then get a spoon.': ['cup', 'spoon'],
   'Get a cup, get a spoon, and then sit in your chair.': ['cup', 'spoon', 'chair'], 'Put your block away, get your hat, and then go to the door.': ['block', 'hat', 'door'], 'Get your hat, get your ball, and then go down the slide.': ['hat', 'ball', 'slide'], 'Get your book, get your teddy, and then get into bed.': ['book', 'teddy', 'bed'] };
 // Two steps and Two steps every day's yes or no (pass MR, Q70), from the lessons' lines.
-const MR_STEPS_YESNO = { 'Do you listen to both steps before you start?': 'Yes', 'Can saying the steps to yourself help you remember them?': 'Yes', 'Get a cup, and then get a spoon. Is getting the spoon the first step?': 'No', 'Get a cup, and then get a spoon. Is getting the cup the first step?': 'Yes', 'Do words like first and then tell the order?': 'Yes', 'Tap the fish, and then tap the ball. Do you tap the ball first?': 'No' };
+const MR_STEPS_YESNO = { 'Do you listen to both steps before you start?': 'Yes', 'Can saying the steps to yourself help you remember them?': 'Yes', 'Get a cup, and then get a spoon. Is getting the spoon the first step?': 'No', 'Get a cup, and then get a spoon. Is getting the cup the first step?': 'Yes', 'Do words like first and then tell the order?': 'Yes', 'Tap the fish, and then tap the ball. Do you tap the ball first?': 'No',
+  // Since pass NY (EARMARKS A181) the rows that ask the other way, each answered by the order its direction says.
+  'Tap the fish, and then tap the ball. Do you tap the fish first?': 'Yes', 'First tap the moon, then tap the sun. Do you tap the sun first?': 'No', 'Do you start before you listen to both steps?': 'No',
+  'Tap the one that says meow, and then the one that says quack. Do you tap the duck first?': 'No' };
 const MR_STEPS_HOME_YESNO = { 'Do grown-ups give two-step directions every day?': 'Yes', 'Get your teddy, and then get into bed. Do you get into bed first?': 'No', 'Get a book, and then sit in your chair. Do you get the book first?': 'Yes', 'Get your hat, and then go to the door. Do you go to the door first?': 'No', 'Tap the red one, and then tap the blue one. Do you tap the red one first?': 'Yes', 'Tap the big circle, and then tap the little square. Do you tap the little square first?': 'No' };
 const moRoutine = (q, places) => { const steps = MO_ROUTINES[(q.story || '').replace(/^Listen\. /, '')]; const at = places.indexOf((/^What do you do (first|second|last)\?$/.exec(q.prompt) || [])[1]);
   return steps && at >= 0 && steps.length === places.length && q.choices.length === steps.length && steps.every((x) => q.choices.includes(`icon:${x}`)) ? `icon:${steps[at]}` : null; };
@@ -88,20 +91,25 @@ const moRoutine = (q, places) => { const steps = MO_ROUTINES[(q.story || '').rep
 // from the lessons' lines, never read from logic.mjs.
 const MQ_PEOPLE = ['baby', 'teacher', 'doctor', 'grandma', 'grandpa'];
 const MQ_WHO = { 'Who is very little and can drink milk from a bottle?': 'baby', 'Who helps children learn at school?': 'teacher', 'Who helps you get well when you are sick?': 'doctor', 'Who is the mom of your mom or your dad?': 'grandma', 'Who is the dad of your mom or your dad?': 'grandpa' };
-const MQ_EVENT_WHAT = { 'What has candles to blow out at a birthday party?': 'cake', 'Where do you sleep at bedtime?': 'bed', 'What falls from the clouds on a rainy day?': 'rain', 'What falls on a snowy day?': 'snow', 'What does someone read to you at story time?': 'book', 'What can you play on at the park?': 'slide' };
+const MQ_EVENT_WHAT = { 'What has candles to blow out at a birthday party?': 'cake', 'After you put on your pajamas, where do you sleep?': 'bed', 'What falls from the clouds in drops of water?': 'rain', 'What falls from the clouds, cold and white?': 'snow', 'What does someone read to you at story time?': 'book', 'What can you play on at the park?': 'slide' };   // pass NY: the bed, the rain and the snow asked by a sign, never a word that sounds like them
 const MQ_EVENT_TAP = { 'a birthday party': 'cake', bedtime: 'bed', 'a rainy day': 'rain', 'a snowy day': 'snow', 'story time': 'book', 'the park': 'slide' };
 // Pictures a child could fairly tap for an event (pass MQ, round one's lesson check), so never offered as wrong: a bedtime story is
 // read in bed, a book can be a birthday present, and rain and snow can fall in one storm.
 const MQ_EVENT_ALSO = { bed: ['book'], book: ['bed'], cake: ['book'], rain: ['snow'], snow: ['rain'] };
-const MQ_PEOPLE_YESNO = { 'Is a baby very little?': 'Yes', 'Is a baby a grown-up?': 'No', 'Is a grandma a grown-up?': 'Yes', 'Is a grandpa a grown-up?': 'Yes', 'Is a grandpa very little?': 'No', 'Does a doctor help you get well when you are sick?': 'Yes', 'Does a teacher help children learn at school?': 'Yes', 'Does a baby help children learn at school?': 'No' };
+const MQ_PEOPLE_YESNO = { 'Is a baby very little?': 'Yes', 'Is a baby a grown-up?': 'No', 'Is a grandma a grown-up?': 'Yes', 'Is a grandpa a grown-up?': 'Yes', 'Is a grandpa very little?': 'No', 'Does a doctor help you get well when you are sick?': 'Yes', 'Does a teacher help children learn at school?': 'Yes', 'Does a baby help children learn at school?': 'No',
+  // Since pass NY (EARMARKS A181) a grandma very little and a baby who helps you get well, each No.
+  'Is a grandma very little?': 'No', 'Does a baby help you get well when you are sick?': 'No' };
 const MQ_SIDES = { 'Which shape has three sides?': 'triangle', 'Which shape has three corners?': 'triangle', 'Which shape has four sides?': 'square', 'Which shape has four corners?': 'square', 'Which shape has no corners?': 'circle' };
 const MQ_TALK_LISTEN = { 'What can you do while your friend is talking?': 'Listen', 'Your friend is talking. When is it your turn to talk?': 'When your friend stops', 'How can you show your friend you are listening?': 'Nod and smile', 'Your friend is telling you a story. What can you do?': 'Listen' };
-const MQ_SAY_BACK = { 'Your friend says, I have a new puppy dog!': 'What is its name?', 'Your friend says, I made a tower!': 'I like your tower!', 'Your friend says, I went to the park!': 'What did you play?', 'Your friend says, I have a new hat!': 'I like your hat!' };
+const MQ_SAY_BACK = { 'Your friend says, I have a new puppy dog!': 'What is your puppy\'s name?', 'Your friend says, I made a tower!': 'I like your tower!', 'Your friend says, I went to the park!': 'Did you play on the slide?', 'Your friend says, I have a new hat!': 'I like your hat!' };   // pass NY: each good reply names what it is about
 // Talking with a friend's room and Talk about it (pass MR, Q70): copied from the lessons' lines, never read from the app's tables.
 const MR_TALK_ROOM = { 'How close can you stand when you talk with a friend?': 'Close enough to hear', 'Your friend is talking with you. Where is too close?': "Right in your friend's face" };
 const MR_TALK_TOPIC = { 'Your friend says, I have a new puppy dog!': 'icon:dog', 'Your friend says, I made a tower!': 'icon:tower', 'Your friend says, I have a new hat!': 'icon:hat' };
-const MR_TALK_ABOUT = { 'I have a new puppy dog!': ['the puppy', 'What is its name?'], 'I made a tower!': ['the tower', 'I like your tower!'], 'I went to the park!': ['the park', 'What did you play?'], 'I have a new hat!': ['the hat', 'I like your hat!'] };
-const mrTalkReply = (story) => { const m = /^Your friend says, (.+?!) You say, (.+)$/.exec(story || ''); return m && MR_TALK_ABOUT[m[1]] ? { topic: MR_TALK_ABOUT[m[1]][0], about: MR_TALK_ABOUT[m[1]][1] === m[2] } : null; };
+const MR_TALK_ABOUT = { 'I have a new puppy dog!': ['the puppy', 'What is your puppy\'s name?'], 'I made a tower!': ['the tower', 'I like your tower!'], 'I went to the park!': ['the park', 'Did you play on the slide?'], 'I have a new hat!': ['the hat', 'I like your hat!'] };
+// Since round one's screen read of pass NY (its S3) a reply said after "You say, " is written as the lesson's lines write it, small at its
+// first letter unless it opens with I (mrSaid, this test's own rule), so the friend's own reply is compared in that form.
+const mrSaid = (r) => (/^I\b/.test(String(r)) ? String(r) : String(r).charAt(0).toLowerCase() + String(r).slice(1));
+const mrTalkReply = (story) => { const m = /^Your friend says, (.+?!) You say, (.+)$/.exec(story || ''); return m && MR_TALK_ABOUT[m[1]] ? { topic: MR_TALK_ABOUT[m[1]][0], about: mrSaid(MR_TALK_ABOUT[m[1]][1]) === m[2] } : null; };
 const MQ_TALK_YESNO = { 'When your friend is talking, do you talk at the same time?': 'No', 'Is it kind to wait until your friend stops talking?': 'Yes', 'Is it kind to listen while your friend talks?': 'Yes', 'Can you take turns talking with your teacher too?': 'Yes', "Is right in your friend's face too close?": 'Yes', 'Is it kind to shout while your friend is talking?': 'No', 'When your friend is talking, is it your turn to talk?': 'No', 'Do you say bye to start talking with a friend?': 'No' };   // pass NR (EARMARKS A154): the close row asks too close, and two No rows keep the bank even
 const MQ_RHYME_END = { cat: 'at', hat: 'at', dog: 'og', log: 'og', frog: 'og', moon: 'oon', spoon: 'oon', bear: 'air', chair: 'air', sock: 'ock', block: 'ock', rock: 'ock', ball: 'all', wall: 'all' };
 const MQ_MEANS = { 'Your teacher says, count the blocks.': 'Say one number for each block', 'Your teacher says, sort the blocks by color.': 'Put them into groups by color', 'Your teacher says, find a sock that matches.': 'Find a sock just like it', 'Your teacher says, trace the letter.': 'Go over its lines with your finger', 'Your teacher says, find a pair of socks.': 'Find two socks that match' };
@@ -122,7 +130,7 @@ const MS_ACT_THING = { 'What do you read?': [['icon:book']], 'What do you cut pa
 const MS_ACT_WORD = { book: [['Read']], scissors: [['Cut']], crayon: [['Draw']], ball: [['Kick']], spoon: [['Eat'], ['Drink']], cup: [['Drink'], ['Eat']], bed: [['Sleep'], ['Read']], bus: [['Ride'], ['Sleep', 'Read', 'Draw', 'Eat', 'Drink']] };
 const MS_ACT_WHEN = { 'At lunchtime, what do you do?': [['Eat', 'Drink'], ['Cut', 'Read']], 'At art time, what do you do?': [['Draw', 'Cut']], 'At story time, what do you do?': [['Read'], ['Sleep', 'Draw']], 'At bedtime, what do you do?': [['Sleep'], ['Read', 'Drink', 'Eat']], 'At the park, what can you do?': [['Kick'], ['Eat', 'Drink', 'Read', 'Ride', 'Draw']] };
 const MS_ACT_USE = { 'Which one goes with lunchtime?': [['icon:spoon', 'icon:plate', 'icon:cup'], ['icon:scissors', 'icon:book']], 'Which one goes with art time?': [['icon:crayon', 'icon:scissors'], ['icon:cup', 'icon:plate']], 'Which one goes with story time?': [['icon:book'], ['icon:bed', 'icon:crayon']], 'Which one goes with bedtime?': [['icon:bed'], ['icon:book', 'icon:cup', 'icon:plate', 'icon:spoon']], 'Which one goes with the park?': [['icon:ball', 'icon:slide'], ['icon:cup', 'icon:spoon', 'icon:plate', 'icon:book', 'icon:bus', 'icon:crayon']] };
-const MS_ACT_YESNO = { 'Do you read a book?': 'Yes', 'Do you kick a ball?': 'Yes', 'Do you drink from a cup?': 'Yes', 'At bedtime, do you sleep in your bed?': 'Yes', 'At art time, do you draw with a crayon?': 'Yes', 'At the park, can you go down the slide?': 'Yes', 'Do you sleep in a cup?': 'No', 'Do you kick a book?': 'No', 'Do you eat soup with scissors?': 'No', 'Do you ride a crayon?': 'No', 'Do you draw with a spoon?': 'No', 'At story time, do you kick a ball?': 'No' };
+const MS_ACT_YESNO = { 'Do you read a book?': 'Yes', 'Do you kick a ball?': 'Yes', 'Do you drink from a cup?': 'Yes', 'At bedtime, do you sleep in your bed?': 'Yes', 'At art time, do you draw with a crayon?': 'Yes', 'Does the slide go with the park?': 'Yes', 'Do you sleep in a cup?': 'No', 'Do you kick a book?': 'No', 'Do you eat soup with scissors?': 'No', 'Do you ride a crayon?': 'No', 'Do you draw with a spoon?': 'No', 'At story time, do you kick a ball?': 'No' };   // pass NY: the slide row asks what goes with the park, never can you
 // Since round one's lesson check (pass MS) a thirsty child may fairly ask for some more, so the two asks never stand together, and the
 // turn on the slide is asked only by its picture ("You want this." over the slide), since its want named its answer's words.
 const MS_NEED_SAY = { 'You are thirsty.': [['May I have a glass of water, please?'], ['May I have some more, please?']], 'You are still hungry at lunch.': [['May I have some more, please?'], ['May I have a glass of water, please?']], 'You are cold.': [['May I have my coat, please?']] };
@@ -130,7 +138,11 @@ const MS_NEED_PIC = { 'glass You need this.': [['May I have a glass of water, pl
 const MS_NEED_CLEAR = [['I am thirsty.', 'I am cold.', 'I cannot find my teddy bear.', 'I cannot reach my book.', 'My cup spilled.']];
 const MS_GROWNUPS = [['icon:teacher', 'icon:grandma', 'icon:grandpa']];
 const MS_NEED_YESNO = { 'Can you use words to tell a grown-up you are thirsty?': 'Yes', 'If you just say uh oh, does your teacher know just what is wrong?': 'No', 'Can a baby help you find your teddy bear?': 'No', 'Can you ask, may I have a turn on the slide, please?': 'Yes', 'Your cup spilled. Can you tell a grown-up what happened?': 'Yes', 'When you are cold, do you ask for a glass of water?': 'No', 'Can a teddy bear help you reach your book?': 'No', 'Can your teacher help when you need something?': 'Yes' };
-const MS_FIT_VOICE = { 'You are in the library, where others read their books.': [['A whisper']], 'A baby is sleeping.': [['A whisper']], 'You are talking with your teacher in the classroom.': [['An inside voice']], "You are at the doctor's office.": [['An inside voice']], 'Your friend is far away on the playground.': [['A big outside voice']], 'Your friend is sad.': [['A kind, soft voice']] };
+// Since pass NY (EARMARKS A181) the library's setup says only the place (its reason gave the whisper away), the lesson's call, over
+// here!, to a friend far away, and a friend far away from the slide are two more moments for the big outside voice, and a whisper, which
+// a child may fairly use with a teacher at rest time, in a waiting room or with a sad friend, is named after the answer in those three
+// moments, so it is never offered there.
+const MS_FIT_VOICE = { 'You are in the library.': [['A whisper']], 'A baby is sleeping.': [['A whisper']], 'You are talking with your teacher in the classroom.': [['An inside voice'], ['A whisper']], "You are at the doctor's office.": [['An inside voice'], ['A whisper']], 'Your friend is far away on the playground.': [['A big outside voice']], 'You call to your friend far away, over here!': [['A big outside voice']], 'You are by the slide, and your friend is far away.': [['A big outside voice']], 'Your friend is sad.': [['A kind, soft voice'], ['A whisper']] };
 // What each sentence is for, by the lesson's four reasons (each sentence without its end mark, with its first letter as a choice
 // shows it and as a setup says it). An ask can be said as a question, so the two reasons never stand side by side.
 const MS_FIT_FOR = { 'Please pass the red crayon': 'To ask for something', 'Please pass the cup': 'To ask for something', 'I made a tall tower': 'To tell what happened', 'I fell on the slide': 'To tell what happened', 'Where does rain come from': 'To ask a question', 'What is your name': 'To ask a question', 'I feel happy': 'To say how you feel', 'I feel sad': 'To say how you feel' };
@@ -144,12 +156,33 @@ const msBare = (s) => String(s).replace(/[.!?]+$/, '');
 // The answer is one of the two asking reasons and the other stands beside it.
 const msFitClash = (answer, others) => MS_FIT_APART.includes(answer) && others.some((k) => k !== answer && MS_FIT_APART.includes(k));
 const MS_FIT_WANT = { 'You want to ask for something. What can you say?': 'To ask for something', 'You want to tell what happened. What can you say?': 'To tell what happened', 'You want to ask a question. What can you say?': 'To ask a question', 'You want to say how you feel. What can you say?': 'To say how you feel' };
-// Just what is wrong (round two's code check, pass MS: the table had copied logic's pairing of a sentence with a grown-up): either
-// sentence of the lesson that tells just where it hurts is right for any grown-up the lesson names, and only one may stand among the
-// choices, so a bank that offered the other as wrong derives to nothing.
+// Just what is wrong (round two's code check, pass MS: the table had copied logic's pairing of a sentence with a grown-up): every
+// telling of the lesson is right for any grown-up the lesson names, and only one may stand among the choices, so a bank that offered
+// another as wrong derives to nothing. Since pass NY line 12 says where it hurts and what happened as two tellings, so the four are the
+// lesson's (my ear hurts, my knee hurts, I fell on the slide, and both), each read by what its question asks: just what is wrong is told
+// by where it hurts, with or without what happened, and I fell on the slide, which says nothing of where, is never offered there; what
+// happened is told by I fell on the slide, with or without where it hurts, and where it hurts alone is never offered there.
 const MS_FIT_ENOUGH_WHO = ['the doctor', 'your teacher', 'your grandma', 'your grandpa'];
-const MS_FIT_ENOUGH = [['My ear hurts.', 'My knee hurts. I fell on the slide.']];
-const MS_FIT_YESNO = { 'Do you use a big outside voice in the library?': 'No', 'When a baby is sleeping, can you use a whisper?': 'Yes', 'On the playground, can you use a big outside voice?': 'Yes', 'Can you use words to say how you feel?': 'Yes', 'Does saying it hurts tell the doctor just where it hurts?': 'No', 'In the classroom, do you use a big outside voice?': 'No', 'When a friend is sad, does a kind, soft voice fit?': 'Yes', 'When a baby is sleeping, do you use a big outside voice?': 'No' };
+const MS_FIT_ENOUGH = { 'just what is wrong': [['My ear hurts.', 'My knee hurts.', 'My knee hurts. I fell on the slide.'], ['I fell on the slide.']], 'what happened': [['I fell on the slide.', 'My knee hurts. I fell on the slide.'], ['My ear hurts.', 'My knee hurts.']] };
+// Since pass NY (EARMARKS A178 and A181) no row asks can you, and each place, voice and telling is asked both ways, every old row kept;
+// since round one's lesson read of pass NY each voice row asks whether the voice fits, never what you do.
+const MS_FIT_YESNO = { 'In the library, does a big outside voice fit?': 'No', 'When a baby is sleeping, does a whisper fit?': 'Yes', 'When your friend is far away on the playground, does a big outside voice fit?': 'Yes', 'Do we use words to say how we feel?': 'Yes', 'Does saying it hurts tell the doctor just where it hurts?': 'No', 'In the classroom, does a big outside voice fit?': 'No', 'When a friend is sad, does a kind, soft voice fit?': 'Yes', 'When a baby is sleeping, does a big outside voice fit?': 'No',
+  'In the library, does a whisper fit?': 'Yes', 'In the classroom, does an inside voice fit when you talk with your teacher?': 'Yes', "At the doctor's office, does an inside voice fit?": 'Yes', "At the doctor's office, does a big outside voice fit?": 'No', 'When your friend is far away, does a whisper fit?': 'No', 'When a friend is sad, does a big outside voice fit?': 'No', 'Do we use words only to ask for things?': 'No', 'Does saying my ear hurts tell the doctor just where it hurts?': 'Yes', 'If you just say uh oh, does your teacher know what happened?': 'No', 'If you say, I fell on the slide, does your teacher know what happened?': 'Yes' };
+// Pass NY's two judges for Feelings and what we do and How do friends feel? (EARMARKS A181), each read by the per-bank loop on every
+// question and by pass NY's block on its planted near misses, so the live read and every plant pass through one rule.
+// A feeling's name for the face shown (p4-feel-say): the feelings each moment could fairly bring, this test's own reading, never offered
+// as the wrong name, since a child may answer from the moment as well as the face (a fallen tower can make a child sad or mad, a taken
+// crayon or a grabbed toy mad or sad, a barking dog scared or mad, a lost teddy sad or scared, and thunder scared, or happy to a child
+// who loves storms), and the face shown is one the moment can bring.
+const NY_SAY_FAIR = [[/tower falls down/, ['sad', 'mad']], [/takes your crayon/, ['mad', 'sad']], [/big dog barks/, ['scared', 'mad']], [/Grandma comes to visit/, ['happy']], [/lose your teddy/, ['sad', 'scared']], [/thunder booms/, ['scared', 'happy']], [/grabs your toy/, ['mad', 'sad']], [/see your best friend/, ['happy']]];
+const nySayProblems = (q) => { const hit = NY_SAY_FAIR.filter(([re]) => re.test(q.prompt || '')); const shown = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null;
+  const wrong = (q.choices || []).filter((c) => c !== q.answer).map((c) => (/^I feel (\w+)$/.exec(String(c)) || [])[1]);
+  if (hit.length !== 1) return ['a moment the test does not know']; const fair = hit[0][1];
+  return [...(fair.includes(shown) ? [] : [`the face shown, ${shown}, is not one the moment can bring`]), ...wrong.filter((w) => !w || fair.includes(w)).map((w) => `a feeling the moment could fairly bring, ${w}, offered as the wrong name`)]; };
+// Two faces a child can fairly take for each other (this test's own pairs, as P4_NEAR_FACES's): never the two faces of a Different
+// question in p4-same-or-different, where the drawn faces would look the same beside the answer Different.
+const NY_NEAR = [['scared', 'embarrassed'], ['sad', 'embarrassed'], ['sad', 'worried'], ['scared', 'worried']];
+const nyNear = (a, b) => a !== b && NY_NEAR.some((p) => p.includes(a) && p.includes(b));
 // Pass MV's three lessons (A voice to fit the place, My voice goes up and down, My voice tells more): the voice each place or moment
 // takes, the picture each voice goes with, a kind, soft voice, what helps a friend understand you, and for a sentence a question says
 // in a manner, the manner read from the question's own voices, never from its words (the words say nothing of high or low, of a
@@ -167,7 +200,11 @@ const MV_FIT_YESNO = { 'When a baby is sleeping, do you use a big outside voice?
   'In the classroom, do you use a big outside voice with your teacher?': 'No', 'Is a big outside voice too soft for a friend far away?': 'No', 'In the library, is a whisper too loud?': 'No' };
 const MV_FIT_CLEAR = { 'How do you say your words, so your friend can understand you?': [['Slowly and clearly']], 'Which one helps your friend understand you?': [['Turn toward your friend']], 'Which one helps your teacher understand you?': [['Say your words slowly and clearly']] };
 const MV_TONE3_YESNO = { 'When we ask a question, does our voice often go up at the end?': 'Yes', 'When we tell, does our voice often go up at the end?': 'No', 'Can your voice go up high, like a little bird?': 'Yes', 'Can your voice go down low, like a big bear?': 'Yes', 'Can you say one word strong, to show it matters most?': 'Yes', 'Does a little bird sound like a voice down low?': 'No' };
-const MV_TONE4_YESNO = { 'When we ask a question, does our voice often go up at the end?': 'Yes', 'When we tell, does our voice often go up at the end?': 'No', 'Can the same words ask or tell?': 'Yes', 'Is a sad voice often quick, going up high?': 'No', 'Does a happy voice often go up high?': 'Yes', 'Can how something is said tell you how someone feels?': 'Yes', 'When you talk with a doctor you have just met, do you say your words slowly and clearly?': 'Yes' };
+// My voice tells more's yes or no. Since pass NY (EARMARKS A178 and A181) a sad voice is asked by its pitch, "Does a sad voice often go up
+// high?", where it had been asked whether it was quick, which the lesson no longer says of any voice, and seven rows ask the other way.
+const MV_TONE4_YESNO = { 'When we ask a question, does our voice often go up at the end?': 'Yes', 'When we tell, does our voice often go up at the end?': 'No', 'Can the same words ask or tell?': 'Yes', 'Does a sad voice often go up high?': 'No', 'Does a happy voice often go up high?': 'Yes', 'Can how something is said tell you how someone feels?': 'Yes', 'When you talk with a doctor you have just met, do you say your words slowly and clearly?': 'Yes',
+  'When we tell, does our voice often go down at the end?': 'Yes', 'When we ask a question, does our voice often go down at the end?': 'No', 'Does a sad voice often sound slow, soft and low?': 'Yes', 'Does a happy voice often go down low?': 'No', 'Does a big bear growl up high?': 'No',
+  'You have a dog. When the voice goes down at the end, does it ask?': 'No', 'Does a slow, low voice sound happy when it says, we are going home?': 'No' };
 // Sentences whose words say nothing of high or low or of a feeling, so the voice alone answers (the feelings' four are said happy with
 // an exclamation mark or sad with a full stop).
 const MV_NEUTRAL_HEARD = ['Hello!', 'Good morning!', 'I see a dog.', 'Here is my ball.'];
@@ -1166,8 +1203,9 @@ const PREK_DERIVE = {
   // hi or bye, and yes or no about each rule.
   // Words for people and Things that happen (pass MR, Q70), from the lessons' own lines.
   'p3-people-grownup': (q) => { if (q.prompt === 'Which one is very little?') return q.choices.includes('icon:baby') ? 'icon:baby' : null; if (q.prompt !== 'Which one is a grown-up?') return null; return mqOne(q, (c) => c === 'icon:grandma' || c === 'icon:grandpa'); },
-  'p3-event-yesno': (q) => ({ 'Do you sleep in your bed at bedtime?': 'Yes', 'Is a birthday party when you sleep in your bed?': 'No', 'Is a birthday party a happy day?': 'Yes', 'Does someone read you a book at story time?': 'Yes', 'Do you play on the slide at bedtime?': 'No', 'Can you play on the slide at the park?': 'Yes' })[q.prompt] || null,
-  'p3-event-name': (q) => ({ 'What is a happy day, often with a cake that has candles to blow out?': 'A birthday party', 'What is it called when you put on your pajamas and sleep in your bed?': 'Bedtime', 'What kind of day is it when rain falls from the clouds?': 'A rainy day', 'What kind of day is it when snow falls?': 'A snowy day', 'What is it called when someone reads you a book?': 'Story time' })[q.prompt] || null,
+  // Since pass NY (EARMARKS A181 and A178) twelve rows, six Yes and six No, the birthday row's can be and the park row asking what the park is.
+  'p3-event-yesno': (q) => ({ 'Do you sleep in your bed at bedtime?': 'Yes', 'Is a birthday party when you sleep in your bed?': 'No', 'Can a birthday party be a happy day?': 'Yes', 'Does someone read you a book at story time?': 'Yes', 'Do you play on the slide at bedtime?': 'No', 'Is the park where you can play on the slide?': 'Yes', 'Is bedtime when you put on your pajamas?': 'Yes', 'Is a birthday party when someone blows out the candles on a cake?': 'Yes', 'Is the park where you sleep in your bed?': 'No', 'At bedtime, do you blow out candles on a cake?': 'No', 'At story time, do you play on the slide?': 'No', 'Is the park where you put on your pajamas?': 'No' })[q.prompt] || null,
+  'p3-event-name': (q) => ({ 'What is it called when someone blows out the candles on a cake?': 'A birthday party', 'What is it called when you put on your pajamas and sleep?': 'Bedtime', 'What is it called when drops of water fall from the clouds?': 'A rainy day', 'What is it called when something cold and white falls from the clouds?': 'A snowy day', 'What is it called when someone reads you a book?': 'Story time' })[q.prompt] || null,   // pass NY: no cue says the word a name is made from
   'p3-event-picture': (q) => (q.prompt === 'What does this picture go with?' && (q.visual || {}).kind === 'icon' ? ({ cake: 'A birthday party', bed: 'Bedtime', rain: 'A rainy day', snow: 'A snowy day', book: 'Story time', slide: 'The park' })[q.visual.name] || null : null),
   // Let's play together and Play with a plan (pass MR, Q70), from the lessons' own lines.
   'p4-play-face': (q) => { const f = q.prompt === 'You grab your friend\'s toy. Which face may your friend show?' ? 'face:mad' : ['Which face can say, I am happy to play with you?', 'You say, I like your tower! Which face shows how your friend may feel?', 'Which face can you show a new friend when you say hi?'].includes(q.prompt) ? 'face:happy' : null; return f && q.choices.includes(f) ? f : null; },
@@ -1183,10 +1221,12 @@ const PREK_DERIVE = {
   'p3-talk-yesno': (q) => MQ_TALK_YESNO[q.prompt] || null,
   'p3-talk-room': (q) => MR_TALK_ROOM[q.prompt] || null,
   'p3-talk-topic': (q) => (q.prompt === 'What is your friend talking about?' ? MR_TALK_TOPIC[q.story] || null : null),
-  'p3-talk-about-yesno': (q) => { const r = mrTalkReply(q.story); return r && q.prompt === `Is that about ${r.topic}?` ? (r.about ? 'Yes' : 'No') : null; },
+  // Since pass NY half its questions ask in the lesson's own words, "Is that about what your friend said?", naming no topic.
+  'p3-talk-about-yesno': (q) => { const r = mrTalkReply(q.story); return r && (q.prompt === `Is that about ${r.topic}?` || q.prompt === 'Is that about what your friend said?') ? (r.about ? 'Yes' : 'No') : null; },
   // Why a reply is a good one: the friend's words name the topic, and a reply that asks (a question) asks about it, while one that
-  // says something says something kind about it, the lesson's two ways; the reply must be the lesson's own for that topic.
-  'p3-talk-why': (q) => { if (q.prompt === 'Why do you say something about what your friend said?') return q.story === null ? 'So your friend knows you listened' : null;
+  // says something says something kind about it, the lesson's two ways; the reply must be the lesson's own for that topic. Since pass
+  // NY the first question has the lesson's two reasons (it knows you listened, and feels happy), never both on one screen.
+  'p3-talk-why': (q) => { if (q.prompt === 'Why do you say something about what your friend said?') return q.story === null ? mqOne(q, (c) => ['So your friend knows you listened', 'So your friend feels happy'].includes(c)) : null;
     const s = /^Your friend says, (.+!)$/.exec(q.story || ''); const p = /^Why can you (ask|say), (.+)\?$/.exec(q.prompt); const t = s && MR_TALK_ABOUT[s[1]];
     if (!t || !p) return null; const back = t[1]; const asks = back.endsWith('?'); const words = asks ? back.charAt(0).toLowerCase() + back.slice(1, -1) : back.slice(0, -1);
     return p[2] === words && p[1] === (asks ? 'ask' : 'say') ? (asks ? `To ask about ${t[0]}` : `To say something kind about ${t[0]}`) : null; },
@@ -1303,7 +1343,8 @@ const PREK_DERIVE = {
   'p4-fit-voice': (q) => (q.prompt === 'Which voice fits?' ? msPick(q, MS_FIT_VOICE[q.story]) : null),
   'p4-fit-why': (q) => { const m = /^You say, (.+)$/.exec(q.story || ''); const k = m && q.prompt === 'Why do you say it?' ? msFitKind(m[1]) : null; const bare = m ? msBare(m[1]) : ''; const said = MS_FIT_SAID_APART[bare] || MS_FIT_SAID_APART[bare.charAt(0).toUpperCase() + bare.slice(1)] || []; return k && !msFitClash(k, q.choices || []) ? msPick(q, [[k], said]) : null; },
   'p4-fit-say': (q) => { const want = MS_FIT_WANT[q.prompt]; const kinds = (q.choices || []).map(msFitKind); if (!want || !kinds.every(Boolean) || msFitClash(want, kinds) || (q.choices || []).some((c) => (MS_FIT_SAID_APART[msBare(c)] || []).includes(want))) return null; const hits = q.choices.filter((c, i) => kinds[i] === want); return hits.length === 1 ? hits[0] : null; },
-  'p4-fit-enough': (q) => { const m = /^Which one tells (.+) just what is wrong\?$/.exec(q.prompt || ''); return m && MS_FIT_ENOUGH_WHO.includes(m[1]) ? msPick(q, MS_FIT_ENOUGH) : null; },
+  // Since pass NY each telling by what its question asks, just what is wrong or what happened (MS_FIT_ENOUGH).
+  'p4-fit-enough': (q) => { const m = /^Which one tells (.+?) (just what is wrong|what happened)\?$/.exec(q.prompt || ''); return m && MS_FIT_ENOUGH_WHO.includes(m[1]) ? msPick(q, MS_FIT_ENOUGH[m[2]]) : null; },
   'p4-fit-yesno': (q) => MS_FIT_YESNO[q.prompt] || null,
   // Pass MV: A voice to fit the place (pre-K 3).
   'p3-vfit-voice': (q) => (q.prompt === 'Which voice fits?' ? msPick(q, MV_FIT_VOICE[q.story]) : null),
@@ -5416,10 +5457,15 @@ const NV_NU_ROWS = { 'p3-feel-okay': [['Is it okay to feel sad?', 'Yes'], ['Is i
 // and every bank's best one-word rule is right under 80 percent of the time but the older banks ONE_WORD_WAITS names (EARMARKS A178),
 // each held at or under its read rounded up to a whole percent, and a wait whose bank reads under 80 is stale and fails, so the list only
 // shrinks. Plant for the bound: Being a good friend's rows as built, with cannot moved from its one No row to its hurt friend's Yes row,
-// which the strict rule passes and the bound catches. Each bank is read and let go in turn, so no bank's 2,000 questions stay held.
+// which the strict rule passes and the bound catches; since pass NY, which took that No row out (its own words answered it), cannot
+// said on the hurt friend's Yes row too, beside the three Yes rows that say it. Each bank is read and let go in turn, so no bank's 2,000 questions stay held.
 // Since round one's code read (pass NV) the live read and every plant pass through one judge, so each rule's plant fails with that
 // rule undone; a wait more than a point above its bank's read fails too, so the list's caps come down as the banks improve.
-{ const ONE_WORD_WAITS = { 'p4-clue-check': 90, 'p4-fit-yesno': 90, 'p3-join-yesno': 88, 'p4-form-yesno': 87, 'p3-sent-yesno': 87, 'p3-help-yesno': 86, 'p4-friends-yesno': 86, 'p4-opposite-yesno': 86, 'p4-tone-yesno': 86, 'p4-feel-okay': 86, 'p3-event-yesno': 85, 'p4-learn-shape-yesno': 85, 'p3-tone-yesno': 85, 'p3-steps-yesno': 84, 'p4-sent-yesno': 82, 'p4-good-yesno': 81 };
+// Since pass NY Things that happen's p3-event-yesno has left the list (85, on when): it grew from its lesson's lines to twelve rows,
+// six Yes and six No (EARMARKS A181), and its best one word, the, is right 67.0 percent of the time.
+// And My voice tells more's p4-tone-yesno (86, on sad) and Two steps' p3-steps-yesno (84, on tap) have left it too: each grew
+// to answer Yes on half its rows (EARMARKS A181), and their best one words, does and tap, are right 71.8 and 69.5 percent of the time.
+{ const ONE_WORD_WAITS = { 'p4-clue-check': 90, 'p4-form-yesno': 87, 'p3-sent-yesno': 87, 'p4-opposite-yesno': 86, 'p4-learn-shape-yesno': 85, 'p3-tone-yesno': 85, 'p4-sent-yesno': 82 };
   const BOUND = 0.8;
   const words = (t) => new Set(String(t || '').toLowerCase().replace(/[^a-z' ]+/g, ' ').split(/\s+/).filter(Boolean));
   const tellsOf = (qs) => { const heard = (q) => words(`${q.story || ''} ${q.prompt}`); const yes = qs.filter((q) => q.answer === 'Yes').map(heard); const no = qs.filter((q) => q.answer === 'No').map(heard);
@@ -5457,8 +5503,8 @@ const NV_NU_ROWS = { 'p3-feel-okay': [['Is it okay to feel sad?', 'Yes'], ['Is i
   const asRows = (g, pairs) => { const qs = pairs.map(([prompt, answer]) => ({ prompt, answer })); return [g, tellsOf(qs), ...bestWord(qs)]; };
   // Plants, each judged by the same judge: Play with a plan's rows as round one of pass NR read them (can in every Yes row); the five
   // banks' rows as pass NU left them, each marked by the words pass NR's check named and over the bound; round one's two only rows in
-  // place of the roof and new idea rows, and Being a good friend's rows with cannot moved from its one No row to its hurt friend's Yes
-  // row, each over the bound and marked by no word; a wait a point under its read, one two points over it, and a wait for a bank the
+  // place of the roof and new idea rows, and Being a good friend's rows with cannot said on its hurt friend's Yes row too (since pass
+  // NY; until then moved there from its one No row), each over the bound and marked by no word; a wait a point under its read, one two points over it, and a wait for a bank the
   // bound passes and for a bank there is not, each named; and a waited bank's wait taken away, over the bound.
   const ROUND_ONE = [['Can a plan say who does each part?', 'Yes'], ['Is it playing together if one friend does every part?', 'No'], ['Can pretend play have a plan too?', 'Yes'], ['Can you talk while you play together?', 'Yes'], ['When you have a new idea, can you ask, is that okay?', 'Yes'], ['Does a plan say only what one friend will do?', 'No'], ['When the house is done, did only one friend make it?', 'No'], ['Is a plan only for building with blocks?', 'No']];
   const plant = judge([asRows('p4-plan-yesno', ROUND_ONE)], {}).marked.some((m) => /[( ]can[ )]/.test(m));
@@ -5470,11 +5516,13 @@ const NV_NU_ROWS = { 'p3-feel-okay': [['Is it okay to feel sad?', 'Yes'], ['Is i
   const onlyPairs = planRows.map(([prompt, answer]) => [ONLY[prompt] || prompt, answer]); const onlyRow = asRows('p4-plan-yesno', onlyPairs); const onlyJ = judge([onlyRow], {});
   const onlyPlant = planRows.length === 8 && onlyPairs.filter(([prompt]) => Object.values(ONLY).includes(prompt)).length === 2 && onlyJ.marked.length === 0 && onlyJ.over.length === 1;
   const friendRows = [...new Map(gen('p4-when-grownup').map((q) => [q.prompt, q.answer]))];
-  const CANNOT = { 'Should you get a grown-up when your friend falls and gets hurt?': 'Should you get a grown-up when your friend falls, gets hurt and cannot stop crying?', 'Can you and your friend fix the problem together when a fight starts and you cannot stop it?': 'Can you and your friend fix the problem together when a fight starts?' };
+  const CANNOT = { 'Should you get a grown-up when your friend falls and gets hurt?': 'Should you get a grown-up when your friend falls, gets hurt and cannot stop crying?' };
   const cannotPairs = friendRows.map(([prompt, answer]) => [CANNOT[prompt] || prompt, answer]); const cannotRow = asRows('p4-when-grownup', cannotPairs); const cannotJ = judge([cannotRow], {});
-  const cannotPlant = friendRows.length === 12 && cannotPairs.filter(([prompt]) => Object.values(CANNOT).includes(prompt)).length === 2 && cannotJ.marked.length === 0 && cannotJ.over.length === 1;
+  // Every planted row is one the bank deals (since pass NY, whose rows left a key of the old plant naming no row, a plant that plants nothing).
+  const cannotPlant = friendRows.length === 13 && Object.keys(CANNOT).every((prompt) => friendRows.some(([p]) => p === prompt)) && cannotPairs.filter(([prompt]) => Object.values(CANNOT).includes(prompt)).length === 1 && cannotJ.marked.length === 0 && cannotJ.over.length === 1;
   const lowered = judge(res, { ...ONE_WORD_WAITS, 'p4-clue-check': ONE_WORD_WAITS['p4-clue-check'] - 1 }).waitOver.some((x) => x.startsWith('p4-clue-check '));
-  const loosened = judge(res, { ...ONE_WORD_WAITS, 'p4-good-yesno': ONE_WORD_WAITS['p4-good-yesno'] + 2 }).waitLoose.some((x) => x.startsWith('p4-good-yesno '));
+  // The loosened wait's plant is planted on Longer sentences' yes or no since pass NY, when Being a good friend's grew and left the list.
+  const loosened = judge(res, { ...ONE_WORD_WAITS, 'p4-sent-yesno': ONE_WORD_WAITS['p4-sent-yesno'] + 2 }).waitLoose.some((x) => x.startsWith('p4-sent-yesno '));
   const staleJ = judge(res, { ...ONE_WORD_WAITS, 'p4-plan-yesno': 80, 'no-such-bank': 80 }).stale; const stalePlant = staleJ.length === 2 && staleJ.includes('p4-plan-yesno') && staleJ.includes('no-such-bank');
   // A bank that throws is named, not skipped: Three steps' yes or no made to throw, in a list of its own, caught, while it is probed and,
   // since round two's records read (the second catch had no plant of its own, and swallowed alone the check still passed), while it is
@@ -5485,9 +5533,142 @@ const NV_NU_ROWS = { 'p3-feel-okay': [['Is it okay to feel sad?', 'Yes'], ['Is i
     try { deal('p4-steps-yesno', into); } finally { L.GENERATORS['p4-steps-yesno'] = keep; } return into.length === 1 && into[0] === 'p4-steps-yesno dealing'; })();
   const { 'p4-clue-check': dropped, ...lessOne } = ONE_WORD_WAITS; const unwaited = !!dropped && judge(res, lessOne).over.some((x) => x.startsWith('p4-clue-check '));
   const show = (ids) => ids.map((g) => (readOf.has(g) ? `${g} ${pct(readOf.get(g)[0])} on ${readOf.get(g)[1]}` : `${g} not found`)).join(', ');
-  ok(`no one word tells the answer in any pre-K yes or no bank (${res.length} banks found by their choices, at least the 92 the code has, none throwing, seeds 1 to 2,000: no word in every Yes question and no No question, or the other way about), and the best one-word rule is right under 80 percent of the time in each but the ${Object.keys(ONE_WORD_WAITS).length} ONE_WORD_WAITS holds, each at or under its wait and within a point of it (pass NV's five: ${show(PASS_NV)}; pass NR's six: ${show(PASS_NR)}; waiting, EARMARKS A178: ${show(Object.keys(ONE_WORD_WAITS))}). Planted, each judged by the same rule: Play with a plan's rows as round one of pass NR read them, every Yes row saying can, caught; the five older banks' rows as pass NU left them, each caught by its own words: ${nuJudge.marked.join(', ')}; round one's two only rows in place of the roof and new idea rows, ${pct(onlyRow[2])} on ${onlyRow[3]}, and Being a good friend's cannot moved from its No row to its hurt friend's Yes row, ${pct(cannotRow[2])} on ${cannotRow[3]}, each caught by the bound alone; a wait a point under its read, one two points over it, a wait for a bank under the bound and one for a bank there is not, and a waited bank with its wait taken away, and a bank made to throw while it is probed and while it is read whole, each caught`,
+  ok(`no one word tells the answer in any pre-K yes or no bank (${res.length} banks found by their choices, at least the 92 the code has, none throwing, seeds 1 to 2,000: no word in every Yes question and no No question, or the other way about), and the best one-word rule is right under 80 percent of the time in each but the ${Object.keys(ONE_WORD_WAITS).length} ONE_WORD_WAITS holds, each at or under its wait and within a point of it (pass NV's five: ${show(PASS_NV)}; pass NR's six: ${show(PASS_NR)}; waiting, EARMARKS A178: ${show(Object.keys(ONE_WORD_WAITS))}). Planted, each judged by the same rule: Play with a plan's rows as round one of pass NR read them, every Yes row saying can, caught; the five older banks' rows as pass NU left them, each caught by its own words: ${nuJudge.marked.join(', ')}; round one's two only rows in place of the roof and new idea rows, ${pct(onlyRow[2])} on ${onlyRow[3]}, and Being a good friend's cannot said on its hurt friend's Yes row too, ${pct(cannotRow[2])} on ${cannotRow[3]}, each caught by the bound alone; a wait a point under its read, one two points over it, a wait for a bank under the bound and one for a bank there is not, and a waited bank with its wait taken away, and a bank made to throw while it is probed and while it is read whole, each caught`,
     res.length >= 92 && thrown.length === 0 && [...PASS_NR, ...PASS_NV].every((g) => readOf.has(g)) && clean(live) && plant && nuPlant && onlyPlant && cannotPlant && lowered && loosened && stalePlant && unwaited && throwPlant && dealPlant,
     JSON.stringify({ live, thrown, nu: nuJudge.marked, only: onlyJ, cannot: cannotJ, lowered, loosened, stale: staleJ, unwaited, throwPlant, dealPlant })); }
+// My voice tells more, Words for people and Two steps (pass NY, EARMARKS A181: the findings of pass NX's measured lesson reads in these
+// three lessons, each read against the project before it was fixed). In plain terms: each check below holds one thing the pass fixed,
+// and each is proven by planting what pass NX left (the rows, the generator, the lines or a picture as they were), which it must catch,
+// so a later change that brings one back fails here. The banks are read alone at seeds 1 to 2,000 and in rounds as built (1,500 first
+// rounds, later rounds that pass over the last two rounds' prompts, triple doses and Quick Reviews).
+{ const gen = (g, n = 2000) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const MOD = { 'voice-tells-more': L.getModule('voice-tells-more'), 'people-and-events': L.getModule('people-and-events'), 'two-steps': L.getModule('two-steps') };
+  // A bank's generator swapped for a planted one while a read runs, and always put back.
+  const planted = (g, fn, read) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = fn; try { return read(); } finally { L.GENERATORS[g] = keep; } };
+  // Rounds as the even yes or no rows' block builds them.
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  // A child who always taps one answer, Yes or No: the larger of the two shares, which the blind read marks over 56 percent.
+  const habit = (qs) => { const yes = qs.filter((q) => q.answer === 'Yes').length / qs.length; return Math.max(yes, 1 - yes); };
+  const groups = (mid, g) => { const R = ofModule(mid, 1500); return [habit(gen(g)), ...['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g))).filter((qs) => qs.length).map(habit)]; };
+  const pct = (v) => Math.round(v * 1000) / 10; const span = (v) => `${pct(Math.min(...v))} to ${pct(Math.max(...v))}`;
+  const sentences = (t) => String(t || '').split(L.SENTENCE_BREAK).map((x) => x.trim()).filter(Boolean);
+
+  // 1. Yes or no (pass NX's reads and EARMARKS A178: My voice tells more's answered Yes on 5 of its 7 rows, 70.0 percent of seeds, and No
+  //    whenever it said sad 85.4 percent of the time; Words for people's on 5 of 8, 61.1 percent; Two steps' 67.2 percent, and No whenever
+  //    it said tap 83.7 percent of the time). Each answers Yes and No each no more than 56 percent of the time, alone and in rounds, within
+  //    the 40 to 60 percent every yes or no bank keeps, and none asks about ability (the one-word block above holds each under 80 percent,
+  //    their waits taken out). Each bank deals every row the test's own table holds, as the derivations hold every row it deals to the
+  //    table, so a row taken out of a bank alone, which can leave its share inside the bound, is caught too. Plants: each bank's rows as
+  //    pass NX left them, dealt in its place, each over 56 alone and short of its table; one row taken out of each; and a row that asks,
+  //    can you, caught.
+  const NX_YESNO = { 'p4-tone-yesno': [['When we ask a question, does our voice often go up at the end?', 'Yes'], ['When we tell, does our voice often go up at the end?', 'No'], ['Can the same words ask or tell?', 'Yes'], ['Is a sad voice often quick, going up high?', 'No'], ['Does a happy voice often go up high?', 'Yes'], ['Can how something is said tell you how someone feels?', 'Yes'], ['When you talk with a doctor you have just met, do you say your words slowly and clearly?', 'Yes']],
+    'p3-people-yesno': [['Is a baby very little?', 'Yes'], ['Is a baby a grown-up?', 'No'], ['Is a grandma a grown-up?', 'Yes'], ['Is a grandpa a grown-up?', 'Yes'], ['Is a grandpa very little?', 'No'], ['Does a doctor help you get well when you are sick?', 'Yes'], ['Does a teacher help children learn at school?', 'Yes'], ['Does a baby help children learn at school?', 'No']],
+    'p3-steps-yesno': [['Do you listen to both steps before you start?', 'Yes'], ['Can saying the steps to yourself help you remember them?', 'Yes'], ['Get a cup, and then get a spoon. Is getting the spoon the first step?', 'No'], ['Get a cup, and then get a spoon. Is getting the cup the first step?', 'Yes'], ['Do words like first and then tell the order?', 'Yes'], ['Tap the fish, and then tap the ball. Do you tap the ball first?', 'No']] };
+  const YESNO_BANKS = [['voice-tells-more', 'p4-tone-yesno'], ['people-and-events', 'p3-people-yesno'], ['two-steps', 'p3-steps-yesno']];
+  const dealt = (rows) => (rng) => { const [prompt, answer] = L.pick(rng, rows); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt, choices: L.shuffle(rng, ['Yes', 'No']), answer, explain: `${answer}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why: 'is not the answer here.' } }, alsoRight: [] }; };
+  const ABILITY = /\b(?:can|could) you\b|\bare you able\b/i;
+  const yesNoNow = YESNO_BANKS.map(([mid, g]) => [g, groups(mid, g), [...new Set(gen(g).filter((q) => ABILITY.test(`${q.story || ''} ${q.prompt}`)).map((q) => q.prompt))]]);
+  const yesNoPlants = YESNO_BANKS.map(([, g]) => [g, planted(g, dealt(NX_YESNO[g]), () => habit(gen(g)))]);
+  const abilityPlant = ABILITY.test('Can you say the steps to yourself?');
+  // The rows a bank deals over seeds 1 to 2,000, beside the test's own table of its rows: the table's rows it never deals.
+  const TABLE = { 'p4-tone-yesno': MV_TONE4_YESNO, 'p3-people-yesno': MQ_PEOPLE_YESNO, 'p3-steps-yesno': MR_STEPS_YESNO };
+  const undealt = (g) => { const dealtNow = new Set(gen(g).map((q) => q.prompt)); return Object.keys(TABLE[g]).filter((p) => !dealtNow.has(p)); };
+  const undealtNow = YESNO_BANKS.flatMap(([, g]) => undealt(g)); const undealtNx = YESNO_BANKS.map(([, g]) => planted(g, dealt(NX_YESNO[g]), () => undealt(g).length));
+  // One row taken out of each bank, its last, the rest dealt as the bank's own table gives them.
+  const undealtOne = YESNO_BANKS.map(([, g]) => { const rows = Object.entries(TABLE[g]); return planted(g, dealt(rows.slice(0, -1)), () => undealt(g).length); });
+  ok(`My voice tells more's, Words for people's and Two steps' yes or no questions answer Yes and No each no more than 56 percent of the time, alone and in rounds (${yesNoNow.map(([g, v]) => `${g} ${span(v)}`).join(', ')}), none asks about ability, and each deals every row of the test's own table (${YESNO_BANKS.map(([, g]) => `${g} ${Object.keys(TABLE[g]).length}`).join(', ')}); planted, their rows as pass NX left them (${yesNoPlants.map(([g, h]) => `${g} ${pct(h)}`).join(', ')}), one row taken out of each, and a row that asks, can you, each caught`,
+    yesNoNow.every(([, v, a]) => v.length === 5 && v.every((x) => x <= 0.56) && a.length === 0) && undealtNow.length === 0 && yesNoPlants.every(([, h]) => h > 0.56) && undealtNx.every((n) => n > 0) && undealtOne.every((n) => n === 1) && abilityPlant, JSON.stringify({ yesNoNow, yesNoPlants, undealtNow, undealtNx, undealtOne, abilityPlant }));
+
+  // 2. Does it ask, or tell? holds EARMARKS A64 while it waits (round one's lesson read of pass NY, its MF4, and the lead's decision: the
+  //    bank had asked the same words both ways, which rests on a lift a device voice may not make). While A64's row in docs/EARMARKS.md
+  //    says Waiting, the bank asks as pass NX had it: each asking sentence opens in a question's word order (a word that starts a question,
+  //    Is, Do, Can and the like) and ends with a question mark, each telling sentence opens otherwise and ends with a full stop, no words
+  //    are both asked and told, and every pair is dealt both ways (the code's four pairs). Plants, each tripping its own read: the
+  //    same-words generator of pass NY's waves (You have a dog? and You have a dog.), caught by its order and its words both asked and
+  //    told; pass NX's bank with one telling said with a question mark, and with one question said with a full stop, each caught by its
+  //    mark alone. When the recordings lift a question clearly and A64 closes, this check fails until it is replaced by one that hears
+  //    the voice alone (A64's own words: add questions that ask by the voice alone, and hold them by ear).
+  const A64_ROW = readFileSync(new URL('../docs/EARMARKS.md', import.meta.url), 'utf8').split('\n').find((l) => l.startsWith('| A64 |')) || '';
+  const a64Waits = /\|\s*Waiting\b[^|]*\|\s*$/.test(A64_ROW);
+  const ASK_OPENS = /^(?:Is|Are|Am|Was|Were|Do|Does|Did|Can|Could|Will|Would|Should|May|Has|Have)\b/;
+  const orderFaults = (qs) => { const out = []; const asked = new Set(); const told = new Set();
+    for (const q of qs) { const s = String(q.voices[0][0]); const words = s.replace(/[.?!]$/, '').toLowerCase(); const asks = q.answer === 'It asks'; (asks ? asked : told).add(words);
+      if (asks && !ASK_OPENS.test(s)) out.push(`asked in a telling's order: ${s}`); if (asks && !s.endsWith('?')) out.push(`asked without its question mark: ${s}`);
+      if (!asks && ASK_OPENS.test(s)) out.push(`told in a question's order: ${s}`); if (!asks && !s.endsWith('.')) out.push(`told without its full stop: ${s}`); }
+    for (const w of asked) if (told.has(w)) out.push(`the same words asked and told: ${w}`);
+    return { faults: [...new Set(out)], asked: asked.size, told: told.size }; };
+  const NX_PAIRS = [['Is it raining?', 'It is raining.'], ['Is the cat asleep?', 'The cat is asleep.'], ['Do you have a dog?', 'You have a dog.'], ['Is it time for lunch?', 'It is time for lunch.']];
+  const askOf = (said, ask, rng) => { const right = ask ? 'It asks' : 'It tells'; const wrong = ask ? 'It tells' : 'It asks';
+    return { type: 'choice', story: `Listen. ${said}`, voices: [[said, ask ? 'ask' : 'tell']], prompt: 'Does it ask, or tell?', choices: L.shuffle(rng, [right, wrong]), answer: right, explain: `${right}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why: 'is not it.' } }, alsoRight: [] }; };
+  const SAME_WORDS = ['You have a dog', 'It is raining', 'The cat is asleep', 'It is time for lunch'];
+  const ASK_PLANTS = [
+    ["the same-words generator of pass NY's waves", (rng) => { const w = L.pick(rng, SAME_WORDS); const ask = rng() < 0.5; return askOf(`${w}${ask ? '?' : '.'}`, ask, rng); },
+      'asked in a telling\'s order: It is raining?; asked in a telling\'s order: It is time for lunch?; asked in a telling\'s order: The cat is asleep?; asked in a telling\'s order: You have a dog?; the same words asked and told: it is raining; the same words asked and told: it is time for lunch; the same words asked and told: the cat is asleep; the same words asked and told: you have a dog'],
+    ["pass NX's bank with a telling said with a question mark", (rng) => { const [asks, tells] = L.pick(rng, NX_PAIRS); const ask = rng() < 0.5; return askOf(ask ? asks : tells === 'It is raining.' ? 'It is raining?' : tells, ask, rng); }, 'told without its full stop: It is raining?'],
+    ["pass NX's bank with a question said with a full stop", (rng) => { const [asks, tells] = L.pick(rng, NX_PAIRS); const ask = rng() < 0.5; return askOf(ask ? (asks === 'Is the cat asleep?' ? 'Is the cat asleep.' : asks) : tells, ask, rng); }, 'asked without its question mark: Is the cat asleep.'],
+  ];
+  const sorted = (r) => [...r.faults].sort().join('; ');
+  const askNow = orderFaults(gen('p4-tone-ask'));
+  const askWrong = ASK_PLANTS.filter(([, fn, want]) => planted('p4-tone-ask', fn, () => sorted(orderFaults(gen('p4-tone-ask')))) !== want).map(([what, fn]) => `${what}: ${planted('p4-tone-ask', fn, () => sorted(orderFaults(gen('p4-tone-ask')))) || 'nothing'}`);
+  ok(`while EARMARKS A64 waits for the recordings, My voice tells more's Does it ask, or tell? asks by a question's word order and its question mark and tells by a telling's order and its full stop, as pass NX had it, no words both asked and told, its ${askNow.asked} questions and ${askNow.told} tellings each dealt (round one's lesson read of pass NY, MF4); planted, the same words of pass NY's waves, a telling with a question mark and a question with a full stop, each giving exactly its faults`,
+    a64Waits && askNow.faults.length === 0 && askNow.asked === 4 && askNow.told === 4 && askWrong.length === 0, JSON.stringify({ a64Waits, askNow, askWrong }));
+
+  // 3. A happy voice's pitch, not its pace (pass NX's reads; the lesson brief's item 16 and VOICE_MANNERS' note: studies find a happy
+  //    voice's pace quicker in some and slower in others, so the lessons claim its pitch alone). My voice tells more had said a happy voice
+  //    "can be quick" in a paragraph and two lines, a yes or no explanation and a happy face's explanation, and asked whether a sad voice
+  //    was quick: no text of the lesson, nor of its banks' questions, explanations, reasons and More right answers, says quick, and no
+  //    sentence of any lesson's lines, paragraphs, key ideas or captions says a happy voice is quick. The voice check page's rows of pass
+  //    MV's voice lessons (73 to 83) say their lesson lines word for word, as the page says they do. Plants: the paragraph, the two lines,
+  //    the two explanations and the sad row as pass NX left them, and row 83 with line 8's old words, each caught.
+  const QUICK = /\bquick(?:ly|er)?\b/i; const happyQuick = (t) => sentences(t).some((s) => /\bhappy\b/i.test(s) && QUICK.test(s) && /\bvoice\b/i.test(s));
+  const lessonTexts = (les) => [...(les.paragraphs || []), les.keyIdea || '', (les.example && les.example.caption) || '', ...(les.script || []).map((l) => l.say)];
+  const VTM = MOD['voice-tells-more'];
+  const bankTexts = (g, n = 400) => gen(g, n).flatMap((q) => [q.story, q.prompt, ...(q.choices || []), q.explain, ...Object.values(q.whyNot || {}).map((w) => `${w.name} ${w.why}`), ...(q.alsoRight || [])]).filter(Boolean);
+  const quickNow = [...new Set([...lessonTexts(VTM.lesson), ...VTM.generators.flatMap((g) => bankTexts(g))].filter((t) => QUICK.test(t)))];
+  const happyQuickNow = L.MODULES.flatMap((m) => lessonTexts(m.lesson || {}).filter(happyQuick).map((t) => `${m.id}: ${t.slice(0, 60)}`));
+  const NX_QUICK = ['Your voice shows how you feel. A happy voice often goes up high, and it can be quick. A sad voice is often slow, soft and low. So listen to how something is said, and you can tell if someone feels happy or sad.', 'Your voice shows how you feel. A happy voice often goes up high, and it can be quick. We are going to the park!', 'The same words can sound happy or sad. We are going home! In a quick voice going up high, that sounds happy. We are going home. In a slow, low voice, that sounds sad. So listen to how something is said, and you can tell if someone feels happy or sad.'];
+  const NX_QUICK_BANKS = ['Yes. A happy voice often goes up high, and it can be quick.', 'Happy. The voice was quick, and it went up high.', 'Is a sad voice often quick, going up high?'];
+  const quickPlant = NX_QUICK.every((t) => happyQuick(t) && QUICK.test(t)) && NX_QUICK_BANKS.every((t) => QUICK.test(t));
+  const VC = await import('../tools/voice-check.mjs'); const said = new Set(L.MODULES.flatMap((m) => ((m.lesson && m.lesson.script) || []).map((l) => l.say)));
+  const vcOff = (rows) => rows.filter((r) => r.kind === 'line' && r.n >= 73 && r.n <= 83 && !said.has(r.text)).map((r) => r.n);
+  const vcRows = VC.VOICE_CHECK_ROWS.filter((r) => r.kind === 'line' && r.n >= 73 && r.n <= 83).length;
+  const vcPlant = vcOff(VC.VOICE_CHECK_ROWS.map((r) => (r.n === 83 ? { ...r, text: NX_QUICK[2] } : r)));
+  ok(`no text of My voice tells more or of its five banks says quick, no sentence of any lesson calls a happy voice quick, and the voice check page's ${vcRows} rows of the voice lessons say their lines word for word; planted, the paragraph, two lines, two explanations and the sad row as pass NX left them, and row 83 with line 8's old words, each caught`,
+    quickNow.length === 0 && happyQuickNow.length === 0 && quickPlant && vcRows === 11 && vcOff(VC.VOICE_CHECK_ROWS).length === 0 && vcPlant.join() === '83', JSON.stringify({ quickNow, happyQuickNow, vcPlant }));
+
+  // 4. A turn ends its line (pass NX's reads: the line after the feelings held two turns, the first, "Can I play with the ball?", said
+  //    with more words after it). In My voice tells more each line holds one turn at most, and its turn is the line's last sentence, so the
+  //    child has until Next. Plant: that line as pass NX left it, caught.
+  const turnOff = (l) => { const turns = (l.voices || []).filter((e) => Array.isArray(e) && e[2] === 'turn'); const ss = sentences(l.say); return turns.length > 1 || (turns.length === 1 && ss[ss.length - 1] !== String(turns[0][0]).trim()); };
+  const turnsNow = VTM.lesson.script.filter(turnOff).map((l) => l.say); const turnsRead = VTM.lesson.script.filter((l) => (l.voices || []).some((e) => e[2] === 'turn')).length;
+  const turnPlant = turnOff({ say: 'Now you try. Ask it, with your voice going up at the end. Can I play with the ball? Now say it happy, with your voice going up high. We are going to the park!', voices: [['Can I play with the ball?', 'ask', 'turn'], ['We are going to the park!', 'happy', 'turn']] });
+  ok(`each line of My voice tells more holds one turn at most, its last sentence (${turnsRead} lines with a turn); planted, the two turns' line as pass NX left it, caught`, turnsNow.length === 0 && turnsRead === 3 && VTM.lesson.script.length <= 13 && turnPlant, JSON.stringify({ turnsNow }));
+
+  // 5. Every person a line names is drawn (pass NX's reads: Words for people's helpers line named four and drew three, without the
+  //    grandpa, since a row draws three at most; the people line and the last line named five and drew three). Each person a line of Words
+  //    for people names, by any of their forms (a grandpa, grandpas), is drawn on that line, by its picture or by the line's painting, as
+  //    the painting's own words say, and the painting stands on the line that names its family. Since pass NY the people line is two, the
+  //    baby and the grown-ups on one and all five people on the next, since all five drawn under the one line's words put its Next under
+  //    the fold. Plants: the three lines as pass NX left them, each caught.
+  const PEOPLE = { baby: /\bbab(?:y|ies)\b/i, teacher: /\bteachers?\b/i, doctor: /\bdoctors?\b/i, grandma: /\bgrandmas?\b/i, grandpa: /\bgrandpas?\b/i };
+  const drawnOf = (v, out = new Set()) => { if (!v) return out; if (v.kind === 'pair') { drawnOf(v.a, out); drawnOf(v.b, out); } else if (v.kind === 'row') (v.items || []).forEach((x) => drawnOf(x, out)); else if (v.kind === 'icon') out.add(String(v.name).split('~')[0]); return out; };
+  const PE = MOD['people-and-events'];
+  const undrawn = (l, k) => { const own = L.sayAlongParts(l.say).filter((p) => p.role === 'say').map((p) => p.sentence).join(' '); const drawn = drawnOf(l.show); const painted = (PE.lesson.pictures || []).filter((p) => p.step === k).map((p) => p.alt).join(' ');
+    return Object.keys(PEOPLE).filter((p) => PEOPLE[p].test(own) && !drawn.has(p) && !PEOPLE[p].test(painted)); };
+  const peopleNow = PE.lesson.script.flatMap((l, k) => undrawn(l, k).map((p) => `line ${k}: ${p}`)); const peopleRead = PE.lesson.script.filter((l) => Object.values(PEOPLE).some((re) => re.test(l.say))).length;
+  const icon = (name, size) => ({ kind: 'icon', name, ...(size ? { size } : {}) });
+  // The three lines as pass NX left them, words and picture (the people line's say-along game aside, which names no person).
+  const NX_PEOPLE_LINES = [{ say: 'A teacher, a doctor, a grandma and a grandpa are all helpers.', show: { kind: 'row', items: [icon('teacher'), icon('doctor'), icon('grandma')] } },
+    { say: 'A baby is little, and a grandma and a grandpa are grown-ups. Babies, teachers, doctors, grandmas and grandpas are all people. Each one is a person. Our word is people.', show: { kind: 'row', align: 'end', items: [icon('baby', 74), icon('grandma'), icon('grandpa')] } },
+    { say: 'Some words name people, like baby, teacher, doctor, grandma and grandpa. Each one is a person.', show: { kind: 'row', items: [icon('baby'), icon('doctor'), icon('grandpa')] } }];
+  const peoplePlants = NX_PEOPLE_LINES.map((l) => undrawn(l, -1));
+  const familyLine = (PE.lesson.pictures || []).every((p) => /\bfamily\b/.test((PE.lesson.script[p.step] || {}).say || ''));
+  ok(`every person a line of Words for people names is drawn on it, by its picture or its painting, and its painting stands on its family line (${peopleRead} lines name people); planted, the helpers line, the people line and the last line as pass NX left them (${peoplePlants.map((u) => u.join(' and ')).join('; ')} not drawn), each caught`,
+    peopleNow.length === 0 && peopleRead >= 11 && familyLine && PE.lesson.script.length <= 13 && peoplePlants.every((u) => u.length > 0), JSON.stringify({ peopleNow, peoplePlants, familyLine }));
+}
 // Who does which part, dealt either way (pass NR, EARMARKS A154): either of a plan's two parts may be yours, so the question alone, "Who builds
 // the roof?", never tells whose it is. Read by a child who heard only the question (the answer each question had most often at the other
 // seeds), at seeds 1 to 2,000, it is right no more than chance allows (under 56 percent, chance 50). Plant: the old line put back, the
@@ -5528,6 +5709,210 @@ const NV_NU_ROWS = { 'p3-feel-okay': [['Is it okay to feel sad?', 'Yes'], ['Is i
   const pct = (v) => Math.round(v * 1000) / 10; const span = (v) => `${pct(Math.min(...v))} to ${pct(Math.max(...v))}%`;
   ok(`seven yes or no banks answer Yes between 40 and 60 percent of the time, alone and in rounds: Play with a plan's and Talking with a friend's (pass NR) and, since pass NV, A158's five (${now.map(([g, v]) => `${g} ${span(v)}`).join(', ')}); planted, pass NQ's plan rows, four Yes to one No, the talking rows' step between, four Yes to two No, and the five banks' rows as pass NU left them (${plants.map(([g, v]) => `${g} ${span(v)}`).join(', ')}), each caught`,
     now.length === 7 && now.every(([, v]) => v.length === 5 && even(v)) && plants.length === 7 && plants.every(([, v]) => !even(v)), JSON.stringify({ now, plants })); }
+// Can I play too?, Helping a friend and Being a good friend (pass NY, EARMARKS A181: the findings of pass NX's measured lesson reads in
+// these three lessons, each read against the project before it was fixed). In plain terms: each check below holds one thing the pass
+// fixed, and each is proven by planting what pass NX left (the rows, the lines, an explanation or a citation as they were), which it
+// must catch, so a later change that brings one back fails here. The three lessons' banks are read alone at seeds 1 to 2,000 and in
+// rounds as built (1,500 first rounds, later rounds that pass over the last two rounds' prompts, triple doses and Quick Reviews).
+{ const gen = (g, n = 2000) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const MOD = { 'join-in-play': L.getModule('join-in-play'), 'help-a-friend': L.getModule('help-a-friend'), 'good-friend': L.getModule('good-friend') };
+  const linesOf = (m) => m.lesson.script.map((l) => l.say).join(' ');
+  // A bank's generator swapped for a planted one while a read runs, and always put back.
+  const planted = (g, fn, read) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = fn; try { return read(); } finally { L.GENERATORS[g] = keep; } };
+  // Rounds as the even yes or no rows' block builds them.
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  // A child who always taps one choice (Yes, No or one face): right when it is the answer, wrong when it is a wrong choice, and a guess
+  // when the question does not offer it; the best such choice's share, which the blind read marks over 56 percent for two choices.
+  const habit = (qs) => { const vals = [...new Set(qs.flatMap((q) => q.choices))]; return Math.max(...vals.map((x) => qs.reduce((n, q) => n + (x === q.answer ? 1 : q.choices.includes(x) ? 0 : 1 / q.choices.length), 0) / qs.length)); };
+  const ROUNDS = {}; const roundsOf = (mid) => (ROUNDS[mid] = ROUNDS[mid] || ofModule(mid, 1500));
+  const groups = (mid, g) => [habit(gen(g)), ...['first', 'later', 'doses', 'reviews'].map((k) => roundsOf(mid)[k].flatMap((r) => r.filter((q) => q.genId === g))).filter((qs) => qs.length).map(habit)];
+  const pct = (v) => Math.round(v * 1000) / 10; const span = (v) => `${pct(Math.min(...v))} to ${pct(Math.max(...v))}`;
+  // The test's own face signs, each the words that say it in any of its forms (a tear, a tear rolling out; wide-open eyes, eyes open
+  // wide), and the sign each face's reason names.
+  const SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
+  const SIGN_WORDS = [['a big smile', /\bbig smile\b/i], ['a tear', /\btears?\b/i], ['a mouth turned down', /\bmouth\b[^.]*\bdown\b/i], ['eyebrows that squeeze down', /\beyebrows\b[^.]*\bsqueeze/i], ['wide-open eyes', /\bwide-open eyes\b|\beyes\b[^.]*\bopen wide\b/i], ['a wiggly mouth', /\bwiggly mouth\b/i], ['eyes that look down', /\beyes that look down\b/i], ['pink cheeks', /\bpink cheeks\b/i]];
+
+  // 1. Faces (pass NX's reads: Can I play too? offered the scared face and Helping a friend the mad face, neither drawn by a line, with
+  //    reasons by signs no line said, and sad answered 60.5 and 70.7 percent of their questions). Every face a face bank of the three
+  //    lessons offers is drawn on a line of its own lesson that names it; every sign its explanations, reasons and More right answers
+  //    say is said on a line of that lesson; and no face is right more than 56 percent of the time for a child who always taps it, alone
+  //    or in rounds. Plants: each bank's rows as pass NX left them, dealt in its place, and each lesson's lines as pass NX left them.
+  const drawnNamed = (m) => { const out = new Set(); const walk = (v, said) => { if (!v) return; if (v.kind === 'pair') { walk(v.a, said); walk(v.b, said); } else if (v.kind === 'row') (v.items || []).forEach((x) => walk(x, said)); else if (v.kind === 'face' && new RegExp(`\\b${v.feeling}\\b`).test(said)) out.add(v.feeling); else if (v.kind === 'faces') (v.feelings || []).filter((f) => new RegExp(`\\b${f}\\b`).test(said)).forEach((f) => out.add(f)); };
+    m.lesson.script.forEach((l) => walk(l.show, l.say)); return out; };
+  const undrawn = (m, qs) => { const d = drawnNamed(m); return [...new Set(qs.flatMap((q) => [...(q.choices || []), q.visual && q.visual.kind === 'face' ? `face:${q.visual.feeling}` : ''].filter((c) => /^face:/.test(String(c))).map((c) => String(c).slice(5))))].filter((f) => !d.has(f)); };
+  const unsaidSigns = (m, qs) => { const lines = linesOf(m); const heard = qs.flatMap((q) => [q.explain || '', ...Object.values(q.whyNot || {}).map((w) => `${w.name} ${w.why}`), ...(q.alsoRight || [])]).join(' ');
+    return SIGN_WORDS.filter(([, re]) => re.test(heard) && !re.test(lines)).map(([name]) => name); };
+  const NX_JOIN_FACE = [['How might your friends feel when someone knocks down their tower?', 'sad', 'happy', 'a tower knocked down can make your friends sad'], ['How might your friends feel when someone grabs their blocks?', 'mad', 'scared', 'grabbing can make your friends feel mad'], ['How might you feel when your friends say, yes, come and play?', 'happy', 'mad', 'playing together can make you happy'], ['How might a friend feel when nobody will play with him?', 'sad', 'happy', 'having nobody to play with can make someone sad'], ['How might your friend feel when you listen to her idea for the game?', 'happy', 'sad', 'being listened to can make a friend happy']];
+  const NX_HELP_WHO = [['Tap the friend who might need help.', 'sad', ['happy'], 'That friend looks sad and may need help. You can ask, are you okay?'], ['Tap the friend who might need help.', 'scared', ['happy'], 'That friend looks scared and may need help. You can ask, are you okay?'], ['Tap the friend who looks sad.', 'sad', ['mad', 'scared'], 'That friend\'s mouth turns down, and a tear rolls out, so your friend looks sad.'], ['Tap the friend who looks scared.', 'scared', ['sad', 'mad'], 'That friend\'s eyes are open wide, so your friend looks scared.']];
+  const NX_LOOK = { sad: 'a sad friend can have a tear rolling out', scared: 'a scared friend\'s eyes open wide' };
+  // Each planted bank draws as its generator did (a row, then its wrong face, then the order), so a seed deals what pass NX's bank dealt.
+  const nxJoinFace = (rng) => { const [prompt, f, wrong, clause] = L.pick(rng, NX_JOIN_FACE); const choices = L.shuffle(rng, [`face:${f}`, `face:${wrong}`]);
+    return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: '', visual: null, explainVisual: null, whyNot: { [`face:${wrong}`]: { name: `The ${wrong} face`, why: `has ${SIGN[wrong]}, and ${clause}.` } }, alsoRight: [] }; };
+  const nxHelpWho = (rng) => { const [prompt, f, foils, explain] = L.pick(rng, NX_HELP_WHO); const other = L.pick(rng, foils); const choices = L.shuffle(rng, [`face:${f}`, `face:${other}`]);
+    return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain, visual: null, explainVisual: null, whyNot: { [`face:${other}`]: { name: `The ${other} face`, why: /might need help/.test(prompt) ? `has ${SIGN[other]}, so that friend may not need help right now.` : `has ${SIGN[other]}, and ${NX_LOOK[f]}.` } }, alsoRight: [] }; };
+  // Each lesson's changed lines as pass NX left them: Can I play too?'s fifth and ninth lines without the faces' signs, and Helping a
+  // friend without its second line, the faces and their signs.
+  const NX_LINES = { 'join-in-play': { 'Grabbing your friends\' blocks is not kind. Knocking down their tower is not kind. It can make your friends sad, with a tear rolling out, or mad, with eyebrows that squeeze down.': 'Grabbing your friends\' blocks is not kind. Knocking down their tower is not kind. It can make your friends sad or mad.', 'Playing together can make everyone happy, with a big smile. Listening to a friend\'s idea can make your friend happy.': 'Playing together can make everyone happy. Listening to a friend\'s idea can make your friend happy.' },
+    'help-a-friend': { 'A sad face can have a tear rolling out. A scared face has wide-open eyes. And a happy face has a big smile.': null } };
+  const asNx = (mid) => ({ lesson: { script: MOD[mid].lesson.script.filter((l) => NX_LINES[mid][l.say] !== null).map((l) => ({ ...l, say: NX_LINES[mid][l.say] || l.say })) } });
+  const FACE_BANKS = [['join-in-play', 'p3-join-face', nxJoinFace], ['help-a-friend', 'p3-help-who', nxHelpWho]];
+  const faceNow = FACE_BANKS.map(([mid, g]) => { const qs = gen(g); return [g, undrawn(MOD[mid], qs), unsaidSigns(MOD[mid], qs), groups(mid, g)]; });
+  const facePlants = FACE_BANKS.map(([mid, g, fn]) => planted(g, fn, () => { const qs = gen(g); return [g, undrawn(MOD[mid], qs), habit(qs)]; }));
+  const lineMatched = Object.keys(NX_LINES).every((mid) => Object.keys(NX_LINES[mid]).every((say) => MOD[mid].lesson.script.some((l) => l.say === say)));
+  const linePlants = FACE_BANKS.map(([mid, g]) => [mid, unsaidSigns(asNx(mid), gen(g))]);
+  ok(`every face Can I play too?'s and Helping a friend's face questions offer is drawn and named on a line of their own lesson, every sign their explanations, reasons and More right answers say is said on a line of it, and no face is right over 56 percent of the time for a child who always taps it, alone or in rounds (${faceNow.map(([g, , , v]) => `${g} ${span(v)}`).join(', ')}); planted, the banks' rows as pass NX left them (${facePlants.map(([g, u, h]) => `${g} offering ${u.join(' and ')} and read at ${pct(h)}`).join('; ')}) and the lessons' lines as pass NX left them (${linePlants.map(([mid, u]) => `${mid} saying none of ${u.join(', ')}`).join('; ')}), each caught`,
+    faceNow.every(([, u, s, v]) => u.length === 0 && s.length === 0 && v.length === 5 && v.every((x) => x <= 0.56)) && facePlants.every(([, u, h]) => u.length > 0 && h > 0.56) && lineMatched && linePlants.every(([, u]) => u.length > 0), JSON.stringify({ faceNow, facePlants, lineMatched, linePlants }));
+
+  // 2. Yes or no (pass NX's reads and EARMARKS A178: Can I play too?'s answered Yes 58.1 percent of the time, Helping a friend's 57.4 and
+  //    Being a good friend's 59.5, each over the blind read's margin): each answers Yes and No each no more than 56 percent of the time,
+  //    alone and in rounds, within the 40 to 60 percent every yes or no bank keeps; and none asks about ability. Plants: each bank's rows
+  //    as pass NX left them, dealt in its place, each over 56 alone; and a row that asks, can you, caught.
+  const NX_YESNO = { 'p3-join-yesno': [['Is it kind to ask your friends, can I play too?', 'Yes'], ['Is it kind to knock down your friends\' tower?', 'No'], ['Is it kind to grab your friends\' blocks?', 'No'], ['Is it okay when your friends say, not now?', 'Yes'], ['Is it kind to ask a friend who plays alone, do you want to play with me?', 'Yes'], ['Should you watch the game first when you want to play?', 'Yes'], ['When your friends are building a tower, is a ball a good thing to bring?', 'No']],
+    'p3-help-yesno': [['Is it kind to ask a sad friend if they are okay?', 'Yes'], ['Is it kind to sit beside a friend who is sad?', 'Yes'], ['Is it kind to laugh at a friend who falls and gets hurt?', 'No'], ['Is it okay to push when you both want one ball?', 'No'], ['Should you get a grown-up when a friend is hurt?', 'Yes'], ['Is it kind to ask your sad grown-up, can I give you a hug?', 'Yes'], ['Is it kind to laugh at a friend who is scared?', 'No']],
+    'p4-good-yesno': [['Is it kind to laugh when a friend spills milk?', 'No'], ['Is it kind to say, it is okay, I spill too?', 'Yes'], ['Is it kind to ask a worried friend, can I hold your hand?', 'Yes'], ['Is it fair if only you choose the game every time?', 'No'], ['Is it kind to say what the problem is, like, we want different games?', 'Yes']] };
+  const YESNO_BANKS = [['join-in-play', 'p3-join-yesno'], ['help-a-friend', 'p3-help-yesno'], ['good-friend', 'p4-good-yesno']];
+  const dealt = (rows) => (rng) => { const [prompt, answer] = L.pick(rng, rows); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt, choices: L.shuffle(rng, ['Yes', 'No']), answer, explain: `${answer}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why: 'is not the answer here.' } }, alsoRight: [] }; };
+  const ABILITY = /\b(?:can|could) you\b|\bare you able\b/i;
+  const yesNoNow = YESNO_BANKS.map(([mid, g]) => [g, groups(mid, g), [...new Set(gen(g).filter((q) => ABILITY.test(`${q.story || ''} ${q.prompt}`)).map((q) => q.prompt))]]);
+  const yesNoPlants = YESNO_BANKS.map(([, g]) => [g, planted(g, dealt(NX_YESNO[g]), () => habit(gen(g)))]);
+  const abilityPlant = ABILITY.test('Can you ask your friends, can I play too?');
+  ok(`Can I play too?'s, Helping a friend's and Being a good friend's yes or no questions answer Yes and No each no more than 56 percent of the time, alone and in rounds (${yesNoNow.map(([g, v]) => `${g} ${span(v)}`).join(', ')}), and none asks about ability; planted, their rows as pass NX left them (${yesNoPlants.map(([g, h]) => `${g} ${pct(h)}`).join(', ')}) and a row that asks, can you, each caught`,
+    yesNoNow.every(([, v, a]) => v.length === 5 && v.every((x) => x <= 0.56) && a.length === 0) && yesNoPlants.every(([, h]) => h > 0.56) && abilityPlant, JSON.stringify({ yesNoNow, yesNoPlants, abilityPlant }));
+
+  // 3. When to get a grown-up (pass NX's reads): Being a good friend asks a No about getting a grown-up only as Do you need, since
+  //    "Should you get a grown-up when ...?" answered No taught that getting a grown-up is wrong, where line 11 says only that you do not
+  //    need one; and no question asks whether you can do something while saying you cannot, which answers it ("Can you and your friend
+  //    fix the problem together when a fight starts and you cannot stop it?"). Plant: the bank's rows as pass NX left them, caught on
+  //    its two Should you get rows and its fight row.
+  const NX_GROWNUP = [['Should you get a grown-up when your friend falls and gets hurt?', 'Yes'], ['Do you need a grown-up when a fight starts and you cannot stop it?', 'Yes'], ['Should you get a grown-up when your friend is very sad and cannot stop crying?', 'Yes'], ['Do you need a grown-up when you and your friend can take turns choosing the game?', 'No'], ['Should you get a grown-up when you and your friend can find a game you both like?', 'No'], ['Do you need a grown-up when you and your friend cannot fix a problem together?', 'Yes'], ['Can you and your friend fix the problem together when you want different games?', 'Yes'], ['Can you and your friend fix it together when your friend spills a little milk?', 'Yes'], ['Do you need a grown-up to say kind words to a sad friend?', 'No'], ['Should you get a grown-up when you want to play blocks and your friend wants to play ball?', 'No'], ['Do you need a grown-up when you and your friend fix a problem together?', 'No'], ['Can you and your friend fix the problem together when a fight starts and you cannot stop it?', 'No']];
+  const grownupWrong = (rows) => rows.filter(([p, a]) => (/^Should you get a grown-up\b/.test(p) && a === 'No') || (/^Can you\b/.test(p) && /\bcannot\b/.test(p))).map(([p]) => p);
+  const grownupRows = [...new Map(gen('p4-when-grownup').map((q) => [q.prompt, q.answer]))];
+  const grownupNow = grownupWrong(grownupRows); const grownupPlant = grownupWrong(NX_GROWNUP);
+  // Since round one's lesson read of pass NY (its SC2: Can you and your friend answered only Yes, and the opening words alone read 74.7
+  // percent) the Can you and Do you need frames each answer Yes and No; only Should you get answers one way, as above. Plant: the rows
+  // as pass NY's waves left them, without the hurt friend's Can row, caught.
+  const oneWayFrames = (rows) => ['Can you', 'Do you'].filter((f) => new Set(rows.filter(([p]) => p.startsWith(`${f} `)).map(([, a]) => a)).size !== 2);
+  const framesNow = oneWayFrames(grownupRows); const framesPlant = oneWayFrames(grownupRows.filter(([p]) => p !== 'Can you and your friend fix it together when your friend falls and gets hurt?'));
+  ok(`Being a good friend asks a No about getting a grown-up only as Do you need, never Should you get, asks no question its own words answer, and asks its Can you and Do you need frames both ways (${grownupRows.length} rows); planted, its rows as pass NX left them, ${grownupPlant.length} caught, and as pass NY's waves left them, the Can frame one way, caught`,
+    grownupRows.length >= 13 && grownupNow.length === 0 && grownupPlant.length === 3 && framesNow.length === 0 && framesPlant.join() === 'Can you', JSON.stringify({ grownupNow, grownupPlant, framesNow, framesPlant }));
+
+  // 4. A grown-up near the slide (pass NX's reads; the story brief's rule that a young child near a height has a grown-up nearby, in
+  //    pictures as in stories): a line or a question of the three lessons that sends a child off to play on the slide or the swing names
+  //    a grown-up, and a line shows one too. Plant: Can I play too?'s not now line as pass NX left it, the slide alone.
+  const SENDS = /\bplay something else, like the (?:slide|swing)\b|\bplay on the (?:slide|swing)\b|\bgo (?:on|to) the (?:slide|swing)\b/i; const GROWN = /\bgrown-ups?\b|\bteachers?\b/i;
+  const showsGrown = (v) => !!v && (v.kind === 'pair' ? showsGrown(v.a) || showsGrown(v.b) : v.kind === 'row' ? (v.items || []).some(showsGrown) : v.kind === 'icon' && v.name === 'teacher');
+  const sendsAlone = (l) => SENDS.test(l.say) && !(GROWN.test(l.say) && showsGrown(l.show));
+  const slideLines = Object.values(MOD).flatMap((m) => m.lesson.script.filter((l) => SENDS.test(l.say)));
+  // Since round one's screen read of pass NY (its S2) the teacher is near, never watching: the teacher's drawing holds a book open, so a
+  // line that shows it never says the teacher watches. Plant: Can I play too?'s line as round one's copy had it, caught.
+  const WATCHES = /\bteachers? (?:watch|watches|is watching)\b/i;
+  const watchesNow = Object.values(MOD).flatMap((m) => [...m.lesson.script.filter((l) => WATCHES.test(l.say) && showsGrown(l.show)).map((l) => l.say), ...m.lesson.paragraphs.filter((p) => WATCHES.test(p))]);
+  const watchesPlant = WATCHES.test('You can play something else, like the slide while your teacher watches, and ask again later.') && showsGrown({ kind: 'pair', a: { kind: 'icon', name: 'slide' }, b: { kind: 'icon', name: 'teacher' } });
+  const slideAlone = [...Object.values(MOD).flatMap((m) => m.lesson.script.filter(sendsAlone).map((l) => l.say)), ...Object.values(MOD).flatMap((m) => m.generators.flatMap((g) => gen(g, 400).flatMap((q) => [q.prompt, q.explain, ...Object.values(q.whyNot || {}).map((w) => w.why), ...(q.alsoRight || [])]).filter((t) => SENDS.test(t || '') && !GROWN.test(t))))];
+  const slidePlant = sendsAlone({ say: 'Sometimes friends say, not now. That is okay. You can play something else, like the slide, and ask again later.', show: { kind: 'icon', name: 'slide' } });
+  ok(`no line or question of Can I play too?, Helping a friend or Being a good friend sends a child off to the slide or the swing with no grown-up named, and a line shows one too, the teacher near and never watching while the teacher's drawing holds a book (${slideLines.length} such line read); planted, Can I play too?'s not now line as pass NX left it and as round one's copy had it, each caught`,
+    slideLines.length >= 1 && slideAlone.length === 0 && slidePlant && watchesNow.length === 0 && watchesPlant, JSON.stringify({ slideAlone, watchesNow }));
+
+  // 5. An explanation opens on the answer (pass NX's reads: Helping a friend's ball row opened "Pushing is not okay, because it hurts."
+  //    and gave no reason for getting a grown-up): in the three lessons' banks with words for choices, an explanation's first sentence
+  //    never names a wrong choice's act, by the wrong choice's own words that the answer does not share. Plant: that explanation, caught.
+  const STOP_W = new Set('the a an and or you your yours are is it its my at to too i we ha not their them they so of for with be can'.split(' '));
+  const stemOf = (w) => { const s = w.replace(/(?:ing|ed|es|s)$/, ''); return s.length > 3 && /([b-df-hj-np-tv-z])\1$/.test(s) ? s.slice(0, -1) : s; };
+  const stems = (t) => new Set(String(t || '').toLowerCase().replace(/^(?:icon|pic):/, '').replace(/[^a-z' -]+/g, ' ').split(/[\s-]+/).map((w) => w.replace(/'s$|'/g, '')).filter((w) => w.length >= 3 && !STOP_W.has(w)).map(stemOf));
+  const opensOnWrong = (q) => { const first = stems(String(q.explain || '').split(/(?<=[.!?])\s/)[0]); const ans = stems(q.answer); return (q.choices || []).filter((c) => c !== q.answer).some((c) => [...stems(c)].some((w) => !ans.has(w) && first.has(w))); };
+  const WORD_BANKS = ['p3-join-how', 'p3-join-not-now', 'p3-help-kind', 'p3-help-grownup', 'p3-help-ball', 'p4-kind-words', 'p4-help-friend', 'p4-fix-problem'];
+  const opensNow = [...new Set(WORD_BANKS.flatMap((g) => gen(g, 400).filter(opensOnWrong).map((q) => `${g}: ${q.explain}`)))];
+  const opensPlant = opensOnWrong({ choices: ['Get a grown-up', 'Push your friend'], answer: 'Get a grown-up', explain: 'Pushing is not okay, because it hurts. Keep your hands to yourself, and get a grown-up.' });
+  ok(`no explanation in the three lessons' banks with words for choices opens on a wrong choice's act (${WORD_BANKS.length} banks, seeds 1 to 400); planted, Helping a friend's ball explanation as pass NX left it, caught`, opensNow.length === 0 && opensPlant, opensNow.join(' | '));
+
+  // 6. Citations (pass NX's reads): every Texas code the three lessons cite says what the lesson teaches in a since clause (Helping a
+  //    friend's I.C.5 had none), and P-SE 5, cited whole by Helping a friend and named taught there by Please and thank you's citation,
+  //    has its first sentence, "Begins to recognize and describe social problems.", taught in words: a line says what the problem is.
+  //    Plants: Helping a friend's citation and its ball line as pass NX left them, each caught.
+  const noSince = (src) => [...src.matchAll(/\b[IVX]+\.[A-Z]\.\d+(?:\.[a-z])? \([^()]*\)/g)].filter((m) => !/^,? (?:in part, )?since\b/.test(src.slice(m.index + m[0].length))).map((m) => m[0].split(' ')[0]);
+  const sinceNow = Object.values(MOD).flatMap((m) => noSince(m.sources.join(' ')).map((c) => `${m.id} ${c}`));
+  const sincePlant = noSince(MOD['help-a-friend'].sources.join(' ').replace(/(I\.C\.5 \([^()]*\)), since the lesson teaches getting a grown-up to help when two friends both want one ball and a fight starts,/, '$1,'));
+  const DESCRIBES = /\bsay what the problem is\b|\bsay, we both want\b/i;
+  const pse5 = (m) => /P-SE 5 \(uses basic problem-solving skills to resolve conflicts with other children\), whose 36 to 48 month progression reads "Begins to recognize and describe social problems\./.test(m.sources.join(' '));
+  const describesNow = pse5(MOD['help-a-friend']) && MOD['help-a-friend'].lesson.script.some((l) => /\bproblem\b/.test(l.say) && DESCRIBES.test(l.say));
+  const describesPlant = !DESCRIBES.test('Sometimes two friends both want one ball, and a fight starts. That is a problem.');
+  ok(`every Texas code the three lessons cite has its since clause, and Helping a friend, which cites P-SE 5 whole, says what the problem is in words on a line; planted, its citation without I.C.5's since clause (${sincePlant.join(', ')} missing) and its ball line as pass NX left it, each caught`,
+    sinceNow.length === 0 && sincePlant.length === 1 && sincePlant[0] === 'I.C.5' && describesNow && describesPlant, JSON.stringify({ sinceNow, sincePlant, describesNow }));
+
+  // 7. Being a good friend's wrong choices and reasons (pass NX's reads): every wrong choice its banks with words for choices offer is
+  //    taught on a line of the lesson, by the test's own table of the words that teach it (a thing said as words said, a laugh as
+  //    laughing), but five waiting by name for a later pass, which the table gives no words, since no line says them yet and pass NX's
+  //    reads did not name them (a list that only falls: a waiting choice no longer offered fails); and the three lessons' questions say none of the words pass NX's reads found
+  //    borrowed from other lessons unless the lesson's own lines say them. Plants: the lines without line 2's go away and stop crying,
+  //    a question offering Grab the ball, which the table does not hold, and each borrowed word's text as pass NX left it, each caught.
+  const WRONG_TAUGHT = { 'Ha ha, you spilled!': /\blaughing at a friend\b/i, 'Ha ha, you are embarrassed!': /\blaughing at a friend\b/i, 'Laugh at your friend': /\blaughing at a friend\b/i, 'Go away.': /\bsay(?:ing)?\b[^.]*\bgo away\b|\bgo away is not a kind thing to say\b/i, 'Stop crying!': /\bsay(?:ing)?\b[^.]*\bstop crying\b|\bstop crying is not kind\b/i, 'Choose blocks every time': /\bchoosing every time\b/i, 'Only you choose': /\bonly you choosing\b/i,
+    'Point and laugh': null, 'Walk away': null, 'Say, you are not my friend': null, 'You are mean': null, Nobody: null };
+  const WRONG_WAITING = Object.keys(WRONG_TAUGHT).filter((c) => WRONG_TAUGHT[c] === null);
+  const GF_BANKS = ['p4-kind-words', 'p4-help-friend', 'p4-fix-problem']; const gfQs = GF_BANKS.flatMap((g) => gen(g, 400));
+  const wrongsOf = (qs) => [...new Set(qs.flatMap((q) => (q.choices || []).filter((c) => c !== q.answer)))];
+  const untaught = (m, qs) => { const sentences = m.lesson.script.flatMap((l) => l.say.split(/(?<=[.!?])\s+/)); return wrongsOf(qs).filter((c) => !(c in WRONG_TAUGHT) || (WRONG_TAUGHT[c] && !sentences.some((t) => WRONG_TAUGHT[c].test(t)))); };
+  const untaughtNow = untaught(MOD['good-friend'], gfQs); const offered = wrongsOf(gfQs);
+  const waitStale = WRONG_WAITING.filter((c) => !offered.includes(c));
+  const gfNoLine2 = { lesson: { script: MOD['good-friend'].lesson.script.map((l) => ({ ...l, say: l.say.replace(' Go away is not a kind thing to say. Stop crying is not kind, either.', '') })) } };
+  const wrongPlant = untaught(gfNoLine2, gfQs); const grabPlant = untaught(MOD['good-friend'], [{ choices: ['Take turns choosing', 'Grab the ball'], answer: 'Take turns choosing' }]);
+  const BORROWED = [['the biggest feelings', /\bbiggest\b/i, 'Yes. Grown-ups can help with the biggest feelings.', 'good-friend'], ['every feeling is okay to have', /\bevery feeling\b/i, 'is not kind, because every feeling is okay to have.', 'good-friend'], ['in front of the class', /\bin front of the class\b/i, 'What is a kind thing to say when your friend falls in front of the class?', 'good-friend'], ['a name called', /\bcalls? (?:your friend )?a name\b/i, 'calls your friend a name, and it does not say the problem.', 'good-friend'], ['sharing', /\bshar(?:e|es|ing)\b/i, 'A grown-up can also help you share the ball, so you both play at the same time.', 'help-a-friend']];
+  const textsOf = (q) => [q.story, q.prompt, ...(q.choices || []), q.explain, ...Object.values(q.whyNot || {}).map((w) => `${w.name} ${w.why}`), ...(q.alsoRight || [])].filter(Boolean);
+  const borrowedIn = (m, texts) => texts.filter((t) => BORROWED.some(([, re]) => re.test(t) && !re.test(linesOf(m))));
+  const borrowedNow = [...new Set(Object.values(MOD).flatMap((m) => borrowedIn(m, m.generators.flatMap((g) => gen(g, 400).flatMap(textsOf)))))];
+  const borrowedPlant = BORROWED.filter(([, , old, mid]) => borrowedIn(MOD[mid], [old]).length === 1);
+  ok(`every wrong choice of Being a good friend's banks with words for choices is taught on a line of the lesson but the ${WRONG_WAITING.length} waiting by name (${WRONG_WAITING.join(', ')}), none waiting stale, and the three lessons' questions say none of the ${BORROWED.length} words pass NX's reads found borrowed (${BORROWED.map(([n]) => n).join(', ')}) unless their own lines do; planted, the lines without go away and stop crying (${wrongPlant.join(' and ')} untaught), Grab the ball offered, and each borrowed word's text as pass NX left it, each caught`,
+    untaughtNow.length === 0 && waitStale.length === 0 && wrongPlant.length === 2 && grabPlant.length === 1 && borrowedNow.length === 0 && borrowedPlant.length === BORROWED.length, JSON.stringify({ untaughtNow, waitStale, wrongPlant, grabPlant, borrowedNow }));
+
+  // 8. More right answers and quoted words in the yes or no questions (pass NX's reads): under a Yes about an act, a line is another act
+  //    or another time, never what to do or say ("You can say, I will play with you." stood under the worried friend's hand); and a
+  //    question asking whether words are kind says when or to whom they are said ("Is it kind to say, it is okay, I spill too?" had
+  //    dropped its spilled milk). Plants: both, as pass NX left them, caught.
+  const ACTQ = /^(?:Is it (?:kind|okay|fair) (?:to|if|when)|Should you|Is an? [\w ]+ a good thing to)\b/; const TELLS = /^(?:You (?:can|could|should)|Ask|Say|Tell|Bring|Sit|Take|Get|Keep|Find|Play|Help|Go|Give)\b/;
+  const QUOTED = /^Is it kind to (?:say|ask)\b/; const SCENE = /\bwhen\b|\b(?:a|your)\b[^?]*\b(?:friends?|grown-up)\b/;
+  const YN = ['p3-join-yesno', 'p3-help-yesno', 'p4-good-yesno', 'p4-when-grownup']; const ynQs = YN.flatMap((g) => gen(g, 400));
+  const tellsNow = [...new Set(ynQs.filter((q) => q.answer === 'Yes' && ACTQ.test(q.prompt)).flatMap((q) => (q.alsoRight || []).filter((m) => TELLS.test(m)).map((m) => `${q.prompt} | ${m}`)))];
+  const sceneNow = [...new Set(ynQs.filter((q) => QUOTED.test(q.prompt) && !SCENE.test(q.prompt)).map((q) => q.prompt))];
+  const tellsPlant = TELLS.test('You can say, I will play with you.') && ACTQ.test('Is it kind to ask a worried friend, can I hold your hand?'); const scenePlant = QUOTED.test('Is it kind to say, it is okay, I spill too?') && !SCENE.test('Is it kind to say, it is okay, I spill too?');
+  ok(`under a Yes about an act in the three lessons' yes or no questions, no More right answers line says what to do or say, and every question that asks whether words are kind says when or to whom; planted, the worried friend's line and the spilled milk's question as pass NX left them, each caught`,
+    tellsNow.length === 0 && sceneNow.length === 0 && tellsPlant && scenePlant, JSON.stringify({ tellsNow, sceneNow }));
+
+  // 9. A reason fits its question, and no text has a hole (pass NY): Helping a friend's question about who may need help is said two ways
+  //    since pass NY (might, may), and a reason after a tap on the happy face there says why that friend may not need help, never the
+  //    other face's look, which the generator gives the questions about how a friend looks; and no text of the three lessons' questions
+  //    says undefined, null or NaN, which a table a reason reads would leave where a face had no entry. Plants: the reason the look
+  //    questions get, under a may need help question, and a reason with a hole, each caught.
+  const HOLE = /\b(?:undefined|null|NaN)\b/;
+  const needReason = (q) => !/(?:might|may) need help\.$/.test(q.prompt) || Object.values(q.whyNot || {}).every((w) => /\bneed help\b/.test(w.why));
+  const whoNow = gen('p3-help-who', 400); const needNow = whoNow.filter((q) => !needReason(q)).map((q) => q.prompt);
+  const needAsked = new Set(whoNow.filter((q) => /(?:might|may) need help\.$/.test(q.prompt)).map((q) => q.prompt)).size;
+  const holesNow = [...new Set(Object.values(MOD).flatMap((m) => m.generators.flatMap((g) => gen(g, 400).flatMap(textsOf))).filter((t) => HOLE.test(t)))];
+  const needPlant = !needReason({ prompt: 'Tap the friend who may need help.', whyNot: { 'face:happy': { name: 'The happy face', why: 'has a big smile, and a scared friend\'s eyes open wide.' } } });
+  const holePlant = HOLE.test('The sad face has a tear rolling out, and undefined.');
+  ok(`every reason after a tap on the happy face under Helping a friend's question about who may need help says why that friend may not need help (${needAsked} wordings), and no text of the three lessons' questions has a hole; planted, a look question's reason under it and a reason with a hole, each caught`,
+    needAsked === 2 && needNow.length === 0 && holesNow.length === 0 && needPlant && holePlant, JSON.stringify({ needNow, holesNow }));
+
+  // 10. The paintings and the paragraphs (pass NY): Helping a friend's new second line moved its three paintings down one line, and each
+  //    painting stands on the line whose words say its scene, by the test's own table (the scripts test reads only that a painting
+  //    shares a word with its line, and the grown-up each of these paints shares one with its neighbors too); and each lesson's
+  //    paragraphs, which an educator reads, say what pass NY added to its lines. Plants: Helping a friend's steps as pass NX left them,
+  //    and the three lessons' paragraphs as pass NX left them, each caught.
+  const SCENE_OF = { P146: /\bwatch the game\b/, P147: /\btake turns adding blocks\b/i, P154: /\byour grown-up looks sad\b/, P130: /\bfalls and gets hurt\b/, P131: /\bhelp you take turns\b/, P152: /\bspills a little milk\b/, P153: /\bfirst blocks and then ball\b/ };
+  const offScene = (m, steps = {}) => (m.lesson.pictures || []).filter((pic) => { const line = m.lesson.script[pic.serial in steps ? steps[pic.serial] : pic.step]; return !SCENE_OF[pic.serial] || !line || !SCENE_OF[pic.serial].test(line.say); }).map((pic) => `${m.id} ${pic.serial}`);
+  const offNow = Object.values(MOD).flatMap((m) => offScene(m)); const offPlant = offScene(MOD['help-a-friend'], { P154: 3, P130: 4, P131: 8 });
+  const PARA_SAYS = { 'join-in-play': ['a tear rolling out', 'eyebrows that squeeze down', 'a big smile', 'near your teacher'], 'help-a-friend': ['a tear rolling out', 'wide-open eyes', 'a big smile', 'say what the problem is, we both want the ball'], 'good-friend': ['Go away is not a kind thing to say. Stop crying is not kind, either.'] };
+  const paraMissing = (mid, paras) => PARA_SAYS[mid].filter((w) => !paras.join(' ').includes(w) || !linesOf(MOD[mid]).includes(w));
+  const paraNow = Object.keys(PARA_SAYS).flatMap((mid) => paraMissing(mid, MOD[mid].lesson.paragraphs).map((w) => `${mid}: ${w}`));
+  // The paragraphs as pass NX left them: each lesson's own paragraphs with pass NY's words taken back out (each change found once).
+  const NX_PARA_WORDS = { 'join-in-play': [['sad, with a tear rolling out, or mad, with eyebrows that squeeze down.', 'sad or mad.'], ['happy, with a big smile, and', 'happy, and'], ['like the slide near your teacher, and', 'like the slide, and']],
+    'help-a-friend': [[' A sad face can have a tear rolling out, a scared face has wide-open eyes, and a happy face has a big smile.', ''], [' You can say what the problem is, we both want the ball.', '']], 'good-friend': [[' Go away is not a kind thing to say. Stop crying is not kind, either.', '']] };
+  const nxParas = (mid) => { let text = MOD[mid].lesson.paragraphs.join('\n'); let found = 0; for (const [now, was] of NX_PARA_WORDS[mid]) if (text.split(now).length === 2) { text = text.replace(now, was); found += 1; } return found === NX_PARA_WORDS[mid].length ? text.split('\n') : null; };
+  const paraPlant = Object.keys(PARA_SAYS).every((mid) => { const was = nxParas(mid); return !!was && paraMissing(mid, was).length === PARA_SAYS[mid].length; });
+  ok(`every painting of the three lessons stands on the line that says its scene (${Object.values(MOD).reduce((n, m) => n + (m.lesson.pictures || []).length, 0)} paintings), and each lesson's paragraphs say what pass NY added to its lines; planted, Helping a friend's steps as pass NX left them (${offPlant.join(', ')} off) and the paragraphs' words as pass NX left them, each caught`,
+    offNow.length === 0 && offPlant.length === 3 && paraNow.length === 0 && paraPlant, JSON.stringify({ offNow, offPlant, paraNow }));
+}
 // No question prints a word a drawing on its screen prints (pass NR, round one's screen read, its MUST FIX 1: the note's I love you was
 // on the note and on the answer's button in a third of p4-print-tells, and on the note's tile and in the printed question in a third of
 // p4-print-which, so a pre-reader who matched letter shapes tapped the right one without the print read, and what the print says was the
@@ -6582,9 +6967,11 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
         const nameIt = /what can you say\?$/.test(q.prompt);
         if (!want || q.answer !== want || mdOthers.includes(want) || mdOthers.length !== 1 || (nameIt && (!/^I feel (sad|mad|scared)$/.test(mdOthers[0]) || /\b(happy|sad|mad|scared)\b/.test(`${q.story || ''} ${q.prompt}`)))) problems.push('calming wrong'); }
       // The friend who may need help: happy is the wrong face only where the question asks who might need help; a friend who
-      // looks sad or scared is told from another face that needs reading (the lesson check, pass MD).
-      if (genId === 'p3-help-who') { const want = /looks sad\.$/.test(q.prompt) ? ['sad'] : /looks scared\.$/.test(q.prompt) ? ['scared'] : /might need help\.$/.test(q.prompt) ? ['sad', 'scared'] : [];
-        const foil = mdOthers.length === 1 ? fe(mdOthers[0]) : null; const fair = /might need help\.$/.test(q.prompt) ? foil === 'happy' : !!foil && foil !== 'happy' && foil !== fe(q.answer);
+      // looks sad or scared is told from another face that needs reading (the lesson check, pass MD). Since pass NY (EARMARKS A181)
+      // a friend who looks or feels happy is asked too, told from sad or scared, and every face is one Helping a friend draws and names
+      // (HELP_FACES, the test's own list): the mad face, which no line draws, had been a wrong face here.
+      if (genId === 'p3-help-who') { const HELP_FACES = ['sad', 'scared', 'happy']; const want = /looks sad\.$/.test(q.prompt) ? ['sad'] : /looks scared\.$/.test(q.prompt) ? ['scared'] : /(?:looks|feels) happy\.$/.test(q.prompt) ? ['happy'] : /(?:might|may) need help\.$/.test(q.prompt) ? ['sad', 'scared'] : [];
+        const foil = mdOthers.length === 1 ? fe(mdOthers[0]) : null; const fair = HELP_FACES.includes(foil) && (/(?:might|may) need help\.$/.test(q.prompt) ? foil === 'happy' : foil !== fe(q.answer) && (fe(q.answer) === 'happy' || foil !== 'happy'));
         if (!want.includes(fe(q.answer)) || !fair) problems.push('friend who needs help wrong'); }
       const MD_KIND = ['Are you okay?', 'Sit beside your friend', 'Bring a teddy to hug']; const MD_UNKIND = ['Go away', 'Walk away', 'Laugh at your friend'];
       if (genId === 'p3-help-kind' && (!MD_KIND.includes(q.answer) || mdOthers.length !== 1 || !MD_UNKIND.includes(mdOthers[0]))) problems.push('kind act wrong');
@@ -6592,7 +6979,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       // The ball (the lesson check, pass MD): stop, please answers a grab, a grown-up answers a fight, and a grown-up helps you
       // both get to play by helping you take turns. Since pass MH each moment is said inside its question.
       if (genId === 'p3-help-ball') { const want = /^What can you say when .*\bgrab/.test(q.prompt) ? 'Stop, please' : /^How can a grown-up help you both get to play when /.test(q.prompt) ? 'Help you take turns' : /^What can you do when .*(fight starts|grabs)/.test(q.prompt) ? 'Get a grown-up' : null; if (!want || q.answer !== want || mdOthers.length !== 1 || q.story !== null) problems.push('ball fight wrong'); }
-      if (genId === 'p3-help-yesno') { const want = /^Is it kind to (ask a sad friend if they are okay|sit beside a friend who is sad|ask your sad grown-up, can I give you a hug)\?$/.test(q.prompt) || q.prompt === 'Should you get a grown-up when a friend is hurt?' ? 'Yes' : /^Is it kind to laugh at a friend who falls and gets hurt\?$|^Is it kind to laugh at a friend who is scared\?$|^Is it okay to push when you both want one ball\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want) problems.push('kind or not wrong'); }
+      // Since pass NY (EARMARKS A178): a scared friend's teddy and keeping your hands to yourself are Yes; grabbing the ball, grabbing
+      // it back, and whether laughing at a hurt friend makes the friend happy, are No.
+      if (genId === 'p3-help-yesno') { const want = /^Is it kind to (ask a sad friend if they are okay|sit beside a friend who is sad|ask your sad grown-up, can I give you a hug|bring a scared friend a teddy to hug)\?$|^Should you keep your hands to yourself when a fight starts over one ball\?$/.test(q.prompt) || q.prompt === 'Should you get a grown-up when a friend is hurt?' ? 'Yes' : /^Is it kind to laugh at a friend who falls and gets hurt\?$|^Is it kind to laugh at a friend who is scared\?$|^Is it okay to push when you both want one ball\?$|^Is it okay to grab the ball when you both want it\?$|^Should you grab the ball back when a friend grabs it\?$|^Does laughing at a hurt friend make your friend feel happy\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want) problems.push('kind or not wrong'); }
     }
     // Domain I of pre-K 3 and pre-K 4 (pass MN, earmarks E12 and E13 side by side): every bank re-derived from its words and
     // pictures with tables of this test's own, never the generator's. A kind act is one the lessons say, and the wrong one an act
@@ -6603,30 +6992,43 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       const MN_KIND = { 'p3-join-how': [['Watch the game', 'Can I play too?', 'icon:block', 'Listen to the idea', 'Do you want to play with me?'], ['Grab their blocks', 'Move over!', 'icon:ball', 'Say, my way only!', 'Go away']],
         'p3-join-not-now': [['Play something else', 'Ask again', 'Find another friend'], ['Knock their tower down', 'Grab their blocks', 'Push your friends']],
         'p4-feel-calm': [['A slow breath', 'Count to five', 'icon:teddy', 'Your grown-up', 'Your words', 'icon:flower', 'icon:candle'], ['Throwing a toy', 'Hit a friend', 'icon:ball', 'Nobody', 'A toy to throw', 'icon:candle', 'icon:flower']],
-        'p4-kind-words': [['It is okay. I spill too.', 'I will play with you.', 'Are you okay?'], ['Ha ha, you spilled!', 'Go away.', 'Stop crying!', 'Ha ha, you fell!']],
+        'p4-kind-words': [['It is okay. I spill too.', 'I will play with you.', 'Are you okay?'], ['Ha ha, you spilled!', 'Go away.', 'Stop crying!', 'Ha ha, you are embarrassed!']],
         'p4-help-friend': [['Help wipe it up', 'Ask, can I hold your hand?', 'Sit beside your friend'], ['Point and laugh', 'Walk away', 'Laugh at your friend']],
-        'p4-fix-problem': [['Take turns choosing', 'Find a game you both like', 'We want different games', 'A grown-up'], ['Grab the ball', 'Only you choose', 'Say, you are not my friend', 'You are mean', 'Nobody']] };
+        'p4-fix-problem': [['Take turns choosing', 'Find a game you both like', 'We want different games', 'A grown-up'], ['Choose blocks every time', 'Only you choose', 'Say, you are not my friend', 'You are mean', 'Nobody']] };
       if (MN_KIND[genId]) { const [good, bad] = MN_KIND[genId]; if (!good.includes(q.answer) || !one || !bad.includes(one) || q.story !== null) problems.push('kind act wrong'); }
       // The pretend breath: in with the flower, out with the candle; and the ask for a problem friends cannot fix is a grown-up.
       if (genId === 'p4-feel-calm' && /breathe (in|out) slowly\?$/.test(q.prompt) && q.answer !== (/breathe in/.test(q.prompt) ? 'icon:flower' : 'icon:candle')) problems.push('breath wrong');
       if (genId === 'p4-fix-problem' && (/cannot fix it\. Who can help\?$/.test(q.prompt) !== (q.answer === 'A grown-up') || /say what the problem is\?$/.test(q.prompt) !== (q.answer === 'We want different games'))) problems.push('problem fix wrong');
-      const MN_YES = { 'p3-join-yesno': [/can I play too\?$|^Is it okay when your friends say, not now\?$|do you want to play with me\?$|^Should you watch the game first /, /knock down your friends|grab your friends|is a ball a good thing to bring\?$/],
-        'p4-feel-okay': [/^Is it okay to feel (mad|scared)\?$|^Is it okay to cry when you feel sad\?$|^Is it okay to ask for a hug /, /^Is it okay to (hit|throw a toy|push a friend) when you feel mad\?$/],
-        'p4-friends-yesno': [/^Can two friends feel different |^Is it okay to feel (worried|embarrassed)\?$|^Can you ask a friend how they feel\?$/, /^Do friends always (like|feel) the same |^Does a piece of cake make every friend happy\?$/],
+      // Since pass NY (EARMARKS A178 and A181) Can I play too?'s and Being a good friend's grown rows are read too, and a No about getting a
+      // grown-up is read only as Do you need, so a Should you get answered No, which taught that getting a grown-up is wrong, or the fight
+      // row whose own words answered it, fails here; the spilled milk's kind words are read only with their moment.
+      const MN_YES = { 'p3-join-yesno': [/can I play too\?$|^Is it okay when your friends say, not now\?$|do you want to play with me\?$|^Should you watch the game first |^Is a block a good thing to bring for your friends' tower\?$|^Should you listen to your friend's idea for the tower\?$/, /knock down your friends|grab your friends|is a ball a good thing to bring\?$|^Should you grab the blocks first when you want to play\?$|^Do your friends always say yes when you ask to play\?$/],
+        // Since pass NY (EARMARKS A178 and A181) every feeling is okay to feel, and saying I feel mad, a slow breath, crying and a hug are
+        // okay, while hitting, pushing and throwing a toy are not, with a feeling or without; and How do friends feel?'s rows by its lines.
+        'p4-feel-okay': [/^Is it okay to feel (mad|sad|scared)\?$|^Is it okay to cry when you feel sad\?$|^Is it okay to ask for a hug |^Is it okay to say, I feel mad\?$|^Is it okay to take a slow breath when you feel mad\?$/, /^Is it okay to (hit|throw a toy|push a friend)(?: when you feel (mad|sad|scared))?\?$|^Is it okay to hit a friend\?$/],
+        'p4-friends-yesno': [/^Can two friends feel different |^Is it okay to feel (worried|embarrassed)\?$|^Does asking a friend how they feel help you know\?$|^Does a piece of cake make a friend who likes cake happy\?$|^Is it okay if your friend likes dogs and you like cats\?$|^Does a worried face have a wiggly mouth\?$/, /^Do friends always (like|feel) the same |^Does a piece of cake make every friend happy\?$|^Does a worried face have a big smile\?$|^When your friend does not like cake, does a piece of cake make your friend happy\?$|^Is happy the only feeling that is okay to have\?$|^Does everyone feel happy at the big slide\?$/],
         'p4-when-grownup': [/^(?:Should you get|Do you need) a grown-up when (?:your friend falls and gets hurt|a fight starts and you cannot stop it|your friend is very sad and cannot stop crying|you and your friend cannot fix a problem together)\?$|^Can you and your friend fix (?:the problem together when you want different games|it together when your friend spills a little milk)\?$/,
-          /^(?:Should you get|Do you need) a grown-up when you and your friend (?:can (?:take turns choosing the game|find a game you both like)|fix a problem together)\?$|^Do you need a grown-up to say kind words to a sad friend\?$|^Can you and your friend fix the problem together when a fight starts and you cannot stop it\?$|^Should you get a grown-up when you want to play blocks and your friend wants to play ball\?$/],
-        'p4-good-yesno': [/^Is it kind to (say, it is okay|ask a worried friend, can I hold your hand|say what the problem is)/, /^Is it kind to laugh |^Is it fair if only you choose /] };
+          /^Do you need a grown-up when you and your friend (?:can (?:take turns choosing the game|find a game you both like)|fix a problem together)\?$|^Do you need a grown-up to (?:say kind words to a sad friend|ask a worried friend, can I hold your hand)\?$|^Do you need a grown-up when you want to play blocks and your friend wants to play ball\?$|^Can you and your friend fix it together when your friend falls and gets hurt\?$/],
+        'p4-good-yesno': [/^Is it kind to (?:say, it is okay, I spill too, when a friend spills a little milk|ask a worried friend, can I hold your hand|sit beside a friend who feels sad)\?$|^Should you say what the problem is, like, we want different games\?$|^Is it fair to take turns choosing, first blocks and then ball\?$/, /^Is it kind to laugh |^Is it fair if only you choose |^Is it fair to say, I choose the game every time\?$|^Is it kind to say (?:go away|stop crying) to a friend who feels sad\?$/] };
       if (MN_YES[genId]) { const [yes, no] = MN_YES[genId]; const want = yes.test(q.prompt) ? 'Yes' : no.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes') problems.push('yes or no wrong'); }
       // Each moment's feeling and the wrong faces fair to offer with it.
-      const MN_MOMENT = { 'p3-join-face': [[/knocks down their tower/, 'sad', ['happy']], [/grabs their blocks/, 'mad', ['scared', 'happy']], [/say, yes, come and play/, 'happy', ['mad', 'sad']], [/nobody will play with/, 'sad', ['happy']], [/listen to her idea/, 'happy', ['sad', 'mad']]],
+      // Since pass NY (EARMARKS A181) Can I play too?'s wrong faces are only the faces its lines draw, sad, mad and happy: the grabbed
+      // blocks had offered the scared face, which no line of it draws; and its sixth moment, taking turns adding blocks, is happy.
+      const MN_MOMENT = { 'p3-join-face': [[/knocks down their tower/, 'sad', ['happy']], [/grabs their blocks/, 'mad', ['happy']], [/say, yes, come and play/, 'happy', ['mad', 'sad']], [/nobody will play with/, 'sad', ['happy']], [/listen to her idea/, 'happy', ['sad', 'mad']], [/take turns adding blocks/, 'happy', ['sad', 'mad']]],
         'p4-feel-tells': [[/jumps and claps/, 'happy', ['sad']], [/stomps his feet/, 'mad', ['scared', 'happy']], [/hides and holds on tight/, 'scared', ['mad', 'happy']], [/cries and wants a hug/, 'sad', ['happy']], [/gives his friend a high five/, 'happy', ['scared', 'sad', 'mad']], [/make tight fists/, 'mad', ['sad', 'happy']], [/hides from a loud noise/, 'scared', ['happy']], [/cries because he lost his teddy/, 'sad', ['happy']]],
-        'p4-new-feeling-moment': [[/first day at a new school/, 'worried', ['mad']], [/spill your milk/, 'embarrassed', ['happy']], [/Grandma by mistake/, 'embarrassed', ['worried']], [/go to the doctor/, 'worried', ['embarrassed']], [/grown-up is late/, 'worried', ['embarrassed']], [/falls down in front of the class/, 'embarrassed', ['happy']]] };
+        // Since pass NY (EARMARKS A181) the lesson's own moments: after a spill, a fall or a mistake with everyone looking a child may be
+        // worried, mad or sad too, so only happy is fair to offer; a new school or something bad to come offers embarrassed (and happy
+        // where nothing fun is ahead); a birthday party and a slide you love offer worried, and since round one's lesson read of pass NY
+        // embarrassed, which the lesson ties to a spill, a fall or a mistake with everyone looking, none of them named there.
+        'p4-new-feeling-moment': [[/first day at a new school\?$/, 'worried', ['embarrassed']], [/think something bad might happen\?$/, 'worried', ['embarrassed', 'happy']], [/when you spill, and everyone looks at you\?$/, 'embarrassed', ['happy']], [/when he falls, and everyone looks at him\?$/, 'embarrassed', ['happy']], [/make a mistake, and everyone looks at you\?$/, 'embarrassed', ['happy']], [/at a birthday party\?$/, 'happy', ['worried', 'embarrassed']], [/^You love the big slide\. /, 'happy', ['worried', 'embarrassed']]] };
       if (MN_MOMENT[genId]) { const hit = MN_MOMENT[genId].filter(([re]) => re.test(q.prompt)); if (hit.length !== 1 || fe(q.answer) !== hit[0][1] || !one || !hit[0][2].includes(fe(one))) problems.push('feeling moment wrong'); }
       // What a feeling can make you do: the act's own feeling, said on the lesson's first four lines, and a wrong act of another.
       if (genId === 'p4-feel-does') { const ACT = { 'Jump and clap': 'happy', Smile: 'happy', 'Want a hug': 'sad', Cry: 'sad', 'Stomp your feet': 'mad', 'Stomp his feet': 'mad', 'Make tight fists': 'mad', 'Hold on tight': 'scared', Hide: 'scared' };
         const f = (/feels? (happy|sad|mad|scared)\?$/.exec(q.prompt) || [])[1]; if (!f || ACT[q.answer] !== f || !one || !ACT[one] || ACT[one] === f) problems.push('feeling act wrong'); }
       // A feeling's name for the face shown, which the words never say.
-      if (genId === 'p4-feel-say') { const f = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null; if (!f || q.answer !== `I feel ${f}` || !one || !/^I feel (happy|sad|mad|scared)$/.test(one) || one === q.answer || /\b(happy|sad|mad|scared)\b/.test(q.prompt)) problems.push('feeling name wrong'); }
+      if (genId === 'p4-feel-say') { const f = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null; if (!f || q.answer !== `I feel ${f}` || !one || !/^I feel (happy|sad|mad|scared)$/.test(one) || one === q.answer || /\b(happy|sad|mad|scared)\b/.test(q.prompt)) problems.push('feeling name wrong');
+        // Since pass NY (EARMARKS A181) its wrong name is never a feeling the moment could fairly bring (nySayProblems, above the loop).
+        problems.push(...nySayProblems(q)); }
       // Worried and embarrassed by the face: tap the face named, or name the face shown.
       if (genId === 'p4-new-feeling-face') { const tap = (/^Tap the (\w+) face\.$/.exec(q.prompt) || [])[1]; const shown = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null;
         const want = tap ? `face:${tap}` : q.prompt === 'How does this face feel?' && shown ? shown[0].toUpperCase() + shown.slice(1) : null; if (!want || q.answer !== want || !one || one === want) problems.push('new feeling face wrong');
@@ -6635,7 +7037,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
         if (NEAR.some((p) => p.includes(fa) && p.includes(fw))) problems.push('two faces a child can fairly confuse set against each other'); }
       // Two feelings the same or different, read from the words, with the two faces drawn as the words say them.
       if (genId === 'p4-same-or-different') { const m = /^You feel (\w+), and your friend feels (\w+)\. Are your feelings the same, or different\?$/.exec(q.prompt) || [];
-        if (!m[1] || q.answer !== (m[1] === m[2] ? 'The same' : 'Different') || !q.visual || q.visual.a.feeling !== m[1] || q.visual.b.feeling !== m[2]) problems.push('same or different wrong'); }
+        if (!m[1] || q.answer !== (m[1] === m[2] ? 'The same' : 'Different') || !q.visual || q.visual.a.feeling !== m[1] || q.visual.b.feeling !== m[2]) problems.push('same or different wrong');
+        // Since pass NY (EARMARKS A181): never two faces a child can fairly take for each other beside the answer Different (nyNear).
+        if (nyNear(m[1], m[2])) problems.push('two faces a child can fairly take for each other drawn beside the answer Different'); }
       // A friend's own feeling: what the friend likes and gets, or how the friend sees the big slide, never what you like.
       // Since round one a friend's dislike is said outright (liking pizza is not disliking cake), and only a stated like or dislike
       // decides the feeling.
@@ -7980,15 +8384,22 @@ ok(`every pre-K 3 and First Steps choice question says why each wrong choice doe
     'p4-link-which': ['bak', 'beach', 'cooki', 'could', 'grandma', 'grew', 'high', 'into', 'kite', 'lost', 'made', 'mitten', 'park', 'plant', 'sandcastle', 'se', 'sleep', 'snow', 'story'] };
   const MS_BANKS = ['p4-act-thing', 'p4-act-word', 'p4-act-when', 'p4-act-yesno', 'p4-act-use', 'p3-need-say', 'p3-need-pic', 'p3-need-enough', 'p3-need-who', 'p3-need-yesno', 'p4-fit-voice', 'p4-fit-why', 'p4-fit-say', 'p4-fit-enough', 'p4-fit-yesno'];
   // The older banks' echoes, by distinct question over 2,000 seeds, as pass MS found them (26 in 16 banks, several the skill
-  // itself, such as "I like your hat!" said back to a friend's new hat); a bank's count may fall, never rise.
-  const ECHO_WAITS = { 'p3-help-kind': 1, 'p3-join-how': 3, 'p3-talk-listen': 1, 'p3-talk-room': 1, 'p3-talk-say-back': 2, 'p3-talk-why': 4, 'p3-learn-word-do': 1, 'p3-event-name': 2, 'pk-while-waiting': 3, 'ck-job-tool': 1, 'pk-helper-where': 1, 'p4-kind-words': 1, 'p4-fix-problem': 1, 'p4-play-start': 2, 'p4-play-plan': 1, 'p4-learn-means': 1 };
-  const unkept = []; const grown = []; let read = 0; let readPics = 0;
+  // itself, such as "I like your hat!" said back to a friend's new hat); a bank's count may fall, never rise. Since round one's lesson
+  // read of pass NY p3-event-name has none (its two days are asked What is it called, where "What kind of day is it" left day to the
+  // answer alone), so its wait of 2 is gone and an echo there fails. Since round two's ripple read of pass NY a wait above its bank's
+  // count fails too, so a count that falls takes its wait down with it: p3-talk-why's four were two after the pass's lessons, and
+  // p4-kind-words' one none (21 questions in 14 banks).
+  const ECHO_WAITS = { 'p3-help-kind': 1, 'p3-join-how': 3, 'p3-talk-listen': 1, 'p3-talk-room': 1, 'p3-talk-say-back': 2, 'p3-talk-why': 2, 'p3-learn-word-do': 1, 'pk-while-waiting': 3, 'ck-job-tool': 1, 'pk-helper-where': 1, 'p4-fix-problem': 1, 'p4-play-start': 2, 'p4-play-plan': 1, 'p4-learn-means': 1 };
+  const unkept = []; const grown = []; let read = 0; let readPics = 0; const echoCounts = {};
   for (const b of PREK_BANKS) { const seen = new Set();
     const pics = MS_BANKS.includes(b);
     for (let s = 1; s <= 2000; s++) { let q; try { q = L.generateQuestion(b, s); } catch (e) { continue; } if (!wordy(q) && !(pics && pictured(q))) continue; read += 1; if (pics && pictured(q)) readPics += 1; const e = echoOf(q, pics); if (!e.length) continue;
       const k = `${q.story || ''}|${q.prompt}|${q.answer}`; if (seen.has(k)) continue; seen.add(k);
       if ((MS_BANKS.includes(b) || NR2_ECHO_KEPT[b]) && e.some((w) => !(ECHO_KEPT[b] || NR2_ECHO_KEPT[b] || []).includes(w))) unkept.push(`${b}: ${q.story || ''} ${q.prompt} -> ${q.answer} [${e}]`); }
-    if (!MS_BANKS.includes(b) && !NR2_ECHO_KEPT[b] && seen.size > (ECHO_WAITS[b] || 0)) grown.push(`${b} ${seen.size} > ${ECHO_WAITS[b] || 0}`); }
+    if (!MS_BANKS.includes(b) && !NR2_ECHO_KEPT[b] && seen.size > (ECHO_WAITS[b] || 0)) grown.push(`${b} ${seen.size} > ${ECHO_WAITS[b] || 0}`);
+    echoCounts[b] = seen.size; }
+  const staleOf = (waits) => Object.entries(waits).filter(([b, w]) => (echoCounts[b] ?? 0) < w).map(([b, w]) => `${b} ${echoCounts[b] ?? 0} < ${w}`);
+  const staleWaits = staleOf(ECHO_WAITS); const staleCaught = staleOf({ ...ECHO_WAITS, 'p3-help-kind': 2 }).length === 1 && staleOf({ ...ECHO_WAITS, 'p4-kind-words': 1 }).length === 1;
   const ask = (story, prompt, answer, ...wrong) => ({ type: 'choice', story, prompt, choices: [answer, ...wrong], answer });
   const caught = echoOf(ask('You want more of this.', 'What can you say?', 'May I have some more, please?', 'May I have a glass of water, please?')).includes('more')
     && echoOf(ask('You want a turn on the slide.', 'What can you say?', 'May I have a turn on the slide, please?', 'May I have some more, please?', 'May I have a glass of water, please?')).includes('slide')
@@ -7999,7 +8410,494 @@ ok(`every pre-K 3 and First Steps choice question says why each wrong choice doe
     && echoOf(ask('Listen. Ben flew a kite.', 'Which one is a connection to the story?', 'I fly a kite!', 'I like pizza!')).some((w) => !NR2_ECHO_KEPT['p3-link-which'].includes(w));
   const passed = [ask('You want more of this.', 'What can you say?', 'May I have some more, please?', 'I want more juice.'), ask('Listen. Leo feels happy, and Kai feels mad.', 'Who feels happy?', 'Leo', 'Kai'),
     ask('You and your friend play bus. You drive the bus, and your friend rings the bell.', 'Who rings the bell?', 'Your friend', 'You'), ask(null, 'You want to ask a question. What can you say?', 'What is your name?', 'I made a tall tower!', 'I feel happy!')].every((q) => echoOf(q).length === 0);
-  ok(`no pre-K question's own words give its answer away: pass MS's fifteen banks and pass NR's two which banks keep only their listed echoes, no older bank's echoes grow, the echoes passes MD, MS and MW found are caught (since pass MW a stem drops -ed too) and four near misses pass (${read} questions read, ${readPics} of them pass MS's picture questions read by their pictures' names; pass MS, round three's alignment read and round four's code read)`, unkept.length === 0 && grown.length === 0 && caught && passed && read > 200000 && readPics >= 6000, [...unkept.slice(0, 4), ...grown.slice(0, 4), `caught ${caught}`, `near misses pass ${passed}`, `read ${read}`, `pictures ${readPics}`].join(' | ')); }
+  ok(`no pre-K question's own words give its answer away: pass MS's fifteen banks and pass NR's two which banks keep only their listed echoes, no older bank's echoes grow and, since round two's ripple read of pass NY, none falls below its wait without the wait following it (a wait raised by one, and p4-kind-words' old one, caught), the echoes passes MD, MS and MW found are caught (since pass MW a stem drops -ed too) and four near misses pass (${read} questions read, ${readPics} of them pass MS's picture questions read by their pictures' names; pass MS, round three's alignment read and round four's code read)`, unkept.length === 0 && grown.length === 0 && staleWaits.length === 0 && staleCaught && caught && passed && read > 200000 && readPics >= 6000, [...unkept.slice(0, 4), ...grown.slice(0, 4), ...staleWaits.slice(0, 4), `stale caught ${staleCaught}`, `caught ${caught}`, `near misses pass ${passed}`, `read ${read}`, `pictures ${readPics}`].join(' | ')); }
+// Say it to fit, Feelings and what we do and How do friends feel? scored blind (pass NY, EARMARKS A181: pass NX's measured lesson reads,
+// each finding read against the project). In plain terms: a child who does not listen, or does not understand, must not be right much
+// more often than chance by a habit. Each of the nine banks pass NY changed is read alone at seeds 1 to 2,000 and in rounds as built
+// (1,500 first rounds, later rounds, triple doses and Quick Reviews of its lesson), by the habits such a child could use: always the
+// first button; always one choice (tapped whenever it is shown); always the longer, or the shorter, choice of words (a face has no
+// length a child sees, and a Yes has its share); the question alone where every question has a setup (the choice most often right for
+// that same question, this one left out); and a yes or no's Yes share. Bounds: two choices under 56 percent (chance 50), Yes between
+// 40 and 60. Read apart, by arithmetic: p4-fit-enough's one choice, where each of the lesson's four tellings is right whenever it is
+// shown and never a wrong choice, so it reads 62.5 (0.5 + 0.5/4) and is held under 66, so a telling dropped or one dealt much more is
+// caught. The three yes or no banks never ask can you or could you (the lesson brief's item 18: a child who cannot answers No
+// truthfully). Plants, each dealt in place of its bank and read the same way over 300 rounds of each kind: seven banks' rows as pass NX
+// left them (the big outside voice the wrong choice in five of six rows, two tellings with the longer always right, I feel happy never
+// wrong, mad in three No rows of three, happy three friend rows of five, worried answering three moments of six, and the ability row's
+// bank leaning Yes), each caught by a habit's bound; Say it to fit's and How do friends feel?'s can you rows, caught by the ability rule;
+// pass NX's feeling names judged by nySayProblems, and its same or different faces by nyNear, each caught.
+{ const pct = (v) => Math.round(v * 1000) / 10;
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  // A bank's groups: its own 2,000 seeds alone, then its questions in each kind of round of its lesson.
+  const groups = (mid, g, n, alone) => { const R = ofModule(mid, n); return [Array.from({ length: alone }, (_, i) => L.generateQuestion(g, i + 1)), ...['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g)))].filter((qs) => qs.length); };
+  const first = (qs) => qs.filter((q) => String(q.choices[0]) === String(q.answer)).length / qs.length;
+  const oneChoice = (qs) => { const all = [...new Set(qs.flatMap((q) => q.choices.map(String)))]; return Math.max(...all.map((w) => qs.reduce((n, q) => n + (q.choices.includes(w) ? (q.answer === w ? 1 : 0) : 1 / q.choices.length), 0) / qs.length)); };
+  // The longer (or shorter) choice of words, a tie shared among the tied; read only where every choice is words, never Yes and No.
+  const byLength = (qs, sign) => qs.reduce((n, q) => { const lens = q.choices.map((c) => sign * String(c).length); const top = q.choices.filter((c, i) => lens[i] === Math.max(...lens)); return n + (top.includes(q.answer) ? 1 / top.length : 0); }, 0) / qs.length;
+  const worded = (qs) => qs.every((q) => q.choices.every((c) => !/^[a-z]+:/.test(String(c))) && !(q.choices.includes('Yes') && q.choices.includes('No')));
+  const questionOnly = (qs) => { if (!qs.every((q) => typeof q.story === 'string' && q.story)) return 0; const t = new Map(); for (const q of qs) { const m = t.get(q.prompt) || new Map(); m.set(q.answer, (m.get(q.answer) || 0) + 1); t.set(q.prompt, m); }
+    return qs.reduce((s, q) => { const m = t.get(q.prompt); const score = (c) => (m.get(c) || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return s + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const isYesNo = (qs) => qs.every((q) => q.choices.length === 2 && q.choices.includes('Yes') && q.choices.includes('No'));
+  // Every habit's worst read over a bank's groups, and what each bound says of it.
+  const read = (gs, oneBound) => { const worst = (f) => Math.max(...gs.map(f)); const yn = isYesNo(gs[0]);
+    const r = { first: worst(first), one: worst(oneChoice), question: worst(questionOnly), longer: yn || !worded(gs[0]) ? 0 : worst((qs) => byLength(qs, 1)), shorter: yn || !worded(gs[0]) ? 0 : worst((qs) => byLength(qs, -1)), yesLo: yn ? Math.min(...gs.map(yesShare)) : 0.5, yesHi: yn ? Math.max(...gs.map(yesShare)) : 0.5 };
+    r.ok = r.first < 0.56 && r.one < oneBound && r.question < 0.56 && r.longer < 0.56 && r.shorter < 0.56 && r.yesLo >= 0.4 && r.yesHi <= 0.6; return r; };
+  const NY_BANKS = [['say-it-to-fit', 'p4-fit-voice'], ['say-it-to-fit', 'p4-fit-enough'], ['say-it-to-fit', 'p4-fit-yesno'], ['feelings-show', 'p4-feel-say'], ['feelings-show', 'p4-feel-okay'], ['how-friends-feel', 'p4-same-or-different'], ['how-friends-feel', 'p4-friend-feels'], ['how-friends-feel', 'p4-new-feeling-moment'], ['how-friends-feel', 'p4-friends-yesno']];
+  const ONE_BOUND = { 'p4-fit-enough': 0.66 };
+  const live = NY_BANKS.map(([mid, g]) => [g, read(groups(mid, g, 1500, 2000), ONE_BOUND[g] || 0.56)]);
+  // No yes or no row asks about ability, read over seeds 1 to 2,000 of each of the three.
+  const ABILITY = /\b(?:can|could) you\b/i;
+  const asksAbility = (qs) => qs.filter((q) => ABILITY.test(`${q.story || ''} ${q.prompt}`)).map((q) => q.prompt);
+  const abilityLive = ['p4-fit-yesno', 'p4-feel-okay', 'p4-friends-yesno'].flatMap((g) => asksAbility(Array.from({ length: 2000 }, (_, i) => L.generateQuestion(g, i + 1))));
+  // The plants: each bank's rows as pass NX left them, dealt by the bank's own shape.
+  const ask = (story, prompt, right, wrong, rng, visual = null) => ({ type: 'choice', story, prompt, choices: L.shuffle(rng, [right, wrong]), answer: right, explain: `${right}.`, visual, explainVisual: null, whyNot: { [wrong]: { name: String(wrong), why: 'is not the answer here.' } }, alsoRight: [] });
+  const yn = (rows) => (rng) => { const [prompt, answer] = L.pick(rng, rows); return ask(null, prompt, answer, answer === 'Yes' ? 'No' : 'Yes', rng); };
+  const NX_VOICE = [['You are in the library, where others read their books.', 'A whisper', ['A big outside voice']], ['A baby is sleeping.', 'A whisper', ['A big outside voice']], ['You are talking with your teacher in the classroom.', 'An inside voice', ['A big outside voice']], ["You are at the doctor's office.", 'An inside voice', ['A big outside voice']], ['Your friend is far away on the playground.', 'A big outside voice', ['A whisper', 'An inside voice']], ['Your friend is sad.', 'A kind, soft voice', ['A big outside voice']]];
+  const NX_ENOUGH = [['the doctor', 'My ear hurts.', 'It hurts.'], ['your teacher', 'My knee hurts. I fell on the slide.', 'It hurts.'], ['your grandma', 'My knee hurts. I fell on the slide.', 'It hurts.'], ['your grandpa', 'My ear hurts.', 'It hurts.'], ['your teacher', 'My knee hurts. I fell on the slide.', 'Uh oh.'], ['your grandma', 'My knee hurts. I fell on the slide.', 'Uh oh.']];
+  const NX_FIT_YESNO = [['Do you use a big outside voice in the library?', 'No'], ['When a baby is sleeping, can you use a whisper?', 'Yes'], ['On the playground, can you use a big outside voice?', 'Yes'], ['Can you use words to say how you feel?', 'Yes'], ['Does saying it hurts tell the doctor just where it hurts?', 'No'], ['In the classroom, do you use a big outside voice?', 'No'], ['When a friend is sad, does a kind, soft voice fit?', 'Yes'], ['When a baby is sleeping, do you use a big outside voice?', 'No']];
+  const NX_SAY = [['When your tower falls down and your face looks like this, what can you say?', 'sad', 'mad'], ['When your friend takes your crayon and your face looks like this, what can you say?', 'mad', 'sad'], ['When a big dog barks loudly and your face looks like this, what can you say?', 'scared', 'mad'], ['When Grandma comes to visit and your face looks like this, what can you say?', 'happy', 'scared'], ['When you lose your teddy and your face looks like this, what can you say?', 'sad', 'scared'], ['When thunder booms and your face looks like this, what can you say?', 'scared', 'sad'], ['When someone grabs your toy and your face looks like this, what can you say?', 'mad', 'scared'], ['When you see your best friend and your face looks like this, what can you say?', 'happy', 'sad']];
+  const NX_OKAY = [['Is it okay to feel mad?', 'Yes'], ['Is it okay to hit when you feel mad?', 'No'], ['Is it okay to throw a toy when you feel mad?', 'No'], ['Is it okay to cry when you feel sad?', 'Yes'], ['Is it okay to push a friend when you feel mad?', 'No'], ['Is it okay to ask for a hug when you feel scared?', 'Yes'], ['Is it okay to feel scared?', 'Yes']];
+  const NX_FRIEND = [['You like pizza, and your friend likes cake. Your friend gets a piece of cake. How might your friend feel?', 'happy', 'sad'], ['You like cake, but your friend does not like cake. Your friend gets a piece of cake. How might your friend feel?', 'sad', 'happy'], ['You like cats, and your friend likes dogs. Your friend gets to pet a puppy. How might your friend feel?', 'happy', 'sad'], ['You love the big slide, but your friend thinks it is too tall. How might your friend feel at the big slide?', 'scared', 'happy'], ['Your friend loves the big slide, but you think it is too tall. How might your friend feel at the big slide?', 'happy', 'scared']];
+  const NX_MOMENT = [['How might you feel on your first day at a new school, when you do not know anyone yet?', 'worried', 'mad'], ['How might you feel when you spill your milk at lunch and everyone looks at you?', 'embarrassed', 'happy'], ['How might you feel when you call your teacher Grandma by mistake and your friends giggle?', 'embarrassed', 'worried'], ['How might you feel the night before you go to the doctor, when you wonder if it will hurt?', 'worried', 'embarrassed'], ['How might your friend feel when her grown-up is late, and she wonders where they are?', 'worried', 'embarrassed'], ['How might your friend feel when he falls down in front of the class and everyone looks?', 'embarrassed', 'happy']];
+  const NX_FRIENDS_YESNO = [['Can two friends feel different about the same slide?', 'Yes'], ['Do friends always like the same things as you?', 'No'], ['Is it okay to feel worried?', 'Yes'], ['Is it okay to feel embarrassed?', 'Yes'], ['Do friends always feel the same as you?', 'No'], ['Can you ask a friend how they feel?', 'Yes'], ['Does a piece of cake make every friend happy?', 'No']];
+  const SIX = ['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'];
+  const PLANTS = { 'p4-fit-voice': (rng) => { const [story, right, wrongs] = L.pick(rng, NX_VOICE); return ask(story, 'Which voice fits?', right, L.pick(rng, wrongs), rng); },
+    'p4-fit-enough': (rng) => { const [who, right, vague] = L.pick(rng, NX_ENOUGH); return ask(null, `Which one tells ${who} just what is wrong?`, right, vague, rng); },
+    'p4-fit-yesno': yn(NX_FIT_YESNO),
+    'p4-feel-say': (rng) => { const [prompt, f, w] = L.pick(rng, NX_SAY); return ask(null, prompt, `I feel ${f}`, `I feel ${w}`, rng, { kind: 'face', feeling: f }); },
+    'p4-feel-okay': yn(NX_OKAY),
+    // Pass NX's same or different dealt any other feeling beside the first, near faces too, so its reads by habit were even: its plant
+    // is caught by nyNear below, not by a habit's bound.
+    'p4-same-or-different': (rng) => { const a = L.pick(rng, SIX); const same = rng() < 0.5; const b = same ? a : L.pick(rng, SIX.filter((x) => x !== a)); return ask(null, `You feel ${a}, and your friend feels ${b}. Are your feelings the same, or different?`, same ? 'The same' : 'Different', same ? 'Different' : 'The same', rng, { kind: 'pair', a: { kind: 'face', feeling: a }, b: { kind: 'face', feeling: b } }); },
+    'p4-friend-feels': (rng) => { const [prompt, f, w] = L.pick(rng, NX_FRIEND); return ask(null, prompt, `face:${f}`, `face:${w}`, rng); },
+    'p4-new-feeling-moment': (rng) => { const [prompt, f, w] = L.pick(rng, NX_MOMENT); return ask(null, prompt, `face:${f}`, `face:${w}`, rng); },
+    'p4-friends-yesno': yn(NX_FRIENDS_YESNO) };
+  // Seven plants are caught by a habit's bound; pass NX's yes or no rows of Say it to fit were even (47.8 percent Yes), so they are caught
+  // by the ability rule below (and by the one-word block, can at 89.1), and its same or different by nyNear.
+  const planted = NY_BANKS.filter(([, g]) => g !== 'p4-same-or-different' && g !== 'p4-fit-yesno').map(([mid, g]) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = PLANTS[g];
+    try { return [g, read(groups(mid, g, 300, 2000), ONE_BOUND[g] || 0.56)]; } finally { L.GENERATORS[g] = keep; } });
+  const abilityPlant = asksAbility(Array.from({ length: 400 }, (_, i) => PLANTS['p4-fit-yesno'](L.makeRng(i + 1)))).length > 0
+    && asksAbility(Array.from({ length: 400 }, (_, i) => PLANTS['p4-friends-yesno'](L.makeRng(i + 1)))).length > 0;
+  // nySayProblems on pass NX's rows: the tower's mad and the crayon's sad, each a feeling the moment could fairly bring, and by the same
+  // table the barking dog's mad and the lost teddy's scared, four rows caught; and on pass NY's rows, nothing. nyNear on pass NX's
+  // dealing: near faces beside Different, caught; on pass NY's, none.
+  const sayOld = NX_SAY.filter(([prompt, f, w]) => nySayProblems({ prompt, choices: [`I feel ${f}`, `I feel ${w}`], answer: `I feel ${f}`, visual: { kind: 'face', feeling: f } }).length).map(([p]) => p);
+  const sayNow = Array.from({ length: 400 }, (_, i) => L.generateQuestion('p4-feel-say', i + 1)).filter((q) => nySayProblems(q).length).length;
+  const sameFaces = (q) => [q.visual.a.feeling, q.visual.b.feeling];
+  const nearOld = Array.from({ length: 2000 }, (_, i) => PLANTS['p4-same-or-different'](L.makeRng(i + 1))).filter((q) => nyNear(...sameFaces(q))).length;
+  const nearNow = Array.from({ length: 2000 }, (_, i) => L.generateQuestion('p4-same-or-different', i + 1)).filter((q) => nyNear(...sameFaces(q))).length;
+  const show = (rows) => rows.map(([g, r]) => `${g} first ${pct(r.first)}, one ${pct(r.one)}${r.question ? `, question ${pct(r.question)}` : ''}${r.longer ? `, longer ${pct(r.longer)}, shorter ${pct(r.shorter)}` : ''}${r.yesLo !== 0.5 || r.yesHi !== 0.5 ? `, Yes ${pct(r.yesLo)} to ${pct(r.yesHi)}` : ''}`).join('; ');
+  const caughtAll = planted.length === 7 && planted.every(([, r]) => !r.ok);
+  ok(`pass NY's nine banks of Say it to fit, Feelings and what we do and How do friends feel?, scored blind alone and in rounds as built, stay under their bounds (${show(live)}), no yes or no row of the three asks can you or could you, and every feeling name p4-feel-say offers wrong is one its moment could not fairly bring, and no Different question shows two near faces; planted, the rows as pass NX left them, each caught (${show(planted)}), the ability rows of Say it to fit and How do friends feel? caught, four of Feelings and what we do's wrong names caught (the tower's, the crayon's, the dog's and the teddy's: ${sayOld.length}), and pass NX's near faces beside Different caught (${nearOld} of 2,000)`,
+    live.length === 9 && live.every(([, r]) => r.ok) && abilityLive.length === 0 && abilityPlant && caughtAll && sayOld.length === 4 && sayNow === 0 && nearOld > 0 && nearNow === 0,
+    JSON.stringify({ live, abilityLive: abilityLive.slice(0, 3), abilityPlant, planted, sayOld, sayNow, nearOld, nearNow }));
+  // The lines pass NY changed, each read by a rule a machine can see. How do friends feel?: every sign a face question's reason names
+  // (a big smile, a tear rolling out, eyebrows that squeeze down, wide-open eyes, a wiggly mouth, eyes that look down) is said in the
+  // lesson's own script, not only in Feelings and what we do; no line, paragraph or key idea tells a child to look at a friend or at a
+  // friend's face (the lesson brief's item 2: turn toward a friend); and the spill painting (P151) stands on the line that says spill.
+  // Say it to fit: saying it hurts is a good start, in the script and in every reason after a tap on It hurts., so a hurt child is
+  // never told it was wrong to say. Near misses, each through the same reads: the script as pass NX left it, without its signs line
+  // and with its look at their face; the painting at its pass NX step; and the reason and line 12 as pass NX left them.
+  const hff = L.MODULES.find((m) => m.id === 'how-friends-feel'); const fit = L.MODULES.find((m) => m.id === 'say-it-to-fit');
+  const SIGN = /\bhas (a big smile|a tear rolling out|eyebrows that squeeze down|wide-open eyes|a wiggly mouth|eyes that look down)\b/gi;
+  const signsUsed = [...new Set(['p4-friend-feels', 'p4-new-feeling-moment', 'p4-new-feeling-face'].flatMap((g) => Array.from({ length: 600 }, (_, i) => L.generateQuestion(g, i + 1))).flatMap((q) => Object.values(q.whyNot || {}).flatMap((e) => [...`${e.name} ${e.why}`.matchAll(SIGN)].map((m) => m[1].toLowerCase()))))];
+  const unsaid = (script) => { const said = script.map((l) => l.say).join(' ').toLowerCase(); return signsUsed.filter((s) => !said.includes(s)); };
+  // The paragraphs a grown-up reads say the four faces' signs the new line says, in one sentence of their own.
+  const paraSigns = (paras) => ['a big smile', 'a tear rolling out', 'eyebrows that squeeze down', 'wide-open eyes'].every((s) => paras.join(' ').toLowerCase().includes(s));
+  const LOOK_AT = /\blook at (?:their|a|your|the) (?:friend|friend's|face)\b|\blook at (?:their|your friend's|a friend's) face\b/i;
+  const looksAt = (lesson) => [...lesson.script.map((l) => l.say), ...lesson.paragraphs, lesson.keyIdea].filter((t) => LOOK_AT.test(t));
+  const NX_LINE6 = 'To know how a friend feels, look at their face. Is it happy, sad or mad? Then ask, how do you feel?';
+  const nxScript = hff.lesson.script.filter((l) => !/^A face can show a feeling\./.test(l.say)).map((l) => (/^To know how a friend feels, /.test(l.say) ? { ...l, say: NX_LINE6 } : l));
+  const spillOn = (lesson, step) => /\bspill/.test(lesson.script[step].say);
+  const p151 = hff.lesson.pictures.find((p) => p.serial === 'P151');
+  const hurtWhys = Array.from({ length: 600 }, (_, i) => L.generateQuestion('p4-fit-enough', i + 1)).flatMap((q) => Object.entries(q.whyNot || {}).filter(([c]) => c === 'It hurts.').map(([, e]) => `${e.name} ${e.why}`));
+  const startSaid = (says) => says.some((s) => /\bsaying it hurts is a good start\b/i.test(s));
+  const linesOk = unsaid(hff.lesson.script).length === 0 && signsUsed.length === 6 && paraSigns(hff.lesson.paragraphs) && looksAt(hff.lesson).length === 0 && !!p151 && spillOn(hff.lesson, p151.step)
+    && hurtWhys.length > 0 && hurtWhys.every((w) => /is a good start\b/.test(w)) && startSaid(fit.lesson.script.map((l) => l.say)) && startSaid(fit.lesson.paragraphs);
+  const NX_PARA3 = 'Tell a grown-up enough, so they can help. If you just say, it hurts, they do not know where, and if you just say uh oh, they do not know what happened. Say, my knee hurts. I fell on the slide. And tell the doctor just what is wrong, like, my ear hurts.';
+  const linesPlants = unsaid(nxScript).length === 4 && !paraSigns(hff.lesson.paragraphs.map((p) => p.replace(/ A face can show a feeling\.[^]*?scared\./, ''))) && looksAt({ ...hff.lesson, script: nxScript }).length === 1 && !spillOn(hff.lesson, 8)
+    && !/is a good start\b/.test('Saying, it hurts does not say where it hurts.') && !startSaid(['Say, my knee hurts. I fell on the slide. Then your teacher knows just what happened.']) && !startSaid([...fit.lesson.paragraphs.slice(0, 2), NX_PARA3]);
+  ok(`the lines pass NY changed hold: How do friends feel?'s script says every sign its face questions' reasons name (${signsUsed.length}), no line tells a child to look at a friend or a face, and P151 stands on its spill line; Say it to fit's line 12 and its reasons say that saying it hurts is a good start (${hurtWhys.length} reasons read); near misses, the script and the reason as pass NX left them, caught`,
+    linesOk && linesPlants, JSON.stringify({ unsaid: unsaid(hff.lesson.script), signsUsed, looks: looksAt(hff.lesson), p151, hurt: hurtWhys.slice(0, 2), plantUnsaid: unsaid(nxScript) }));
+  // A happy moment says why it is happy (round one's lesson read of pass NY, its MF1). This lesson teaches that friends can feel the same
+  // as you or differently about one thing, and a shy child can fairly feel worried at a birthday party, so a row of p4-new-feeling-moment
+  // that answers happy says why for the one it asks about, as the slide row does: its question opens "You love X." or "Your friend loves
+  // X." and asks how that same one might feel, its explanation gives that love as the reason, and every wrong face's reason ends on it.
+  // Read over seeds 1 to 2,000, every row of the bank. Near misses, each giving exactly its own fault: the two birthday rows as pass NY's
+  // waves left them (no why at all), a why said for the other one ("You love birthday parties." before how your friend might feel), and
+  // an explanation that drops the why.
+  const momentQs = Array.from({ length: 2000 }, (_, i) => L.generateQuestion('p4-new-feeling-moment', i + 1));
+  const SAYS_WHY = /^(You love|Your friend loves) ([^.]+)\. How might (you|your friend) feel /;
+  const whyFaults = (qs) => [...new Set(qs.filter((q) => q.answer === 'face:happy').flatMap((q) => { const m = SAYS_WHY.exec(q.prompt);
+    if (!m) return [`no why: ${q.prompt}`]; const who = m[1].split(' ').slice(0, -1).join(' '); const out = [];
+    if ((who === 'You') !== (m[3] === 'you')) out.push(`a why for another one: ${q.prompt}`);
+    if (!q.explain.startsWith(`${m[1]} ${m[2]}, so `)) out.push(`an explanation without the why: ${q.prompt}`);
+    if (!Object.values(q.whyNot || {}).every((e) => e.why.endsWith(`, and ${m[1].toLowerCase()} ${m[2]}.`))) out.push(`a wrong face's reason without the why: ${q.prompt}`);
+    return out; }))];
+  const happyRow = (prompt, explain, clause) => ({ prompt, answer: 'face:happy', choices: ['face:happy', 'face:worried'], explain, whyNot: { 'face:worried': { name: 'The worried face', why: `has a wiggly mouth, and ${clause}.` } } });
+  const WHY_PLANTS = [
+    ['the two birthday rows as pass NY\'s waves left them', [happyRow('How might you feel at a birthday party?', 'A birthday party can make you feel happy.', 'a birthday party can make you feel happy'), happyRow('How might your friend feel at a birthday party?', 'A birthday party can make your friend feel happy, the same as you.', 'a birthday party can make your friend feel happy')],
+      'no why: How might you feel at a birthday party?; no why: How might your friend feel at a birthday party?'],
+    ['a why said for the other one', [happyRow('You love birthday parties. How might your friend feel at a birthday party?', 'You love birthday parties, so your friend might feel happy there.', 'you love birthday parties')], 'a why for another one: You love birthday parties. How might your friend feel at a birthday party?'],
+    ['an explanation that drops the why', [happyRow('You love birthday parties. How might you feel at a birthday party?', 'A birthday party can make you feel happy.', 'you love birthday parties')], 'an explanation without the why: You love birthday parties. How might you feel at a birthday party?'],
+  ];
+  const whyLive = whyFaults(momentQs); const happyRead = new Set(momentQs.filter((q) => q.answer === 'face:happy').map((q) => q.prompt)).size;
+  const whyWrong = WHY_PLANTS.filter(([, rows, want]) => whyFaults(rows).join('; ') !== want).map(([what, rows]) => `${what}: ${whyFaults(rows).join('; ') || 'nothing'}`);
+  ok(`every happy moment of How do friends feel? says why it is happy for the one it asks about, as "You love the big slide." does, in its question, its explanation and every wrong face's reason (${happyRead} happy rows read over seeds 1 to 2,000; round one's lesson read of pass NY, MF1); ${WHY_PLANTS.length} near misses each giving exactly its fault, the birthday rows as the waves left them among them`,
+    whyLive.length === 0 && happyRead === 3 && whyWrong.length === 0, JSON.stringify({ whyLive, happyRead, whyWrong }));
+  // The pair of faces shown (round one's lesson read of pass NY, its SC1): with one fixed wrong face in eight rows of nine, a child who
+  // tapped the face most often right for the pair shown was right 94.5 percent of the time, so the three happy rows offer embarrassed
+  // one time in four beside worried (as often as worried pushed the one-choice read above past its bound, worried 58.5 to 59.6). Read
+  // alone at seeds 1 to 2,000 and in rounds as built, held at its read rounded up to a whole percent (the remainder is the lesson's:
+  // worried beside embarrassed is always worried, since after a spill, a fall or a mistake a child may be worried too).
+  // Plant: the rows as pass NY's waves left them, worried the happy rows' one wrong face, caught.
+  const PAIR_BOUND = 0.87;
+  const pairRead = (qs) => { const t = new Map(); for (const q of qs) { const k = [...q.choices].map(String).sort().join('|'); const m = t.get(k) || new Map(); m.set(q.answer, (m.get(q.answer) || 0) + 1); t.set(k, m); }
+    return [...t.values()].reduce((n, m) => n + Math.max(...m.values()), 0) / qs.length; };
+  const pairLive = groups('how-friends-feel', 'p4-new-feeling-moment', 1500, 2000).map(pairRead);
+  const keepMoment = L.GENERATORS['p4-new-feeling-moment'];
+  const wavesMoment = (rng) => { const q = keepMoment(rng); return q.answer === 'face:happy' ? { ...q, choices: L.shuffle(rng, ['face:happy', 'face:worried']), whyNot: { 'face:worried': { name: 'The worried face', why: 'has a wiggly mouth.' } } } : q; };
+  L.GENERATORS['p4-new-feeling-moment'] = wavesMoment; let pairWaves;
+  try { pairWaves = groups('how-friends-feel', 'p4-new-feeling-moment', 300, 2000).map(pairRead); } finally { L.GENERATORS['p4-new-feeling-moment'] = keepMoment; }
+  ok(`How do friends feel?'s moments are not answered by the pair of faces shown past their read: ${pct(Math.min(...pairLive))} to ${pct(Math.max(...pairLive))} percent, alone at seeds 1 to 2,000 and in rounds as built, held under ${pct(PAIR_BOUND)} (round one's lesson read of pass NY, SC1); planted, the rows as pass NY's waves left them (${pct(Math.min(...pairWaves))} to ${pct(Math.max(...pairWaves))}), caught`,
+    pairLive.every((v) => v <= PAIR_BOUND) && Math.max(...pairLive) > PAIR_BOUND - 0.01 && Math.max(...pairWaves) > PAIR_BOUND, JSON.stringify({ pairLive, pairWaves }));
+  // Two stories turn a child toward a friend (round one's lesson read of pass NY, its SC6; the lesson brief's item 2): Helping a friend's
+  // closing line told the child "Look at a friend's face, and ask, are you okay?", and in The big slide Rafi "looked at her face" to ask
+  // how Talia feels, where How do friends feel?'s line 6 says to turn toward a friend. Neither story's words nor their audio lines tell a
+  // child to look at a friend's face or have a friend look at another's face to ask; Owen noticing Tess's face, the feelings a face
+  // shows, is the lesson's own. Plants: each line as round one's copy had it, caught.
+  const { STORIES: NY_STORIES } = await import('../src/stories.mjs');
+  const FACE_LOOK = /\blook at (?:a|your|their) friend's face\b|\blook at their face\b|\blooked at (?:her|his|their) face\b/i;
+  const faceLooks = (st) => [...(st.words || []), ...(st.audio || [])].filter((p) => FACE_LOOK.test(p));
+  const storyLooks = ['help-a-friend', 'how-friends-feel'].flatMap((id) => faceLooks(NY_STORIES[id]).map((p) => `${id}: ${p.slice(0, 80)}`));
+  const OLD_LINES = ["Look at a friend's face, and ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.", "Rafi's mom was watching from her bench, and she called to him, ask Talia how she feels. So Rafi let go of Talia's hand and looked at her face."];
+  const storyPlants = OLD_LINES.map((p) => faceLooks({ words: [p] }).length);
+  ok(`Helping a friend's and The big slide's words and audio lines never tell a child to look at a friend's face, and Rafi turns toward Talia to ask; Owen noticing Tess's face is kept, the lesson's own (round one's lesson read of pass NY, SC6); planted, the two lines as round one's copy had them, each caught`,
+    storyLooks.length === 0 && storyPlants.every((n) => n === 1) && NY_STORIES['how-friends-feel'].words.some((p) => /\bturned toward her\b/.test(p)), JSON.stringify({ storyLooks, storyPlants }));
+  // What each telling tells (round one's code read of pass NY, its S3): p4-fit-enough's explanation says the answer, then "That tells
+  // <who> <what the telling tells>, so <who> can help.", where what it tells is the test's own table of the lesson's four tellings
+  // (an ear or a knee that hurts tells just where it hurts, the slide tells what happened, and the two together what happened and where
+  // it hurts), never the question's own words. Plant: the question's words in the telling's place (the generator's asks for its
+  // tells), caught on the three tellings whose words differ from the question's.
+  const FIT_TELLS = { 'My ear hurts.': 'just where it hurts', 'My knee hurts.': 'just where it hurts', 'I fell on the slide.': 'what happened', 'My knee hurts. I fell on the slide.': 'what happened and where it hurts' };
+  const tellFaults = (qs) => [...new Set(qs.filter((q) => { const who = (/^Which one tells (.+?) (?:just what is wrong|what happened)\?$/.exec(q.prompt) || [])[1]; return !who || !FIT_TELLS[q.answer] || q.explain !== `${q.answer} That tells ${who} ${FIT_TELLS[q.answer]}, so ${who} can help.`; }).map((q) => q.answer))].sort();
+  const enoughQs = Array.from({ length: 2000 }, (_, i) => L.generateQuestion('p4-fit-enough', i + 1));
+  const asksPlant = enoughQs.map((q) => { const m = /^Which one tells (.+?) (just what is wrong|what happened)\?$/.exec(q.prompt); return m ? { ...q, explain: `${q.answer} That tells ${m[1]} ${m[2]}, so ${m[1]} can help.` } : q; });
+  ok(`each telling's explanation in Say it to fit says what that telling tells, by the test's own table (${new Set(enoughQs.map((q) => q.answer)).size} tellings read over seeds 1 to 2,000; round one's code read of pass NY, S3); planted, the question's words in its place, caught on the three tellings whose words differ`,
+    tellFaults(enoughQs).length === 0 && new Set(enoughQs.map((q) => q.answer)).size === 4 && tellFaults(asksPlant).join() === ['My ear hurts.', 'My knee hurts.', 'My knee hurts. I fell on the slide.'].sort().join(), JSON.stringify({ live: tellFaults(enoughQs), plant: tellFaults(asksPlant) }));
+  // Say it to fit's yes or no asks what fits, never what you do (round one's lesson read of pass NY, its SC7): "In the library, do you use
+  // a whisper?" is answered for the child's own self, as the events bank's rows were changed not to ask, so no row of p4-fit-yesno says
+  // do you, over seeds 1 to 2,000. Plant: round one's copy's library row put back in its place, caught; and the read of the bank's Yes
+  // share and habits above still holds it.
+  const DO_YOU = /\bdo you\b/i; const fitQs = Array.from({ length: 2000 }, (_, i) => L.generateQuestion('p4-fit-yesno', i + 1));
+  const doYouNow = [...new Set(fitQs.filter((q) => DO_YOU.test(q.prompt)).map((q) => q.prompt))];
+  const doYouPlant = [...new Set(fitQs.map((q) => (q.prompt === 'In the library, does a whisper fit?' ? 'In the library, do you use a whisper?' : q.prompt)).filter((p) => DO_YOU.test(p)))];
+  ok(`Say it to fit's yes or no questions ask whether a voice fits, never what you do (${new Set(fitQs.map((q) => q.prompt)).size} rows over seeds 1 to 2,000; round one's lesson read of pass NY, SC7); planted, round one's library row, caught`,
+    doYouNow.length === 0 && doYouPlant.length === 1 && fitQs.some((q) => q.prompt === 'In the library, does a whisper fit?'), JSON.stringify({ doYouNow, doYouPlant }));
+  // A voice's reason reads as one sentence (round one's lesson read of pass NY, its SC3): whyNotSentence closes a name's comma, which
+  // a name that quotes words or says them one by one needs ("Saying, ..."), so a wrong voice whose name holds a comma read with a comma
+  // between it and its verb ("A kind, soft voice, is too soft for a friend far away to hear."). In Say it to fit's and pre-K 3's A voice
+  // to fit the place's which voice banks no reason, with or without the smart words, has a comma before its verb's is, and the kind,
+  // soft voice is named kind and soft, as the bank's own reasons say it. Plant: its name as round one's copy had it, caught in each.
+  const VOICE_BANKS = ['p4-fit-voice', 'p3-vfit-voice'];
+  const voiceWhys = (name) => VOICE_BANKS.flatMap((g) => Array.from({ length: 400 }, (_, i) => L.generateQuestion(g, i + 1)).flatMap((q) => Object.values(q.whyNot || {}).map((e) => (name ? { ...e, name: name(e.name) } : e))));
+  const strayComma = (entries) => [...new Set(entries.flatMap((e) => [L.whyNotSentence(e), L.whyNotSentence(e, 'which you just chose')]).filter((t) => /\b\w+, (?:is|are) /.test(t) && !/, which you just chose, (?:is|are) /.test(t)))];
+  const voiceNow = strayComma(voiceWhys()); const kindNamed = voiceWhys().filter((e) => /kind/i.test(e.name)).map((e) => e.name);
+  const voicePlant = strayComma(voiceWhys((n) => (n === 'A kind and soft voice' ? 'A kind, soft voice' : n)));
+  ok(`no reason in the two which voice banks reads a comma between a voice's name and its verb, the kind, soft voice named kind and soft in both (${kindNamed.length} reasons read); planted, its name as round one's copy had it, caught (${voicePlant.length} sentences)`,
+    voiceNow.length === 0 && kindNamed.length > 0 && kindNamed.every((n) => n === 'A kind and soft voice') && voicePlant.length === 2, JSON.stringify({ voiceNow, voicePlant })); }
+// Talk about it, Things that happen and Things we do (pass NY, EARMARKS A181: the findings of pass NX's measured lesson reads in these
+// three lessons, each read against the project before it was fixed). In plain terms: each check below holds one thing the pass fixed,
+// and each is proven by planting what pass NX left (the rows, the replies, a reason or a line as they were), which it must catch, so a
+// later change that brings one back fails here. A habit is read alone at seeds 1 to 2,000 and in rounds as built (1,500 first rounds,
+// later rounds that pass over the last two rounds' prompts, triple doses and Quick Reviews, as tools/blind-read.mjs builds them; a
+// planted bank's rounds 300 of each).
+{ const gen = (g, n = 2000) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const MOD = { talk: L.getModule('talk-about-it'), happen: L.getModule('things-that-happen'), act: L.getModule('things-we-do') };
+  const MID = Object.fromEntries(Object.values(MOD).flatMap((m) => m.generators.map((g) => [g, m.id]))); const BANKS = Object.keys(MID);
+  const linesOf = (m) => m.lesson.script.map((l) => l.say);
+  // The live banks' questions, made once; a planted bank's are made afresh while its plant stands.
+  const LIVE_QS = {}; const live = (g) => (LIVE_QS[g] = LIVE_QS[g] || gen(g));
+  // A bank's generator swapped for a planted one while a read runs, and always put back.
+  const planted = (g, fn, read) => { const keep = L.GENERATORS[g]; L.GENERATORS[g] = fn; try { return read(); } finally { L.GENERATORS[g] = keep; } };
+  // Rounds as the even yes or no rows' block builds them, the live ones built once a lesson.
+  const ofModule = (mid, n) => { const out = { first: [], later: [], doses: [], reviews: [] }; let p1 = [], p2 = [];
+    for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt(mid, s, []).core); out.doses.push(L.buildAttempt(mid, s + 90000, [], { dose: 3, avoid: [...p1, ...p2] }).core); const a = L.buildAttempt(mid, s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+      const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const LIVE_ROUNDS = {}; const liveRounds = (mid) => (LIVE_ROUNDS[mid] = LIVE_ROUNDS[mid] || ofModule(mid, 1500));
+  // One bank's questions alone and in each kind of round, each group read by one function: the live bank, or a planted one (fresh rounds,
+  // 300 of each unless more are asked for).
+  const groups = (g, read, isLive = true, n = 300) => { const R = isLive ? liveRounds(MID[g]) : ofModule(MID[g], n); return [read(isLive ? live(g) : gen(g)), ...['first', 'later', 'doses', 'reviews'].map((k) => R[k].flatMap((r) => r.filter((q) => q.genId === g))).filter((qs) => qs.length).map(read)]; };
+  const pct = (v) => Math.round(v * 1000) / 10; const span = (v) => `${pct(Math.min(...v))} to ${pct(Math.max(...v))}`;
+  // A child who always taps one choice: right when it is the answer, wrong when it is a wrong choice, a guess when it is not offered.
+  const habit = (qs) => { const vals = [...new Set(qs.flatMap((q) => q.choices))]; return Math.max(...vals.map((x) => qs.reduce((n, q) => n + (x === q.answer ? 1 : q.choices.includes(x) ? 0 : 1 / q.choices.length), 0) / qs.length)); };
+  const firstButton = (qs) => qs.filter((q) => q.choices[0] === q.answer).length / qs.length;
+  // A child who answers by one part of a question alone (its key): the answer most often right for that key at the bank's other
+  // questions, ties a guess, as the blind read's heard-only-the-question reads it.
+  const byKey = (keyOf) => (qs) => { const t = new Map(); for (const q of qs) { const k = keyOf(q); if (!t.has(k)) t.set(k, new Map()); t.get(k).set(q.answer, (t.get(k).get(q.answer) || 0) + 1); }
+    return qs.reduce((n, q) => { const m = t.get(keyOf(q)); const score = (c) => (m.get(c) || 0) - (c === q.answer ? 1 : 0); const best = Math.max(...q.choices.map(score)); const tied = q.choices.filter((c) => score(c) === best); return n + (tied.includes(q.answer) ? 1 / tied.length : 0); }, 0) / qs.length; };
+  const replyOf = (q) => (/ You say, (.+)$/.exec(q.story || '') || [])[1] || '';
+  const said = (q) => [q.story, q.prompt, q.explain, ...(q.choices || []), ...Object.values(q.whyNot || {}).flatMap((w) => [w.name, w.why]), ...(q.alsoRight || [])].filter((x) => typeof x === 'string').join(' ');
+  // Pass NX's Talk about it, as its banks dealt it: four replies (two said its, or play, which fit any friend's news) and the lesson's
+  // two replies about something else, a glass of water, a child's real need, and pizza, the only replies about something else.
+  const NX_BACK = [['I have a new puppy dog!', 'What is its name?', 'the puppy'], ['I made a tower!', 'I like your tower!', 'the tower'], ['I went to the park!', 'What did you play?', 'the park'], ['I have a new hat!', 'I like your hat!', 'the hat']];
+  const NX_OFF = ['I want a glass of water.', 'I like pizza.'];
+  const nxSayBack = (rng) => { const [s, back] = L.pick(rng, NX_BACK); const wrong = L.pick(rng, NX_OFF); return { type: 'choice', story: `Your friend says, ${s}`, prompt: 'What can you say back?', choices: L.shuffle(rng, [back, wrong]), answer: back, explain: back, visual: null, explainVisual: null, whyNot: { [wrong]: { name: `Saying, ${wrong.replace(/\.$/, '')}`, why: 'is not about what your friend said.' } }, alsoRight: [] }; };
+  const nxAbout = (rng) => { const [s, back, topic] = L.pick(rng, NX_BACK); const about = rng() < 0.5; const reply = about ? back : L.pick(rng, NX_OFF); const answer = about ? 'Yes' : 'No'; const wrong = about ? 'No' : 'Yes';
+    return { type: 'choice', story: `Your friend says, ${s} You say, ${reply}`, prompt: `Is that about ${topic}?`, choices: L.shuffle(rng, ['Yes', 'No']), answer, explain: `${answer}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why: `would mean otherwise about ${topic}.` } }, alsoRight: [] }; };
+  const nxFeel = (rng) => { const [s, back] = L.pick(rng, NX_BACK); const about = rng() < 0.5; const reply = about ? back : L.pick(rng, NX_OFF); const answer = about ? 'face:happy' : 'face:sad'; const wrong = about ? 'face:sad' : 'face:happy';
+    return { type: 'choice', story: `Your friend says, ${s} You say, ${reply}`, prompt: 'How may your friend feel?', choices: L.shuffle(rng, ['face:happy', 'face:sad']), answer, explain: about ? 'Happy.' : 'Sad.', visual: null, explainVisual: null, whyNot: { [wrong]: { name: `The ${wrong.slice(5)} face`, why: wrong === 'face:sad' ? 'has a tear rolling out, so it looks sad.' : 'has a big smile, so it looks happy.' } }, alsoRight: [] }; };
+  const nxWhy = (rng) => { if (rng() < 0.2) { const pair = L.shuffle(rng, ['So your friend knows you listened', 'So you can talk about something else']); return { type: 'choice', story: null, prompt: 'Why do you say something about what your friend said?', choices: pair, answer: 'So your friend knows you listened', explain: 'So.', visual: null, explainVisual: null, whyNot: { 'So you can talk about something else': { name: 'Talking about something else', why: 'is not about what your friend said.' } }, alsoRight: [] }; }
+    const [s, back, topic] = L.pick(rng, NX_BACK); const asks = back.endsWith('?'); const right = asks ? `To ask about ${topic}` : `To say something kind about ${topic}`; const wrong = L.pick(rng, ['To talk about pizza', 'To ask for a glass of water']);
+    return { type: 'choice', story: `Your friend says, ${s}`, prompt: `Why can you ${asks ? 'ask' : 'say'}, ${back.charAt(0).toLowerCase()}${back.slice(1, -1)}?`, choices: L.shuffle(rng, [right, wrong]), answer: right, explain: `${right}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: 'That', why: `is not about ${topic}.` } }, alsoRight: [] }; };
+  const STOCK = /\b(?:pizza|a bus|glass of water)\b/i;
+
+  // 1. Talk about it's replies about something else (pass NX's reads: they were always "I want a glass of water." and "I like pizza.",
+  //    so a child who knew those two was right without hearing the friend, 100.0 percent by the question alone in p3-talk-say-back; and
+  //    the glass of water, a child's real need, which the next lesson teaches a thirsty child to ask for, was taught as the wrong thing to
+  //    say). No line, question, choice or reason of the lesson says wanting a drink, or any want or need, as the thing not to say. In
+  //    p3-talk-say-back every wrong reply is another friend's good reply and every good reply is a wrong reply somewhere, and a child who
+  //    hears only the question is right 56 percent of the time or less; in p3-talk-about-yesno a child who hears only your reply is right
+  //    56 percent of the time or less; in p3-talk-why the lesson's two replies about something else are the wrong reason in at most half
+  //    of the questions about a friend's news, and no reason is right more than 56 percent of the time for a child who always taps it;
+  //    and in p3-talk-feel the replies about something else are more than the lesson's two, and never another friend's kind reply, since
+  //    a friend told they have a nice hat could fairly feel happy. Each alone and in rounds. Plants: the line and the four banks as pass
+  //    NX left them, each caught.
+  const NEED = /\b(?:glass|water|thirsty|i want|i need)\b/i;
+  const talkText = (lines) => [...lines, ...MOD.talk.lesson.paragraphs, MOD.talk.lesson.example.caption].join(' ');
+  const needSaid = NEED.test(talkText(linesOf(MOD.talk))) || MOD.talk.generators.some((g) => live(g).some((q) => NEED.test(said(q))));
+  const nxLines = linesOf(MOD.talk).map((l) => (/^If you say, I see a bus,/.test(l) ? 'If you say, I want a glass of water, that is not about the puppy. It is about something else.' : l));
+  const needPlants = [nxLines.join(' ') !== linesOf(MOD.talk).join(' ') && NEED.test(talkText(nxLines)), planted('p3-talk-say-back', nxSayBack, () => gen('p3-talk-say-back', 400).some((q) => NEED.test(said(q))))];
+  const sayBackShape = (qs) => { const answers = new Set(qs.map((q) => q.answer)); const wrongs = new Set(qs.flatMap((q) => q.choices.filter((c) => c !== q.answer))); return [...wrongs].every((w) => answers.has(w)) && [...answers].every((a) => wrongs.has(a)); };
+  const qAlone = byKey((q) => q.prompt); const replyAlone = byKey(replyOf);
+  const whyStock = (qs) => { const own = qs.filter((q) => q.story); return own.filter((q) => q.choices.some((c) => c !== q.answer && STOCK.test(c))).length / own.length; };
+  const feelOff = (qs) => { const off = qs.filter((q) => q.answer === 'face:sad').map(replyOf); return { kinds: new Set(off).size, kind: off.filter((r) => talkKind.has(r)).length }; };
+  // A kind reply is one that says something kind, as the lesson names its two ways (ask about it, or say something kind about it): since
+  // round one's lesson read of pass NY another friend's asking reply is a reply about something else here, and only the kind ones stay out.
+  const talkKind = new Set(Object.values(MR_TALK_ABOUT).map(([, back]) => back).filter((back) => !back.endsWith('?')));
+  const sayBack = groups('p3-talk-say-back', qAlone); const aboutReply = groups('p3-talk-about-yesno', replyAlone); const why = groups('p3-talk-why', whyStock); const whyHabit = groups('p3-talk-why', habit); const feel = feelOff(live('p3-talk-feel'));
+  const nxRead = { shape: planted('p3-talk-say-back', nxSayBack, () => sayBackShape(gen('p3-talk-say-back'))), sayBack: planted('p3-talk-say-back', nxSayBack, () => groups('p3-talk-say-back', qAlone, false)), about: planted('p3-talk-about-yesno', nxAbout, () => groups('p3-talk-about-yesno', replyAlone, false)),
+    why: planted('p3-talk-why', nxWhy, () => groups('p3-talk-why', whyStock, false)), whyHabit: planted('p3-talk-why', nxWhy, () => groups('p3-talk-why', habit, false)), feel: planted('p3-talk-feel', nxFeel, () => feelOff(gen('p3-talk-feel'))) };
+  const nxCaught = { shape: !nxRead.shape, sayBack: Math.max(...nxRead.sayBack) > 0.56, about: Math.max(...nxRead.about) > 0.56, why: Math.max(...nxRead.why) > 0.5, whyHabit: Math.max(...nxRead.whyHabit) > 0.56, feel: nxRead.feel.kinds <= 2 };
+  // Every reply a question says (what to say back, and your reply in the yes or no and the face question) is said on a line, word for
+  // word but its end mark, and a line says that one friend's good reply is not about another friend's news, the kind of reply about
+  // something else the banks now offer. Plants: the puppy's and the park's lines as pass NX said them, and the lines without the line
+  // on the tower and the hat, each caught.
+  const spoken = (r) => String(r).replace(/[.!?]$/, '').toLowerCase();
+  // Each reply once by its spoken form, since round one's screen read of pass NY (its S3) writes a reply small after "You say, " while
+  // its button keeps its capital.
+  const repliesUnsaid = (lines) => { const text = lines.join(' ').toLowerCase(); return [...new Set([...live('p3-talk-say-back').flatMap((q) => q.choices), ...live('p3-talk-about-yesno').map(replyOf), ...live('p3-talk-feel').map(replyOf)].map(spoken))].filter((r) => !text.includes(r)); };
+  const elsewhereLine = (lines) => lines.some((l) => /\bnot about\b/.test(l) && Object.entries(MR_TALK_ABOUT).some(([news, [, back]]) => l.includes(news.replace(/!$/, '')) && Object.entries(MR_TALK_ABOUT).some(([n2, [, b2]]) => n2 !== news && b2 !== back && l.toLowerCase().includes(spoken(b2)))));
+  const nxReplyLines = linesOf(MOD.talk).map((l) => l.replace('what is your puppy\'s name?', 'what is its name?').replace('did you play on the slide? And your friend says, yes, it was fun!', 'what did you play? And your friend says, the slide!'));
+  // A wrong reply is named after a tap as it was said, asking for a question and saying for the rest, with no end mark inside the line
+  // ("Asking, what is your puppy's name is not about what your friend said."). Plant: pass NX's naming, "Saying, " and the reply with
+  // only a period taken off, which put "Saying, What is your puppy's name?" mid-sentence, caught.
+  const namedAsSaid = (qs, nameOf) => qs.every((q) => Object.entries(q.whyNot).every(([c, e]) => { const n = nameOf ? nameOf(c) : e.name; return !/[.!?]/.test(n) && n.startsWith(c.endsWith('?') ? 'Asking, ' : 'Saying, ') && n.slice(8).toLowerCase() === spoken(c); }));
+  const unsaid = repliesUnsaid(linesOf(MOD.talk)); const replyPlants = [repliesUnsaid(nxReplyLines).length === 2, !elsewhereLine(linesOf(MOD.talk).filter((l) => !elsewhereLine([l]))), !namedAsSaid(live('p3-talk-say-back'), (c) => `Saying, ${c.replace(/\.$/, '')}`)];
+  ok(`Talk about it says no want or need as the thing not to say, and a child who knows its replies about something else is not right without hearing the friend: every wrong reply of what to say back is another friend's good reply and each good reply is a wrong one somewhere, the question alone right ${span(sayBack)} percent of the time; your reply alone in the yes or no ${span(aboutReply)}; the lesson's two about something else the wrong reason in ${span(why)} percent of the why questions about a friend's news, and a reason always tapped right ${span(whyHabit)}; and the face question's ${feel.kinds} replies about something else, none another friend's kind reply (seeds 1 to 2,000 and rounds as built); every reply a question says is said on a line, a wrong reply is named as it was said, and a line says one friend's good reply is not about another's news; planted, the line with its glass of water and the four banks as pass NX left them (the question alone ${span(nxRead.sayBack)}, the reply alone ${span(nxRead.about)}, the two the wrong reason ${span(nxRead.why)}, a reason always tapped ${span(nxRead.whyHabit)}, ${nxRead.feel.kinds} replies about something else), the puppy's and the park's lines as pass NX said them, the lines without the tower and the hat, and pass NX's naming of a wrong reply, each caught`,
+    !needSaid && needPlants.every(Boolean) && sayBackShape(live('p3-talk-say-back')) && sayBack.every((v) => v <= 0.56) && aboutReply.every((v) => v <= 0.56) && why.every((v) => v <= 0.5) && whyHabit.every((v) => v <= 0.56) && feel.kinds > 2 && feel.kind === 0 && Object.values(nxCaught).every(Boolean)
+      && unsaid.length === 0 && elsewhereLine(linesOf(MOD.talk)) && namedAsSaid(live('p3-talk-say-back')) && replyPlants.every(Boolean),
+    JSON.stringify({ needSaid, needPlants, sayBack, aboutReply, why, whyHabit, feel, nxCaught, unsaid, replyPlants }));
+
+  // 1b. Why you can say a reply, by the question's verb alone (round one's code read of pass NY, its S5): the question says the reply,
+  //     "Why can you ask, what is your puppy's name?", so where a reason of another act stood beside the answer (the lesson's pizza and
+  //     bus, or another friend's kind words), a child who tapped the choice whose verb the question says, ask or say, was right on 86.3
+  //     percent of seeds 1 to 2,000; since then the wrong reason is the other friend's of the same act. Held at its read rounded up to a
+  //     whole percent, alone and in rounds as built. Plant: the bank as round one's copy dealt its wrong reasons, caught.
+  const VERB_BOUND = 0.5;
+  const verbOf = (t) => (/\bask\b/i.test(t) ? 'To ask ' : /\bsay\b/i.test(t) ? 'To say ' : null);
+  const verbRead = (qs) => qs.reduce((n, q) => { const v = verbOf(q.prompt); const hit = q.choices.filter((c) => v && String(c).startsWith(v)); const pool = hit.length ? hit : q.choices; return n + (pool.includes(q.answer) ? 1 / pool.length : 0); }, 0) / qs.length;
+  const keepWhy = L.GENERATORS['p3-talk-why'];
+  const reasonOf = (news) => { const [topic, back] = MR_TALK_ABOUT[news]; return back.endsWith('?') ? [`To ask about ${topic}`, `Asking about ${topic}`] : [`To say something kind about ${topic}`, `Saying something kind about ${topic}`]; };
+  const r1Why = (rng) => { const q = keepWhy(rng); const news = (/^Your friend says, (.+)$/.exec(q.story || '') || [])[1]; if (!news) return q;
+    const [wrong, name] = L.pick(rng, [['To talk about pizza', 'Talking about pizza'], ['To talk about a bus', 'Talking about a bus'], ...Object.keys(MR_TALK_ABOUT).filter((n) => n !== news).map(reasonOf)]);
+    return { ...q, choices: L.shuffle(rng, [q.answer, wrong]), whyNot: { [wrong]: { name, why: Object.values(q.whyNot)[0].why } } }; };
+  const verbNow = groups('p3-talk-why', verbRead); const verbR1 = planted('p3-talk-why', r1Why, () => groups('p3-talk-why', verbRead, false));
+  ok(`Talk about it's why questions are not answered by the question's verb alone: ${span(verbNow)} percent of the time, alone at seeds 1 to 2,000 and in rounds as built, held under ${pct(VERB_BOUND)} (round one's code read of pass NY, S5); planted, the bank as round one's copy dealt its wrong reasons (${span(verbR1)}), caught`,
+    verbNow.every((v) => v <= VERB_BOUND) && Math.max(...verbNow) > VERB_BOUND - 0.01 && Math.max(...verbR1) > VERB_BOUND, JSON.stringify({ verbNow, verbR1 }));
+
+  // 1c. A wrong reason is named after a tap by its own words as an act (round one's code read of pass NY, its S4), by the test's own
+  //     table: To ask about X is Asking about X, To say something kind about X is Saying something kind about X, and To talk about X and
+  //     So you can talk about X are Talking about X. Plants: pass NX's name, That, on every wrong reason, and an ask named as a say, each
+  //     caught on exactly the reasons it changes.
+  const ACT_NAMES = [[/^To ask about (.+)$/, 'Asking about '], [/^To say something kind about (.+)$/, 'Saying something kind about '], [/^To talk about (.+)$/, 'Talking about '], [/^So you can talk about (.+)$/, 'Talking about ']];
+  const misnamed = (qs) => [...new Set(qs.flatMap((q) => Object.entries(q.whyNot || {}).filter(([c, e]) => { const hit = ACT_NAMES.find(([re]) => re.test(c)); return !hit || e.name !== hit[1] + hit[0].exec(c)[1]; }).map(([c]) => c)))].sort();
+  const whyQs = live('p3-talk-why'); const wrongReasons = [...new Set(whyQs.flatMap((q) => Object.keys(q.whyNot || {})))].sort();
+  const renamed = (rename) => whyQs.map((q) => ({ ...q, whyNot: Object.fromEntries(Object.entries(q.whyNot).map(([c, e]) => [c, { ...e, name: rename(c, e.name) }])) }));
+  const asAsk = wrongReasons.filter((c) => c.startsWith('To ask about '));
+  const namePlants = [misnamed(renamed(() => 'That')).join() === wrongReasons.join(), misnamed(renamed((c, n) => (c.startsWith('To ask about ') ? n.replace('Asking about', 'Saying something kind about') : n))).join() === asAsk.join() && asAsk.length > 0];
+  ok(`every wrong reason of Talk about it's why questions is named after a tap by its own words as an act (${wrongReasons.length} reasons read; round one's code read of pass NY, S4); planted, That on every one and an ask named as a say, each caught on exactly the reasons it changes`,
+    misnamed(whyQs).length === 0 && wrongReasons.length >= 4 && namePlants.every(Boolean), JSON.stringify({ misnamed: misnamed(whyQs), wrongReasons, namePlants }));
+
+  // 1d. A reply said after "You say, " is written as the lesson's lines write it (round one's screen read of pass NY, its S3: "You say,
+  //     Did you play on the slide?", where line 7 writes "did you play on the slide?"): in the yes or no and the face question every reply
+  //     opens small unless it opens with I, and is a reply of the lesson's, in this test's own form (mrSaid). Plant: the replies as round
+  //     one's copy wrote them, capital first, caught on the two asking replies.
+  const SAID_BANKS = ['p3-talk-about-yesno', 'p3-talk-feel'];
+  const saidReplies = (qs) => [...new Set(qs.map(replyOf))];
+  const LESSON_REPLIES = new Set([...Object.values(MR_TALK_ABOUT).map(([, back]) => back), ...Object.keys(MR_TALK_ABOUT), 'I see a bus.', 'I like pizza.'].map(mrSaid));
+  const capitalSaid = (replies) => replies.filter((r) => !/^I\b/.test(r) && /^[A-Z]/.test(r));
+  const saidNow = SAID_BANKS.flatMap((g) => saidReplies(live(g))); const unknownSaid = saidNow.filter((r) => !LESSON_REPLIES.has(r));
+  const saidPlant = capitalSaid([...new Set(saidNow.map((r) => (/^I\b/.test(r) ? r : r.charAt(0).toUpperCase() + r.slice(1))))]);
+  ok(`Talk about it's replies said after "You say, " open small unless they open with I, as the lesson's lines write them (${new Set(saidNow).size} replies read in the yes or no and the face question; round one's screen read of pass NY, S3); planted, round one's capital first, caught on the asking replies`,
+    capitalSaid(saidNow).length === 0 && unknownSaid.length === 0 && saidNow.some((r) => /^did you play on the slide\?$/.test(r)) && saidPlant.sort().join() === ["Did you play on the slide?", "What is your puppy's name?"].sort().join(), JSON.stringify({ capital: capitalSaid(saidNow), unknownSaid, saidPlant }));
+
+  // 2. The face question's reasons (pass NX's reads: "The sad face has a tear rolling out, so it looks sad." said only that a face looks
+  //    its own way). Each reason after a wrong face says that face's sign, as Talk about it's lines say it, and then why your friend may
+  //    feel the other way, in the lesson's words (your friend knows you listened, or may think you did not listen); the question offers
+  //    only faces its lesson's lines draw and name; and no face, and not the first button, is right more than 56 percent of the time for
+  //    a child who taps it every time, alone or in rounds. Plants: the reasons as pass NX left them, the lesson's lines as they were (no
+  //    line said a sign), a face no line draws, and the answer always on the first button, each caught.
+  const SIGNS = { happy: 'a big smile', sad: 'a tear rolling out' };
+  const talkShows = MOD.talk.lesson.script.map((l) => l.show);
+  const drawnNamed = (lines) => { const out = new Set(); const walk = (v, s) => { if (!v) return; if (v.kind === 'pair') { walk(v.a, s); walk(v.b, s); } else if (v.kind === 'row') (v.items || []).forEach((x) => walk(x, s)); else if (v.kind === 'face' && new RegExp(`\\b${v.feeling}\\b`).test(s)) out.add(v.feeling); else if (v.kind === 'faces') (v.feelings || []).filter((f) => new RegExp(`\\b${f}\\b`).test(s)).forEach((f) => out.add(f)); };
+    talkShows.forEach((v, i) => walk(v, lines[i])); return out; };
+  const reasonFits = (qs) => qs.every((q) => Object.entries(q.whyNot).every(([c, e]) => !!SIGNS[c.slice(5)] && e.why.startsWith(`has ${SIGNS[c.slice(5)]}, but `) && /\b(?:knows you listened|did not listen)\b/.test(e.why) && !/\bso it looks\b/.test(e.why)));
+  const signsSaid = (lines, qs) => [...new Set(qs.flatMap((q) => Object.keys(q.whyNot).map((c) => SIGNS[c.slice(5)])))].every((s) => !!s && lines.join(' ').includes(s));
+  const facesDrawn = (qs, lines) => { const d = drawnNamed(lines); return qs.every((q) => q.choices.every((c) => d.has(c.slice(5)))); };
+  const feelQs = live('p3-talk-feel'); const feelHabit = groups('p3-talk-feel', habit); const feelFirst = groups('p3-talk-feel', firstButton);
+  const NX_TALK_LINES = linesOf(MOD.talk).map((l) => l.replace(' A sad face can have a tear rolling out.', '').replace(', and feels happy, with a big smile.', ', and feels happy.'));
+  const keepFeel = L.GENERATORS['p3-talk-feel'];
+  const facePlants = [!planted('p3-talk-feel', nxFeel, () => reasonFits(gen('p3-talk-feel', 400))), NX_TALK_LINES.join(' ') !== linesOf(MOD.talk).join(' ') && !signsSaid(NX_TALK_LINES, feelQs),
+    !facesDrawn(feelQs.map((q) => ({ ...q, choices: q.choices.map((c) => (c === 'face:sad' ? 'face:mad' : c)) })), linesOf(MOD.talk)),
+    planted('p3-talk-feel', (rng) => { const q = keepFeel(rng); return { ...q, choices: [q.answer, ...q.choices.filter((c) => c !== q.answer)] }; }, () => firstButton(gen('p3-talk-feel')) > 0.56)];
+  ok(`Talk about it's face question gives each wrong face its sign as the lesson's lines say it and then why your friend may feel the other way, offers only the faces its lines draw and name, and keeps no habit: one face always tapped right ${span(feelHabit)} percent of the time, the first button ${span(feelFirst)} (seeds 1 to 2,000 and rounds as built); planted, pass NX's reasons, its lines with no sign, a face no line draws and the answer always first, each caught`,
+    reasonFits(feelQs) && signsSaid(linesOf(MOD.talk), feelQs) && facesDrawn(feelQs, linesOf(MOD.talk)) && feelHabit.every((v) => v <= 0.56) && feelFirst.every((v) => v <= 0.56) && facePlants.every(Boolean),
+    JSON.stringify({ reasons: reasonFits(feelQs), signs: signsSaid(linesOf(MOD.talk), feelQs), faces: facesDrawn(feelQs, linesOf(MOD.talk)), feelHabit, feelFirst, facePlants }));
+
+  // 2b. The face question by your reply alone (round one's lesson read of pass NY, its MF2: each of its ten replies had one answer, so a
+  //     child who never heard the friend was right on every question). Half the replies about something else are another friend's
+  //     asking reply, so each ask is happy after its own friend's news and sad after another's. Held at its read, rounded up to a whole
+  //     percent, alone at seeds 1 to 2,000 and in rounds as built: the remainder is the lesson's design, the two kind replies always happy
+  //     (a friend told they have a nice hat could fairly feel happy) and the bus, the pizza and a friend's news said as your own always sad.
+  //     Plants: the bank as pass NY's waves left it (no ask among the sad replies), caught by the bound; and another friend's kind reply
+  //     dealt as sad, caught by check 1's read of kind replies (feelOff), while the live asks pass it.
+  const FEEL_REPLY_BOUND = 0.77;
+  const feelReply = groups('p3-talk-feel', replyAlone);
+  const feelAs = (pickOff) => (rng) => { const [s, back] = L.pick(rng, L.TK_SAY_BACK); const about = rng() < 0.5; const reply = about ? back : pickOff(rng, s); const answer = about ? 'face:happy' : 'face:sad';
+    return { type: 'choice', story: `Your friend says, ${s} You say, ${reply}`, prompt: 'How may your friend feel?', choices: L.shuffle(rng, ['face:happy', 'face:sad']), answer, explain: about ? 'Happy.' : 'Sad.', visual: null, explainVisual: null, whyNot: {}, alsoRight: [] }; };
+  const otherNews = (s) => L.TK_SAY_BACK.filter(([x]) => x !== s);
+  const wavesFeel = feelAs((rng, s) => L.pick(rng, ['I see a bus.', 'I like pizza.', ...otherNews(s).map(([x]) => x)]));
+  const kindAsSad = feelAs((rng, s) => (rng() < 0.5 ? L.pick(rng, otherNews(s).map(([, back]) => back)) : L.pick(rng, ['I see a bus.', 'I like pizza.', ...otherNews(s).map(([x]) => x)])));
+  const wavesReply = planted('p3-talk-feel', wavesFeel, () => groups('p3-talk-feel', replyAlone, false));
+  const kindPlant = planted('p3-talk-feel', kindAsSad, () => feelOff(gen('p3-talk-feel')));
+  ok(`Talk about it's face question is not answered by your reply alone past its read: ${span(feelReply)} percent of the time, alone at seeds 1 to 2,000 and in rounds as built, held under ${pct(FEEL_REPLY_BOUND)} (round one's lesson read of pass NY, MF2; the two kind replies always happy by the lesson's design); planted, the bank as pass NY's waves left it (${span(wavesReply)}) caught, and another friend's kind reply dealt as sad caught (${kindPlant.kind} questions)`,
+    feelReply.every((v) => v <= FEEL_REPLY_BOUND) && Math.max(...feelReply) > FEEL_REPLY_BOUND - 0.01 && Math.max(...wavesReply) > FEEL_REPLY_BOUND && kindPlant.kind > 0, JSON.stringify({ feelReply, wavesReply, kindPlant }));
+
+  // 3. The three lessons' yes or no questions (pass NX's reads: Things that happen's answered Yes on four of its six rows, 68.4 percent,
+  //    and it and Things we do each asked about ability, "Can you play on the slide at the park?" and "At the park, can you go down the
+  //    slide?", which a child who cannot answers No truthfully). Each answers Yes between 40 and 60 percent of the time, alone and in
+  //    rounds, and none asks can or could you, or we. Plants: Things that happen's six rows as pass NX left them, and Things we do's rows
+  //    with its ability row put back, each caught.
+  const YN = ['p3-talk-about-yesno', 'p3-event-yesno', 'p4-act-yesno'];
+  const yesShare = (qs) => qs.filter((q) => q.answer === 'Yes').length / qs.length;
+  const ABILITY = /\b(?:can|could) (?:you|we)\b/i; const abilityOf = (qs) => [...new Set(qs.map((q) => q.prompt))].filter((p) => ABILITY.test(p));
+  const shares = YN.map((g) => [g, groups(g, yesShare)]); const asksAbility = YN.flatMap((g) => abilityOf(live(g)).map((p) => `${g}: ${p}`));
+  const NX_EVENT_YESNO = [['Do you sleep in your bed at bedtime?', 'Yes'], ['Is a birthday party when you sleep in your bed?', 'No'], ['Is a birthday party a happy day?', 'Yes'], ['Does someone read you a book at story time?', 'Yes'], ['Do you play on the slide at bedtime?', 'No'], ['Can you play on the slide at the park?', 'Yes']];
+  const dealt = (rows) => (rng) => { const [prompt, answer] = L.pick(rng, rows); const wrong = answer === 'Yes' ? 'No' : 'Yes'; return { type: 'choice', story: null, prompt, choices: L.shuffle(rng, ['Yes', 'No']), answer, explain: `${answer}.`, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why: 'is not the answer here.' } }, alsoRight: [] }; };
+  const nxEventShare = planted('p3-event-yesno', dealt(NX_EVENT_YESNO), () => groups('p3-event-yesno', yesShare, false));
+  const nxEventAbility = planted('p3-event-yesno', dealt(NX_EVENT_YESNO), () => abilityOf(gen('p3-event-yesno')).length > 0);
+  const actRows = [...new Map(live('p4-act-yesno').map((q) => [q.prompt, q.answer]))].map(([p, a]) => [p === 'Does the slide go with the park?' ? 'At the park, can you go down the slide?' : p, a]);
+  const nxActAbility = actRows.some(([p]) => p === 'At the park, can you go down the slide?') && planted('p4-act-yesno', dealt(actRows), () => abilityOf(gen('p4-act-yesno')).length > 0);
+  // And neither answer is right more than 56 percent of the time for a child who always taps it, the blind read's mark for two choices,
+  // in any group: Talk about it's yes or no, whose Nos are three to each Yes, asks half its questions in the lesson's words, "Is that
+  // about what your friend said?", since a triple dose, which never asks one question twice, leaned No when it asked only by the topic.
+  // Plant: the bank asking only by the topic, read over 1,500 rounds (a lean of a point is lost in 300's noise), caught.
+  const ynHabit = YN.map((g) => [g, groups(g, habit)]);
+  const keepAbout = L.GENERATORS['p3-talk-about-yesno'];
+  const topicOnly = planted('p3-talk-about-yesno', (rng) => { const q = keepAbout(rng); const r = mrTalkReply(q.story); return q.prompt === 'Is that about what your friend said?' && r ? { ...q, prompt: `Is that about ${r.topic}?` } : q; }, () => groups('p3-talk-about-yesno', habit, false, 1500));
+  ok(`the three lessons' yes or no questions answer Yes between 40 and 60 percent of the time, alone and in rounds (${shares.map(([g, v]) => `${g} ${span(v)}`).join(', ')}), neither answer right more than 56 percent of the time for a child who always taps it (${ynHabit.map(([g, v]) => `${g} ${span(v)}`).join(', ')}), and none asks about ability, can or could you or we (seeds 1 to 2,000 and rounds as built); planted, Things that happen's six rows as pass NX left them (${span(nxEventShare)} percent Yes, and its can you), Things we do's can you put back, and Talk about it's asked only by the topic (${span(topicOnly)}), each caught`,
+    shares.every(([, v]) => v.length === 5 && v.every((x) => x >= 0.4 && x <= 0.6)) && ynHabit.every(([, v]) => v.every((x) => x <= 0.56)) && asksAbility.length === 0 && !nxEventShare.every((x) => x >= 0.4 && x <= 0.6) && nxEventAbility && nxActAbility && Math.max(...topicOnly) > 0.56,
+    JSON.stringify({ shares, ynHabit, asksAbility, nxEventShare, nxEventAbility, nxActAbility, topicOnly }));
+
+  // 4. Echoes by sound (pass NX's reads: "Where do you sleep at bedtime?" showed the bed and "What falls on a snowy day?" the snow, and
+  //    the name kind cued bedtime with "sleep in your bed", so a child who tapped the choice heard inside the question was right 66.9 to
+  //    73.4 percent of the time, while the echo check above reads whole words and heard none). A question of the three lessons whose
+  //    answer alone sounds like a word heard in its setup or prompt (one word the start of the other, as bed and bedtime, rain and rainy,
+  //    snow and snowy; the same word is the check above's) is one SOUND_KEPT names, and each kept echo is met: an event tapped by its
+  //    name where the name is made from its picture's word (the lesson's own pairing, "Rain goes with a rainy day, and snow goes with a
+  //    snowy day."), and Things we do's bedtime, whose bed is the lesson's one thing for it; no other drawing stands for those. Plants:
+  //    Things that happen's what and name questions as pass NX asked them, and a kept echo for a question no bank asks, each caught.
+  const STOPW = new Set('the and you your can say what which one this that with for are was not has have does did may please its they them she her his him our who how when where will there here then than too very just some all out yes now get got put let use any from'.split(' '));
+  const wordsOf = (s) => String(s || '').toLowerCase().replace(/'s\b/g, '').replace(/[^a-z ]+/g, ' ').split(/\s+/).filter((w) => w.length >= 3 && !STOPW.has(w));
+  const nameOfC = (c) => String(c).replace(/^[a-z]+:/, '').replace(/#\d+$/, '').replace(/-/g, ' ');
+  const alike = (a, b) => a !== b && (a.startsWith(b) || b.startsWith(a));
+  const soundEcho = (q) => { if (!q || !Array.isArray(q.choices) || q.choices.length < 2 || q.choices.includes('Yes')) return null; const heard = wordsOf(`${q.story || ''} ${q.prompt || ''}`); const hits = (c) => wordsOf(nameOfC(c)).some((w) => heard.some((h) => alike(w, h)));
+    return hits(q.answer) && !q.choices.some((c) => c !== q.answer && hits(c)) ? `${q.prompt} -> ${nameOfC(q.answer)}` : null; };
+  const echoesOf = (qs) => [...new Set(qs.map(soundEcho).filter(Boolean))];
+  const SOUND_KEPT = { 'p3-event-tap': ['Tap the picture for bedtime. -> bed', 'Tap the picture for a rainy day. -> rain', 'Tap the picture for a snowy day. -> snow'], 'p4-act-use': ['Which one goes with bedtime? -> bed'] };
+  const soundRead = (kept, found) => ({ unkept: Object.entries(found).flatMap(([g, es]) => es.filter((e) => !(kept[g] || []).includes(e)).map((e) => `${g}: ${e}`)), unmet: Object.entries(kept).flatMap(([g, es]) => es.filter((e) => !(found[g] || []).includes(e)).map((e) => `${g}: ${e}`)) });
+  const soundFound = Object.fromEntries(BANKS.map((g) => [g, echoesOf(live(g))])); const sound = soundRead(SOUND_KEPT, soundFound);
+  const asked = (g, from) => { const keep = L.GENERATORS[g]; return (rng) => { const q = keep(rng); return from[q.prompt] ? { ...q, prompt: from[q.prompt] } : q; }; };
+  const NX_WHAT = { 'After you put on your pajamas, where do you sleep?': 'Where do you sleep at bedtime?', 'What falls from the clouds in drops of water?': 'What falls from the clouds on a rainy day?', 'What falls from the clouds, cold and white?': 'What falls on a snowy day?' };
+  const NX_NAME = { 'What is it called when you put on your pajamas and sleep?': 'What is it called when you put on your pajamas and sleep in your bed?', 'What is it called when drops of water fall from the clouds?': 'What kind of day is it when rain falls from the clouds?', 'What is it called when something cold and white falls from the clouds?': 'What kind of day is it when snow falls?' };
+  const soundPlants = [planted('p3-event-what', asked('p3-event-what', NX_WHAT), () => soundRead(SOUND_KEPT, { ...soundFound, 'p3-event-what': echoesOf(gen('p3-event-what')) }).unkept.length === 3),
+    planted('p3-event-name', asked('p3-event-name', NX_NAME), () => soundRead(SOUND_KEPT, { ...soundFound, 'p3-event-name': echoesOf(gen('p3-event-name')) }).unkept.length === 3),
+    soundRead({ ...SOUND_KEPT, 'p3-event-what': ['Where do you sleep at bedtime? -> bed'] }, soundFound).unmet.length === 1];
+  // The signs those questions ask by are the lesson's own: each question of the what and name banks is one of the test's own, each with
+  // the words of Things that happen's lines it asks by, and each is said on a line. Plant: the rain and snow line as pass NX said it,
+  // which said neither the drops of water nor the cold, white snow, caught.
+  const EVENT_CUES = { 'What has candles to blow out at a birthday party?': 'candles to blow out', 'After you put on your pajamas, where do you sleep?': 'put on your pajamas', 'What falls from the clouds in drops of water?': 'drops of water fall from the clouds',
+    'What falls from the clouds, cold and white?': 'snow falls from the clouds, cold and white', 'What does someone read to you at story time?': 'someone reads you a book', 'What can you play on at the park?': 'play on the slide',
+    'What is it called when someone blows out the candles on a cake?': 'cake that has candles to blow out', 'What is it called when you put on your pajamas and sleep?': 'put on your pajamas and sleep', 'What is it called when drops of water fall from the clouds?': 'drops of water fall from the clouds',
+    'What is it called when something cold and white falls from the clouds?': 'snow falls from the clouds, cold and white', 'What is it called when someone reads you a book?': 'someone reads you a book' };
+  const cueRead = (lines) => { const text = lines.join(' '); return { unlisted: [...new Set(['p3-event-what', 'p3-event-name'].flatMap((g) => live(g).map((q) => q.prompt)))].filter((p) => !EVENT_CUES[p]), unsaid: [...new Set(Object.values(EVENT_CUES))].filter((c) => !text.includes(c)) }; };
+  const cues = cueRead(linesOf(MOD.happen));
+  const nxRainLines = linesOf(MOD.happen).map((l) => (/^On a rainy day, drops of water/.test(l) ? 'On a rainy day, rain falls from the clouds. On a snowy day, snow falls. Rain goes with a rainy day, and snow goes with a snowy day.' : l));
+  const cuePlant = nxRainLines.join(' ') !== linesOf(MOD.happen).join(' ') && cueRead(nxRainLines).unsaid.length === 2;
+  ok(`no question of the three lessons is answered by a choice that sounds like a word it says (bed and bedtime, rain and rainy, snow and snowy) but the ${Object.values(SOUND_KEPT).flat().length} SOUND_KEPT names, each met (an event tapped by its name, made from its picture's word, and Things we do's bedtime), and each sign Things that happen's what and name questions ask by is said on its lines; planted, those questions as pass NX asked them, three echoes in each bank, a kept echo no bank asks, and the rain and snow line as pass NX said it, each caught`,
+    sound.unkept.length === 0 && sound.unmet.length === 0 && soundPlants.every(Boolean) && cues.unlisted.length === 0 && cues.unsaid.length === 0 && cuePlant, JSON.stringify({ sound, soundPlants, cues, cuePlant }));
+
+  // 5. Things that happen's birthday party (pass NX's reads: "A birthday party is a happy day" stood against pre-K 4's How do friends
+  //    feel?, which teaches that friends can feel different about the same thing). No line, paragraph, question, explanation or reason
+  //    of the three lessons says a birthday party is a happy day, and the lesson's line says it can be one. Plants: the line and the yes
+  //    or no rows as pass NX said them, each caught.
+  const HAPPY_DAY = /\b(?:is|party) a happy day\b/i;
+  const happenText = (lines) => [...lines, ...MOD.happen.lesson.paragraphs, MOD.happen.lesson.keyIdea, MOD.happen.lesson.example.caption].join(' ');
+  const happyDaySaid = HAPPY_DAY.test(happenText(linesOf(MOD.happen))) || BANKS.some((g) => live(g).some((q) => HAPPY_DAY.test(said(q))));
+  const canBe = linesOf(MOD.happen).some((l) => l.startsWith('A birthday party can be a happy day, '));
+  const nxHappenLines = linesOf(MOD.happen).map((l) => l.replace('A birthday party can be a happy day, ', 'A birthday party is a happy day, '));
+  const happyPlants = [nxHappenLines.join(' ') !== linesOf(MOD.happen).join(' ') && HAPPY_DAY.test(happenText(nxHappenLines)), planted('p3-event-yesno', dealt(NX_EVENT_YESNO), () => gen('p3-event-yesno', 400).some((q) => HAPPY_DAY.test(said(q))))];
+  ok('Things that happen says a birthday party can be a happy day, and no line, paragraph, question, explanation or reason of the three lessons says it is one; planted, the line and the yes or no row as pass NX said them, each caught',
+    !happyDaySaid && canBe && happyPlants.every(Boolean), JSON.stringify({ happyDaySaid, canBe, happyPlants }));
+
+  // 6. The sleepy giant's time (pass NX's reads: Things we do said lunchtime like a big, sleepy giant, in a lesson that sets lunchtime
+  //    against bedtime's sleep). In every say-along of every lesson the big, sleepy giant says no time of the day but bedtime. Plant:
+  //    Things we do's lunchtime line as pass NX said it, caught.
+  const giantTimes = (mods) => mods.flatMap((m) => ((m.lesson && m.lesson.script) || []).flatMap((l, i) => L.sayAlongParts(l.say).filter((p) => p.role === 'call' && p.voice && p.voice.style === 'giant' && /time$/.test(p.word) && p.word !== 'bedtime').map((p) => `${m.id} line ${i}: ${p.word}`)));
+  const giantLive = giantTimes(L.MODULES);
+  const lunchNow = L.sayAlong('lunchtime', ['slow', 'mouse', 'silly', 'fast', 'stretch']); const lunchNx = L.sayAlong('lunchtime', ['giant', 'mouse', 'silly', 'fast', 'stretch']);
+  const nxAct = { ...MOD.act, lesson: { ...MOD.act.lesson, script: MOD.act.lesson.script.map((l) => ({ ...l, say: l.say.replace(lunchNow, lunchNx) })) } };
+  const giantPlant = MOD.act.lesson.script.some((l) => l.say.includes(lunchNow)) && giantTimes([nxAct]).length === 1;
+  ok('the big, sleepy giant of a say-along says no time of the day but bedtime, in any lesson; planted, Things we do\'s lunchtime as pass NX said it, caught', giantLive.length === 0 && giantPlant, JSON.stringify({ giantLive, giantPlant }));
+
+  // 7. Wrong choices a question always offers (pass NX's reads: Things we do's bus always beside Kick and Cut and its park beside Cut and
+  //    Sleep, which the lesson brief's item 13 asks to be recorded). Each question of the three lessons with three choices or more whose
+  //    wrong choices never change over seeds 1 to 2,000 is one FIXED_KEPT records, its bank's comment saying why (the fair lists leave
+  //    no other of the lesson's words), each fixed choice right elsewhere in its bank, so a child cannot avoid it by habit; and each
+  //    record is met. Plants: the record without the park's pictures, and a record for a question whose wrong choices change, each caught.
+  const FIXED_KEPT = { 'p4-act-word What do you do with this? bus': ['Cut', 'Kick'], 'p4-act-when At the park, what can you do?': ['Cut', 'Sleep'], 'p4-act-use Which one goes with the park?': ['icon:bed', 'icon:scissors'] };
+  const fixed = (() => { const out = {}; const rightIn = {}; for (const g of BANKS) { const by = new Map(); for (const q of live(g)) { if (!Array.isArray(q.choices) || q.choices.length < 3) continue; (rightIn[g] = rightIn[g] || new Set()).add(q.answer);
+    const k = [g, q.story, q.prompt, q.visual && q.visual.kind === 'icon' ? q.visual.name : null].filter(Boolean).join(' '); if (!by.has(k)) by.set(k, new Set()); q.choices.filter((c) => c !== q.answer).forEach((c) => by.get(k).add(c)); }
+    for (const [k, s] of by) if (s.size <= 2) out[k] = [...s].sort(); } return { out, rightIn }; })();
+  const fixedRead = (kept) => ({ unkept: Object.entries(fixed.out).filter(([k, s]) => JSON.stringify(kept[k]) !== JSON.stringify(s)).map(([k]) => k), unmet: Object.keys(kept).filter((k) => !fixed.out[k]),
+    avoidable: Object.entries(fixed.out).flatMap(([k, s]) => s.filter((c) => !fixed.rightIn[k.split(' ')[0]].has(c)).map((c) => `${k}: ${c}`)) });
+  const fixedLive = fixedRead(FIXED_KEPT); const { 'p4-act-use Which one goes with the park?': gone, ...lessOne } = FIXED_KEPT;
+  const fixedPlants = [!!gone && fixedRead(lessOne).unkept.length === 1, fixedRead({ ...FIXED_KEPT, 'p4-act-word What do you do with this? cup': ['Cut', 'Kick'] }).unmet.length === 1];
+  ok(`every question of the three lessons that always offers the same wrong choices is one of the ${Object.keys(FIXED_KEPT).length} FIXED_KEPT records (the bus beside Kick and Cut, the park beside Cut and Sleep, and its pictures beside the scissors and the bed), each fixed choice right elsewhere in its bank and each record met; planted, the record without the park's pictures and one for a question whose wrong choices change, each caught`,
+    fixedLive.unkept.length === 0 && fixedLive.unmet.length === 0 && fixedLive.avoidable.length === 0 && fixedPlants.every(Boolean), JSON.stringify({ fixedLive, fixedPlants }));
+
+  // 8. The fifteen banks worked out again by the test's own tables (PREK_DERIVE, copied from the lessons' lines, never read from
+  //    logic.mjs), at seeds 1 to 400: each question derives to its own answer, so a row, a reply or a cue this pass changed says the same
+  //    in the lessons' banks and in the tables. The main loop above reads every pre-K bank so; this reads these three lessons' alone, a
+  //    quick hold for the rows this pass wrote. Plant: each bank's first question keyed to a wrong choice, caught.
+  const notDerived = BANKS.flatMap((g) => live(g).slice(0, 400).filter((q) => PREK_DERIVE[g](q) !== q.answer).map((q) => `${g}: ${q.prompt} -> ${q.answer} (${PREK_DERIVE[g](q)})`));
+  const keyedWrong = BANKS.filter((g) => { const q = live(g)[0]; const c = q.choices.find((x) => x !== q.answer); return PREK_DERIVE[g]({ ...q, answer: c }) === c; });
+  ok(`the three lessons' ${BANKS.length} banks are worked out again by the test's own tables, every question at seeds 1 to 400 to its own answer; planted, each bank's first question keyed to a wrong choice, each caught`,
+    BANKS.length === 15 && BANKS.every((g) => typeof PREK_DERIVE[g] === 'function') && notDerived.length === 0 && keyedWrong.length === 0, notDerived.slice(0, 4).join(' | ')); }
 { // More Info's smart words (pass MH, Mikey: "Maybe the explanation text can be "smart text" and show that it knows which wrong
   // answer was selected.  In a future visit to the module it can slightly change to "which you've chosen once before""). The words
   // follow what was tapped now and how often the same wrong answer to the same question was tapped on earlier visits.
@@ -8754,6 +9652,203 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     const missed = planted.filter(([, src, key]) => src === ui || reads(src)[key]).map(([name]) => name);
     ok(`each of the thirteen reads above fails on a copy of the screen code with its guard taken out (${planted.length} plants, each one changing the code)`, missed.length === 0 && planted.length === 15 && Object.keys(as).length === 13, missed.join('; '));
   }
+  // The play clock by age (pass NY). Mikey, under his answer to Q129: "Speaking of timing, I think we might need to reduce some of the 5
+  // minute timers on coloring pages and games.  I can complete a page quickly and the timer stays on for quite a long time afterwards so I
+  // think they should all be shortened to whatever you recommend." The lead's recommendation, told to him: 180, 150, 120 and 90 seconds
+  // (3, 2.5, 2 and 1.5 minutes) for pre-K 3 to grade 2, grades 3 to 5, 6 to 8 and 9 up, by the student's highest grade, and the rests
+  // as they were, 15, 30, 45 and 60 minutes. Three reads, each by one judge that reads the live code and every plant beside it:
+  //   - the numbers: playSecondsFor and restMinutesFor at both ends of every band (PK3 and 2, 3 and 5, 6 and 8, 9, 12 and C), each
+  //     written here as a number, so every band's edge has a case on each side; and over every grade in order, each has a time, the play
+  //     never rises and the rest never falls with age. Plants: pass AP's ladder (300, 240, 180 and 150 seconds), 300 for the youngest
+  //     alone, a ladder that rises with age, a rise inside a band at grade 4 (which no pinned grade sees), a rest that falls at grade 4,
+  //     the youngest's rest cut to 10 minutes and a grade with no time, each giving exactly its faults;
+  //   - where a picture's or a game's clock starts (playSecondsAtOpen): the time it had left, never past today's play time, so the
+  //     fresh 300 seconds pass AP's clock saved on every picture that ran out open as 180, and no time saved, or a time that is no
+  //     number, opens whole. Plants: a start that keeps any saved time (pass AP's way), one that forgets the time left, and one that
+  //     reads a broken time as a time;
+  //   - the screens, read from src/ui.jsx with its comments set aside: the clock's first value is playSecondsFor's, no constant copies
+  //     it (COLOR_BREAK_SECONDS, the 300 that stood there until pass NY), the clock opens through playSecondsAtOpen alone, and both pads'
+  //     bars take their total from playSecondsFor. Plants: the constant put back, the old first value, a number as the first value, the
+  //     old start, the old start put back below the new one (undo-alone's survivor in pass NY) and a total typed in, each tripping
+  //     exactly its read;
+  //   - a page's colors (Mikey's answer to Q131, kept and bounded since round one's code read of pass NY, its M1 and M2): every writer
+  //     of a picture's art beside its clock (the time-up, the five-second save and leaving early) stores keptArt(coloring, colorArt.current),
+  //     a game's none and a page's own thinned, and no art is written raw; the pad takes each point through artPoint, keeps a stroke's
+  //     point through artStepKept, and keeps a point held back as the stroke's end. Plants: each writer as round one's copy had it (the
+  //     time-up's page art unthinned, the five-second save's and leaving's raw art, which stored the last page's colors under a game),
+  //     pass AP's blank time-up, a time-up that keeps a game's stale colors, a raw point, every move kept and the held end dropped, each
+  //     tripping exactly its read; and the logic's four functions by cases of their own, below.
+  // The browser's clock is not read here: tests/e2e/game-intro.mjs reads data-play-left against its own start, never a number of seconds.
+  { const BANDS = [['PK3', 180, 15], ['2', 180, 15], ['3', 150, 30], ['5', 150, 30], ['6', 120, 45], ['8', 120, 45], ['9', 90, 60], ['12', 90, 60], ['C', 90, 60]];
+    const isTime = (v) => Number.isFinite(v) && v > 0;
+    const clockFaults = (play, rest) => { const out = [];
+      for (const [g, secs, mins] of BANDS) { if (play(g) !== secs) out.push(`play at ${g}: ${play(g)}, not ${secs}`); if (rest(g) !== mins) out.push(`rest at ${g}: ${rest(g)}, not ${mins}`); }
+      L.GRADES.forEach((g, i) => { if (!isTime(play(g)) || !isTime(rest(g))) { out.push(`no time at ${g}`); return; } const before = L.GRADES[i - 1];
+        if (i && isTime(play(before)) && play(g) > play(before)) out.push(`play rises at ${g}`);
+        if (i && isTime(rest(before)) && rest(g) < rest(before)) out.push(`rest falls at ${g}`); });
+      return out; };
+    // A ladder by the app's four bands, for the plants.
+    const band = (a, b, c, d) => (g) => { const at = L.GRADES.indexOf(g); return at <= L.GRADES.indexOf('2') ? a : at <= L.GRADES.indexOf('5') ? b : at <= L.GRADES.indexOf('8') ? c : d; };
+    const CLOCK_PLANTS = [
+      ["pass AP's ladder, 300, 240, 180 and 150 seconds", band(300, 240, 180, 150), L.restMinutesFor, 'play at PK3: 300, not 180; play at 2: 300, not 180; play at 3: 240, not 150; play at 5: 240, not 150; play at 6: 180, not 120; play at 8: 180, not 120; play at 9: 150, not 90; play at 12: 150, not 90; play at C: 150, not 90'],
+      ['300 seconds for the youngest alone', band(300, 150, 120, 90), L.restMinutesFor, 'play at PK3: 300, not 180; play at 2: 300, not 180'],
+      ['a ladder that rises with age, 90, 120, 150 and 180 seconds', band(90, 120, 150, 180), L.restMinutesFor, 'play at PK3: 90, not 180; play at 2: 90, not 180; play at 3: 120, not 150; play at 5: 120, not 150; play at 6: 150, not 120; play at 8: 150, not 120; play at 9: 180, not 90; play at 12: 180, not 90; play at C: 180, not 90; play rises at 3; play rises at 6; play rises at 9'],
+      ['a rise inside a band, 160 seconds at grade 4', (g) => (g === '4' ? 160 : L.playSecondsFor(g)), L.restMinutesFor, 'play rises at 4'],
+      ['a rest that falls, 20 minutes at grade 4', L.playSecondsFor, (g) => (g === '4' ? 20 : L.restMinutesFor(g)), 'rest falls at 4'],
+      ["the youngest's rest cut to 10 minutes", L.playSecondsFor, band(10, 30, 45, 60), 'rest at PK3: 10, not 15; rest at 2: 10, not 15'],
+      ['a grade with no time, grade 7', (g) => (g === '7' ? undefined : L.playSecondsFor(g)), L.restMinutesFor, 'no time at 7'],
+    ];
+    const liveClock = clockFaults(L.playSecondsFor, L.restMinutesFor);
+    const wrongClock = CLOCK_PLANTS.filter(([, play, rest, want]) => clockFaults(play, rest).join('; ') !== want).map(([what, play, rest]) => `${what}: ${clockFaults(play, rest).join('; ') || 'nothing'}`);
+    ok(`the play clock by age: a coloring page or a game plays 180 seconds from pre-K 3 to grade 2, 150 for grades 3 to 5, 120 for 6 to 8 and 90 from grade 9 up, then rests 15, 30, 45 or 60 minutes, at both ends of every band, and over every grade each has a time, the play never rises and the rest never falls with age (pass NY, Mikey's note under his answer to Q129; ${CLOCK_PLANTS.length} plants each giving exactly its faults, pass AP's ladder and 300 for the youngest among them)`,
+      liveClock.length === 0 && wrongClock.length === 0, JSON.stringify({ liveClock, wrongClock }));
+    // Where the clock starts as a picture or a game opens, each case written as the time saved, the student's highest grade and the time
+    // the clock must start at.
+    const START_CASES = [[300, 'PK3', 180, "the fresh 300 seconds pass AP's clock saved on a picture that ran out"], [250, '2', 180, 'more time left than the play time'],
+      [100, 'PK3', 100, 'time left under the play time'], [170, '9', 90, "a younger band's time left, for a student now in grade 9"], [undefined, '3', 150, 'no time saved'],
+      [null, '6', 120, 'a time saved as null'], [NaN, 'C', 90, 'a time that is no number'], [0, '4', 150, 'a time of 0 saved, which would end the clock with nothing played'],
+      [-5, 'K', 180, 'a time below 0 saved']];
+    const startFaults = (start) => (typeof start !== 'function' ? ['no such function in the logic'] : START_CASES.filter(([saved, g, want]) => !Object.is(start(saved, g), want)).map(([saved, g, want, what]) => `${what}: ${start(saved, g)}, not ${want}`));
+    const START_PLANTS = [
+      ["a start that keeps any saved time, pass AP's way", (saved, g) => (typeof saved === 'number' ? saved : L.playSecondsFor(g)), "the fresh 300 seconds pass AP's clock saved on a picture that ran out: 300, not 180; more time left than the play time: 250, not 180; a younger band's time left, for a student now in grade 9: 170, not 90; a time that is no number: NaN, not 90; a time of 0 saved, which would end the clock with nothing played: 0, not 150; a time below 0 saved: -5, not 180"],
+      ['a start that forgets the time left', (saved, g) => L.playSecondsFor(g), 'time left under the play time: 180, not 100'],
+      ['a start that reads a broken time as a time', (saved, g) => (typeof saved === 'number' ? Math.min(saved, L.playSecondsFor(g)) : L.playSecondsFor(g)), 'a time that is no number: NaN, not 90; a time of 0 saved, which would end the clock with nothing played: 0, not 150; a time below 0 saved: -5, not 180'],
+      ["the start before round one's code read (pass NY), which opened a time of 0 at 0", (saved, g) => (Number.isFinite(saved) ? Math.min(saved, L.playSecondsFor(g)) : L.playSecondsFor(g)), 'a time of 0 saved, which would end the clock with nothing played: 0, not 150; a time below 0 saved: -5, not 180'],
+    ];
+    const liveStart = startFaults(L.playSecondsAtOpen);
+    const wrongStart = START_PLANTS.filter(([, start, want]) => startFaults(start).join('; ') !== want).map(([what, start]) => `${what}: ${startFaults(start).join('; ') || 'nothing'}`);
+    ok(`a picture's or a game's clock opens with the time it had left, never past today's play time, so the fresh 300 seconds pass AP's clock saved open as 180, and no time saved, or a time that is no number or not above 0, opens whole (playSecondsAtOpen, pass NY; ${START_PLANTS.length} plants each giving exactly its faults)`,
+      liveStart.length === 0 && wrongStart.length === 0, JSON.stringify({ liveStart, wrongStart }));
+    // The screens read the logic for every number of the clock. The code is read with its comments set aside (every block comment, a JSX
+    // {/* */} among them, and what follows // on a line unless a colon comes just before it, as in a web address), so a comment that
+    // names the old constant is no copy; a // inside a string sets the rest of its line aside too, which can only pass a name as missing.
+    const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    const uncommented = (src) => src.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' ')).replace(/(^|[^:])\/\/[^\n]*/g, '$1');
+    // Where the clock's effect starts the clock: from its play time's line to the interval that counts it down. The start is read there
+    // as the one setColorLeft, so a second start after it (the old one put back below the new, undo-alone's survivor) is caught too.
+    const startOf = (c) => { const a = c.indexOf('const playSecs = playSecondsFor(topGrade);'); const b = a < 0 ? -1 : c.indexOf('const id = setInterval(() => setColorLeft((n) => {', a); return b < 0 ? '' : c.slice(a, b); };
+    // Since round one's screen read of pass NY (its S6) the clock's first value is set in a layout effect keyed on the screen and the
+    // picture, before the pad's first paint, where it had been set in the clock's own effect, after the paint, so the bar showed the last
+    // picture's time for a second: the opening call is read there, the one setColorLeft of that effect, beside the clock's own grade (its
+    // topGrade, the courses' top grade, as the clock's effect reads it), and the clock's effect sets none before its interval.
+    const layoutOpenOf = (c) => { const m = /React\.useLayoutEffect\(\(\) => \{\s*if \(screen !== 'coloring' \|\| !coloring \|\| !record\) return;([\s\S]*?)\}, \[screen, coloring\]\);/.exec(c); return m ? m[1] : ''; };
+    const clockReads = (src) => { const c = uncommented(src); const totals = [...c.matchAll(/secondsLeft=\{colorLeft\} total=\{([^}]*)\}/g)].map((m) => m[1]); const start = startOf(c);
+      return { first: /const \[colorLeft, setColorLeft\] = useState\(\(\) => playSecondsFor\(GRADES\[0\]\)\);/.test(c), noCopy: !/\bCOLOR_BREAK_SECONDS\b/.test(c),
+        opens: (layoutOpenOf(c).match(/setColorLeft\(/g) || []).length === 1 && /setColorLeft\(playSecondsAtOpen\(\(colorState\[coloring\] \|\| \{\}\)\.left, topGrade\)\);/.test(layoutOpenOf(c)) && !/setColorLeft\(/.test(start)
+          && layoutOpenOf(c).includes("const topGrade = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');"),
+        totals: totals.length === 2 && totals.every((t) => /^playSecondsFor\(/.test(t) && !/\b\d{2,}\b/.test(t)),
+        // Since Mikey's word at 10:58 AM in pass NY, a page whose time runs out keeps its colors through its rest; a game keeps none.
+        // Since round one's code read of pass NY every writer of a picture's art beside its clock (left:, with the time-up's restUntil:)
+        // stores keptArt(coloring, colorArt.current), three in all, and no art is written raw anywhere in the screens.
+        writers: writersOf(c).length === 3 && writersOf(c).every((w) => w === 'keptArt(coloring, colorArt.current)') && !/\bart: colorArt\.current\b/.test(c),
+        // The pad's point reader takes each point to one decimal through artPoint; a move keeps its point through artStepKept, holding
+        // one back; and a stroke's end keeps the point held back.
+        point: /const at = \(e\) => \{ const r = svgRef\.current\.getBoundingClientRect\(\); return artPoint\(/.test(c),
+        step: /const p = at\(e\); if \(!artStepKept\(keptPt\.current, p\)\) \{ heldPt\.current = p; return; \}/.test(c),
+        held: /const stop = \(\) => \{ const held = drawing\.current \? heldPt\.current : null;[^\n]*\n\s*if \(held\) setStrokes\(/.test(c) }; };
+    // Each art a writer stores beside a picture's clock: the value after art: in an object that sets left: (and, at the time-up, restUntil:).
+    const writersOf = (c) => [...c.matchAll(/\bleft: \w+, (?:restUntil: [^,]+, )?art: ([^}\n]*?) \}/g)].map((m) => m[1]);
+    const tripped = (src) => Object.entries(clockReads(src)).filter(([, v]) => !v).map(([k]) => k).join();
+    const constantBack = (src) => src.replace("// A picture's play time and its rest afterwards", "const COLOR_BREAK_SECONDS = 300;\n// A picture's play time and its rest afterwards");
+    const UI_PLANTS = [
+      ['the constant put back where it stood, read by nothing', constantBack(ui), 'noCopy'],
+      ['the old first value, the constant of 300', constantBack(ui).replace('useState(() => playSecondsFor(GRADES[0]))', 'useState(COLOR_BREAK_SECONDS)'), 'first,noCopy'],
+      ['a number as the first value', ui.replace('useState(() => playSecondsFor(GRADES[0]))', 'useState(180)'), 'first'],
+      ['the old start, which kept any saved time', ui.replace('setColorLeft(playSecondsAtOpen((colorState[coloring] || {}).left, topGrade));', "const start = (colorState[coloring] || {}).left;\n    setColorLeft(typeof start === 'number' ? start : playSecs);"), 'opens'],
+      ['the old start put back below the new one, overriding it', ui.replace('setColorLeft(playSecondsAtOpen((colorState[coloring] || {}).left, topGrade));', "setColorLeft(playSecondsAtOpen((colorState[coloring] || {}).left, topGrade));\n    const start = (colorState[coloring] || {}).left; setColorLeft(typeof start === 'number' ? start : playSecondsFor(topGrade));"), 'opens'],
+      // The opening as round one's copy had it, in the clock's own effect after the pad's first paint (round one's screen read, its S6).
+      ["the clock's first value set after the first paint, as round one's copy had it", ui.replace(/\n  React\.useLayoutEffect\(\(\) => \{\n    if \(screen !== 'coloring' \|\| !coloring \|\| !record\) return;\n[^\n]*\n    setColorLeft\(playSecondsAtOpen\(\(colorState\[coloring\] \|\| \{\}\)\.left, topGrade\)\);\n  \}, \[screen, coloring\]\);/, '').replace('const playSecs = playSecondsFor(topGrade); const restMins = restMinutesFor(topGrade);\n    const id = setInterval(', 'const playSecs = playSecondsFor(topGrade); const restMins = restMinutesFor(topGrade);\n    setColorLeft(playSecondsAtOpen((colorState[coloring] || {}).left, topGrade));\n    const id = setInterval('), 'opens'],
+      // The opening's grade taken from no course, a pre-K 3 time for every child (its topGrade is the first of the two in the screens).
+      ["the clock's first value at pre-K 3's time, whatever the child's courses", ui.replace("const topGrade = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');", "const topGrade = 'PK3';"), 'opens'],
+      ['a total typed in on the coloring pad', ui.replace(/(<ColoringPad [^\n]*?secondsLeft=\{colorLeft\} total=\{)[^}]*\}/, '$1180}'), 'totals'],
+      ['the time-up of pass AP to pass NX, a page coming back blank after its rest', ui.replace('restUntil: Date.now() + restMins * 60000, art: keptArt(coloring, colorArt.current) } };', 'restUntil: Date.now() + restMins * 60000, art: null } };'), 'writers'],
+      ['a time-up that keeps a game\'s stale colors too', ui.replace('restUntil: Date.now() + restMins * 60000, art: keptArt(coloring, colorArt.current) } };', 'restUntil: Date.now() + restMins * 60000, art: colorArt.current } };'), 'writers'],
+      // Each writer as round one's copy (pass NY's waves) had it: the time-up kept a page's art unthinned, and the five-second save and
+      // leaving early wrote the raw art, the last page colored, under a game's key too.
+      ["the time-up as round one's copy had it, a page's art unthinned", ui.replace('restUntil: Date.now() + restMins * 60000, art: keptArt(coloring, colorArt.current) } };', "restUntil: Date.now() + restMins * 60000, art: coloring.startsWith('play:') ? null : colorArt.current } };"), 'writers'],
+      ["the five-second save as round one's copy had it", ui.replace('left: next, art: keptArt(coloring, colorArt.current) } };', 'left: next, art: colorArt.current } };'), 'writers'],
+      ["leaving early as round one's copy had it", ui.replace('left: colorLeft, art: keptArt(coloring, colorArt.current) } };', 'left: colorLeft, art: colorArt.current } };'), 'writers'],
+      ['a point read with all its decimals', ui.replace('return artPoint(view.x + ((e.clientX - r.left) / r.width) * span, view.y + ((e.clientY - r.top) / r.height) * spanY); };', 'return [view.x + ((e.clientX - r.left) / r.width) * span, view.y + ((e.clientY - r.top) / r.height) * spanY]; };'), 'point'],
+      ['every move kept, however close', ui.replace('const p = at(e); if (!artStepKept(keptPt.current, p)) { heldPt.current = p; return; }', 'const p = at(e);'), 'step'],
+      ['a stroke ending short of where it was drawn, the held point dropped', ui.replace('if (held) setStrokes(', 'if (false) setStrokes('), 'held'],
+    ];
+    const liveUi = tripped(ui);
+    const wrongUi = UI_PLANTS.filter(([, src, want]) => src === ui || tripped(src) !== want).map(([what, src]) => `${what}: ${src === ui ? 'the plant changed nothing' : tripped(src) || 'nothing tripped'}`);
+    ok(`the screens keep no copy of the play time: the clock's first value is playSecondsFor's, no COLOR_BREAK_SECONDS stands in the code, the clock opens through playSecondsAtOpen, its one start, and both pads' bars take their total from playSecondsFor; a page whose time runs out keeps its colors through its rest, a game none, every writer of a picture's art (the time-up, the five-second save, leaving early) storing keptArt's, none raw; and the pad takes each point to one decimal, keeps a stroke's point only past the step and keeps a point held back as its end (src/ui.jsx read with its comments set aside; pass NY, and round one's code read, M1 and M2; ${UI_PLANTS.length} plants each tripping exactly its read, each writer as round one's copy had it among them)`,
+      liveUi === '' && wrongUi.length === 0, JSON.stringify({ liveUi, wrongUi }));
+    // A page's colors kept small enough to store (round one's code read of pass NY, its M2), by cases of the test's own run through one
+    // judge, artFaults, for the logic and for every plant. artPoint takes a point to one decimal of the picture's 100 units; artStepKept
+    // keeps a point at ART_STEP (0.5) from the last one kept and not under it, a case on each side; thinArt hands art under a budget back
+    // as it is, and thins art over it until it is under, every fill and every stroke kept, each stroke's first and last points and its
+    // points in order, a stroke of one or two points as it was, and art of two-point strokes alone over the budget kept whole; and
+    // keptArt stores a game's colors as none and a page's thinned under ART_BUDGET, a three-minute scribble's 10,800 points among them.
+    // And since round two's code read of pass NY (its M1) a page keeps its lines where they were drawn: three full visits of the heaviest
+    // scribble it measured (30 strokes a visit, round and round at 80 units a second), each stored through keptArt and opened again,
+    // leave the first visit's lines within 10.5 units of where they were drawn (10.3 by its measure; the every-other-point thinning of
+    // round one's fix left them 36.6 away). ART_STEP, ART_BUDGET, ART_BEND and ART_BEND_MAX are the numbers measured beside them in
+    // logic.mjs. Plants, each giving exactly its faults: a point with two decimals, a step of 0.4, a thinning that drops a stroke's end,
+    // one that drops a fill, one that thins art under the budget, one that tries one tolerance and stops, the every-other-point thinning
+    // of round one's fix, a keptArt that keeps a game's colors, and one that stores a page unthinned.
+    const ART = { artPoint: L.artPoint, artStepKept: L.artStepKept, thinArt: L.thinArt, keptArt: L.keptArt };
+    const pts = (n, y = 10) => Array.from({ length: n }, (_, i) => [Math.round((10 + i * 0.7) * 10) / 10, Math.round((y + 3 * Math.sin(i / 5)) * 10) / 10]);
+    const stroke = (n, colour = '#D62828', y) => ({ colour, width: 2.2, points: pts(n, y) });
+    const BIG = { fills: { 0: '#D62828', bg: '#1E88E5' }, strokes: [stroke(300), stroke(301, '#43A047', 40), stroke(2, '#FDD835'), stroke(1, 'paper'), stroke(57, '#8E24AA', 70)] };
+    const SMALL = { fills: { 2: '#FDD835' }, strokes: [stroke(4)] };
+    const ENDS = { fills: {}, strokes: Array.from({ length: 40 }, (_, i) => stroke(2, '#D62828', i)) };
+    const scribble = { fills: {}, strokes: Array.from({ length: 60 }, (_, k) => ({ colour: '#D62828', width: 2.2, points: Array.from({ length: 180 }, (_, i) => L.artPoint(20 + ((k * 180 + i) * 0.67) % 60, 25 + (((k * 180 + i) * 0.67) / 120) % 50)) })) };
+    const json = (a) => JSON.stringify(a).length;
+    // Three visits of round two's heaviest scribble, each visit's 30 strokes drawn through the live point and step, the page stored by the
+    // writer under test and opened again with the next visit's strokes added; how far the first visit's drawn points lie from its stored
+    // lines, in the picture's 100 units.
+    const gap = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1]; const s = dx || dy ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy))) : 0; return Math.hypot(p[0] - a[0] - s * dx, p[1] - a[1] - s * dy); };
+    const visit = (x0, y0) => { let ang = 0; return Array.from({ length: 30 }, (_, k) => { const r = 4 + (k % 5) * 4; const points = []; let last = null;
+      for (let i = 0; i < 360; i++) { ang += 80 / 60 / r; const q = L.artPoint(x0 + 20 + r * Math.cos(ang), y0 + 20 + r * Math.sin(ang)); if (L.artStepKept(last, q)) { points.push(q); last = q; } }
+      return { colour: '#1E88E5', width: 2.2, points }; }); };
+    const FIRST = visit(5, 5);
+    const movedAfterThree = (keep) => { let stored = keep('star', { fills: {}, strokes: FIRST });
+      for (let v = 1; v < 3; v++) stored = keep('star', { ...stored, strokes: [...stored.strokes, ...visit(50, 5 + v)] });
+      return Math.max(...FIRST.map((st, i) => { const kept = stored.strokes[i].points; return Math.max(...st.points.map((q) => { let m = Infinity; for (let j = 1; j < kept.length; j++) m = Math.min(m, gap(q, kept[j - 1], kept[j])); return m; })); })); };
+    const artFaults = (f) => { const out = []; const fault = (name, cond) => { try { if (!cond()) out.push(name); } catch (e) { out.push(`${name} (throws)`); } };
+      fault('a point to one decimal', () => JSON.stringify(f.artPoint(12.3456, 67.8912)) === '[12.3,67.9]' && JSON.stringify(f.artPoint(33.94522144522144, 0.05)) === '[33.9,0.1]');
+      fault('a point kept at the step and not under it', () => f.artStepKept(null, [5, 5]) && f.artStepKept([0, 0], [0.3, 0.4]) && !f.artStepKept([0, 0], [0.3, 0.39]) && !f.artStepKept([10, 10], [10, 10]));
+      fault('art under its budget handed back as it is', () => f.thinArt(SMALL, 400) === SMALL && f.thinArt(BIG, json(BIG)) === BIG);
+      const thin = f.thinArt(BIG, 2000);
+      fault('art over its budget thinned under it', () => json(thin) <= 2000 && json(f.thinArt(BIG, 600)) <= 600);
+      fault('every fill kept', () => JSON.stringify(thin.fills) === JSON.stringify(BIG.fills));
+      fault("every stroke kept, its ends and its points in order", () => thin.strokes.length === BIG.strokes.length && thin.strokes.every((st, i) => { const was = BIG.strokes[i]; const at = (p) => was.points.findIndex((q) => q === p);
+        return st.colour === was.colour && st.width === was.width && st.points[0] === was.points[0] && st.points[st.points.length - 1] === was.points[was.points.length - 1] && st.points.every((p, j) => j === 0 || at(p) > at(st.points[j - 1])) && (was.points.length > 2 || st.points.length === was.points.length); }));
+      fault('two-point strokes over the budget kept whole', () => JSON.stringify(f.thinArt(ENDS, 300)) === JSON.stringify(ENDS));
+      fault("a game's colors stored as none", () => f.keptArt('play:pong', BIG) === null && f.keptArt('play:dots-house', null) === null);
+      // Art that holds no strokes (none saved, or a stored value of another shape) is handed back as it is, never thrown on.
+      fault('art with no strokes handed back as it is', () => f.thinArt(undefined, 400) === null && f.thinArt(null, 400) === null && JSON.stringify(f.thinArt({ fills: Object.fromEntries(Array.from({ length: 60 }, (_, i) => [i, '#D62828'])) }, 400)) === JSON.stringify({ fills: Object.fromEntries(Array.from({ length: 60 }, (_, i) => [i, '#D62828'])) }));
+      fault("a page's colors stored thinned under the budget", () => f.keptArt('star', SMALL) === SMALL && json(scribble) > L.ART_BUDGET && json(f.keptArt('star', scribble)) <= L.ART_BUDGET && f.keptArt('star', scribble).strokes.length === 60);
+      fault("a page's earlier lines kept where they were drawn", () => movedAfterThree((picture, art) => f.keptArt(picture, art)) <= 10.5);
+      return out; };
+    // Each thinning plant keeps the live function's guard for art that holds no strokes, so it trips only its own fault.
+    const guarded = (fn) => (art, budget) => (!art || typeof art !== 'object' || !Array.isArray(art.strokes) ? art || null : fn(art, budget));
+    const ART_PLANTS = [
+      ['a point with two decimals', { ...ART, artPoint: (x, y) => [Math.round(x * 100) / 100, Math.round(y * 100) / 100] }, 'a point to one decimal'],
+      ['a step of 0.4', { ...ART, artStepKept: (last, p) => !last || Math.hypot(p[0] - last[0], p[1] - last[1]) >= 0.4 }, 'a point kept at the step and not under it'],
+      ["a thinning that drops a stroke's end", { ...ART, thinArt: guarded((art, budget) => { const out = L.thinArt(art, budget); return out === art ? art : { ...out, strokes: out.strokes.map((st, i) => (art.strokes[i].points.length > 2 ? { ...st, points: st.points.slice(0, -1) } : st)) }; }) },
+        "every stroke kept, its ends and its points in order"],
+      ['a thinning that drops a fill', { ...ART, thinArt: guarded((art, budget) => { const out = L.thinArt(art, budget); return out === art ? art : { ...out, fills: {} }; }) }, 'every fill kept'],
+      ['a thinning that thins art under its budget', { ...ART, thinArt: guarded((art, budget) => L.thinArt(art, Math.min(budget, JSON.stringify(art).length - 1))) }, 'art under its budget handed back as it is'],
+      ['a thinning that tries one tolerance and stops', { ...ART, thinArt: guarded((art, budget) => (JSON.stringify(art).length <= budget ? art : { ...art, strokes: art.strokes.map((st) => (st.points.length > 2 ? { ...st, points: L.bendsKept(st.points, L.ART_BEND) } : st)) })) },
+        'art over its budget thinned under it'],
+      ["the every-other-point thinning of round one's fix", { ...ART, thinArt: guarded((art, budget) => { let out = art; while (JSON.stringify(out).length > budget && out.strokes.some((st) => st.points.length > 2)) out = { ...out, strokes: out.strokes.map((st) => (st.points.length > 2 ? { ...st, points: st.points.filter((p, i, all) => i % 2 === 0 || i === all.length - 1) } : st)) }; return out; }), keptArt: (picture, art) => (String(picture).startsWith('play:') ? null : (!art || typeof art !== 'object' || !Array.isArray(art.strokes) ? art || null : (() => { let out = art; while (JSON.stringify(out).length > L.ART_BUDGET && out.strokes.some((st) => st.points.length > 2)) out = { ...out, strokes: out.strokes.map((st) => (st.points.length > 2 ? { ...st, points: st.points.filter((p, i, all) => i % 2 === 0 || i === all.length - 1) } : st)) }; return out; })())) },
+        "a page's earlier lines kept where they were drawn"],
+      ["a keptArt that keeps a game's colors", { ...ART, keptArt: (picture, art) => L.thinArt(art) }, "a game's colors stored as none"],
+      ['a keptArt that stores a page unthinned', { ...ART, keptArt: (picture, art) => (String(picture).startsWith('play:') ? null : art) }, "a page's colors stored thinned under the budget"],
+      ['a thinning with no guard for art that holds no strokes', { ...ART, thinArt: (art, budget) => { let out = art; for (let tol = L.ART_BEND; JSON.stringify(out).length > budget && tol <= L.ART_BEND_MAX; tol *= 2) out = { ...art, strokes: art.strokes.map((st) => (st.points.length > 2 ? { ...st, points: L.bendsKept(st.points, tol) } : st)) }; return out; } },
+        'art with no strokes handed back as it is (throws)'],
+    ];
+    // bendsKept hands a stroke of two points, or no points at all, back as it is (its guard, which the undo of round two's fix found
+    // held by nothing).
+    const TWO = [[1, 1], [2, 2]]; const bendsGuard = L.bendsKept(TWO, 1) === TWO && L.bendsKept(null, 1) === null;
+    const artLive = artFaults(ART);
+    const artWrong = ART_PLANTS.filter(([, f, want]) => artFaults(f).join('; ') !== want).map(([what, f]) => `${what}: ${artFaults(f).join('; ') || 'nothing'}`);
+    ok(`a page's colors are kept small enough to store: a point to one decimal of the picture's 100 units, a stroke's point kept only ${L.ART_STEP} units past the last, art thinned to its budget by its bends with every fill and every stroke's ends kept (art under it handed back as it is), a page's earlier lines within 10.5 units of where they were drawn after three full visits, and a game's colors stored as none, a page's under ${L.ART_BUDGET} characters (round one's code read of pass NY, M2, and round two's, M1; ${ART_PLANTS.length} plants each giving exactly its faults, round one's every-other-point thinning among them)`,
+      artLive.length === 0 && artWrong.length === 0 && L.ART_STEP === 0.5 && L.ART_BUDGET === 16000 && L.ART_BEND === 0.25 && L.ART_BEND_MAX === 64 && bendsGuard, JSON.stringify({ artLive, artWrong, step: L.ART_STEP, budget: L.ART_BUDGET, bend: [L.ART_BEND, L.ART_BEND_MAX], bendsGuard })); }
   // My Classroom order: youngest band first, then by name, unless an educator has dragged the cards.
   { const mk = (label, level, order) => ({ id: label.toLowerCase(), label, level, active: true, ...(order === undefined ? {} : { order }) });
     const list = [mk('Zed', 'early'), mk('Amy', 'middle'), mk('Bob', 'early'), mk('Cal', 'elementary')];
@@ -11840,7 +12935,7 @@ const moreRightProblems = (L) => { const r = {};
   // ones a check once failed or could fail ("You can feel worried ...", "You can say, I feel mad, and tell what is wrong.").
   const PLANTS = [
     ['p4-feel-say', /crayon/, 'You can say, I feel mad, and tell what is wrong.', 'keep'],
-    ['p4-new-feeling-moment', /doctor/, 'You can feel worried on the first day at a new school, too.', 'keep'],
+    ['p4-new-feeling-moment', /think something bad might happen/, 'You can feel worried on the first day at a new school, too.', 'keep'],
     ['p3-feel-okay', /feel scared\?/, 'Everyone feels scared sometimes, and that is okay.', 'keep'],
     ['p3-help-who', /looks sad/, 'Ask a sad friend if they are okay.', 'catch'],
     ['p4-feel-say', /grabs your toy/, 'When you feel mad, use your words.', 'catch'],
@@ -11876,7 +12971,7 @@ const moreRightProblems = (L) => { const r = {};
     ['p3-help-grownup', /falls down/, 'A teacher is a grown-up who can help, and so is your grown-up at home.', 'keep'],
     ['pk-helper-where', /fire station/, 'A firefighter puts out fires and helps keep people safe.', 'keep'],
     ['p3-help-who', /looks sad/, 'Sit beside a sad friend.', 'catch'],
-    ['p4-new-feeling-moment', /falls down in front of the class/, 'Ask your embarrassed friend if he is okay.', 'catch'],
+    ['p4-new-feeling-moment', /falls, and everyone looks at him/, 'Ask your embarrassed friend if he is okay.', 'catch'],
     ['p3-help-who', /looks sad/, 'Give your sad friend a hug.', 'catch'],
     ['p4-friend-feels', /./, 'Your friend likes different things than you do.', 'keep'],
     ['p4-friend-feels', /./, 'Two friends can feel two different ways about one slide.', 'keep'],
@@ -14557,7 +15652,9 @@ const moreRightProblems = (L) => { const r = {};
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
   const SITES = [
     ["fontSize: 15, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(x.plain), x.plain)}</p>", "fontSize: 15 }}>{x.plain}</p>"],
-    ["function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) (?=[a-z])/g, '$1\\u00A0')); }", "function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) percent\\b/g, '$1\\u00A0percent')); }"],
+    ["function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) (?=[a-z])/g, '$1\\u00A0').replace(/\\b(grades?|to) (?=\\d)/gi, '$1\\u00A0')); }", "function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) percent\\b/g, '$1\\u00A0percent')); }"],
+    // Since round two's screen read of pass NY a number keeps the word before it too (grade, grades or to): its pass NX form, planted.
+    ["function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) (?=[a-z])/g, '$1\\u00A0').replace(/\\b(grades?|to) (?=\\d)/gi, '$1\\u00A0')); }", "function wholeHyphensAndNumbers(text) { return wholeHyphens(String(text).replace(/(\\d) (?=[a-z])/g, '$1\\u00A0')); }"],
     ["<li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>", "<li key={k} style={{ marginBottom: 4, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>"],
     ["<li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(wholeHyphensAndNumbers(t), t)}</li>", "<li key={k} style={{ marginBottom: 6, textWrap: 'pretty' }}>{lastTwoTogether(t, t)}</li>"],
     ["width: 'min(484px, 100%)', maxHeight: '85vh', boxSizing: 'border-box', display: 'flex', flexDirection: 'column'", "width: 'min(440px, 100%)', maxHeight: '85vh', overflowY: 'auto'"],

@@ -56,7 +56,11 @@ const listOf = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(',
 const KNOWN = new Set([...WRITING, ...HANDS, ...LINE_ART, ...MAP_BANS, ...Object.keys(ONE_PAGE), 'blurry', 'photorealistic skin', 'photorealism', 'jagged lines', 'broken outlines', 'tiny details', 'crowded scene', 'background scenery', 'sun', 'text other than the two letters', 'extra letters', SCENE_WORDS_BAN]);
 // A person in the subject (the words before "Style:"). The hands and skin sentences go only where a person is drawn, because
 // Nano Banana 2 draws what the words name: told about hands, a clock or a fox might grow some. So the test leans toward
-// leaving a person out (a missed person only loses one helpful sentence) and reads these words:
+// leaving a person out (a missed person only loses one helpful sentence) and reads these words. Since Mikey's answer to Q133
+// (pass NY, November 23, 2026: "Q133 - A") the same reading also gives a story row of the ten subjects the table gives no words of
+// their own Reading's words where it finds a person and Science's where it finds none (tools/stories/batch.py's style_for), so a
+// missed person costs a scene its look too; a reader checked it on those 1,446 rows in pass NY, and the words and catches it found
+// are marked "(pass NY, the person reader)" below:
 // - a person by kind, role or tie (a boy, a coach, a class cheering, a crossing guard, a finger tracing a line). Pronouns are
 //   left out, since his, her and its also name animals and things, and so are names (a prompt says "a boy", as the ledger asks);
 // - a mother, father, family or baby, unless an animal follows it (a mother duck) or "its" comes before it;
@@ -83,7 +87,12 @@ const PEOPLE = 'boys?|girls?|m[ae]n|wom[ae]n|child|children|schoolchildren|kids?
   'readers?|writers?|authors?|reporters?|photographers?|architects?|illustrators?|vets?|musicians?|singers?|drummers?|dancers?|' +
   'athletes?|runners?|swimmers?|crew|audience|priests?|monks?|friars?|nuns?|painters?|coders?|grocers?|interns?|registrars?|' +
   'paramedics?|sonographers?|families|new hires?|insurance agents?|someone|anyone|fingers?|thumbs?|hands?|faces?|class|teams?|' +
-  'cardiologists?|mail carriers?|toy makers?|apprentices?|electricians?|scouts?|wife|wives|husbands?';   // pass MF, the picture check
+  'cardiologists?|mail carriers?|toy makers?|apprentices?|electricians?|scouts?|wife|wives|husbands?|' +   // pass MF, the picture check
+  // Pass NY, the person reader (Q133): people its rows name that the list had not, and the ones that decide no row yet.
+  'directors?|conservators?|bookkeepers?|psychologists?|economists?|experts?|questioners?|teammates?|listeners?|orators?|' +
+  'villagers?|pharmacists?|dispatchers?|detectives?|scoutmasters?|receptionists?|narrators?|landlords?|lifeguards?|nieces?|' +
+  'nephews?|grandsons?|granddaughters?|grandchildren|tentmates?|millers?|nutritionists?|harbor masters?|everyone|everybody|' +
+  'classes|bands?|speakers?|crowded|managers?|officials?|helpers?|guides?|clubs?|groups?|figures?|parade|legs|conductors?|visitors?';
 const PERSON = new RegExp(`\\b(${PEOPLE})\\b`, 'gi');
 const ANIMALS = 'duck|ducks|ducklings?|hen|hens|bird|birds|cat|cats|dog|dogs|fox|foxes|cow|cows|calf|calves|horse|horses|foal|' +
   'sheep|lambs?|goat|goats|bear|bears|cubs?|deer|rabbit|rabbits|frog|frogs|fish|whale|whales|owl|owls|pig|pigs|elephant|' +
@@ -94,22 +103,65 @@ const ANIMAL_AFTER = new RegExp(`^\\s+(of\\s+)?(an?\\s+)?(${ANIMALS})\\b`, 'i');
 const CLOCK_HAND = /\b(short|long|hour|minute|second|big|little)\s+(dark\s+|black\s+|thin\s+|red\s+)?$/i;
 const BODY_AFTER = /^['’]s\s+(\w+\s+){0,2}(hands?|fingers?|thumbs?|toes|feet|foot|face|faces|arms?|legs?|knees?|shoulders?|head|hair|eyes|nose|mouth|ears?|lap|palms?|smile|cheeks?|wrists?)\b/i;
 export function hasPerson(subject) {
-  const text = subject.replace(/\b(labeled|marked|sorted|grouped) by \w+/gi, '');
+  // A label is no one drawn: sorted by artist, and since the person reader (pass NY) a letter signed by three students, a chart by
+  // student, and a card's written lines ("A card with three lines: ... tell someone ..."), up to a clause that sets something beside
+  // the card ("beside a girl reading it"; round two's code read of pass NY).
+  const text = subject.replace(/\b(labeled|marked|sorted|grouped) by \w+/gi, '').replace(/\bsigned by\s+(\w+\s+){0,2}\w+/gi, '')
+    .replace(/\bby students?\b(?=\s*(,|$))/gi, '').replace(/\blines:.*?(?=,\s*(beside|with|while|as|and|near|by)\s+(a|an|the|his|her|their)\b|$)/i, '');
   const clock = /\bclocks?\b|\bwatch(es)?\b/i.test(text);
   for (const m of text.matchAll(PERSON)) {
     const w = m[0].toLowerCase(); const after = text.slice(m.index + m[0].length); const before = text.slice(0, m.index);
     // A mother duck, its family, a baby bird: an animal's.
     if (/^(mother|father|family|mom|dad|parents?|baby|babies)$/.test(w) && (ANIMAL_AFTER.test(after) || /\bits\s+$/i.test(before))) continue;
     // A family kitchen or a family photo: no one in it.
-    if (w === 'family' && /^\s+(kitchen|log|photo|photos|tree|room|car|recipe|farm|business|name|garden|home|house)\b/i.test(after)) continue;
+    if (w === 'family' && /^\s+(kitchen|log|photo|photos|tree|room|car|recipe|farm|business|name|garden|home|house|messages?|texts?|chat|calendar)\b/i.test(after)) continue;
     // A class or a team doing something counts; a class garden, a team name or vowel teams do not.
     if (w === 'class' && !/^(\s+(\w+ing|at|with|of|on|in|ready)\b|\s*[,.]|\s*$)/i.test(after)) continue;
     if (/^teams?$/.test(w) && !/^\s+(\w+ing|at|with|of|on|in|ready)\b/i.test(after)) continue;
     // A clock's hands, and hand-drawn or by hand.
     if (/^hands?$/.test(w) && (CLOCK_HAND.test(before) || (clock && /\b(two|its|both|the clock's|with)\s+(dark\s+|black\s+|thin\s+|red\s+)?$/i.test(before)) || /^-/.test(after) || /\bby\s+$/i.test(before))) continue;
+    // Patient as a scene's mood (pass NY, every story row's mood after its subject's words: "curious and patient", "patient and
+    // hopeful"), not a patient in a clinic; after a, the, one or the like it is still a person, as in "a young patient".
+    if (w === 'patient' && (/\b(and|yet)\s+$/i.test(before) || /^\s+(and|yet)\b/i.test(after)) && !/\b(a|an|the|one|each|every|another|his|her|their|our|my|your)\s+(\w+\s+)?$/i.test(before)) continue;
     // A word joined to the next by a hyphen names a thing, not a person (a child-sized plate, a man-made lake; pass MF, the
     // picture check's second read: P62's plate drew a hands sentence).
     if (/^-\w/.test(after)) continue;
+    // Pass NY, the person reader (Q133). Names in a list are no one drawn (a list of ten thousand customers, a list of people
+    // quoted, but not a mom holding a list of chores: a word like a or the begins someone new; round two's code read), nor are a
+    // plant's children (a row of tall bean children) or the planning words on a speech's card (audience, occasion, purpose).
+    if (/\blist of\s+((?!(with|beside|and|in|on|at|by|near|under|over|from|a|an|the|his|her|their|my|your|our)\b)\w+\s+){0,3}$/i.test(before)) continue;
+    if (/^child(ren)?$/.test(w) && /\b(bean|pea|plant|seed|corn)\s+$/i.test(before)) continue;
+    if (w === 'audience' && /^,\s+occasion\b/i.test(after)) continue;
+    // Everyone laughing is people; everyone in a thought bubble's words or on a label is not.
+    if (/^every(one|body)$/.test(w) && (/:\s+$/.test(before) || /\b(labeled|says|saying|reads|reading)\s+$/i.test(before))) continue;
+    // Classes, clubs and groups count only when they do something (two classes on a rug, a robotics club counting money, a group
+    // practicing), as a class or a team does; never a group chat, a food group or a club roster.
+    if (w === 'classes' && !/^(\s+(\w+ing|at|with|of|on|in|ready)\b|\s*[,.]|\s*$)/i.test(after)) continue;
+    if (/^(clubs?|groups?)$/.test(w) && !/^\s+\w+ing\b/i.test(after)) continue;
+    // A band is its players when it plays, listens or votes, or is a marching, school or mariachi band; never a rubber band, a
+    // band of color or silt, or a band room.
+    if (/^bands?$/.test(w) && (/\b(rubber|wrist|head|hair|arm|waist)\s*$/i.test(before) || !(/\b(marching|mariachi|school|brass|jazz|rock|steel)\s+$/i.test(before) || /^\s+(\w+ing|parades|plays|takes|turns|marches)\b/i.test(after)))) continue;
+    // A speaker at a lectern is a person; a device's speaker is not (its speaker, a small round speaker, into the speaker, on
+    // speaker, a speaker pushing sound waves or glowing), nor a written dialogue's new speaker.
+    if (/^speakers?$/.test(w) && (/\b(its|round|little|on|new|into (a|the)|to the|near a)\s+$/i.test(before) || /^\s+(pushing|glowing|showing|starts)\b/i.test(after))) continue;
+    // A crowded hall, street or cafeteria is full of people; a crowded page, sum or skyline is not.
+    if (w === 'crowded' && !/^\s*,?\s*(\w+\s+){0,2}(rooms?|halls?|cafeterias?|streets?|squares?|markets?|meetings?|stations?|bus|buses|trains?|steamships?|classrooms?|gyms?|auditoriums?|stadiums?|churches|church|plazas?|platforms?|hallways?|beach|parks?|playgrounds?|sidewalks?|subways?|stores?|shops?|courtrooms?)\b/i.test(after)) continue;
+    // A manager, an official, a helper, a guide, a figure, a parade, legs, a conductor and visitors are people but for their
+    // second meanings: a password manager; an official map or seal; helper nineteen, a chart's label; a voter guide, a guide dog
+    // or guide words; a welded figure or export figures (a figure counts when it speaks, stands or walks); a parade drum or float
+    // (a parade counts after the or a); a table's, a dog's or a tadpole's legs (legs count when running, walking, kicking or
+    // dancing, since his legs may be a dog's); a lifeguard chair; a conductor of heat; visitors on a scoreboard (home and
+    // visitors, visitors 2) or per visitor.
+    if (/^managers?$/.test(w) && /\b(password|file|task|download)\s+$/i.test(before)) continue;
+    if (/^officials?$/.test(w) && /^\s+(seal|map|maps|document|documents|record|records|letter|letters|rules?|name|names|language|flag|state|stamp|website|portrait|photo|forms?|report|count|vote|results?|policy|title)\b/i.test(after)) continue;
+    if (/^helpers?$/.test(w) && /^\s+(\d|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)\b/i.test(after)) continue;
+    if (/^guides?$/.test(w) && (/\b(voter|school|finished|study|field|style|user|pocket|printed|tv)\s+$/i.test(before) || /^\s+(dogs?|words|books?|ropes?|lines?|pages?)\b/i.test(after))) continue;
+    if (/^figures?$/.test(w) && !/^\s+(speaking|talking|standing|sitting|walking|waving|waiting|watching|listening|cheering|clapping|dancing|marching|running)\b/i.test(after)) continue;
+    if (w === 'parade' && (!/\b(the|a)\s+$/i.test(before) || /^\s+(floats?|routes?|drums?|maps?|posters?)\b/i.test(after))) continue;
+    if (w === 'legs' && !/\b(running|walking|kicking|dancing)\s+$/i.test(before)) continue;
+    if (/^lifeguards?$/.test(w) && /^\s+(chairs?|stands?|towers?|stations?)\b/i.test(after)) continue;
+    if (/^conductors?$/.test(w) && (/\b(good|poor|electric|electrical|copper|metal|heat)\s+$/i.test(before) || /^\s+of\s+(heat|electricity)\b/i.test(after))) continue;
+    if (/^visitors?$/.test(w) && (/\b(home\s+(and\s+)?|per\s+)$/i.test(before) || /^\s+\d/.test(after))) continue;
     // A person's thing is not a person (a grown-up's big shoe), though a person's hand, toes or face is.
     if (/^['’]s\b/.test(after) && !BODY_AFTER.test(after)) continue;
     if (/^neighbors?$/.test(w) && /\bits\s+$/i.test(before)) continue;

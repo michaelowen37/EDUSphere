@@ -100,6 +100,12 @@ const VOICED_ROOM = ['hear-it-in-a-word', 'look-and-write'];
 // states, where it read 3535 and 3646, with no word under the cue on any. Pass NV's rows with pass NU's screen code read the same, so the
 // printed question's kept hyphens moved none of them. The three that fell follow the code down, with this reason, named in DECISIONS'
 // Loosened bullet for pass NV.
+// Since pass NY the one floor that fell is pass NY's count, read in one whole run alone before its check.sh and again on a copy without
+// round two's cue fix, which can only add a cue: the twelve pre-K lessons' banks and reasons the pass changed deal other questions at the
+// seeds this check reads, so after a first wrong tap at 375 by 667 in the light theme the cue shows on 140 questions, where pass NV's
+// tree showed it on 141, with no word under the cue on any; it follows the code down, with this reason, named in DECISIONS' Loosened
+// bullet for pass NY. The rest held or rose (pre-K lines 1434, the cue after a first wrong tap at 320 by 568 on 626 and 648, after the
+// right one on 755 in the light theme and 390 at dark 375 by 667), and their floors stay.
 const FLOORS = {
   lines: { preK: 1429, rest: 1158 },
   // Pre-K at 375 by 667 none, a ceiling as well as a floor (round one's code read: a verdict that read no line could not fail).
@@ -111,7 +117,7 @@ const FLOORS = {
   screens: { 'light 320 by 568': 830, 'light 375 by 667': 829, 'dark 320 by 568': 832, 'dark 375 by 667': 833 },
   // The cue after a first wrong tap at 320 by 568 in the light theme was on 477 questions in one whole run of pass NF's copy and 479 in
   // three, so its floor is the lower.
-  cueScreens: { wrong: { 'light 320 by 568': 625, 'light 375 by 667': 141, 'dark 320 by 568': 645, 'dark 375 by 667': 176 }, right: { 'light 320 by 568': 752, 'light 375 by 667': 378, 'dark 320 by 568': 757, 'dark 375 by 667': 389 } },
+  cueScreens: { wrong: { 'light 320 by 568': 625, 'light 375 by 667': 140, 'dark 320 by 568': 645, 'dark 375 by 667': 176 }, right: { 'light 320 by 568': 752, 'light 375 by 667': 378, 'dark 320 by 568': 757, 'dark 375 by 667': 389 } },
   // Since pass NF: the cue before a pick, the strips that keep room for the cue, the story pages read and those where the cue shows.
   pick: { 'light 320 by 568': 9, 'light 375 by 667': 0, 'dark 320 by 568': 23, 'dark 375 by 667': 0 },
   strips: { 'light 320 by 568': 9, 'light 375 by 667': 0, 'dark 320 by 568': 11, 'dark 375 by 667': 0 },

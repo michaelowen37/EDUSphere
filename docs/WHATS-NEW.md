@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 23, 2026 (shorter play breaks, colors that stay, and fairer pre-K questions)
+
+- Coloring pages and games are shorter now. A turn lasts three minutes from pre-K 3 to grade 2, two and a half in grades 3 to 5, two in grades 6 to 8, and a minute and a half from grade 9. Before, a young child had five minutes, and a page they finished quickly kept its timer running long after. The rest between turns hasn't changed.
+- A coloring page now keeps your child's colors when its time runs out. When the page comes back after its rest, everything they colored is still there, so they can finish what they started. Before, it came back blank. Games still start fresh each time.
+- Twelve pre-K lessons on friends, feelings, words and listening ask fairer questions. The birthday-party questions now say first who loves birthday parties ("You love birthday parties."), so a shy child is never marked wrong for a fair feeling; a lesson on the slide names the teacher nearby; and the yes or no questions in these lessons now come out about half Yes and half No, so always saying Yes no longer works.
+- On a phone, a lesson's Next and Go back now open the new line at its top, so its picture is never left above the screen.
+
 ## November 22, 2026 (a close for More Info, and notes you won't miss)
 
 - More Info now has a close button at its top right. On a small phone the sheet runs taller than the screen and its Got it button sat out of sight below, and a phone has no Escape key, so there was no sure way out: a tap on the thin dark strip beside the sheet usually lands on the sheet itself. The Read it to me speaker moved to the top left, so a tap in the corner closes the sheet instead of reading it aloud.

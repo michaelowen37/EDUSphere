@@ -1957,7 +1957,7 @@ export const COLORING_PICTURES = DRAWINGS.flatMap((pic, i) => (LETTER_PICTURES[i
 export function pictureTitle(pic) { if (pic.startsWith('lesson-')) { const mod = MODULES.find((x) => x.id === pic.slice(7)); return mod ? mod.title : 'Picture'; } return pic === 'my-name' ? 'My name' : pic.startsWith('letter-') ? `Letter ${pic.slice(-1).toUpperCase()}` : pic.replace(/-/g, ' '); }
 
 // Let's Play: small games that need no words, one to start with and one more for every course
-// mastered. A game keeps the coloring clock: five minutes, then a fifteen-minute rest. The list is
+// mastered. A game keeps the coloring clock: the play time for the student's age, then its rest (playSecondsFor and restMinutesFor). The list is
 // in the order they unlock; a game with a minGrade waits for a student whose courses reach it.
 export const GAMES = [
   // The early games (2026-09-23, Mikey): titles in capitals, no two of a kind side by side, and the connect-the-dots
@@ -4485,13 +4485,85 @@ export function dotsTooClose(points, gap = DOT_GAP) {
 // A pre-K screen is grouped by the skill being practised rather than by subject: a three-year-old
 // knows what colors are, not what mathematics is. Every other grade groups by subject as before.
 export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Writing', 'Drawing', 'Feelings', 'Getting along'];   // Writing: pass NC (Domain IV begun)   // Feelings: pass MD (E12)
-export const COLOR_LOCKOUT_MINUTES = 15;
-// Play and rest by age: the youngest fill more of their time with coloring and games; older students play
-// for less and wait longer before a game or a picture comes back, so the day tilts toward the lessons.
 // The experiments that belong under a lesson: those marked with its module id.
 export function experimentsForModule(moduleId) { return Object.values(EXPERIMENTS).flat().filter((e) => e.moduleId === moduleId); }
-export function playSecondsFor(topGrade) { const at = GRADES.indexOf(topGrade); return at <= GRADES.indexOf('2') ? 300 : at <= GRADES.indexOf('5') ? 240 : at <= GRADES.indexOf('8') ? 180 : 150; }
+// The play clock by age, the one place its numbers live: a coloring page or a game runs for playSecondsFor and then rests for
+// restMinutesFor, both read from the student's highest grade. The youngest fill more of their day with play; an older student plays
+// for less and waits longer before a picture or a game comes back, so the day tilts toward the lessons. Since pass NY a page or a
+// game runs 3 minutes from pre-K 3 to grade 2, 2.5 for grades 3 to 5, 2 for grades 6 to 8 and 1.5 from grade 9 up (180, 150, 120
+// and 90 seconds), where pass AP gave 300, 240, 180 and 150 (Mikey, under his answer to Q129: "I can complete a page quickly and the
+// timer stays on for quite a long time afterwards so I think they should all be shortened to whatever you recommend"); the rests
+// are as pass AP set them, 15, 30, 45 and 60 minutes. The screens' clock, its bar and a resting picture's fill all read these two,
+// and the rules test holds every band.
+export function playSecondsFor(topGrade) { const at = GRADES.indexOf(topGrade); return at <= GRADES.indexOf('2') ? 180 : at <= GRADES.indexOf('5') ? 150 : at <= GRADES.indexOf('8') ? 120 : 90; }
 export function restMinutesFor(topGrade) { const at = GRADES.indexOf(topGrade); return at <= GRADES.indexOf('2') ? 15 : at <= GRADES.indexOf('5') ? 30 : at <= GRADES.indexOf('8') ? 45 : 60; }
+// Where a picture's or a game's clock starts as it opens (pass NY): the time it had left, kept on the device when the child last
+// left it early, but never more than the student's play time today. A time saved under a longer clock is cut to today's: pass AP's
+// clock saved a fresh 300 seconds on every picture that ran out, and a child who moves into an older band keeps a younger band's
+// longer time. A picture with no time saved, or one that cannot be read as a number or is not above 0 (a clock that would end with
+// nothing played; round one's code read, pass NY), starts with the whole play time.
+export function playSecondsAtOpen(saved, topGrade) { const full = playSecondsFor(topGrade); return Number.isFinite(saved) && saved > 0 ? Math.min(saved, full) : full; }
+// A page's colors, kept small enough to store (pass NY, round one's code read, its M1 and M2). Since Mikey's answer to Q131 ("Yes, the
+// color pages can keep the colors from the child's previous coloring time even after timer resets.") a page keeps its strokes for good,
+// until Start over, in one stored value per student that the screens write again every five seconds, on the standalone page in
+// localStorage beside the student's record, where the time-up had emptied it until then. So the screens take each point to one decimal
+// of the picture's 100 units (artPoint), keep a point of a stroke only once the finger has moved ART_STEP from the last one kept
+// (artStepKept; a point held back is kept as the stroke's end, so a line ends where it was drawn), and every writer stores a picture's
+// colors through keptArt: a game keeps none, and a page keeps its own, thinned to ART_BUDGET (thinArt). The numbers are measured by
+// script and written beside each constant; the rules test's play clock block holds each function and every writer.
+// ART_STEP: half a unit of the picture's 100, about 1.8 pixels across a phone's picture and 4 at the closest zoom (2.2). A line through
+// points that far apart bends from the finger's path by under a tenth of a unit wherever it curves wider than a unit, and the thinnest
+// nib is 0.7 wide, so a line still looks as drawn; a slow or resting finger, which sent a point a move, adds none.
+export const ART_STEP = 0.5;
+// ART_BUDGET: the most characters of JSON a page's colors are stored in before its strokes are thinned. Measured in pass NY by script:
+// a full three-minute visit of steady scribbling at 60 pointer moves a second (10,800 points) took about 418,000 characters with each
+// point's two full-precision numbers and 128,000 with one decimal; with the step rule too, 50,000 to 128,000 as the finger moves 10 to
+// 80 units a second (34 to 275 pixels a second across a phone's picture; at 80 every move passes the step), thinned here to 10,600 to
+// 15,300, its points then 2 to 17 units apart. At the budget a child's 65 Let's Color pictures hold at most about 1,040,000 characters
+// (each entry's own keys beside its colors), and with every one of the 296 lesson pages painted and opened about 5,800,000. A stroke
+// down to its two ends is about 67 characters, so a page of more than about 235 strokes passes the budget on its strokes' ends alone,
+// and grows by a stroke's ends with each stroke after. Thinned by its bends (thinArt), a page holds where the child drew it until it is full: by round two's
+// code read of pass NY, 30 strokes of steady scribble a visit, stored and opened again, the first visit's lines lie 0 to 2.7 units
+// from where they were drawn after one visit, 0 to 8.0 after two and 0 to 10.3 after three (round and round at 80 units a second the
+// most), and 27.8 after four, so the budget holds about three full visits of the heaviest scribbling faithfully (EARMARKS A196).
+export const ART_BUDGET = 16000;
+export function artPoint(x, y) { return [Math.round(x * 10) / 10, Math.round(y * 10) / 10]; }
+export function artStepKept(last, p) { return !last || Math.hypot(p[0] - last[0], p[1] - last[1]) >= ART_STEP; }
+// Thins a page's colors to fit the budget by their bends (round two's code read of pass NY, its M1): each stroke keeps the fewest of
+// its points that hold its line within a tolerance of every point it drops (bendsKept, Ramer, Douglas and Peucker's rule), the
+// tolerance starting at ART_BEND and doubling, from the page as it came in each time, until the page fits or the tolerance passes
+// ART_BEND_MAX; each stroke keeps its first and its last point, its points in order, and every fill is kept. A stroke's bends are kept
+// while the page fits; past that its lines move, by the measure beside ART_BUDGET. Art under the budget is handed back as it is. A page
+// whose strokes are down to their two ends and still over the budget keeps them all (each stroke is a color the child put on), so its
+// size is then its strokes' ends, about 67 characters a stroke. Until round two's read every other inner point was dropped, old strokes
+// and new alike, so each later visit halved a page's earlier lines again: by its measure a heavy scribbler's first strokes lay 28 to
+// 42 units from where they were drawn after three visits, every stroke down to its two ends.
+// ART_BEND: a quarter of a unit, under the thinnest nib's 0.7, so a first thinning moves no line a child can see. ART_BEND_MAX: 64
+// units, past which a line would cross most of the picture; by then a page is its strokes' ends.
+export const ART_BEND = 0.25;
+export const ART_BEND_MAX = 64;
+const artGap = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1]; const t = dx || dy ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy))) : 0;
+  return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); };
+export function bendsKept(points, tol) {
+  if (!Array.isArray(points) || points.length <= 2) return points;
+  const keep = new Uint8Array(points.length); keep[0] = 1; keep[points.length - 1] = 1; const spans = [[0, points.length - 1]];
+  while (spans.length) { const [a, b] = spans.pop(); let worst = 0, at = -1;
+    for (let i = a + 1; i < b; i++) { const d = artGap(points[i], points[a], points[b]); if (d > worst) { worst = d; at = i; } }
+    if (worst > tol) { keep[at] = 1; spans.push([a, at], [at, b]); } }
+  return points.filter((_, i) => keep[i]);
+}
+export function thinArt(art, budget = ART_BUDGET) {
+  if (!art || typeof art !== 'object' || !Array.isArray(art.strokes)) return art || null;
+  const inner = (s) => !!s && Array.isArray(s.points) && s.points.length > 2;
+  let out = art;
+  for (let tol = ART_BEND; JSON.stringify(out).length > budget && tol <= ART_BEND_MAX; tol *= 2) {
+    out = { ...art, strokes: art.strokes.map((s) => (inner(s) ? { ...s, points: bendsKept(s.points, tol) } : s)) };
+  }
+  return out;
+}
+// What a writer stores for the picture open now: a game's colors are none (its key starts play:), whatever page was colored before it,
+// and a page's are its own, thinned to the budget.
+export function keptArt(picture, art) { return String(picture || '').startsWith('play:') ? null : thinArt(art); }
 export function coloringUnlocked(events) {
   return Math.min(COLORING_PICTURES.length, 1 + deriveProgress(events).passedIds.length);
 }
@@ -5416,14 +5488,19 @@ function PREK3_MODULES() { return [
     title: 'Helping a friend',
     tagline: 'Kind words and a grown-up',
     lesson: {
-      paragraphs: ['Faces can show feelings. When a friend\'s face looks sad or scared, be kind. Ask, are you okay? Sit beside your friend, or bring a teddy to hug. Grown-ups have feelings too. When your grown-up looks sad, ask, are you okay? You can also ask, can I give you a hug?', 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help. Laughing at a hurt or scared friend is not kind. It can make your friend feel sad.', 'Sometimes two friends both want one ball, and a fight starts. Grabbing and pushing are not okay. Keep your hands to yourself, and say, stop, please. Then get a grown-up to help you both. A grown-up can help you take turns, so you both get to play.'],
+      paragraphs: ['Faces can show feelings. A sad face can have a tear rolling out, a scared face has wide-open eyes, and a happy face has a big smile. When a friend\'s face looks sad or scared, be kind. Ask, are you okay? Sit beside your friend, or bring a teddy to hug. Grown-ups have feelings too. When your grown-up looks sad, ask, are you okay? You can also ask, can I give you a hug?', 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help. Laughing at a hurt or scared friend is not kind. It can make your friend feel sad.', 'Sometimes two friends both want one ball, and a fight starts. That is a problem. You can say what the problem is, we both want the ball. Grabbing and pushing are not okay. Keep your hands to yourself, and say, stop, please. Then get a grown-up to help you both. A grown-up can help you take turns, so you both get to play.'],
       keyIdea: 'When a friend looks sad or scared, be kind and ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.',
       example: { kind: 'face', feeling: 'sad', caption: 'Are you okay?' },
       // Pass MN (earmark E12: I.C.6's distressed grown-up): line 4 is new, so the two paintings move down one line with their lines,
-      // and P154 paints the new line (the lesson check: three sad faces had come in a row).
-      pictures: [{ serial: 'P154', alt: 'A small child hugging a grown-up who looks a little sad and hugs the child back', step: 3 }, { serial: 'P130', alt: 'A small child leading a grown-up by the hand to a friend who fell on the grass', step: 4 }, { serial: 'P131', alt: 'A grown-up kneeling beside two small children who take turns rolling one red ball', step: 8 }],
+      // and P154 paints the new line (the lesson check: three sad faces had come in a row). Since pass NY line 2 is new too (the faces'
+      // signs, below), so all three paintings move down one more line with their lines: each step is the index of the line it paints.
+      pictures: [{ serial: 'P154', alt: 'A small child hugging a grown-up who looks a little sad and hugs the child back', step: 4 }, { serial: 'P130', alt: 'A small child leading a grown-up by the hand to a friend who fell on the grass', step: 5 }, { serial: 'P131', alt: 'A grown-up kneeling beside two small children who take turns rolling one red ball', step: 9 }],
       script: [
         { say: 'Faces can show feelings. When your friend\'s face looks like this, your friend may be sad.', show: { kind: 'face', feeling: 'sad' } },
+        // Pass NY (EARMARKS A181, pass NX's measured lesson reads): the three faces this lesson draws, each with the one sign its
+        // questions tell it by, so "Tap the friend who looks sad." and every reason after a wrong tap use words this lesson says
+        // (the reasons had used Happy, sad, mad and scared's signs, and the mad face, which no line here draws).
+        { say: 'A sad face can have a tear rolling out. A scared face has wide-open eyes. And a happy face has a big smile.', show: { kind: 'faces', feelings: ['sad', 'scared', 'happy'] } },
         { say: 'When a friend looks sad or scared, you can be kind. Ask, are you okay?', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'scared' } } },
         { say: 'You can sit beside your friend, or bring a teddy to hug.', show: { kind: 'icon', name: 'teddy' } },
         // Since round four of pass MN a child asks before giving a hug, a grown-up's too, as kindergarten's My space and my no teaches
@@ -5432,13 +5509,15 @@ function PREK3_MODULES() { return [
         { say: 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help.', show: { kind: 'face', feeling: 'sad' } },
         // Pass MJ (the lesson check, then the alignment read: one idea a line for a three-year-old): taught before its yes or no question.
         { say: 'Laughing at a hurt or scared friend is not kind. It can make your friend feel sad.', show: { kind: 'face', feeling: 'sad' } },
-        { say: 'Sometimes two friends both want one ball, and a fight starts. That is a problem.', show: { kind: 'icon', name: 'ball' } },
+        // Pass NY (pass NX's measured reads): P-SE 5, cited whole, begins "Begins to recognize and describe social problems.", and Please
+        // and thank you's citation says that sentence is taught here, so the line says the problem in words, not only that it is one.
+        { say: 'Sometimes two friends both want one ball, and a fight starts. That is a problem. You can say what the problem is, we both want the ball.', show: { kind: 'icon', name: 'ball' } },
         { say: 'Grabbing the ball and pushing are not okay. Keep your hands to yourself, and say, stop, please. Then get a grown-up to help you both.', show: { kind: 'icon', name: 'stop' } },
         { say: 'A grown-up can help you take turns, so you both get to play with the ball.', show: { kind: 'icon', name: 'ball' } },
         { say: 'Helping a friend can make you both feel happy. Asking a grown-up for help is a smart thing to do, too.', show: { kind: 'face', feeling: 'happy' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.C.5 (seeks adult help when experiencing conflicts with peers), I.C.6 (responds with concern when a child or adult is distressed), since the lesson teaches noticing a friend or a grown-up who is distressed and the kind words and acts to offer, and I.D.1 (shows interest and curiosity in other people and their feelings), in part, since the lesson teaches noticing a friend\'s or a grown-up\'s feelings and asking about them, and not yet interest and curiosity in other people beyond their feelings, and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 36 to 48 month progression reads "Often pays attention when others are distressed, but attention and response to this distress may be brief. May seek out adult support to help another child who is distressed.", P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches reading sad and scared on a friend\'s face, and sad on a grown-up\'s, while expressing one\'s own feelings is taught in Happy, sad, mad and scared, and expressing them across contexts is the child\'s own (EARMARKS E12), P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 36 to 48 month progression reads "Begins to recognize and describe social problems. Suggests solutions to conflicts with adult guidance and support.", and P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches the third sentence of its 36 to 48 month progression, "Uses adults as a resource to solve problems.", getting a grown-up when a friend is hurt or a fight starts, and the affection its first sentence names, a kind question and a hug, asked for first, for a grown-up who looks sad, while talking about ideas, from that sentence, "Engages in positive interactions with adults, such as by demonstrating affection or talking about ideas.", and its second, "Is able to separate from trusted adults when in familiar settings.", are the child\'s own time with grown-ups (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.C.5 (seeks adult help when experiencing conflicts with peers), since the lesson teaches getting a grown-up to help when two friends both want one ball and a fight starts, I.C.6 (responds with concern when a child or adult is distressed), since the lesson teaches noticing a friend or a grown-up who is distressed and the kind words and acts to offer, and I.D.1 (shows interest and curiosity in other people and their feelings), in part, since the lesson teaches noticing a friend\'s or a grown-up\'s feelings and asking about them, and not yet interest and curiosity in other people beyond their feelings, and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 36 to 48 month progression reads "Often pays attention when others are distressed, but attention and response to this distress may be brief. May seek out adult support to help another child who is distressed.", P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches reading sad, scared and happy on a friend\'s face, by a tear, wide-open eyes and a big smile, and sad on a grown-up\'s, while expressing one\'s own feelings is taught in Happy, sad, mad and scared, and expressing them across contexts is the child\'s own (EARMARKS E12), P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 36 to 48 month progression reads "Begins to recognize and describe social problems. Suggests solutions to conflicts with adult guidance and support.", and P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches the third sentence of its 36 to 48 month progression, "Uses adults as a resource to solve problems.", getting a grown-up when a friend is hurt or a fight starts, and the affection its first sentence names, a kind question and a hug, asked for first, for a grown-up who looks sad, while talking about ideas, from that sentence, "Engages in positive interactions with adults, such as by demonstrating affection or talking about ideas.", and its second, "Is able to separate from trusted adults when in familiar settings.", are the child\'s own time with grown-ups (EARMARKS E12).'],
     generators: ['p3-help-who', 'p3-help-kind', 'p3-help-grownup', 'p3-help-ball', 'p3-help-yesno'],
   },
   // Earmark E12 part two (pass ME): adding one and taking one away, the PK3 joining and separating outcomes, with the dots on
@@ -5489,7 +5568,7 @@ function PREK3_MODULES() { return [
     title: 'Can I play too?',
     tagline: 'Watch, then ask',
     lesson: {
-      paragraphs: ['Some friends are building a tower with blocks, and you want to play too. First, watch the game, so you see what your friends are doing and how they play. Then ask, can I play too? Asking is a kind way to join a game. You can bring something for the game, like a block for the tower, but not a ball, which can knock the tower down.', 'Grabbing your friends\' blocks is not kind, and knocking down their tower is not kind. It can make your friends sad or mad.', 'When your friends say yes, play together. Say your idea, like let\'s make it tall, and listen to your friend\'s idea too. Take turns adding blocks, and take turns rolling a ball, going down the slide and swinging on the swing, too. Playing together can make everyone happy, and listening to a friend\'s idea can make your friend happy.', 'Sometimes friends say, not now. That is okay. You can play something else, like the slide, and ask again later, or find another friend to play with. Having nobody to play with can make a friend sad. When a friend is playing alone, ask, do you want to play with me?'],
+      paragraphs: ['Some friends are building a tower with blocks, and you want to play too. First, watch the game, so you see what your friends are doing and how they play. Then ask, can I play too? Asking is a kind way to join a game. You can bring something for the game, like a block for the tower, but not a ball, which can knock the tower down.', 'Grabbing your friends\' blocks is not kind, and knocking down their tower is not kind. It can make your friends sad, with a tear rolling out, or mad, with eyebrows that squeeze down.', 'When your friends say yes, play together. Say your idea, like let\'s make it tall, and listen to your friend\'s idea too. Take turns adding blocks, and take turns rolling a ball, going down the slide and swinging on the swing, too. Playing together can make everyone happy, with a big smile, and listening to a friend\'s idea can make your friend happy.', 'Sometimes friends say, not now. That is okay. You can play something else, like the slide near your teacher, and ask again later, or find another friend to play with. Having nobody to play with can make a friend sad. When a friend is playing alone, ask, do you want to play with me?'],
       keyIdea: 'When you want to play, watch first, then ask, can I play too? Bring something for the game, and play together kindly.',
       example: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }], caption: 'Watch first, then ask, can I play too?' },
       pictures: [{ serial: 'P146', alt: 'Two small children building a block tower on a rug while a third small child sits nearby to watch their game', step: 1 }, { serial: 'P147', alt: 'Three small children taking turns adding blocks to one tall tower on a rug', step: 6 }],
@@ -5498,12 +5577,18 @@ function PREK3_MODULES() { return [
         { say: 'First, watch the game. Look at what your friends are doing, so you know how they play.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
         { say: 'Then ask, can I play too? Asking is a kind way to join a game.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
         { say: 'You can bring something for the game, like a block for the tower. A ball is not for a tower game, because it can knock the tower down.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' } } },
-        { say: 'Grabbing your friends\' blocks is not kind. Knocking down their tower is not kind. It can make your friends sad or mad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'mad' } } },
+        // Since pass NY (EARMARKS A181) the two faces' signs are said where they are drawn, and the happy face's on line 9, so a reason
+        // after a wrong tap on a face question tells the face by words this lesson says (they had been Happy, sad, mad and scared's).
+        { say: 'Grabbing your friends\' blocks is not kind. Knocking down their tower is not kind. It can make your friends sad, with a tear rolling out, or mad, with eyebrows that squeeze down.', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'mad' } } },
         { say: 'When your friends say yes, play together. Say your idea, like let\'s make it tall, and listen to your friend\'s idea too.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
         { say: 'Take turns adding blocks. Your friend adds one, and then it is your turn. You add one, and then it is your friend\'s turn.', show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
         { say: 'You can take turns rolling a ball, going down the slide and swinging on the swing, too.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'slide' } } },
-        { say: 'Playing together can make everyone happy. Listening to a friend\'s idea can make your friend happy.', show: { kind: 'face', feeling: 'happy' } },
-        { say: 'Sometimes friends say, not now. That is okay. You can play something else, like the slide, and ask again later.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Playing together can make everyone happy, with a big smile. Listening to a friend\'s idea can make your friend happy.', show: { kind: 'face', feeling: 'happy' } },
+        // Since pass NY (pass NX's measured reads): this line sends a child off to play, so a grown-up is near in its words and its
+        // picture, as a young child near a height always has one (the slide had stood alone).
+        // Since round one's screen read of pass NY (its S2) the teacher is near the slide, where the line said the teacher watches while
+        // the teacher's drawing holds a book open; the grown-up is still named where a child goes to the slide, as wave 1 asked.
+        { say: 'Sometimes friends say, not now. That is okay. You can play something else, like the slide near your teacher, and ask again later.', show: { kind: 'pair', a: { kind: 'icon', name: 'slide' }, b: { kind: 'icon', name: 'teacher' } } },
         { say: 'You can find another friend to play with, too.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
         { say: 'Having nobody to play with can make a friend sad. When a friend is playing alone, ask, do you want to play with me?', show: { kind: 'pic', name: 'rabbit' } },
         { say: 'When you want to play, watch first, then ask, can I play too?', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
@@ -5556,8 +5641,14 @@ function PREK3_MODULES() { return [
   // a friend said, from the same Texas outcome (PK3 II.B.2) and its guide's child behaviors ("listening to others or extending/
   // connecting to an idea expressed by the other person"), and Head Start's P-LC 4 (two or three conversational turns). A
   // three-year-old recalls the ball rolled back and forth, then hears what to say when it is their turn: a question about the
-  // friend's news or something kind about it, never something else (a glass of water, pizza), and the same with a grown-up they
+  // friend's news or something kind about it, never something else (a bus, pizza), and the same with a grown-up they
   // know. Six of its lines were Talking with a friend's (pass MQ); the first line, the second, Grandma's cake and the recap are new.
+  // Since pass NY (EARMARKS A181, pass NX's measured reads), in plain terms: the reply about something else is "I see a bus", where it
+  // had been "I want a glass of water", a child's real need, which Say what you need, the next lesson, teaches a thirsty child to ask
+  // for; each good reply names what it is about (what is your puppy's name, did you play on the slide), so that one friend's good
+  // reply is about something else when another friend says something else, and a line says so (I like your hat is not about the
+  // tower); and the sad and happy faces' lines say each face's sign, a tear rolling out and a big smile, which the face question's
+  // reasons name.
   {
     id: 'talk-about-it',
     skill: 'Getting along',
@@ -5567,21 +5658,22 @@ function PREK3_MODULES() { return [
     title: 'Talk about it',
     tagline: 'Say something about it',
     lesson: {
-      paragraphs: ['Talking with a friend is like rolling a ball back and forth. When it is your turn, say something about what your friend said. You can ask about it, or say something kind about it.', 'If your friend says, I have a new puppy, you can ask, what is its name? If you say, I want a glass of water, or, I like pizza, that is not about the puppy, and your friend may feel sad, and think you did not listen. If your friend says, I made a tower, you can say, I like your tower!', 'You can do this with grown-ups you know too. If Grandma says, I baked a cake, you can say, yum, I like cake! When you say something about what someone said, they know you listened.'],
+      paragraphs: ['Talking with a friend is like rolling a ball back and forth. When it is your turn, say something about what your friend said. You can ask about it, or say something kind about it.', 'If your friend says, I have a new puppy, you can ask, what is your puppy\'s name? If you say, I see a bus, or, I like pizza, that is not about the puppy, and your friend may feel sad, and think you did not listen. If your friend says, I made a tower, you can say, I like your tower! If you say, I like your hat, that is not about the tower.', 'You can do this with grown-ups you know too. If Grandma says, I baked a cake, you can say, yum, I like cake! When you say something about what someone said, they know you listened.'],
       keyIdea: 'When it is your turn, say something about what your friend said. Then your friend knows you listened, and feels happy.',
-      example: { kind: 'icon', name: 'dog', caption: 'Your friend says, I have a new puppy dog! You can ask, what is its name?' },
+      example: { kind: 'icon', name: 'dog', caption: 'Your friend says, I have a new puppy dog! You can ask, what is your puppy\'s name?' },
       pictures: [],
       script: [
         { say: 'Talking with a friend is like rolling a ball back and forth. Your friend talks, and then it is your turn.', show: { kind: 'icon', name: 'ball' } },
         { say: 'When it is your turn, say something about what your friend said. You can ask about it, or say something kind about it.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
-        { say: 'Your friend says, I have a new puppy dog! You can ask, what is its name?', show: { kind: 'icon', name: 'dog' } },
-        { say: 'If you say, I want a glass of water, that is not about the puppy. It is about something else.', show: { kind: 'icon', name: 'glass' } },
-        { say: 'If you say, I like pizza, that is not about the puppy either. Your friend may feel sad, and think you did not listen.', show: { kind: 'pair', a: { kind: 'icon', name: 'pizza' }, b: { kind: 'face', feeling: 'sad' } } },
+        { say: 'Your friend says, I have a new puppy dog! You can ask, what is your puppy\'s name?', show: { kind: 'icon', name: 'dog' } },
+        { say: 'If you say, I see a bus, that is not about the puppy. It is about something else.', show: { kind: 'icon', name: 'bus' } },
+        { say: 'If you say, I like pizza, that is not about the puppy either. Your friend may feel sad, and think you did not listen. A sad face can have a tear rolling out.', show: { kind: 'pair', a: { kind: 'icon', name: 'pizza' }, b: { kind: 'face', feeling: 'sad' } } },
         { say: 'Your friend says, I made a tower! You can say, I like your tower!', show: { kind: 'icon', name: 'tower' } },
-        { say: 'Your friend says, I went to the park! You can ask, what did you play? And your friend says, the slide!', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Your friend says, I went to the park! You can ask, did you play on the slide? And your friend says, yes, it was fun!', show: { kind: 'icon', name: 'slide' } },
         { say: 'Your friend says, I have a new hat! You can say, I like your hat!', show: { kind: 'icon', name: 'hat' } },
+        { say: 'Your friend says, I made a tower! If you say, I like your hat, that is not about the tower.', show: { kind: 'pair', a: { kind: 'icon', name: 'tower' }, b: { kind: 'icon', name: 'hat' } } },
         { say: 'You can do this with grown-ups you know too. Grandma says, I baked a cake! You can say, yum, I like cake!', show: { kind: 'pair', a: { kind: 'icon', name: 'grandma' }, b: { kind: 'icon', name: 'cake' } } },
-        { say: 'When it is your turn, say something about what your friend said. Then your friend knows you listened, and feels happy.', show: { kind: 'face', feeling: 'happy' } },
+        { say: 'When it is your turn, say something about what your friend said. Then your friend knows you listened, and feels happy, with a big smile.', show: { kind: 'face', feeling: 'happy' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying something about what a friend or a grown-up you know said, by asking about it or saying something kind about it, and not talking about something else, while hi and bye, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks are taught in Talking with a friend and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goal P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches one conversational rule, saying something about what the other one said, which keeps a conversation going for two or three turns, as its 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", while a hi, a turn each, a bye and no shouting are taught in Talking with a friend, and using an appropriate tone and volume for different situations is taught in A voice to fit the place, as pre-K 4\'s Say it to fit teaches it.'],
@@ -6122,19 +6214,26 @@ function PREK3_READING_MODULES() { return [
       paragraphs: ['Some words name people. A baby is very little, and can drink milk from a bottle. A teacher helps children learn at school, and reads stories to the class. A doctor helps you get well when you are sick. A grandma is the mom of your mom or your dad, and a grandpa is the dad of your mom or your dad, and both can help take care of you. A teacher, a doctor, a grandma and a grandpa are all helpers. A baby is little, and a grandma and a grandpa are grown-ups. Babies, teachers, doctors, grandmas and grandpas are all people, and each one is a person. A book, a bed and a cake are not people. They are things.'],
       keyIdea: 'Some words name people, like baby, teacher, doctor, grandma and grandpa. Each one is a person.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'grandma' }, b: { kind: 'icon', name: 'grandpa' }, caption: 'A grandma and a grandpa are people.' },
-      pictures: [{ serial: 'P161', alt: 'A family at home, a grandpa reading a picture book to a small child while a grandma holds a baby', step: 8 }],
+      pictures: [{ serial: 'P161', alt: 'A family at home, a grandpa reading a picture book to a small child while a grandma holds a baby', step: 9 }],
       script: [
         { say: 'Some words name people. This is a baby. A baby is very little, and can drink milk from a bottle. Our word is baby. ' + sayAlong('baby', ['slow', 'whisper', 'slide', 'fast', 'dough']), show: { kind: 'icon', name: 'baby' } },
         { say: 'This is a teacher. A teacher helps children learn at school, and reads stories to the class. Our word is teacher. ' + sayAlong('teacher', ['giant', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'icon', name: 'teacher' } },
         { say: 'This is a doctor. A doctor helps you get well when you are sick. Our word is doctor. ' + sayAlong('doctor', ['slow', 'mouse', 'silly', 'fast', 'dough']), show: { kind: 'icon', name: 'doctor' } },
         { say: 'This is a grandma. A grandma is the mom of your mom or your dad. A grandma can help take care of you. Our word is grandma. ' + sayAlong('grandma', ['giant', 'whisper', 'bounce', 'fast', 'dough']), show: { kind: 'icon', name: 'grandma' } },
         { say: 'This is a grandpa. A grandpa is the dad of your mom or your dad. A grandpa can help take care of you too. Our word is grandpa. ' + sayAlong('grandpa', ['giant', 'whisper', 'silly', 'fast', 'stretch']), show: { kind: 'icon', name: 'grandpa' } },
-        { say: 'A teacher, a doctor, a grandma and a grandpa are all helpers.', show: { kind: 'row', items: [{ kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'doctor' }, { kind: 'icon', name: 'grandma' }] } },
-        { say: 'A baby is little, and a grandma and a grandpa are grown-ups. Babies, teachers, doctors, grandmas and grandpas are all people. Each one is a person. Our word is people. ' + sayAlong('people', ['slow', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'row', align: 'end', items: [{ kind: 'icon', name: 'baby', size: 74 }, { kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } },
+        // Every person a line names is drawn on it (pass NY, EARMARKS A181: pass NX's reads found the helpers' line naming four and
+        // drawing three, without the grandpa, since a row draws three at most). A line that names four or five draws a stacked pair of
+        // two rows, in the order its words name them: the helpers two above two, and all five people three above two. The line that
+        // named all five after the baby and the grown-ups was split in two, the baby, drawn smaller, beside the grandma and the grandpa
+        // on a line of its own, since with five people drawn under its words its Next sat under a 375 by 667 phone's fold (at 677 pixels
+        // in the light theme and 672 in the dark).
+        { say: 'A teacher, a doctor, a grandma and a grandpa are all helpers.', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'doctor' }] }, b: { kind: 'row', items: [{ kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } } },
+        { say: 'A baby is little, and a grandma and a grandpa are grown-ups.', show: { kind: 'row', align: 'end', items: [{ kind: 'icon', name: 'baby', size: 74 }, { kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } },
+        { say: 'They are all people, a baby, a teacher, a doctor, a grandma and a grandpa. Each one is a person. Our word is people. ' + sayAlong('people', ['slow', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'baby' }, { kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'doctor' }] }, b: { kind: 'row', items: [{ kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } } },
         { say: 'A book, a bed and a cake are not people. They are things.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'bed' }, { kind: 'icon', name: 'cake' }] } },
         { say: 'A family can have all kinds of people, like a baby, a grandma and a grandpa.', show: null },
         { say: 'Listen for words that name people, like teacher and grandma. Then find their pictures.', show: { kind: 'pair', a: { kind: 'icon', name: 'teacher' }, b: { kind: 'icon', name: 'grandma' } } },
-        { say: 'Some words name people, like baby, teacher, doctor, grandma and grandpa. Each one is a person.', show: { kind: 'row', items: [{ kind: 'icon', name: 'baby' }, { kind: 'icon', name: 'doctor' }, { kind: 'icon', name: 'grandpa' }] } },
+        { say: 'Some words name people, like baby, teacher, doctor, grandma and grandpa. Each one is a person.', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'baby' }, { kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'doctor' }] }, b: { kind: 'row', items: [{ kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events), in part, its receptive half for words that label and describe common people, a baby, a teacher, a doctor, a grandma and a grandpa, while common events are taught in Things that happen, and using the words, its expressive half, is the child\'s own talk (EARMARKS E12), and VII.B.3 (identifies family, school, and community helpers), since the lesson teaches family helpers, a grandma and a grandpa who can help take care of you, a school helper, a teacher who helps children learn, and a community helper, a doctor who helps you get well, all of them helpers, and Head Start ELOF Goal P-LC 7 (shows understanding of word categories and relationships among words), whose 36 to 48 month progression reads "Typically uses known words in the correct context and, with support, shows an emerging understanding of how words are related to broader categories, such as sorting things by color.", in part, since the lesson teaches that a baby, a teacher, a doctor, a grandma and a grandpa all belong to one broader category, people, while using known words in context is the child\'s own talk (EARMARKS E12).'],
@@ -6143,6 +6242,10 @@ function PREK3_READING_MODULES() { return [
   // Things that happen (pass MR, Mikey's answer to Q70, "Q70 - C"): the second half of People and events, the receptive half of PK3
   // II.D.1 for words that name common events, a birthday party, bedtime, a rainy day, a snowy day, story time and a day at the park,
   // each with the thing that goes with it. Five lines and their "Say ... with me" cues were People and events' own (pass MQ, Q67).
+  // Since pass NY (EARMARKS A181, pass NX's measured reads), in plain terms: a birthday party can be a happy day, where the line said
+  // it is one, since pre-K 4's How do friends feel? teaches that friends can feel different about the same thing; and the rain is drops
+  // of water, and the snow cold and white, so a question can ask about each without saying rain or snow, whose sound tells rainy day
+  // and snowy day.
   {
     id: 'things-that-happen',
     skill: 'Listening',
@@ -6152,15 +6255,15 @@ function PREK3_READING_MODULES() { return [
     title: 'Things that happen',
     tagline: 'Birthdays, bedtime and rain',
     lesson: {
-      paragraphs: ['Some words name things that happen, called events. A birthday party is a happy day, often with a cake that has candles to blow out. At bedtime, you put on your pajamas and sleep in your bed. On a rainy day, rain falls from the clouds, and on a snowy day, snow falls. At story time, someone reads you a book, and at the park, you can play on the slide.', 'One day can have many events, like story time with a book, the slide at the park, and bedtime in your bed.'],
+      paragraphs: ['Some words name things that happen, called events. A birthday party can be a happy day, often with a cake that has candles to blow out. At bedtime, you put on your pajamas and sleep in your bed. On a rainy day, drops of water fall from the clouds, and that is rain. On a snowy day, snow falls from the clouds, cold and white. At story time, someone reads you a book, and at the park, you can play on the slide.', 'One day can have many events, like story time with a book, the slide at the park, and bedtime in your bed.'],
       keyIdea: 'Some words name things that happen, like birthday party, rainy day and bedtime.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'cake' }, b: { kind: 'icon', name: 'bed' }, caption: 'A birthday party and bedtime are things that happen.' },
       pictures: [],
       script: [
         { say: 'Some words name people, like baby and grandpa. Other words name things that happen, called events.', show: { kind: 'pair', a: { kind: 'icon', name: 'baby' }, b: { kind: 'icon', name: 'grandpa' } } },
-        { say: 'A birthday party is a happy day, often with a cake that has candles to blow out. Our word is birthday party. ' + sayAlong('birthday party', ['slow', 'mouse', 'chant', 'fast', 'dough']), show: { kind: 'icon', name: 'cake' } },
+        { say: 'A birthday party can be a happy day, often with a cake that has candles to blow out. Our word is birthday party. ' + sayAlong('birthday party', ['slow', 'mouse', 'chant', 'fast', 'dough']), show: { kind: 'icon', name: 'cake' } },
         { say: 'At bedtime, you put on your pajamas and sleep in your bed. Our word is bedtime. ' + sayAlong('bedtime', ['giant', 'whisper', 'slide', 'fast', 'stretch']), show: { kind: 'icon', name: 'bed' } },
-        { say: 'On a rainy day, rain falls from the clouds. On a snowy day, snow falls. Rain goes with a rainy day, and snow goes with a snowy day.', show: { kind: 'pair', a: { kind: 'icon', name: 'rain' }, b: { kind: 'icon', name: 'snow' } } },
+        { say: 'On a rainy day, drops of water fall from the clouds. That is rain! On a snowy day, snow falls from the clouds, cold and white. Rain goes with a rainy day, and snow goes with a snowy day.', show: { kind: 'pair', a: { kind: 'icon', name: 'rain' }, b: { kind: 'icon', name: 'snow' } } },
         { say: 'At story time, someone reads you a book.', show: { kind: 'icon', name: 'book' } },
         { say: 'At the park, you can play on the slide.', show: { kind: 'icon', name: 'slide' } },
         { say: 'One day has many events, like story time with a book, the slide at the park, and bedtime.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'slide' }, { kind: 'icon', name: 'bed' }] } },
@@ -7983,10 +8086,10 @@ function PREK_MODULES() { return [
     title: 'How do friends feel?',
     tagline: 'The same, or different',
     lesson: {
-      paragraphs: ['Friends can feel the same as you, or different. At a birthday party, you feel happy, and your friend feels happy too, the same feeling. At the big slide, you feel happy, and your friend feels scared, different feelings about the same slide.', 'Friends can like different things, too. You like cats, and your friend likes dogs, and that is okay. Think about what your friend likes. You like pizza, and your friend likes cake, so a piece of cake can make your friend happy. What if you like cake, but your friend does not like cake? Then cake may make your friend a little sad, even when it makes you happy. To know how a friend feels, look at their face, happy, sad or mad, and ask, how do you feel?', 'Worried is a feeling too. You may feel worried when you think something bad might happen, like on the first day at a new school. A worried face can have a wiggly mouth, and eyebrows that go up in the middle.', 'Embarrassed is a feeling too. You may feel embarrassed when you spill, fall or make a mistake, and everyone looks at you. An embarrassed face can have eyes that look down and pink cheeks, and you may want to hide your face. Everyone feels worried or embarrassed sometimes, and that is okay. You can say, I feel worried, or I feel embarrassed.'],
-      keyIdea: 'Friends can feel the same as you, or different, and they can like different things. Look at a friend\'s face, and ask, how do you feel?',
+      paragraphs: ['Friends can feel the same as you, or different. At a birthday party, you feel happy, and your friend feels happy too, the same feeling. At the big slide, you feel happy, and your friend feels scared, different feelings about the same slide.', 'Friends can like different things, too. You like cats, and your friend likes dogs, and that is okay. Think about what your friend likes. You like pizza, and your friend likes cake, so a piece of cake can make your friend happy. What if you like cake, but your friend does not like cake? Then cake may make your friend a little sad, even when it makes you happy. A face can show a feeling. A big smile can show happy, a tear rolling out sad, eyebrows that squeeze down mad, and wide-open eyes scared. To know how a friend feels, turn toward your friend, and ask, how do you feel?', 'Worried is a feeling too. You may feel worried when you think something bad might happen, like on the first day at a new school. A worried face can have a wiggly mouth, and eyebrows that go up in the middle.', 'Embarrassed is a feeling too. You may feel embarrassed when you spill, fall or make a mistake, and everyone looks at you. An embarrassed face can have eyes that look down and pink cheeks, and you may want to hide your face. Everyone feels worried or embarrassed sometimes, and that is okay. You can say, I feel worried, or I feel embarrassed.'],
+      keyIdea: 'Friends can feel the same as you, or different, and they can like different things. Turn toward a friend, and ask, how do you feel?',
       example: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'scared' }, caption: 'Happy and scared at the same slide.' },
-      pictures: [{ serial: 'P150', alt: 'Two small children beside the ladder of a tall, empty playground slide, one grinning and one looking up at it with scared, wide-open eyes', step: 1 }, { serial: 'P151', alt: 'A small child at a lunch table with pink cheeks, looking down after a spill as other children look over', step: 8 }],
+      pictures: [{ serial: 'P150', alt: 'Two small children beside the ladder of a tall, empty playground slide, one grinning and one looking up at it with scared, wide-open eyes', step: 1 }, { serial: 'P151', alt: 'A small child at a lunch table with pink cheeks, looking down after a spill as other children look over', step: 9 }],
       script: [
         { say: 'Friends can feel the same as you, or different. At a birthday party, you feel happy, and your friend feels happy too. The same feeling!', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'happy' } } },
         { say: 'At the big slide, you feel happy, and your friend feels scared. Different feelings about the same slide!', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'scared' } } },
@@ -7994,7 +8097,11 @@ function PREK_MODULES() { return [
         { say: 'Think about what your friend likes. You like pizza, and your friend likes cake, so a piece of cake can make your friend happy.', show: { kind: 'pair', a: { kind: 'icon', name: 'pizza' }, b: { kind: 'icon', name: 'cake' } } },
         // Pass MN (the lesson and accuracy checks): what a friend does not like, said before its question asks it.
         { say: 'What if you like cake, but your friend does not like cake? Then cake may make your friend a little sad, even when it makes you happy.', show: { kind: 'face', feeling: 'sad' } },
-        { say: 'To know how a friend feels, look at their face. Is it happy, sad or mad? Then ask, how do you feel?', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad'] } },
+        // Pass NY (EARMARKS A181, the measured reads): the four faces' signs said in this lesson's own lines, since its face questions'
+        // reasons name them (a big smile, a tear rolling out, eyebrows that squeeze down, wide-open eyes), and a friend is turned toward,
+        // never looked at (the lesson brief's item 2: eye contact distresses some autistic children).
+        { say: 'A face can show a feeling. A big smile can show happy, and a tear rolling out can show sad. Eyebrows that squeeze down can show mad, and wide-open eyes can show scared.', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad', 'scared'] } },
+        { say: 'To know how a friend feels, turn toward your friend. Is your friend happy, sad or mad? Then ask, how do you feel?', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad'] } },
         { say: 'Worried is a feeling too. You may feel worried when you think something bad might happen, like on the first day at a new school.', show: { kind: 'face', feeling: 'worried' } },
         { say: 'A worried face can have a wiggly mouth, and eyebrows that go up in the middle.', show: { kind: 'face', feeling: 'worried' } },
         { say: 'Embarrassed is a feeling too. You may feel embarrassed when you spill, fall or make a mistake, and everyone looks at you.', show: { kind: 'face', feeling: 'embarrassed' } },
@@ -8015,13 +8122,17 @@ function PREK_MODULES() { return [
     title: 'Being a good friend',
     tagline: 'Help, and fix it together',
     lesson: {
-      paragraphs: ['Good friends notice how others feel. When a friend feels sad, worried or embarrassed, you can help. You can sit beside your friend, or say kind words. Ask, are you okay? Or say, I will play with you.', 'When a friend spills a little milk and feels embarrassed, say, it is okay, I spill too, and help wipe it up together. Laughing at a friend who feels embarrassed is not kind, because it can make your friend feel worse. When a friend feels worried on the first day at school, ask, can I hold your hand? And say, I will play with you. When a friend falls and gets hurt, or is very sad and cannot stop crying, get a grown-up, because grown-ups know how to help.', 'Sometimes friends want different things. You want to play blocks, and your friend wants to play ball, and that is a problem. Say what the problem is, like, we want different games, and find a fair way to fix it. You can take turns choosing, first blocks and then ball, or find a game you both like. Only you choosing every time is not fair, because your friend wants a turn to choose too. When you and your friend can fix a problem together, you do not need to get a grown-up. When you cannot fix a problem together, get a grown-up. When a fight starts and you cannot stop it, get a grown-up too.'],
+      paragraphs: ['Good friends notice how others feel. When a friend feels sad, worried or embarrassed, you can help. You can sit beside your friend, or say kind words. Ask, are you okay? Or say, I will play with you. Go away is not a kind thing to say. Stop crying is not kind, either.', 'When a friend spills a little milk and feels embarrassed, say, it is okay, I spill too, and help wipe it up together. Laughing at a friend who feels embarrassed is not kind, because it can make your friend feel worse. When a friend feels worried on the first day at school, ask, can I hold your hand? And say, I will play with you. When a friend falls and gets hurt, or is very sad and cannot stop crying, get a grown-up, because grown-ups know how to help.', 'Sometimes friends want different things. You want to play blocks, and your friend wants to play ball, and that is a problem. Say what the problem is, like, we want different games, and find a fair way to fix it. You can take turns choosing, first blocks and then ball, or find a game you both like. Only you choosing every time is not fair, because your friend wants a turn to choose too. When you and your friend can fix a problem together, you do not need to get a grown-up. When you cannot fix a problem together, get a grown-up. When a fight starts and you cannot stop it, get a grown-up too.'],
       keyIdea: 'Notice how your friend feels, and help. Say what a problem is and find a fair way to fix it, and when you cannot fix it together, get a grown-up.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' }, caption: 'Blocks first, then ball. Take turns choosing.' },
       pictures: [{ serial: 'P152', alt: 'A small child helping a friend with pink cheeks and eyes that look down wipe up spilled milk at a lunch table', step: 2 }, { serial: 'P153', alt: 'Two small children rolling a ball to each other, the block tower they built first standing well off to one side', step: 8 }],
       script: [
         { say: 'Good friends notice how others feel. When a friend feels sad, worried or embarrassed, you can help.', show: { kind: 'faces', feelings: ['sad', 'worried', 'embarrassed'] } },
-        { say: 'You can sit beside your friend, or say kind words. Ask, are you okay? Or say, I will play with you.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        // Since pass NY (pass NX's measured reads) the line says the unkind words its questions offer as wrong choices, go away and stop
+        // crying, so a child meets them here before practice does.
+        // Since round one's lesson read of pass NY (its SC4) the two sayings that are not kind are each a sentence of their own, since
+        // "Saying go away or stop crying to your friend is not kind." ran on with no pause in a device voice and was hard to follow.
+        { say: 'You can sit beside your friend, or say kind words. Ask, are you okay? Or say, I will play with you. Go away is not a kind thing to say. Stop crying is not kind, either.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
         { say: 'When a friend spills a little milk and feels embarrassed, say, it is okay, I spill too, and help wipe it up together.', show: { kind: 'face', feeling: 'embarrassed' } },
         { say: 'Laughing at a friend who feels embarrassed is not kind. It can make your friend feel worse.', show: { kind: 'face', feeling: 'embarrassed' } },
         { say: 'When a friend feels worried on the first day at school, ask, can I hold your hand? And say, I will play with you.', show: { kind: 'face', feeling: 'worried' } },
@@ -8127,7 +8238,7 @@ function PREK_MODULES() { return [
     title: 'Say it to fit',
     tagline: 'Ask, tell, and a voice for each place',
     lesson: {
-      paragraphs: ['We use words for many reasons. To ask for something, you can say, please pass the red crayon. Or, please pass the cup. To tell what happened, you can say, I made a tall tower! To ask a question, you can say, where does rain come from? Or, what is your name? And to say how you feel, you can say, I feel happy! Or, I feel sad.', 'Your voice can change to fit the place. In the library, use a whisper, so others can read their books. When a baby is sleeping, use a whisper too. In the classroom and at the doctor\'s office, use an inside voice, not too loud and not too soft. On the playground, you can use a big outside voice, so a friend far away can hear you. A whisper or an inside voice is too soft for a friend far away. A kind, soft voice fits when a friend is sad.', 'Tell a grown-up enough, so they can help. If you just say, it hurts, they do not know where, and if you just say uh oh, they do not know what happened. Say, my knee hurts. I fell on the slide. And tell the doctor just what is wrong, like, my ear hurts.'],
+      paragraphs: ['We use words for many reasons. To ask for something, you can say, please pass the red crayon. Or, please pass the cup. To tell what happened, you can say, I made a tall tower! To ask a question, you can say, where does rain come from? Or, what is your name? And to say how you feel, you can say, I feel happy! Or, I feel sad.', 'Your voice can change to fit the place. In the library, use a whisper, so others can read their books. When a baby is sleeping, use a whisper too. In the classroom and at the doctor\'s office, use an inside voice, not too loud and not too soft. On the playground, you can use a big outside voice, so a friend far away can hear you. A whisper or an inside voice is too soft for a friend far away. A kind, soft voice fits when a friend is sad.', 'Tell a grown-up enough, so they can help. If you just say, it hurts, they do not know where, and if you just say uh oh, they do not know what happened. Saying it hurts is a good start. Then say where it hurts, like, my knee hurts, and what happened, like, I fell on the slide. And tell the doctor just what is wrong, like, my ear hurts.'],
       keyIdea: 'We use words to ask for things, to tell, to ask questions and to say how we feel. Make your voice fit the place.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'slide' }, caption: 'A whisper in the library, and a big outside voice on the playground.' },
       pictures: [{ serial: 'P168', alt: 'A small child by a slide calling to another child far away by the sandbox, hands cupped around the mouth', step: 8 }],
@@ -8143,7 +8254,9 @@ function PREK_MODULES() { return [
         { say: 'On the playground by the slide, you can use a big outside voice, like, over here! Then a friend far away can hear you, and a whisper or an inside voice is too soft.', show: { kind: 'icon', name: 'slide' } },
         { say: 'A kind, soft voice fits when a friend is sad. You can say, are you okay?', show: { kind: 'face', feeling: 'sad' } },
         { say: 'Tell a grown-up enough, so they can help, like your teacher, your grandma or your grandpa. If you just say, it hurts, they do not know where. And if you just say uh oh, they do not know what happened.', show: { kind: 'icon', name: 'teacher' } },
-        { say: 'Say, my knee hurts. I fell on the slide. Then your teacher knows just what happened.', show: { kind: 'icon', name: 'slide' } },
+        // Pass NY (EARMARKS A181, the measured reads' finding on It hurts. as a wrong choice): saying it hurts is a good start, so a hurt
+        // child never hears that it was wrong to say; then where it hurts and what happened, each its own telling, as the bank asks them.
+        { say: 'Saying it hurts is a good start. Then say where it hurts, like, my knee hurts. And say what happened, like, I fell on the slide.', show: { kind: 'icon', name: 'slide' } },
         { say: 'We use words to ask for things, to tell, to ask questions and to say how we feel. Make your voice fit the place, a whisper when the baby sleeps, and a big outside voice by the slide.', show: { kind: 'pair', a: { kind: 'icon', name: 'baby~asleep' }, b: { kind: 'icon', name: 'slide' } } },
       ],
     },
@@ -8626,12 +8739,15 @@ function PREK_READING_MODULES() { return [
       example: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'scissors' }, caption: 'You read a book, and you cut paper with scissors.' },
       pictures: [{ serial: 'P166', alt: 'A small child at a classroom table at art time, drawing with a crayon, a pair of scissors and a sheet of paper beside them', step: 6 }],
       script: [
-        { say: 'Some words tell what we do. We call them action words. You read a book, you kick a ball, and you sleep in a bed. Our word is action. ' + sayAlong('action', ['slow', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }] } },
+        // Since pass NY (EARMARKS A181, pass NX's measured reads) action is said like a big, sleepy giant, and lunchtime slowly, where
+        // lunchtime had the sleepy giant in a lesson that sets lunchtime against bedtime's sleep; sleep is one of the action words this
+        // line says, and the say-along rule wants both first steps once a lesson has two games, so the two words swapped.
+        { say: 'Some words tell what we do. We call them action words. You read a book, you kick a ball, and you sleep in a bed. Our word is action. ' + sayAlong('action', ['giant', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }] } },
         { say: 'You cut paper with scissors, and you draw with a crayon. Our word is scissors. ' + sayAlong('scissors', ['slow', 'whisper', 'bounce', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'icon', name: 'scissors' }, b: { kind: 'icon', name: 'crayon' } } },
         { say: 'You eat soup with a spoon, and you drink from a cup.', show: { kind: 'pair', a: { kind: 'icon', name: 'spoon' }, b: { kind: 'icon', name: 'cup' } } },
         { say: 'You can ride a bus to school. Read, kick, sleep, cut, draw, eat, drink and ride are all action words.', show: { kind: 'icon', name: 'bus' } },
         { say: 'An action goes with a thing. What do you do with a book? You read it! What do you do with a ball? You kick it!', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'ball' } } },
-        { say: 'Actions go with times of the day too. At lunchtime, you eat with a spoon from a plate, and you drink from a cup. Our word is lunchtime. ' + sayAlong('lunchtime', ['giant', 'mouse', 'silly', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'plate' }, { kind: 'icon', name: 'cup' }] } },
+        { say: 'Actions go with times of the day too. At lunchtime, you eat with a spoon from a plate, and you drink from a cup. Our word is lunchtime. ' + sayAlong('lunchtime', ['slow', 'mouse', 'silly', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'plate' }, { kind: 'icon', name: 'cup' }] } },
         { say: 'At art time, you draw with a crayon, and you cut paper with scissors.', show: { kind: 'pair', a: { kind: 'icon', name: 'crayon' }, b: { kind: 'icon', name: 'scissors' } } },
         { say: 'At story time, you read a book together, and at bedtime, you sleep in your bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'bed' } } },
         { say: 'Actions go with places too. At the park, you can kick a ball and go down the slide.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'slide' } } },
@@ -8662,7 +8778,7 @@ function PREK_READING_MODULES() { return [
     title: 'My voice tells more',
     tagline: 'Asking, telling, a strong word and how I feel',
     lesson: {
-      paragraphs: ['Your voice can go up high and down low. When we ask a question, our voice often goes up at the end. Is it raining? When we tell, our voice often goes down at the end. It is raining. The same words can even ask or tell, by how the voice goes.', 'Saying one word strong shows the word that matters most. I want the RED circle, not the blue one. Now you say circle strong. I want the red CIRCLE, not the red square.', 'Your voice shows how you feel. A happy voice often goes up high, and it can be quick. A sad voice is often slow, soft and low. So listen to how something is said, and you can tell if someone feels happy or sad.', 'Sometimes you talk with a friend, a grown-up you know, or someone new, a doctor you have just met. Say your words slowly and clearly, and turn toward them, so they can understand you.'],
+      paragraphs: ['Your voice can go up high and down low. When we ask a question, our voice often goes up at the end. Is it raining? When we tell, our voice often goes down at the end. It is raining. The same words can even ask or tell, by how the voice goes.', 'Saying one word strong shows the word that matters most. I want the RED circle, not the blue one. Now you say circle strong. I want the red CIRCLE, not the red square.', 'Your voice shows how you feel. A happy voice often goes up high, and a sad voice is often slow, soft and low. So listen to how something is said, and you can tell if someone feels happy or sad.', 'Sometimes you talk with a friend, a grown-up you know, or someone new, a doctor you have just met. Say your words slowly and clearly, and turn toward them, so they can understand you.'],
       keyIdea: 'Your voice goes up to ask and down to tell, says one word strong, and shows how you feel.',
       example: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' }, caption: 'A happy voice often goes up high, and a sad voice is often slow, soft and low.' },
       pictures: [{ serial: 'P171', alt: 'A small child at a park gate, jumping with joy, arms up and smiling, a grown-up holding the gate open', step: 6 }],
@@ -8673,10 +8789,11 @@ function PREK_READING_MODULES() { return [
         { say: 'The same words can ask a question or tell you something. You have a dog? With the voice going up at the end, it asks. You have a dog. With the voice going down, it tells.', show: { kind: 'icon', name: 'dog' }, voices: [['You have a dog?', 'ask'], ['You have a dog.', 'tell']] },
         { say: 'Saying one word strong shows the word that matters most. I want the RED circle, not the blue one.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } }, voices: [['I want the RED circle, not the blue one.', 'strong']] },
         { say: 'Your turn. Say circle strong, like me. I want the red CIRCLE, not the red square.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } }, voices: [['I want the red CIRCLE, not the red square.', 'strong', 'turn']] },
-        { say: 'Your voice shows how you feel. A happy voice often goes up high, and it can be quick. We are going to the park!', show: { kind: 'face', feeling: 'happy' }, voices: [['We are going to the park!', 'happy']] },
+        { say: 'Your voice shows how you feel. A happy voice often goes up high. Listen. We are going to the park!', show: { kind: 'face', feeling: 'happy' }, voices: [['We are going to the park!', 'happy']] },
         { say: 'A sad voice is often slow, soft and low. We are going home.', show: { kind: 'face', feeling: 'sad' }, voices: [['We are going home.', 'sad']] },
-        { say: 'The same words can sound happy or sad. We are going home! In a quick voice going up high, that sounds happy. We are going home. In a slow, low voice, that sounds sad. So listen to how something is said, and you can tell if someone feels happy or sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } }, voices: [['We are going home!', 'happy'], ['We are going home.', 'sad']] },
-        { say: 'Now you try. Ask it, with your voice going up at the end. Can I play with the ball? Now say it happy, with your voice going up high. We are going to the park!', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'face', feeling: 'happy' } }, voices: [['Can I play with the ball?', 'ask', 'turn'], ['We are going to the park!', 'happy', 'turn']] },
+        { say: 'The same words can sound happy or sad. We are going home! In a voice going up high, that sounds happy. We are going home. In a slow, low voice, that sounds sad. So listen to how something is said, and you can tell if someone feels happy or sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } }, voices: [['We are going home!', 'happy'], ['We are going home.', 'sad']] },
+        { say: 'Now you try. Ask it, with your voice going up at the end. Can I play with the ball?', show: { kind: 'icon', name: 'ball' }, voices: [['Can I play with the ball?', 'ask', 'turn']] },
+        { say: 'Now say it happy, like me, with your voice going up high. We are going to the park!', show: { kind: 'face', feeling: 'happy' }, voices: [['We are going to the park!', 'happy', 'turn']] },
         { say: 'Sometimes you talk with a friend, a grown-up you know, or someone new, a doctor you have just met. Say your words slowly and clearly, and turn toward them, so they can understand you.', show: { kind: 'icon', name: 'doctor' } },
         { say: 'Your voice goes up to ask and down to tell, says one word strong, and shows if you feel happy or sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } } },
       ],
@@ -31138,8 +31255,13 @@ const STEPS_ROUTINES_P4 = [
 // Which step a direction puts first, second or last: the steps' pictures are the choices, the answer the step in the place the
 // question asks, and each wrong picture is named by what doing it is called and the place it really has.
 // Two steps and Two steps every day (pass MR, Q70): yes or no about the steps, each answered by a line of its own lesson, with what
-// the wrong answer would mean for that one question.
-const STEPS_YESNO_P3 = [['Do you listen to both steps before you start?', 'Yes', 'Yes. Listen to both steps before you start, and then do them in order.', 'would mean you start before you hear both steps, but you listen to both first.'], ['Can saying the steps to yourself help you remember them?', 'Yes', 'Yes. Say the steps to yourself, like cup, spoon. Saying them can help you remember both.', 'would mean saying the steps cannot help you remember them, but it can.'], ['Get a cup, and then get a spoon. Is getting the spoon the first step?', 'No', 'No. The first step is, get a cup. The second step is, get a spoon.', 'would mean getting the spoon is the first step, but it is the second.'], ['Get a cup, and then get a spoon. Is getting the cup the first step?', 'Yes', 'Yes. The first step is, get a cup, and then the second step is, get a spoon.', 'would mean getting the cup is not the first step, but it is.'], ['Do words like first and then tell the order?', 'Yes', 'Yes. Words like first and then tell the order, like, first tap the moon, then tap the sun.', 'would mean words like first and then do not tell the order, but they do.'], ['Tap the fish, and then tap the ball. Do you tap the ball first?', 'No', 'No. First you tap the fish, and then you tap the ball.', 'would mean you tap the ball first, but first you tap the fish.']];
+// the wrong answer would mean for that one question. Since pass NY (EARMARKS A178 and A181: pass NX's reads found Two steps' answering
+// Yes 67.2 percent of the time, and a child who answered No whenever a question said tap right 83.7 percent of the time) Two steps' grew
+// from its own lines, every old row kept, so it answers Yes on 5 rows of 10 and tap comes with Yes too: the fish and the ball each way,
+// the moon and the sun ("First tap the moon, then tap the sun."), starting before you listen to both steps, and the one that says meow before
+// the one that says quack ("Tap the one that says meow, and then the one that says quack.").
+const STEPS_YESNO_P3 = [['Do you listen to both steps before you start?', 'Yes', 'Yes. Listen to both steps before you start, and then do them in order.', 'would mean you start before you hear both steps, but you listen to both first.'], ['Can saying the steps to yourself help you remember them?', 'Yes', 'Yes. Say the steps to yourself, like cup, spoon. Saying them can help you remember both.', 'would mean saying the steps cannot help you remember them, but it can.'], ['Get a cup, and then get a spoon. Is getting the spoon the first step?', 'No', 'No. The first step is, get a cup. The second step is, get a spoon.', 'would mean getting the spoon is the first step, but it is the second.'], ['Get a cup, and then get a spoon. Is getting the cup the first step?', 'Yes', 'Yes. The first step is, get a cup, and then the second step is, get a spoon.', 'would mean getting the cup is not the first step, but it is.'], ['Do words like first and then tell the order?', 'Yes', 'Yes. Words like first and then tell the order, like, first tap the moon, then tap the sun.', 'would mean words like first and then do not tell the order, but they do.'], ['Tap the fish, and then tap the ball. Do you tap the ball first?', 'No', 'No. First you tap the fish, and then you tap the ball.', 'would mean you tap the ball first, but first you tap the fish.'],
+  ['Tap the fish, and then tap the ball. Do you tap the fish first?', 'Yes', 'Yes. First you tap the fish, and then you tap the ball.', 'would mean you do not tap the fish first, but you do.'], ['First tap the moon, then tap the sun. Do you tap the sun first?', 'No', 'No. First you tap the moon, and then you tap the sun.', 'would mean you tap the sun first, but first you tap the moon.'], ['Do you start before you listen to both steps?', 'No', 'No. Listen to both steps before you start, and then do them in order.', 'would mean you start before you listen to both steps, but you listen to both first.'], ['Tap the one that says meow, and then the one that says quack. Do you tap the duck first?', 'No', 'No. First you tap the cat, which says meow, and then the duck, which says quack.', 'would mean you tap the duck first, but first you tap the cat, which says meow.']];
 const STEPS_HOME_YESNO_P3 = [['Do grown-ups give two-step directions every day?', 'Yes', 'Yes. Grown-ups give two-step directions every day, like, get your hat, and then go to the door.', 'would mean grown-ups do not give two-step directions, but they do, every day.'], ['Get your teddy, and then get into bed. Do you get into bed first?', 'No', 'No. First you get your teddy, and then you get into bed.', 'would mean you get into bed first, but first you get your teddy.'], ['Get a book, and then sit in your chair. Do you get the book first?', 'Yes', 'Yes. First you get a book, and then you sit in your chair.', 'would mean you do not get the book first, but you do.'], ['Get your hat, and then go to the door. Do you go to the door first?', 'No', 'No. First you get your hat, and then you go to the door.', 'would mean you go to the door first, but first you get your hat.'], ['Tap the red one, and then tap the blue one. Do you tap the red one first?', 'Yes', 'Yes. First the red one, and then the blue one.', 'would mean you do not tap the red one first, but you do.'], ['Tap the big circle, and then tap the little square. Do you tap the little square first?', 'No', 'No. First the big circle, and then the little square.', 'would mean you tap the little square first, but first you tap the big circle.']];
 // Three steps (pass MR, Q70): tips for a three-step direction, in socialRow's order of fields, and yes or no about the steps' order.
 // Since pass NV (EARMARKS A158) the yes or no asks first and last each way (second in one Yes row), so no one word tells its answer: until then both
@@ -31375,26 +31497,64 @@ const PE_THING_IS = { cake: 'has candles to blow out at a birthday party', bed: 
 // Things that happen (pass MR, Q70): each event by what the lesson says of it, its picture, and the event never offered against it
 // because a child could fairly pick it (a book can be read at bedtime too, so bedtime never stands against story time).
 const PE_EVENT_NAMES = { cake: 'A birthday party', bed: 'Bedtime', rain: 'A rainy day', snow: 'A snowy day', book: 'Story time', slide: 'The park' };
-const PE_EVENT_IS = { 'A birthday party': 'is a happy day with a cake', Bedtime: 'is when you sleep in your bed', 'A rainy day': 'is when rain falls', 'A snowy day': 'is when snow falls', 'Story time': 'is when someone reads you a book', 'The park': 'is where you can play on the slide' };
+// Since pass NY (EARMARKS A181) a birthday party often has a cake with candles, where it had been a happy day: the lesson's line says it
+// can be one, since friends can feel different about the same thing (How do friends feel?, pre-K 4).
+const PE_EVENT_IS = { 'A birthday party': 'often has a cake with candles to blow out', Bedtime: 'is when you sleep in your bed', 'A rainy day': 'is when rain falls', 'A snowy day': 'is when snow falls', 'Story time': 'is when someone reads you a book', 'The park': 'is where you can play on the slide' };
 // Since round one's accuracy check (pass MR), the picture and name kinds keep PE_TAP_NOT's pairs too: a book can be a birthday
 // present, and rain and snow can fall in one storm (and their pictures are one cloud, drawn with lines or with dots).
 const PE_EVENT_NOT = { 'Story time': ['Bedtime', 'A birthday party'], Bedtime: ['Story time'], 'A rainy day': ['A snowy day'], 'A snowy day': ['A rainy day'] };
-const PE_EVENT_ASK = [['What is a happy day, often with a cake that has candles to blow out?', 'A birthday party'], ['What is it called when you put on your pajamas and sleep in your bed?', 'Bedtime'], ['What kind of day is it when rain falls from the clouds?', 'A rainy day'], ['What kind of day is it when snow falls?', 'A snowy day'], ['What is it called when someone reads you a book?', 'Story time']];
-const PE_EVENT_YESNO = [['Do you sleep in your bed at bedtime?', 'Yes', 'Yes. At bedtime, you put on your pajamas and sleep in your bed.', 'would mean you do not sleep in your bed at bedtime, but you do.'], ['Is a birthday party when you sleep in your bed?', 'No', 'No. A birthday party is a happy day, often with a cake that has candles to blow out. You sleep in your bed at bedtime.', 'would mean a birthday party is when you sleep in your bed, but that is bedtime.'], ['Is a birthday party a happy day?', 'Yes', 'Yes. A birthday party is a happy day, often with a cake that has candles to blow out.', 'would mean a birthday party is not a happy day, but it is.'], ['Does someone read you a book at story time?', 'Yes', 'Yes. At story time, someone reads you a book.', 'would mean nobody reads you a book at story time, but someone does.'], ['Do you play on the slide at bedtime?', 'No', 'No. At bedtime, you sleep in your bed. You can play on the slide at the park.', 'would mean you play on the slide at bedtime, but you sleep then.'], ['Can you play on the slide at the park?', 'Yes', 'Yes. At the park, you can play on the slide.', 'would mean you cannot play on the slide at the park, but you can.']];
+// Each event asked by what the lesson says of it. Since pass NY (EARMARKS A181, pass NX's measured reads) no cue says the word an
+// event's name is made from, since a child who taps the name that sounds like a word heard in the question is right without knowing
+// the event (bed in bedtime, rain in rainy day, snow in snowy day, 73.4 percent of the time): bedtime is asked by its pajamas, a rainy
+// day by its drops of water and a snowy day by its cold, white snow, each said on the lesson's lines; and a birthday party by its cake
+// and candles, where it had been a happy day, which the lesson now says it can be. Since round one's lesson read of pass NY (its MF3) the
+// two days are asked as the other events are, What is it called, where they had asked what kind of day it is: a rainy day never stands
+// beside a snowy day, so the answer was the only choice that said day, and a child who tapped the choice repeating a word of the
+// question was right 60.6 percent of the time against a chance of 33.3 (the rules test's echo check had held the two at ECHO_WAITS).
+const PE_EVENT_ASK = [['What is it called when someone blows out the candles on a cake?', 'A birthday party'], ['What is it called when you put on your pajamas and sleep?', 'Bedtime'], ['What is it called when drops of water fall from the clouds?', 'A rainy day'], ['What is it called when something cold and white falls from the clouds?', 'A snowy day'], ['What is it called when someone reads you a book?', 'Story time']];
+// Yes or no about the events, each from a line of the lesson. Since pass NY (EARMARKS A181 and A178; pass NX's measured reads: four of
+// six rows answered Yes, 68.4 percent, one word, when, told the answer 84.4 percent of the time, and "Can you play on the slide at the
+// park?" asked about ability, which a child who cannot answers No truthfully) every old row is kept, the slide row asks what the park
+// is, and six rows grow from the lesson's lines, so the bank answers Yes six times in twelve and each event's words come with Yes and
+// with No. The birthday row says can be a happy day, as the lesson's line does. A new Yes asks what an event is, never what a child
+// does at it, since a child who sleeps in a T-shirt would answer "do you put on your pajamas?" No truthfully; a new No asks about an
+// act no child does there. The rainy and snowy days are asked in the lesson's other four banks: rain and snow can fall in one storm, so
+// a No about the weather could be true.
+const PE_EVENT_YESNO = [['Do you sleep in your bed at bedtime?', 'Yes', 'Yes. At bedtime, you put on your pajamas and sleep in your bed.', 'would mean you do not sleep in your bed at bedtime, but you do.'], ['Is a birthday party when you sleep in your bed?', 'No', 'No. A birthday party often has a cake with candles to blow out. You sleep in your bed at bedtime.', 'would mean a birthday party is when you sleep in your bed, but that is bedtime.'], ['Can a birthday party be a happy day?', 'Yes', 'Yes. A birthday party can be a happy day, often with a cake that has candles to blow out.', 'would mean a birthday party cannot be a happy day, but it can.'], ['Does someone read you a book at story time?', 'Yes', 'Yes. At story time, someone reads you a book.', 'would mean nobody reads you a book at story time, but someone does.'], ['Do you play on the slide at bedtime?', 'No', 'No. At bedtime, you sleep in your bed. You can play on the slide at the park.', 'would mean you play on the slide at bedtime, but you sleep then.'], ['Is the park where you can play on the slide?', 'Yes', 'Yes. At the park, you can play on the slide.', 'would mean the park is not where you can play on the slide, but it is.'],
+  ['Is bedtime when you put on your pajamas?', 'Yes', 'Yes. At bedtime, you put on your pajamas and sleep in your bed.', 'would mean bedtime is not when you put on your pajamas, but it is.'], ['Is a birthday party when someone blows out the candles on a cake?', 'Yes', 'Yes. A birthday party can be a happy day, often with a cake that has candles to blow out.', 'would mean a birthday party is not when someone blows out candles, but it is.'], ['Is the park where you sleep in your bed?', 'No', 'No. At the park, you can play on the slide. You sleep in your bed at bedtime.', 'would mean you sleep in your bed at the park, but that is at bedtime.'], ['At bedtime, do you blow out candles on a cake?', 'No', 'No. At bedtime, you put on your pajamas and sleep in your bed. A birthday party often has a cake with candles to blow out.', 'would mean you blow out candles at bedtime, but that is at a birthday party.'], ['At story time, do you play on the slide?', 'No', 'No. At story time, someone reads you a book. You can play on the slide at the park.', 'would mean you play on the slide at story time, but someone reads you a book then.'], ['Is the park where you put on your pajamas?', 'No', 'No. At the park, you can play on the slide. You put on your pajamas at bedtime.', 'would mean you put on your pajamas at the park, but that is at bedtime.']];
 const PE_TAP_NOT = { bed: ['book'], book: ['bed'], cake: ['book'], rain: ['snow'], snow: ['rain'] };
 // What happens at each event, asked by what you do there; the wrong pictures for each never fit it (a book can be a birthday
-// present, so it is never wrong for a party, and snow never wrong for rain, since both can fall in one storm).
-const PE_WHAT = [['What has candles to blow out at a birthday party?', 'cake', ['bed', 'slide', 'rain', 'snow']], ['Where do you sleep at bedtime?', 'bed', ['cake', 'slide', 'book']], ['What falls from the clouds on a rainy day?', 'rain', ['cake', 'book', 'bed', 'slide']], ['What falls on a snowy day?', 'snow', ['cake', 'book', 'bed', 'slide']], ['What does someone read to you at story time?', 'book', ['cake', 'bed', 'slide']], ['What can you play on at the park?', 'slide', ['bed', 'cake', 'book']]];
-// Yes or no about the people, each from a line of the lesson, with what the wrong answer would mean for that one question.
-const PE_YESNO = [['Is a baby very little?', 'Yes', 'Yes. A baby is very little, and can drink milk from a bottle.', 'would mean a baby is not very little, but a baby is.'], ['Is a baby a grown-up?', 'No', 'No. A baby is very little, and a grandma and a grandpa are grown-ups.', 'would mean a baby is a grown-up, but a baby is very little.'], ['Is a grandma a grown-up?', 'Yes', 'Yes. A grandma is a grown-up, the mom of your mom or your dad.', 'would mean a grandma is not a grown-up, but she is.'], ['Is a grandpa a grown-up?', 'Yes', 'Yes. A grandpa is a grown-up, the dad of your mom or your dad.', 'would mean a grandpa is not a grown-up, but he is.'], ['Is a grandpa very little?', 'No', 'No. A grandpa is a grown-up, and a baby is very little.', 'would mean a grandpa is very little, but a grandpa is a grown-up.'], ['Does a doctor help you get well when you are sick?', 'Yes', 'Yes. A doctor helps you get well when you are sick.', 'would mean a doctor does not help you get well, but a doctor does.'], ['Does a teacher help children learn at school?', 'Yes', 'Yes. A teacher helps children learn at school.', 'would mean a teacher does not help children learn, but a teacher does.'], ['Does a baby help children learn at school?', 'No', 'No. A baby is very little, and a teacher helps children learn at school.', 'would mean a baby helps children learn at school, but a baby is very little.']];
+// present, so it is never wrong for a party, and snow never wrong for rain, since both can fall in one storm). Since pass NY (EARMARKS
+// A181, pass NX's measured reads) the bed, the rain and the snow are asked by another sign the lesson's lines say, the pajamas, the
+// drops of water and the cold, white snow, where "Where do you sleep at bedtime?", "What falls from the clouds on a rainy day?" and
+// "What falls on a snowy day?" said a word that sounds like the answer, so a child who tapped the picture heard in the question was
+// right 66.9 percent of the time. Tap the picture for an event (p3-event-tap) still says each event's name, which for these three is
+// made from its picture's word: the lesson's own pairing, "Rain goes with a rainy day, and snow goes with a snowy day."
+const PE_WHAT = [['What has candles to blow out at a birthday party?', 'cake', ['bed', 'slide', 'rain', 'snow']], ['After you put on your pajamas, where do you sleep?', 'bed', ['cake', 'slide', 'book']], ['What falls from the clouds in drops of water?', 'rain', ['cake', 'book', 'bed', 'slide']], ['What falls from the clouds, cold and white?', 'snow', ['cake', 'book', 'bed', 'slide']], ['What does someone read to you at story time?', 'book', ['cake', 'bed', 'slide']], ['What can you play on at the park?', 'slide', ['bed', 'cake', 'book']]];
+// Yes or no about the people, each from a line of the lesson, with what the wrong answer would mean for that one question. Since pass NY
+// (EARMARKS A181: pass NX's reads found 5 of its 8 rows answering Yes, 61.1 percent of seeds) two rows ask the other way, a grandma very
+// little beside the grandpa, and a baby helping you get well beside the baby helping children learn, so it answers Yes on 5 rows of 10.
+const PE_YESNO = [['Is a baby very little?', 'Yes', 'Yes. A baby is very little, and can drink milk from a bottle.', 'would mean a baby is not very little, but a baby is.'], ['Is a baby a grown-up?', 'No', 'No. A baby is very little, and a grandma and a grandpa are grown-ups.', 'would mean a baby is a grown-up, but a baby is very little.'], ['Is a grandma a grown-up?', 'Yes', 'Yes. A grandma is a grown-up, the mom of your mom or your dad.', 'would mean a grandma is not a grown-up, but she is.'], ['Is a grandpa a grown-up?', 'Yes', 'Yes. A grandpa is a grown-up, the dad of your mom or your dad.', 'would mean a grandpa is not a grown-up, but he is.'], ['Is a grandpa very little?', 'No', 'No. A grandpa is a grown-up, and a baby is very little.', 'would mean a grandpa is very little, but a grandpa is a grown-up.'], ['Does a doctor help you get well when you are sick?', 'Yes', 'Yes. A doctor helps you get well when you are sick.', 'would mean a doctor does not help you get well, but a doctor does.'], ['Does a teacher help children learn at school?', 'Yes', 'Yes. A teacher helps children learn at school.', 'would mean a teacher does not help children learn, but a teacher does.'], ['Does a baby help children learn at school?', 'No', 'No. A baby is very little, and a teacher helps children learn at school.', 'would mean a baby helps children learn at school, but a baby is very little.'],
+  ['Is a grandma very little?', 'No', 'No. A grandma is a grown-up, and a baby is very little.', 'would mean a grandma is very little, but a grandma is a grown-up.'], ['Does a baby help you get well when you are sick?', 'No', 'No. A baby is very little, and a doctor helps you get well when you are sick.', 'would mean a baby helps you get well, but a baby is very little.']];
 // Talking with a friend (pre-K 3): what to do while a friend talks, whose turn it is, what to say back, how to start and end, and
 // yes or no about each rule. The replies are the lesson's own; a wrong reply is a sentence about something else.
 const TK_LISTEN = [['What can you do while your friend is talking?', 'Listen', 'Talk at the same time', 'Listen. Your friend talks, and you listen. When your friend stops, it is your turn.'], ['Your friend is talking. When is it your turn to talk?', 'When your friend stops', 'Right now', 'When your friend stops talking, it is your turn to talk.'], ['How can you show your friend you are listening?', 'Nod and smile', 'Talk at the same time', 'Nod and smile. Turn toward your friend, so your friend knows you are listening.'], ['Your friend is telling you a story. What can you do?', 'Listen', 'Shout while your friend talks', 'Listen. Your friend talks, and you listen. When your friend stops, it is your turn.']];
 // Each wrong reply as it is named after a wrong tap (doing it, never the bare command), and why it is not the answer.
 const TK_WRONG_WHY = { 'Talk at the same time': ['Talking at the same time', 'is not taking turns, so wait for your turn.'], 'Right now': ['Right now', 'is while your friend is still talking, so wait until your friend stops.'], 'Shout while your friend talks': ['Shouting while your friend talks', 'is not kind. Listen, and wait for your turn.'] };
 const TK_TURN = [['your friend', "Your friend's turn"], ['your teacher', "Your teacher's turn"], ['Grandma', "Grandma's turn"]];
-export const TK_SAY_BACK = [['I have a new puppy dog!', 'What is its name?'], ['I made a tower!', 'I like your tower!'], ['I went to the park!', 'What did you play?'], ['I have a new hat!', 'I like your hat!']];
-const TK_OFF_TOPIC = ['I want a glass of water.', 'I like pizza.'];   // the lesson's own two, each said on its own line as not about the puppy
+// Since pass NY (EARMARKS A181) each good reply names what it is about (what is your puppy's name, did you play on the slide, where
+// they had been what is its name and what did you play), so it is about something else when another friend says something else: a
+// question with its, or about play, fits a tower too. Each is said on its own line, as the lesson says it.
+export const TK_SAY_BACK = [['I have a new puppy dog!', 'What is your puppy\'s name?'], ['I made a tower!', 'I like your tower!'], ['I went to the park!', 'Did you play on the slide?'], ['I have a new hat!', 'I like your hat!']];
+// The lesson's own two replies about something else, each said on its own line as not about the puppy. Since pass NY the bus, where a
+// glass of water had been: wanting a drink is a child's real need, which Say what you need teaches a thirsty child to ask for.
+const TK_OFF_TOPIC = ['I see a bus.', 'I like pizza.'];
+// Replies about something else, made from the friends' own rows (pass NY, EARMARKS A181: the two above had been every such reply, so a
+// child who knew those two was right without hearing the friend): another friend's good reply, said to this friend, as the lesson's
+// line says ("Your friend says, I made a tower! If you say, I like your hat, that is not about the tower."), and another friend's news
+// said as your own, which talks about you, as "I like pizza" does.
+const talkElsewhere = (said) => TK_SAY_BACK.filter(([s]) => s !== said).map(([, back]) => back);
+const talkOwnNews = (said) => TK_SAY_BACK.filter(([s]) => s !== said).map(([s]) => s);
 // Yes or no about each rule, with what the wrong answer would mean for that one question. Since pass NR (EARMARKS A154, pass NQ's reads)
 // the close row asks what the lesson says, too close, never unkind, and the last two rows, from the lesson's lines on waiting and on hi
 // and bye, keep the bank even, four Yes rows to four No; the reasons say the lesson's own words, never "at once" or "finish", which no line says.
@@ -31406,14 +31566,28 @@ const TK_YESNO = [['When your friend is talking, do you talk at the same time?',
 const TK_ROOM = [['How close can you stand when you talk with a friend?', 'Close enough to hear', "Right in your friend's face", "Close enough to hear. Give your friend some room, like a bubble of space around each of you."], ['Your friend is talking with you. Where is too close?', "Right in your friend's face", 'Close enough to hear', "Right in your friend's face is too close. Stand close enough to hear, and give your friend some room."]];
 const TK_ROOM_WHY = { "Right in your friend's face": ["Right in your friend's face", 'is too close. Give your friend some room.'], 'Close enough to hear': ['Close enough to hear', 'is just right, with some room, so it is not too close.'] };
 // Talk about it (pass MR, Q70, the second half of Talking with a friend): what a friend's news is about, by its picture (the
-// lesson's own three, each said with its picture), and the things the lesson says are not about it, the glass of water and the
-// pizza. The park is asked only in words: the lesson shows its slide, which is what the friend played, not the park.
+// lesson's own three, each said with its picture), and the things the lesson says are not about it, the bus (since pass NY, where the
+// glass of water had been) and the pizza. The park is asked only in words: the lesson shows its slide, which is what the friend
+// played on, not the park.
 const TK_TOPIC = [['I have a new puppy dog!', 'dog', 'the new puppy dog'], ['I made a tower!', 'tower', 'the tower'], ['I have a new hat!', 'hat', 'the new hat']];
-const TK_TOPIC_PICS = ['dog', 'tower', 'hat', 'glass', 'pizza'];
+const TK_TOPIC_PICS = ['dog', 'tower', 'hat', 'bus', 'pizza'];
 // What each friend's news is about, as a yes or no question names it.
 const TK_ABOUT = { 'I have a new puppy dog!': 'the puppy', 'I made a tower!': 'the tower', 'I went to the park!': 'the park', 'I have a new hat!': 'the hat' };
-// Why to say something about what a friend said, in the lesson's words, and the wrong reason, talking about something else.
-const TK_WHY = [['Why do you say something about what your friend said?', 'So your friend knows you listened', 'So you can talk about something else', 'When you say something about what your friend said, your friend knows you listened.']];
+// Why to say something about what a friend said, in the lesson's words, and the wrong reason, talking about something else. Since pass
+// NY (EARMARKS A181) the lesson's second reason too, from its last line, "Then your friend knows you listened, and feels happy.": the
+// one answer had been right every time it was shown, and never a wrong choice, so a child who always tapped it was right without
+// listening. The two reasons are never offered together, since both are right.
+const TK_WHY = [['Why do you say something about what your friend said?', 'So your friend knows you listened', 'So you can talk about something else', 'When you say something about what your friend said, your friend knows you listened.'],
+  ['Why do you say something about what your friend said?', 'So your friend feels happy', 'So you can talk about something else', 'When you say something about what your friend said, your friend knows you listened, and feels happy.']];
+// The reasons that are not why, for a friend's own news (pass NY, EARMARKS A181): the reason another friend's good reply gives, which
+// is about that friend's news, as it is named after a wrong tap. Since round one's code read of pass NY (its S5) only the other
+// friend's reason that does the same act is dealt, an ask beside an ask and a kind word beside a kind word: the question says the reply
+// ("Why can you ask, what is your puppy's name?"), so where the lesson's pizza and bus (To talk about pizza, To talk about a bus) or
+// another act stood beside the answer, a child who tapped the choice whose verb the question says was right 86.3 percent of the time
+// (round one's reader, by its own count, 90.5); now the verb alone is a guess. The question still says the reply, so its own words
+// name the topic: a child who taps the choice sharing a word with the question is right 88.6 percent of the time (seeds 1 to 2,000,
+// round two's code read of pass NY), the lesson's own idea, held at two in ECHO_WAITS (four until round two's ripple read) and listed in EARMARKS A195.
+const talkReasonsElsewhere = (said) => TK_SAY_BACK.filter(([s]) => s !== said).map(([s, back]) => (back.endsWith('?') ? [`To ask about ${TK_ABOUT[s]}`, `Asking about ${TK_ABOUT[s]}`] : [`To say something kind about ${TK_ABOUT[s]}`, `Saying something kind about ${TK_ABOUT[s]}`]));
 // More learning words (pre-K 4): three describing words in one direction, a size, a color and a shape, never red beside green.
 const LW4_COLOR_PAIRS = [['red', 'blue'], ['blue', 'yellow'], ['red', 'yellow']];
 const LW4_SHAPE_PAIRS = [['square', 'circle'], ['triangle', 'circle'], ['square', 'triangle']];
@@ -31574,13 +31748,17 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: ask, choices, answer: `icon:${a}`, explain: `${capFirst(aOrAn(a))} ${a} ${PE_PERSON_IS[a]}.`, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, `icon:${a}`, (t) => ({ name: p3PicName(t), why: `${PE_PERSON_IS[p3PicWord(t)]}.` })), alsoRight: [] };
   },
-  // People and events: what happens at an event, by its picture.
+  // People and events: what happens at an event, by its picture (since pass NY, three of its six asked by a sign the lesson gives the
+  // event, never by a word that sounds like the picture: PE_WHAT).
   'p3-event-what': (rng) => {
     const [ask, a, wrongs] = pick(rng, PE_WHAT); const others = shuffle(rng, wrongs).slice(0, 2); const choices = shuffle(rng, [a, ...others].map((x) => `icon:${x}`));
     return { type: 'choice', story: null, prompt: ask, choices, answer: `icon:${a}`, explain: `The ${a} ${PE_THING_IS[a]}.`, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, `icon:${a}`, (t) => ({ name: p3PicName(t), why: `${PE_THING_IS[p3PicWord(t)]}.` })), alsoRight: [] };
   },
-  // People and events: an event tapped by its name.
+  // People and events: an event tapped by its name. Kept since pass NY (EARMARKS A181) as the lesson's own pairing: three events are
+  // named for their picture, bedtime for the bed, a rainy day for the rain and a snowy day for the snow ("Rain goes with a rainy day, and
+  // snow goes with a snowy day."), so a child who hears the picture's word in the name taps it, and that is what the name means. No
+  // other drawing stands for those three (the app draws no pajamas), so the rules test holds them by name and no more.
   'p3-event-tap': (rng) => {
     const [ev, a] = pick(rng, PE_EVENTS); const others = shuffle(rng, PE_EVENTS.filter((x) => x[1] !== a && !(PE_TAP_NOT[a] || []).includes(x[1]))).slice(0, 2).map((x) => x[1]);
     const choices = shuffle(rng, [a, ...others].map((x) => `icon:${x}`));
@@ -31608,7 +31786,7 @@ Object.assign(GENERATORS, {
       explain: askBig ? `The ${old}. A ${old} is a grown-up, and a baby is very little.` : 'The baby. A baby is very little, and can drink milk from a bottle.', visual: null, explainVisual: null,
       whyNot: { [`icon:${wrong}`]: { name: `The ${wrong}`, why: wrong === 'baby' ? 'is very little, not a grown-up.' : 'is a grown-up, not very little.' } }, alsoRight: [] };
   },
-  // Things that happen (pass MR, Q70): yes or no about each event.
+  // Things that happen (pass MR, Q70): yes or no about each event, six Yes rows and six No rows since pass NY (PE_EVENT_YESNO).
   'p3-event-yesno': (rng) => {
     const [ask, answer, explain, why] = pick(rng, PE_EVENT_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
     return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
@@ -31641,12 +31819,16 @@ Object.assign(GENERATORS, {
       explain: youJust ? `${theirs}. You talked, so now ${them} talks, and you listen.` : `Your turn. ${capFirst(them)} talked, so now it is your turn to talk.`, visual: null, explainVisual: null,
       whyNot: { [youJust ? 'Your turn' : theirs]: { name: youJust ? 'Your turn' : theirs, why: youJust ? 'came before, since you just talked.' : `came before, since ${them} just talked.` } }, alsoRight: [] };
   },
-  // Talking with a friend: something to say back about what the friend said.
+  // Talking with a friend: something to say back about what the friend said. Since pass NY (EARMARKS A181) the wrong reply is another
+  // friend's good reply, which is about something else here (talkElsewhere), so each reply is right for one friend and wrong for the
+  // others, and a child hears what the friend said to answer: the lesson's two about something else had been the wrong reply every
+  // time, and a child who knew those two was right by the question alone. A wrong reply is named as it was said, asking or saying.
   'p3-talk-say-back': (rng) => {
-    const [said, back] = pick(rng, TK_SAY_BACK); const wrong = pick(rng, TK_OFF_TOPIC); const choices = shuffle(rng, [back, wrong]);
+    const [said, back] = pick(rng, TK_SAY_BACK); const wrong = pick(rng, talkElsewhere(said)); const choices = shuffle(rng, [back, wrong]);
+    const words = wrong.replace(/[.!?]$/, ''); const named = /^I\b/.test(words) ? words : words.charAt(0).toLowerCase() + words.slice(1);
     return { type: 'choice', story: `Your friend says, ${said}`, prompt: 'What can you say back?', choices, answer: back,
       explain: `${back} That is about what your friend said, so your friend knows you listened.`, visual: null, explainVisual: null,
-      whyNot: { [wrong]: { name: `Saying, ${wrong.replace(/\.$/, '')}`, why: 'is not about what your friend said.' } }, alsoRight: [] };
+      whyNot: { [wrong]: { name: `${wrong.endsWith('?') ? 'Asking' : 'Saying'}, ${named}`, why: 'is not about what your friend said.' } }, alsoRight: [] };
   },
   // Talking with a friend: a hi to start and a bye to end.
   'p3-talk-hi-bye': (rng) => {
@@ -31677,37 +31859,62 @@ Object.assign(GENERATORS, {
       whyNot: p3WhyNot(choices, `icon:${pic}`, (t) => ({ name: p3PicName(t), why: 'is not what your friend is talking about.' })), alsoRight: [] };
   },
   // Talk about it (pass MR): yes or no, is what you say back about what your friend said? The replies are the lesson's own: each
-  // friend's own reply, and the glass of water and the pizza, which are not about it.
+  // friend's own reply, and, since pass NY (EARMARKS A181), for a No another friend's good reply, which is about something else here,
+  // as the lesson's line on the tower and the hat says. Until then a No's reply was the glass of water or the pizza, so the reply alone
+  // told the answer; now each reply is a Yes after its own friend's news and a No after another's, so a child hears the friend. Half
+  // the questions ask in the lesson's own words, is that about what your friend said?, which names no topic: with one good reply to a
+  // friend's news and three about something else, a triple dose, which never asks one question twice, had to draw its Yes questions
+  // again more often than its Nos and leaned No (57.2 percent), and the second way of asking gives each Yes a twin.
   'p3-talk-about-yesno': (rng) => {
-    const [said, back] = pick(rng, TK_SAY_BACK); const about = rng() < 0.5; const reply = about ? back : pick(rng, TK_OFF_TOPIC); const topic = TK_ABOUT[said];
+    const [said, back] = pick(rng, TK_SAY_BACK); const about = rng() < 0.5; const reply = about ? back : pick(rng, talkElsewhere(said)); const topic = TK_ABOUT[said];
     const answer = about ? 'Yes' : 'No'; const wrong = about ? 'No' : 'Yes'; const choices = yesNo(rng);
-    return { type: 'choice', story: `Your friend says, ${said} You say, ${reply}`, prompt: `Is that about ${topic}?`, choices, answer,
+    const asked = rng() < 0.5 ? 'what your friend said' : topic;
+    // The reply is said as the lesson's lines write it, small at its first letter unless it opens with I (msSaid, its end mark kept; round
+    // one's screen read of pass NY, its S3: "You say, Did you play on the slide?").
+    return { type: 'choice', story: `Your friend says, ${said} You say, ${msSaid(reply)}${reply.slice(-1)}`, prompt: `Is that about ${asked}?`, choices, answer,
       explain: about ? `Yes. It is about ${topic}, so your friend knows you listened.` : `No. It is not about ${topic}. Say something about what your friend said.`, visual: null, explainVisual: null,
       whyNot: { [wrong]: { name: wrong, why: about ? `would mean it is not about ${topic}, but it is.` : `would mean it is about ${topic}, but it is not.` } }, alsoRight: [] };
   },
   // Talk about it (pass MR): why you say something about what a friend said, and why each of the lesson's own replies is a good
   // one (it asks about what a friend said, or says something kind about it, the lesson's two ways), against talking about pizza
-  // or a glass of water, the lesson's two replies that are not about it. One question had been all the bank could ask.
+  // or a bus, the lesson's two replies that are not about it. One question had been all the bank could ask. Since pass NY (EARMARKS
+  // A181) the wrong reason is also another friend's reply's reason, about that friend's news, so the pizza and the bus (a glass of
+  // water until then) are no longer the wrong reason every time, and since round one's code read of pass NY it is only the other
+  // friend's reason of the same act (talkReasonsElsewhere), so the question's verb never answers it; the bank's first question has the lesson's two reasons (TK_WHY),
+  // dealt 10 times in 100 where it had been 20, since each of its reasons is right whenever it is shown and a triple dose, which passes
+  // over the last two rounds' prompts and has only four friends' prompts to pass over, deals it more than twice as often as a seed
+  // does: at 20 (and at 15), a child who always tapped one was right 56.5 (56.3) percent of the time in triple doses, past the blind
+  // read's 56, and at 10 it is 55.9 at most. Four friends' prompts are few (EARMARKS A180 names this bank to grow).
   'p3-talk-why': (rng) => {
-    if (rng() < 0.2) { const [ask, right, wrong, explain] = pick(rng, TK_WHY); const choices = shuffle(rng, [right, wrong]);
+    if (rng() < 0.1) { const [ask, right, wrong, explain] = pick(rng, TK_WHY); const choices = shuffle(rng, [right, wrong]);
       return { type: 'choice', story: null, prompt: ask, choices, answer: right, explain, visual: null, explainVisual: null,
         whyNot: { [wrong]: { name: 'Talking about something else', why: 'is not about what your friend said.' } }, alsoRight: [] }; }
     const [said, back] = pick(rng, TK_SAY_BACK); const topic = TK_ABOUT[said]; const asks = back.endsWith('?');
     const words = asks ? back.charAt(0).toLowerCase() + back.slice(1, -1) : back.slice(0, -1);
-    const right = asks ? `To ask about ${topic}` : `To say something kind about ${topic}`; const [wrong, wrongName] = pick(rng, [['To talk about pizza', 'Talking about pizza'], ['To ask for a glass of water', 'Asking for a glass of water']]);
+    const right = asks ? `To ask about ${topic}` : `To say something kind about ${topic}`; const [wrong, wrongName] = pick(rng, talkReasonsElsewhere(said).filter(([r]) => r.startsWith(asks ? 'To ask ' : 'To say ')));
     return { type: 'choice', story: `Your friend says, ${said}`, prompt: `Why can you ${asks ? 'ask' : 'say'}, ${words}?`, choices: shuffle(rng, [right, wrong]), answer: right,
       explain: `${right}. It is about what your friend said, so your friend knows you listened.`, visual: null, explainVisual: null,
       whyNot: { [wrong]: { name: wrongName, why: `is not about ${topic}, what your friend said.` } }, alsoRight: [] };
   },
   // Talk about it (pass MR): how a friend may feel, by a face. The lesson says a friend feels happy when you say something about
   // what they said, and may feel sad, and think you did not listen, when you talk about something else (the sad face is drawn beside
-  // the pizza on the lesson's own line since round one's lesson check, pass MR).
+  // the pizza on the lesson's own line since round one's lesson check, pass MR). Since pass NY (EARMARKS A181): a reply about
+  // something else is the bus, the pizza or another friend's news said as your own (talkOwnNews), never another friend's kind reply,
+  // since a friend told they have a nice hat could fairly feel happy; and a wrong face's reason says its sign, as the lesson's lines
+  // say it, and then why the friend may feel the other way, where it had said only that the face looks like its own feeling.
+  // Since round one's lesson read of pass NY (its MF2: each reply still had one answer, so a child who heard only your reply was right
+  // every time) half the replies about something else are another friend's asking reply (talkElsewhere, the ones that ask), what is your
+  // puppy's name or did you play on the slide said after another friend's news, so each ask is happy after its own friend's news and sad
+  // after another's. Another friend's kind reply stays out, since a friend told they have a nice hat could fairly feel happy, so the
+  // reply alone still reads about 75 percent (content-c's block in the rules test holds it): the two kind replies are always happy, and
+  // the bus, the pizza and a friend's news said as your own always sad.
   'p3-talk-feel': (rng) => {
-    const [said, back] = pick(rng, TK_SAY_BACK); const about = rng() < 0.5; const reply = about ? back : pick(rng, TK_OFF_TOPIC);
+    const [said, back] = pick(rng, TK_SAY_BACK); const about = rng() < 0.5;
+    const reply = about ? back : rng() < 0.5 ? pick(rng, talkElsewhere(said).filter((r) => r.endsWith('?'))) : pick(rng, [...TK_OFF_TOPIC, ...talkOwnNews(said)]);
     const answer = about ? 'face:happy' : 'face:sad'; const choices = shuffle(rng, ['face:happy', 'face:sad']);
-    return { type: 'choice', story: `Your friend says, ${said} You say, ${reply}`, prompt: 'How may your friend feel?', choices, answer,
+    return { type: 'choice', story: `Your friend says, ${said} You say, ${msSaid(reply)}${reply.slice(-1)}`, prompt: 'How may your friend feel?', choices, answer,
       explain: about ? 'Happy. You said something about what your friend said, so your friend knows you listened.' : 'Sad. That is not about what your friend said, so your friend may think you did not listen.', visual: null, explainVisual: null,
-      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, so it looks ${t.slice(5)}.` })), alsoRight: [] };
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3FaceName(t), why: t === 'face:sad' ? `has ${P3_FACE_SIGN.sad}, but your friend knows you listened.` : `has ${P3_FACE_SIGN.happy}, but your friend may think you did not listen.` })), alsoRight: [] };
   },
   // More learning words: three describing words in one direction (the guidelines' own example, "Please draw a small red square.").
   // Four choices from the eight a size, a color and a shape can make, each two words away from every other, so the answer is never
@@ -31909,8 +32116,10 @@ const TW_DOES_WHEN = { read: 'is what you do at story time.', cut: 'is what you 
 const TW_THING_WHEN = { book: 'goes with story time.', scissors: 'go with art time.', crayon: 'goes with art time.', ball: 'goes with the park.', slide: 'goes with the park.', spoon: 'goes with lunchtime.', plate: 'goes with lunchtime.', cup: 'goes with lunchtime.', bed: 'goes with bedtime.', bus: 'is what you can ride to school.' };
 // The other right action at lunchtime and at art time, said as More right answers.
 const TW_ALSO = { eat: 'Drink. At lunchtime, you drink from a cup too.', drink: 'Eat. At lunchtime, you eat with a spoon too.', draw: 'Cut. At art time, you cut paper with scissors too.', cut: 'Draw. At art time, you draw with a crayon too.' };
-// Yes or no about the actions, the silly ones among them, with what the wrong answer would mean for that one question.
-const TW_YESNO = [['Do you read a book?', 'Yes', 'Yes. You read a book.', 'would mean you do not read a book, but you do.'], ['Do you kick a ball?', 'Yes', 'Yes. You kick a ball.', 'would mean you do not kick a ball, but you do.'], ['Do you drink from a cup?', 'Yes', 'Yes. You drink from a cup.', 'would mean you do not drink from a cup, but you do.'], ['At bedtime, do you sleep in your bed?', 'Yes', 'Yes. At bedtime, you sleep in your bed.', 'would mean you do not sleep at bedtime, but you do.'], ['At art time, do you draw with a crayon?', 'Yes', 'Yes. At art time, you draw with a crayon.', 'would mean you do not draw at art time, but you do.'], ['At the park, can you go down the slide?', 'Yes', 'Yes. At the park, you can kick a ball and go down the slide.', 'would mean you cannot go down the slide at the park, but you can.'], ['Do you sleep in a cup?', 'No', 'No. That is silly! You drink from a cup, and you sleep in a bed.', 'would mean you sleep in a cup, but a cup is for drinking.'], ['Do you kick a book?', 'No', 'No. That is silly! You read a book, and you kick a ball.', 'would mean you kick a book, but you read a book.'], ['Do you eat soup with scissors?', 'No', 'No. That is silly! You cut paper with scissors, and you eat soup with a spoon.', 'would mean you eat soup with scissors, but you cut paper with scissors.'], ['Do you ride a crayon?', 'No', 'No. That is silly! You draw with a crayon, and you can ride a bus.', 'would mean you ride a crayon, but you draw with a crayon.'], ['Do you draw with a spoon?', 'No', 'No. That is silly! You eat soup with a spoon, and you draw with a crayon.', 'would mean you draw with a spoon, but you eat soup with a spoon.'], ['At story time, do you kick a ball?', 'No', 'No. At story time, you read a book together. You kick a ball at the park.', 'would mean you kick a ball at story time, but at story time you read.']];
+// Yes or no about the actions, the silly ones among them, with what the wrong answer would mean for that one question. Since pass NY
+// (EARMARKS A181, pass NX's measured reads) the slide row asks what goes with the park, in the lesson's words ("Actions go with places
+// too."), where "At the park, can you go down the slide?" asked about ability, which a child who cannot answers No truthfully.
+const TW_YESNO = [['Do you read a book?', 'Yes', 'Yes. You read a book.', 'would mean you do not read a book, but you do.'], ['Do you kick a ball?', 'Yes', 'Yes. You kick a ball.', 'would mean you do not kick a ball, but you do.'], ['Do you drink from a cup?', 'Yes', 'Yes. You drink from a cup.', 'would mean you do not drink from a cup, but you do.'], ['At bedtime, do you sleep in your bed?', 'Yes', 'Yes. At bedtime, you sleep in your bed.', 'would mean you do not sleep at bedtime, but you do.'], ['At art time, do you draw with a crayon?', 'Yes', 'Yes. At art time, you draw with a crayon.', 'would mean you do not draw at art time, but you do.'], ['Does the slide go with the park?', 'Yes', 'Yes. At the park, you can kick a ball and go down the slide.', 'would mean the slide does not go with the park, but it does.'], ['Do you sleep in a cup?', 'No', 'No. That is silly! You drink from a cup, and you sleep in a bed.', 'would mean you sleep in a cup, but a cup is for drinking.'], ['Do you kick a book?', 'No', 'No. That is silly! You read a book, and you kick a ball.', 'would mean you kick a book, but you read a book.'], ['Do you eat soup with scissors?', 'No', 'No. That is silly! You cut paper with scissors, and you eat soup with a spoon.', 'would mean you eat soup with scissors, but you cut paper with scissors.'], ['Do you ride a crayon?', 'No', 'No. That is silly! You draw with a crayon, and you can ride a bus.', 'would mean you ride a crayon, but you draw with a crayon.'], ['Do you draw with a spoon?', 'No', 'No. That is silly! You eat soup with a spoon, and you draw with a crayon.', 'would mean you draw with a spoon, but you eat soup with a spoon.'], ['At story time, do you kick a ball?', 'No', 'No. At story time, you read a book together. You kick a ball at the park.', 'would mean you kick a ball at story time, but at story time you read.']];
 // Say what you need (pre-K 3): a need or a want, what to say for it and its picture, each said on a line of the lesson, and the
 // lesson's sentence for each.
 const NW_ASK = [['You are thirsty.', 'May I have a glass of water, please?', 'glass', 'That tells a grown-up you are thirsty.'], ['You are still hungry at lunch.', 'May I have some more, please?', 'plate', 'That tells a grown-up you are still hungry.'], ['You are cold.', 'May I have my coat, please?', 'coat', 'That tells a grown-up you are cold.'], ['You want a turn on the slide.', 'May I have a turn on the slide, please?', 'slide', 'That asks for just what you want.']];
@@ -31940,13 +32149,37 @@ const NW_HELP_STORIES = ['You are thirsty.', 'You are cold.', 'You cannot reach 
 const NW_YESNO = [['Can you use words to tell a grown-up you are thirsty?', 'Yes', 'Yes. You can say, I am thirsty. May I have a glass of water, please?', 'would mean you cannot use words to tell a grown-up, but you can.'], ['If you just say uh oh, does your teacher know just what is wrong?', 'No', 'No. Say just what is wrong, like, I cannot find my teddy bear.', 'would mean your teacher knows what is wrong, but just saying uh oh does not tell.'], ['Can a baby help you find your teddy bear?', 'No', 'No. A baby is very little, so a baby cannot help. A grown-up you know can.', 'would mean a baby can help, but a baby is very little.'], ['Can you ask, may I have a turn on the slide, please?', 'Yes', 'Yes. When you want a turn, you can ask, may I have a turn on the slide, please?', 'would mean you cannot ask for a turn, but you can.'], ['Your cup spilled. Can you tell a grown-up what happened?', 'Yes', 'Yes. You can tell what happened, like, my cup spilled.', 'would mean you cannot tell what happened, but you can.'], ['When you are cold, do you ask for a glass of water?', 'No', 'No. When you are cold, you can say, may I have my coat, please? Water is for when you are thirsty.', 'would mean you ask for water when you are cold, but you ask for your coat.'], ['Can a teddy bear help you reach your book?', 'No', 'No. A teddy bear is a toy, so it cannot help. A grown-up you know can.', 'would mean a teddy bear can help, but it is a toy.'], ['Can your teacher help when you need something?', 'Yes', 'Yes. A grown-up you know can help, like your teacher, your grandma or your grandpa.', 'would mean your teacher cannot help, but your teacher can.']];
 // A sentence said back inside a reason ("Saying, may I have my coat, please"), lowered at its first letter unless it opens with I.
 const msSaid = (s) => { const t = String(s).replace(/[.!?]+$/, ''); return /^I\b/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1); };
-// Say it to fit (pre-K 4): each place or moment the lesson names, the voice that fits it, the one that does not, what the lesson
-// says of the right one, and why the other does not fit there.
-const FV_VOICE = [['You are in the library, where others read their books.', 'A whisper', 'A big outside voice', 'A whisper, so others can read their books.', 'is for the playground, and too loud for the library.'], ['A baby is sleeping.', 'A whisper', 'A big outside voice', 'A whisper, so the baby keeps sleeping.', 'is too loud while the baby is sleeping.'], ['You are talking with your teacher in the classroom.', 'An inside voice', 'A big outside voice', 'An inside voice, not too loud and not too soft.', 'is for the playground, and too loud for the classroom.'], ["You are at the doctor's office.", 'An inside voice', 'A big outside voice', 'An inside voice. Then tell the doctor just what is wrong.', "is for the playground, and too loud for the doctor's office."], ['Your friend is far away on the playground.', 'A big outside voice', 'A whisper', 'A big outside voice, so your friend far away can hear you.', 'is too soft for a friend far away to hear.'], ['Your friend is sad.', 'A kind, soft voice', 'A big outside voice', 'A kind, soft voice. You can say, are you okay?', 'is not kind and soft, and your friend is sad.']];
-// A second voice that does not fit a moment, offered in turn with the first, so a child meets more than one wrong voice: an inside voice
-// is too soft for a friend far away (round two's lesson check: round one's whisper for the classroom was a voice a child may fairly
-// use with a teacher, at rest time or work time).
-const FV_VOICE_ALSO = { 'Your friend is far away on the playground.': ['An inside voice', 'is too soft for a friend far away to hear.'] };
+// Say it to fit (pre-K 4): each place or moment the lesson names, the voice that fits it, every voice that does not with why it does not
+// fit there, and what the lesson says of the right one. The quiet moments: a big outside voice is the one voice the lesson's words make
+// wrong in the library, beside a sleeping baby, in the classroom, at the doctor's office and beside a sad friend (round two's lesson
+// check, pass MS: a whisper with a teacher can fit a quiet moment, at rest time or work time, and so can a whisper in a waiting room or
+// to a sad friend). Since pass NY (EARMARKS A181, the measured reads: the big outside voice was the wrong choice in five of six rows,
+// so a child who never tapped it was right 84.4 percent of the time) the library's setup says only the place, since "where others read
+// their books" carried the whisper's reason. An inside voice beside the sleeping baby was tried as a second wrong voice and left out:
+// the whisper was then always right against it, so a child who ranked the whisper over the inside voice read 55 percent by the
+// question alone, where without it the read is 50.
+const FV_QUIET = [
+  ['You are in the library.', 'A whisper', [['A big outside voice', 'is for the playground, and too loud for the library.']], 'A whisper, so others can read their books.'],
+  ['A baby is sleeping.', 'A whisper', [['A big outside voice', 'is too loud while the baby is sleeping.']], 'A whisper, so the baby keeps sleeping.'],
+  ['You are talking with your teacher in the classroom.', 'An inside voice', [['A big outside voice', 'is for the playground, and too loud for the classroom.']], 'An inside voice, not too loud and not too soft.'],
+  ["You are at the doctor's office.", 'An inside voice', [['A big outside voice', "is for the playground, and too loud for the doctor's office."]], 'An inside voice. Then tell the doctor just what is wrong.'],
+  ['Your friend is sad.', 'A kind, soft voice', [['A big outside voice', 'is not kind and soft, and your friend is sad.']], 'A kind, soft voice. You can say, are you okay?'],
+];
+// The loud moments, each a line of the lesson's own (line 9: on the playground a big outside voice, like, over here!, so a friend far
+// away can hear you, and a whisper or an inside voice is too soft), each offering in turn every softer voice the lesson names, a kind,
+// soft voice too, since soft is its own word. Since pass NY a loud moment is dealt as often as a quiet one, so the big outside voice is
+// the answer about as often as it is a wrong choice, and three loud moments in the lesson's words (the playground, the call of over
+// here! and the slide), since a round never repeats a question and with two a triple dose ran out of loud ones, the big outside voice
+// answering 45 percent there, where with three it answers 48 to 51 in every kind of round.
+// A wrong voice is named in its reason as its choice says it, but for the kind, soft voice, whose comma whyNotSentence closes after its
+// name ("A kind, soft voice, is too soft ...", round one's lesson read of pass NY, its SC3): its reason names it as this bank's own
+// reasons say it, kind and soft, in a third column that names the voice for its reason alone.
+const FV_SOFT = [['A whisper', 'is too soft for a friend far away to hear.'], ['An inside voice', 'is too soft for a friend far away to hear.'], ['A kind, soft voice', 'is too soft for a friend far away to hear.', 'A kind and soft voice']];
+const FV_LOUD = [
+  ['Your friend is far away on the playground.', 'A big outside voice', FV_SOFT, 'A big outside voice, so your friend far away can hear you.'],
+  ['You call to your friend far away, over here!', 'A big outside voice', FV_SOFT, 'A big outside voice, so your friend far away can hear you.'],
+  ['You are by the slide, and your friend is far away.', 'A big outside voice', FV_SOFT, 'A big outside voice, so your friend far away can hear you.'],
+];
 // What words are for: the lesson's four reasons, and sentences for each, with what each sentence does; a question is never offered
 // against asking for something, nor asking for something against a question, since an ask can be said as a question.
 const FV_PURPOSES = ['To ask for something', 'To tell what happened', 'To ask a question', 'To say how you feel'];
@@ -31958,13 +32191,52 @@ const FV_DOES = { 'To ask for something': 'asks for something.', 'To tell what h
 // A sentence kept apart from reasons a child could fairly hear in it (round one's lesson check, pass MS): I fell on the slide, told to a
 // teacher so she can help, may fairly be heard as asking for something, and beside saying how you feel, fell sounds like feel.
 const FV_SAID_APART = { 'I fell on the slide.': ['To ask for something', 'To say how you feel'] };
-// Just what is wrong, for each grown-up the lesson names, beside words that leave it out, and what those words leave out, each pair
-// said on the lesson's own lines (round one's lesson check, pass MS: three rows used a lost crayon, a book on a shelf and spilled
-// milk, which pre-K 4's lesson never says); since round two each knee row is offered beside uh oh too, which the script says tells
-// nothing of what happened, so the kind's wrong choice is not one sentence every time.
-const FV_ENOUGH = [['the doctor', 'My ear hurts.', 'It hurts.', 'does not say where it hurts.'], ['your teacher', 'My knee hurts. I fell on the slide.', 'It hurts.', 'does not say where it hurts.'], ['your grandma', 'My knee hurts. I fell on the slide.', 'It hurts.', 'does not say where it hurts.'], ['your grandpa', 'My ear hurts.', 'It hurts.', 'does not say where it hurts.'], ['your teacher', 'My knee hurts. I fell on the slide.', 'Uh oh.', 'does not say what happened.'], ['your grandma', 'My knee hurts. I fell on the slide.', 'Uh oh.', 'does not say what happened.']];
-// Yes or no about the voice for each place and moment, and about telling enough, with what the wrong answer would mean for that one question.
-const FV_YESNO = [['Do you use a big outside voice in the library?', 'No', 'No. In the library, use a whisper, so others can read their books.', 'would mean a big outside voice fits the library, but it is too loud there.'], ['When a baby is sleeping, can you use a whisper?', 'Yes', 'Yes. Use a whisper, so the baby keeps sleeping.', 'would mean you cannot whisper while a baby is sleeping, but a whisper fits.'], ['On the playground, can you use a big outside voice?', 'Yes', 'Yes. On the playground, you can use a big outside voice, so a friend far away can hear you.', 'would mean you cannot use a big outside voice on the playground, but you can.'], ['Can you use words to say how you feel?', 'Yes', 'Yes. You can say, I feel happy!', 'would mean you cannot use words to say how you feel, but you can.'], ['Does saying it hurts tell the doctor just where it hurts?', 'No', 'No. Say just where, like, my ear hurts. Then the doctor knows what is wrong.', 'would mean the doctor knows where it hurts, but it hurts does not say where.'], ['In the classroom, do you use a big outside voice?', 'No', 'No. In the classroom, use an inside voice, not too loud and not too soft.', 'would mean a big outside voice fits the classroom, but it is too loud there.'], ['When a friend is sad, does a kind, soft voice fit?', 'Yes', 'Yes. A kind, soft voice fits when a friend is sad. You can say, are you okay?', 'would mean a kind, soft voice does not fit, but it does.'], ['When a baby is sleeping, do you use a big outside voice?', 'No', 'No. When a baby is sleeping, use a whisper, so the baby keeps sleeping.', 'would mean a big outside voice fits while a baby sleeps, but it is too loud.']];
+// Just what is wrong, told to any grown-up the lesson names, beside words that leave it out, and what those words leave out, each said
+// on the lesson's own lines (round one's lesson check, pass MS: three rows used a lost crayon, a book on a shelf and spilled milk, which
+// pre-K 4's lesson never says). Since pass NY (EARMARKS A180 and A181: only two tellings answered it, the knee sentence on 64 percent of
+// questions, and the answer was the longest choice on every seed) the lesson's four tellings each answer a quarter of the questions,
+// where it hurts (my ear hurts, my knee hurts), what happened (I fell on the slide) and both. Each row: the telling, what the question
+// asks in the lesson's own words, what the telling tells, and the vague words beside it, each with why it leaves that out. Where it
+// hurts answers just what is wrong (line 8: tell the doctor just what is wrong, like, my ear hurts), beside uh oh, it hurts, longer than
+// either; what happened, alone or with where, answers what happened (line 12: say what happened, like, I fell on the slide), since
+// I fell on the slide says nothing of where it hurts, beside uh oh, it hurts, or uh oh. So each question is asked half the time (a later
+// round, which leaves out the last two rounds' questions, then favors neither), and the longer choice is right on half the questions.
+// It hurts is a good start (line 12 says so since pass NY, and its reason does too), never a wrong thing to say.
+const FV_UH_OH_HURTS = ['Uh oh, it hurts.', 'Saying, uh oh, it hurts', 'does not say where it hurts or what happened.'];
+const FV_HAPPENED = [['Uh oh.', 'Saying, uh oh', 'does not say what happened.'], ['It hurts.', 'Saying, it hurts', 'is a good start, but it does not say what happened.'], ['Uh oh, it hurts.', 'Saying, uh oh, it hurts', 'does not say what happened.']];
+const FV_WHO = ['the doctor', 'your teacher', 'your grandma', 'your grandpa'];
+const FV_ENOUGH = [
+  ['My ear hurts.', 'just what is wrong', 'just where it hurts', [FV_UH_OH_HURTS]],
+  ['My knee hurts.', 'just what is wrong', 'just where it hurts', [FV_UH_OH_HURTS]],
+  ['I fell on the slide.', 'what happened', 'what happened', FV_HAPPENED],
+  ['My knee hurts. I fell on the slide.', 'what happened', 'what happened and where it hurts', FV_HAPPENED],
+];
+// Yes or no about the voice for each place and moment, about what words are for and about telling enough, with what the wrong answer
+// would mean for that one question. Since pass NY (EARMARKS A178 and A181: its three can you rows asked about ability, so a child who
+// cannot whisper answers No truthfully, and can alone answered it 89.1 percent of the time) no row asks can you, and the bank grew from
+// its own lesson's lines, every old row kept, so each place, voice and telling is asked both ways, nine Yes and nine No. Since round one's
+// lesson read of pass NY (its SC7) each voice row asks whether the voice fits, as the lesson says it, where ten asked what you do (do you
+// use a whisper?), which a child answers for themselves, as the events bank's rows were changed not to ask.
+const FV_YESNO = [
+  ['In the library, does a big outside voice fit?', 'No', 'No. In the library, use a whisper, so others can read their books.', 'would mean a big outside voice fits the library, but it is too loud there.'],
+  ['When a baby is sleeping, does a whisper fit?', 'Yes', 'Yes. Use a whisper, so the baby keeps sleeping.', 'would mean a whisper does not fit while a baby is sleeping, but it does.'],
+  ['When your friend is far away on the playground, does a big outside voice fit?', 'Yes', 'Yes. On the playground, you can use a big outside voice, so a friend far away can hear you.', 'would mean a big outside voice does not fit a friend far away, but it does.'],
+  ['Do we use words to say how we feel?', 'Yes', 'Yes. We use words to say how we feel, like, I feel happy!', 'would mean we do not use words to say how we feel, but we do.'],
+  ['Does saying it hurts tell the doctor just where it hurts?', 'No', 'No. Saying it hurts is a good start, but say just where, like, my ear hurts. Then the doctor knows what is wrong.', 'would mean the doctor knows where it hurts, but it hurts does not say where.'],
+  ['In the classroom, does a big outside voice fit?', 'No', 'No. In the classroom, use an inside voice, not too loud and not too soft.', 'would mean a big outside voice fits the classroom, but it is too loud there.'],
+  ['When a friend is sad, does a kind, soft voice fit?', 'Yes', 'Yes. A kind, soft voice fits when a friend is sad. You can say, are you okay?', 'would mean a kind, soft voice does not fit, but it does.'],
+  ['When a baby is sleeping, does a big outside voice fit?', 'No', 'No. When a baby is sleeping, use a whisper, so the baby keeps sleeping.', 'would mean a big outside voice fits while a baby sleeps, but it is too loud.'],
+  ['In the library, does a whisper fit?', 'Yes', 'Yes. In the library, use a whisper, so others can read their books.', 'would mean a whisper does not fit the library, but it does.'],
+  ['In the classroom, does an inside voice fit when you talk with your teacher?', 'Yes', 'Yes. In the classroom, use an inside voice, not too loud and not too soft.', 'would mean an inside voice does not fit the classroom, but it does.'],
+  ["At the doctor's office, does an inside voice fit?", 'Yes', "Yes. At the doctor's office, use an inside voice too. Tell the doctor just what is wrong.", "would mean an inside voice does not fit the doctor's office, but it does."],
+  ["At the doctor's office, does a big outside voice fit?", 'No', "No. At the doctor's office, use an inside voice, not too loud and not too soft.", "would mean a big outside voice fits the doctor's office, but it is too loud there."],
+  ['When your friend is far away, does a whisper fit?', 'No', 'No. A whisper is too soft for a friend far away. Use a big outside voice.', 'would mean a whisper fits a friend far away, but a whisper is too soft.'],
+  ['When a friend is sad, does a big outside voice fit?', 'No', 'No. When a friend is sad, a kind, soft voice fits. You can say, are you okay?', 'would mean a big outside voice fits a sad friend, but a kind, soft voice fits.'],
+  ['Do we use words only to ask for things?', 'No', 'No. We use words for many reasons, to ask for things, to tell, to ask questions and to say how we feel.', 'would mean words are only for asking for things, but we use words for many reasons.'],
+  ['Does saying my ear hurts tell the doctor just where it hurts?', 'Yes', 'Yes. My ear hurts tells the doctor just where it hurts, so the doctor knows what is wrong.', 'would mean the doctor does not know where it hurts, but my ear hurts says where.'],
+  ['If you just say uh oh, does your teacher know what happened?', 'No', 'No. Uh oh does not tell what happened. Say what happened, like, I fell on the slide.', 'would mean your teacher knows what happened, but uh oh does not tell.'],
+  ['If you say, I fell on the slide, does your teacher know what happened?', 'Yes', 'Yes. I fell on the slide tells your teacher just what happened.', 'would mean your teacher does not know what happened, but I fell on the slide tells.'],
+];
 Object.assign(GENERATORS, {
   // Things we do: the thing an action goes with, by its picture.
   'p4-act-thing': (rng) => {
@@ -31973,14 +32245,19 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: ask, choices, answer: `icon:${thing}`, explain: says, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, `icon:${thing}`, (t) => ({ name: p3PicName(t), why: TW_THING_IS[p3PicWord(t)] })), alsoRight: [] };
   },
-  // Things we do: the action word for the thing shown.
+  // Things we do: the action word for the thing shown. Recorded since pass NY (EARMARKS A181, pass NX's measured reads): the bus is
+  // always offered beside Kick and Cut, since you can sleep, read, draw, eat or drink on a bus (TW_WORD_FAIR), so of the lesson's eight
+  // action words only those two are never done with one, and the lesson's lines say no other action word to keep them company.
   'p4-act-word': (rng) => {
     const [act, thing, , says] = pick(rng, TW_ACTIONS); const fair = TW_WORD_FAIR[thing] || [];
     const others = shuffle(rng, TW_ACTIONS.map((r) => r[0]).filter((a) => a !== act && !fair.includes(a))).slice(0, 2);
     return { type: 'choice', story: null, prompt: 'What do you do with this?', choices: shuffle(rng, [act, ...others].map(capFirst)), answer: capFirst(act), explain: `${capFirst(act)}. ${says}`, visual: { kind: 'icon', name: thing }, explainVisual: null,
       whyNot: Object.fromEntries(others.map((a) => [capFirst(a), { name: capFirst(a), why: TW_DOES[a] }])), alsoRight: [] };
   },
-  // Things we do: what you do at a time of the day or at the park, as a word.
+  // Things we do: what you do at a time of the day or at the park, as a word. Recorded since pass NY (EARMARKS A181, pass NX's
+  // measured reads): the park is always offered beside Cut and Sleep, since at the park you can eat and drink at a picnic, read a book
+  // on a bench, ride a bike and draw with chalk (TW_TIME_FAIR_DO), so of the lesson's eight action words only those two never go with
+  // the park, and its lines say no other. Both are right at another time (art time, bedtime), so a child cannot avoid them by habit.
   'p4-act-when': (rng) => {
     const [time, acts, , says] = pick(rng, TW_TIMES); const a = pick(rng, acts); const fair = TW_TIME_FAIR_DO[time] || [];
     const others = shuffle(rng, TW_ACTIONS.map((r) => r[0]).filter((x) => !acts.includes(x) && !fair.includes(x))).slice(0, 2);
@@ -31992,7 +32269,11 @@ Object.assign(GENERATORS, {
     const [ask, answer, explain, why] = pick(rng, TW_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
     return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
   },
-  // Things we do: the thing that goes with a time of the day or the park, by its picture.
+  // Things we do: the thing that goes with a time of the day or the park, by its picture. Recorded since pass NY (EARMARKS A181, pass
+  // NX's measured reads): the park's wrong pictures are always the scissors and the bed, since a cup, a spoon, a plate, a book, the bus
+  // and a crayon can each come along to the park (TW_TIME_FAIR_USE), and the lesson draws no other thing; each is right at another time.
+  // And "Which one goes with bedtime?" is answered by the bed, whose word is in bedtime: the lesson's own pairing ("at bedtime, you sleep
+  // in your bed"), its only thing for bedtime and the only drawing that stands for it, so the rules test holds that echo by name.
   'p4-act-use': (rng) => {
     const [time, , things, says] = pick(rng, TW_TIMES); const t = pick(rng, things); const fair = TW_TIME_FAIR_USE[time] || [];
     const others = shuffle(rng, TW_THINGS.filter((x) => !things.includes(x) && !fair.includes(x))).slice(0, 2); const choices = shuffle(rng, [t, ...others].map((x) => `icon:${x}`));
@@ -32030,12 +32311,12 @@ Object.assign(GENERATORS, {
     const [ask, answer, explain, why] = pick(rng, NW_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
     return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
   },
-  // Say it to fit: the voice that fits a place or a moment.
+  // Say it to fit: the voice that fits a place or a moment. A loud moment half the time and a quiet one otherwise (pass NY), and the
+  // wrong voice dealt from every voice the moment's row says does not fit, so no one voice is the wrong choice on most questions.
   'p4-fit-voice': (rng) => {
-    const [story, right, first, explain, firstWhy] = pick(rng, FV_VOICE); const also = FV_VOICE_ALSO[story];
-    const [wrong, why] = also && rng() < 0.5 ? also : [first, firstWhy];
+    const [story, right, wrongs, explain] = pick(rng, rng() < 0.5 ? FV_LOUD : FV_QUIET); const [wrong, why, named] = pick(rng, wrongs);
     return { type: 'choice', story, prompt: 'Which voice fits?', choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: null, explainVisual: null,
-      whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+      whyNot: { [wrong]: { name: named || wrong, why } }, alsoRight: [] };
   },
   // Say it to fit: why you say something, one of the lesson's four reasons.
   'p4-fit-why': (rng) => {
@@ -32052,11 +32333,12 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: FV_WANT[purpose], choices: shuffle(rng, [right[0], ...wrongs.map((w) => w[0])]), answer: right[0], explain: `${right[0]} ${right[2]}`, visual: null, explainVisual: null,
       whyNot: Object.fromEntries(wrongs.map((w) => [w[0], { name: `Saying, ${msSaid(w[0])}`, why: FV_DOES[w[1]] }])), alsoRight: [] };
   },
-  // Say it to fit: just what is wrong, told to one of the grown-ups the lesson names.
+  // Say it to fit: just what is wrong, or what happened, told to one of the grown-ups the lesson names (pass NY: any telling to any
+  // grown-up, each telling beside a vague one its row names, the explanation saying what the telling tells).
   'p4-fit-enough': (rng) => {
-    const [who, right, vague, why] = pick(rng, FV_ENOUGH);
-    return { type: 'choice', story: null, prompt: `Which one tells ${who} just what is wrong?`, choices: shuffle(rng, [right, vague]), answer: right, explain: `${right} That tells ${who} just what is wrong, so ${who} can help.`, visual: null, explainVisual: null,
-      whyNot: { [vague]: { name: `Saying, ${msSaid(vague)}`, why } }, alsoRight: [] };
+    const who = pick(rng, FV_WHO); const [right, asks, tells, vagues] = pick(rng, FV_ENOUGH); const [vague, name, why] = pick(rng, vagues);
+    return { type: 'choice', story: null, prompt: `Which one tells ${who} ${asks}?`, choices: shuffle(rng, [right, vague]), answer: right, explain: `${right} That tells ${who} ${tells}, so ${who} can help.`, visual: null, explainVisual: null,
+      whyNot: { [vague]: { name, why } }, alsoRight: [] };
   },
   // Say it to fit: yes or no about the voice for each place and moment, and about telling enough.
   'p4-fit-yesno': (rng) => {
@@ -32089,7 +32371,9 @@ const VF3_VOICE = [
   // A second row whose answer is the big voice (round one's lesson check: the big outside voice was the wrong choice in five of the seven
   // voice rows): since round two's second read, a child hurt and needing help, the lesson's other place for it, in place of a second friend
   // far away, which was the first row in other words and was asked beside it in a triple dose.
-  ['You are hurt and need help.', 'A big outside voice', 'A kind, soft voice', 'is too soft to call a grown-up for help.', 'A big outside voice. When you are hurt and need help, a big voice is okay anywhere, to call a grown-up.'],
+  // Its wrong voice is named in its reason as kind and soft, since whyNotSentence closes a name's comma ("A kind, soft voice, is too
+  // soft ...", round one's lesson read of pass NY, its SC3), in a sixth column that names the voice for its reason alone.
+  ['You are hurt and need help.', 'A big outside voice', 'A kind, soft voice', 'is too soft to call a grown-up for help.', 'A big outside voice. When you are hurt and need help, a big voice is okay anywhere, to call a grown-up.', 'A kind and soft voice'],
 ];
 // Where each voice goes, by the lesson's pictures: the book for the library, the sleeping baby, the slide on the playground and the
 // teacher in the classroom, each asked by the voice alone, never by the picture's own name or a reason that names it (round one's
@@ -32158,24 +32442,47 @@ const TN3_YESNO = [
   ['Can you say one word strong, to show it matters most?', 'Yes', 'Yes. We can say one word strong, to show it matters most.', 'would mean you cannot say one word strong, but you can.'],
   ['Does a little bird sound like a voice down low?', 'No', 'No. A little bird sounds like a voice up high.', 'would mean a little bird sounds down low, but it sounds up high.'],
 ];
-// Pre-K 4: a question and its telling, each said its way; words that say nothing of how someone feels, said happy (quick and high,
-// ending with an exclamation mark) or sad (slow, soft and low); and yes or no about the voice.
+// Pre-K 4: a question and its telling, each said its way (Which one asks? and Does it ask, or tell?); words that say nothing of how
+// someone feels, said happy (the happy manner, up high, ending with an exclamation mark) or sad (slow, soft and low); and yes or no about
+// the voice. The lesson claims a happy voice's pitch alone (VOICE_MANNERS' note: studies find its pace quicker in some and slower in
+// others), so no line, explanation or reason says a happy voice is quick (pass NY, EARMARKS A181: pass NX's reads found "it can be quick"
+// in three lines and two explanations).
+// Does it ask, or tell? asks these pairs as pass NX had it, each asking sentence in a question's word order with its question mark and
+// each telling in a telling's order with its full stop, while EARMARKS A64 waits for the recordings (round one's lesson read of pass NY,
+// its MF4, and the lead's decision): the lesson teaches that the same words can ask or tell by the voice alone, but a device voice may
+// lift the same words only a little when they end in a question mark, so "It asks. The voice went up at the end" could be untrue as
+// played, and a first try feeds the mastery gate. Pass NY's waves had asked the same words both ways (You have a dog? and You have a
+// dog.), and the round's lesson read found it rested on that lift; a child who hears the first word can still answer, which A64 records
+// and the rules test holds while A64 waits.
 const TN4_PAIRS = [['Is it raining?', 'It is raining.'], ['Is the cat asleep?', 'The cat is asleep.'], ['Do you have a dog?', 'You have a dog.'], ['Is it time for lunch?', 'It is time for lunch.']];
 const TN4_FEEL = ['The bus is here', 'We are going home', 'We are going to the store', 'The door is open'];
+// Yes or no, each row answered by a line of the lesson. Since pass NY (EARMARKS A178 and A181) every old row is kept and the bank grew
+// from the lesson's lines, as pass NV grew A158's five, so it answers Yes on 7 rows of 14: asking and telling each asked both ways, a
+// happy and a sad voice each both ways, a big bear's growl (the first line), the same words told with the voice going down ("You have a
+// dog. With the voice going down, it tells.") and the same words said slow and low ("We are going home. In a slow, low voice, that
+// sounds sad."). Until then 5 of its 7 rows answered Yes, and a child who answered No whenever a question said sad was right 85.4
+// percent of the time.
 const TN4_YESNO = [
   ['When we ask a question, does our voice often go up at the end?', 'Yes', 'Yes. When we ask a question, our voice often goes up at the end.', 'would mean a question does not often go up at the end, but it often does.'],
   ['When we tell, does our voice often go up at the end?', 'No', 'No. When we tell, our voice often goes down at the end.', 'would mean telling often goes up at the end, but it often goes down.'],
   ['Can the same words ask or tell?', 'Yes', 'Yes. With the voice going up, they ask, and with the voice going down, they tell.', 'would mean the same words can only ask or only tell, but they can do both.'],
-  ['Is a sad voice often quick, going up high?', 'No', 'No. A sad voice is often slow, soft and low.', 'would mean a sad voice is quick and high, but it is often slow, soft and low.'],
-  ['Does a happy voice often go up high?', 'Yes', 'Yes. A happy voice often goes up high, and it can be quick.', 'would mean a happy voice does not often go up high, but it often does.'],
+  ['Does a sad voice often go up high?', 'No', 'No. A sad voice is often slow, soft and low.', 'would mean a sad voice often goes up high, but it is often slow, soft and low.'],
+  ['Does a happy voice often go up high?', 'Yes', 'Yes. A happy voice often goes up high.', 'would mean a happy voice does not often go up high, but it often does.'],
   ['Can how something is said tell you how someone feels?', 'Yes', 'Yes. Listen to how something is said, and you can tell if someone feels happy or sad.', 'would mean how something is said tells you nothing, but it can tell you how someone feels.'],
-  ['When you talk with a doctor you have just met, do you say your words slowly and clearly?', 'Yes', 'Yes. Say your words slowly and clearly, and turn toward them, so they can understand you.', 'would mean you talk very fast to someone new, but slow, clear words help them understand you.'],
+  ['When you talk with a doctor you have just met, do you say your words slowly and clearly?', 'Yes', 'Yes. Say your words slowly and clearly, and turn toward them, so they can understand you.', 'would mean you do not say your words slowly and clearly, but you do.'],
+  ['When we tell, does our voice often go down at the end?', 'Yes', 'Yes. When we tell, our voice often goes down at the end.', 'would mean telling does not often go down at the end, but it often does.'],
+  ['When we ask a question, does our voice often go down at the end?', 'No', 'No. When we ask a question, our voice often goes up at the end.', 'would mean a question often goes down at the end, but it often goes up.'],
+  ['Does a sad voice often sound slow, soft and low?', 'Yes', 'Yes. A sad voice is often slow, soft and low.', 'would mean a sad voice does not often sound slow, soft and low, but it often does.'],
+  ['Does a happy voice often go down low?', 'No', 'No. A happy voice often goes up high.', 'would mean a happy voice often goes down low, but it often goes up high.'],
+  ['Does a big bear growl up high?', 'No', 'No. A big bear growls down low, and a little bird sings up high.', 'would mean a big bear growls up high, but it growls down low.'],
+  ['You have a dog. When the voice goes down at the end, does it ask?', 'No', 'No. With the voice going down at the end, it tells. With the voice going up, it asks.', 'would mean it asks with the voice going down, but then it tells.'],
+  ['Does a slow, low voice sound happy when it says, we are going home?', 'No', 'No. In a slow, low voice, it sounds sad. In a voice going up high, it sounds happy.', 'would mean a slow, low voice sounds happy, but it sounds sad.'],
 ];
 Object.assign(GENERATORS, {
   // A voice to fit the place: the voice that fits a place or a moment.
   'p3-vfit-voice': (rng) => {
-    const [story, right, wrong, why, explain] = pick(rng, VF3_VOICE);
-    return { type: 'choice', story, prompt: 'Which voice fits?', choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+    const [story, right, wrong, why, explain, named] = pick(rng, VF3_VOICE);
+    return { type: 'choice', story, prompt: 'Which voice fits?', choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: named || wrong, why } }, alsoRight: [] };
   },
   // A voice to fit the place: the picture each voice goes with.
   'p3-vfit-where': (rng) => {
@@ -32233,7 +32540,7 @@ Object.assign(GENERATORS, {
       explain: high ? 'The bird. A little bird sounds like a voice up high.' : 'The bear. A big bear sounds like a voice down low.', visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, right, (t) => ({ name: p3PicName(t), why: p3PicWord(t) === 'bird' ? 'sounds like a voice up high.' : 'sounds like a voice down low.' })), alsoRight: [] };
   },
-  // My voice tells more: a sentence said asking or telling, and which it does.
+  // My voice tells more: a sentence said asking or telling, and which it does (TN4_PAIRS, by word order and mark while EARMARKS A64 waits).
   'p4-tone-ask': (rng) => {
     const [asks, tells] = pick(rng, TN4_PAIRS); const ask = rng() < 0.5; const said = ask ? asks : tells; const right = ask ? 'It asks' : 'It tells'; const wrong = ask ? 'It tells' : 'It asks';
     return { type: 'choice', story: `Listen. ${said}`, voices: [[said, ask ? 'ask' : 'tell']], prompt: 'Does it ask, or tell?', choices: shuffle(rng, [right, wrong]), answer: right,
@@ -32246,7 +32553,7 @@ Object.assign(GENERATORS, {
   'p4-tone-feel': (rng) => {
     const base = pick(rng, TN4_FEEL); const happy = rng() < 0.5; const said = `${base}${happy ? '!' : '.'}`; const right = happy ? 'face:happy' : 'face:sad'; const choices = shuffle(rng, ['face:happy', 'face:sad']);
     return { type: 'choice', story: `Listen to how it is said. ${said}`, printedStory: `Listen to how it is said. ${base}.`, voices: [[said, happy ? 'happy' : 'sad']], prompt: 'How does it sound?', choices, answer: right,
-      explain: happy ? 'Happy. The voice was quick, and it went up high.' : 'Sad. The voice was slow, soft and low.', visual: null, explainVisual: null,
+      explain: happy ? 'Happy. The voice went up high.' : 'Sad. The voice was slow, soft and low.', visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, right, (t) => ({ name: t === 'face:happy' ? 'The happy face' : 'The sad face', why: t === 'face:happy' ? `has ${P3_FACE_SIGN.happy}, and a happy voice often goes up high.` : `has ${P3_FACE_SIGN.sad}, and a sad voice is slow, soft and low.` })), alsoRight: [] };
   },
   // My voice tells more: which word was said strong.
@@ -32263,7 +32570,8 @@ Object.assign(GENERATORS, {
       explain: ask ? `${asks} It asks, and the voice often goes up at the end.` : `${tells} It tells, and the voice often goes down at the end.`, visual: null, explainVisual: null,
       whyNot: { [wrong]: { name: `Saying, ${msSaid(wrong)}`, why: ask ? 'tells, and the voice often goes down at the end.' : 'asks, and the voice often goes up at the end.' } }, alsoRight: [] };
   },
-  // My voice tells more: yes or no about asking, telling, a happy or a sad voice, and clear words for someone new.
+  // My voice tells more: yes or no about asking, telling, the same words told, a happy or a sad voice, a big bear's growl, and clear words
+  // for someone new (TN4_YESNO, half Yes and half No since pass NY).
   'p4-tone-yesno': (rng) => {
     const [ask, answer, explain, why] = pick(rng, TN4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
     return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
@@ -36182,14 +36490,23 @@ const P3_FEEL_CALM = [
 ];
 // The friend who may need help: each row adds one more example. A wrong face is told by its own sign, against the asked
 // friend's look (pass MH).
+// Since pass NY (EARMARKS A181, pass NX's measured lesson reads) every face is one Helping a friend draws and names, sad, scared and
+// happy, each told by the sign line 2 says: the mad face, which no line draws, had been a wrong face beside sad and scared, and its
+// reason a sign no line said. Each face is the answer in two rows and the wrong face in two, so a child who always taps one face is
+// right half the time (sad had been right 70.7 percent of the time), which is why the happy face, the wrong one wherever a friend
+// might need help, is asked for in two rows of its own, one beside each other face. The two rows of each pair are worded apart (might
+// and may need help, looks and feels happy), since a round never deals one question twice and a later round passes over the last
+// two rounds' prompts: worded alike, they left one face right 55 to 56 percent of the time in triple doses or later rounds.
 const P3_HELP_WHO = [
   ['Tap the friend who might need help.', 'sad', ['happy'], 'That friend looks sad and may need help. You can ask, are you okay?', 'A friend who falls and gets hurt may need help too.'],
-  ['Tap the friend who might need help.', 'scared', ['happy'], 'That friend looks scared and may need help. You can ask, are you okay?', 'A friend who falls and gets hurt may need help too.'],
-  ['Tap the friend who looks sad.', 'sad', ['mad', 'scared'], 'That friend\'s mouth turns down, and a tear rolls out, so your friend looks sad.', 'A sad friend\'s mouth may turn down, and a tear may roll out.'],
-  ['Tap the friend who looks scared.', 'scared', ['sad', 'mad'], 'That friend\'s eyes are open wide, so your friend looks scared.', 'A scared friend\'s eyes may open wide.'],
+  ['Tap the friend who may need help.', 'scared', ['happy'], 'That friend looks scared and may need help. You can ask, are you okay?', 'A friend who falls and gets hurt may need help too.'],
+  ['Tap the friend who looks sad.', 'sad', ['scared'], 'That friend has a tear rolling out, so your friend looks sad.', 'Your grown-up can look sad, too.'],
+  ['Tap the friend who looks scared.', 'scared', ['sad'], 'That friend\'s eyes are open wide, so your friend looks scared.', 'A scared friend\'s eyes may open wide.'],
+  ['Tap the friend who looks happy.', 'happy', ['sad'], 'That friend has a big smile, so your friend looks happy.', 'A friend you help can feel happy, and so can you.'],
+  ['Tap the friend who feels happy.', 'happy', ['scared'], 'That friend has a big smile, so your friend may feel happy.', 'A friend you help can feel happy, and so can you.'],
 ];
 const P3_FRIEND_LOOK = { sad: 'a sad friend can have a tear rolling out',   // pass MJ: a tear sometimes, never every time (the alignment read)
-  scared: 'a scared friend\'s eyes open wide' };
+  scared: 'a scared friend\'s eyes open wide', happy: 'a happy friend has a big smile' };
 // Kind things, the grown-up to get, and the ball (pass MH): each row is the whole question, the answer, the wrong choice, the
 // explanation, how a person says the wrong choice, what it does to the friend or why it is not okay, and one more right thing.
 const P3_HELP_KIND = [
@@ -36207,8 +36524,12 @@ const P3_HELP_GROWNUP = [
 const P3_HELP_BALL = [
   ['What can you say when your friend tries to grab the ball from you?', 'Stop, please', 'Mine!', 'You can say, stop, please. Those kind words tell your friend that grabbing is not okay. Then get a grown-up to help you both.', 'Saying mine', 'is not a kind way to tell your friend to stop grabbing.', null],
   ['What can you do when you and a friend both want one ball and a fight starts?', 'Get a grown-up', 'Grab the ball', 'Get a grown-up to help you both, because a grown-up can help you take turns. Grabbing is not okay.', 'Grabbing the ball', 'is not okay, and it can make the fight bigger, so get a grown-up.', 'You can also keep your hands to yourself, so nobody gets hurt.'],
-  ['What can you do when a friend grabs the ball you were playing with?', 'Get a grown-up', 'Push your friend', 'Pushing is not okay, because it hurts. Keep your hands to yourself, and get a grown-up.', 'Pushing your friend', 'is not okay, because it hurts, so get a grown-up to help.', 'You can also say, stop, please, to tell your friend that grabbing is not okay.'],
-  ['How can a grown-up help you both get to play when a fight starts over one ball?', 'Help you take turns', 'Take the ball away', 'A grown-up can help you take turns, so you both get to play.', 'Taking the ball away', 'stops the fight, but then nobody gets to play with the ball.', 'A grown-up can also help you share the ball, so you both play at the same time.'],
+  // Since pass NY (pass NX's measured reads) this explanation opens on the answer and its reason, in line 10's words, where it had
+  // opened on the wrong choice ("Pushing is not okay, because it hurts.") and given no reason for getting a grown-up.
+  ['What can you do when a friend grabs the ball you were playing with?', 'Get a grown-up', 'Push your friend', 'Get a grown-up to help you both. A grown-up can help you take turns, so you both get to play with the ball. Keep your hands to yourself.', 'Pushing your friend', 'is not okay, because it hurts, so get a grown-up to help.', 'You can also say, stop, please, to tell your friend that grabbing is not okay.'],
+  // No More right answers line here since pass NY: the lesson's one way a grown-up helps is taking turns, and the line that stood
+  // here named sharing the ball, which no line of this lesson says.
+  ['How can a grown-up help you both get to play when a fight starts over one ball?', 'Help you take turns', 'Take the ball away', 'A grown-up can help you take turns, so you both get to play.', 'Taking the ball away', 'stops the fight, but then nobody gets to play with the ball.', null],
 ];
 // Each row: the question, the answer, the explanation, what the wrong answer would mean (pass MH), and one more right thing.
 const P3_HELP_YESNO = [
@@ -36219,6 +36540,15 @@ const P3_HELP_YESNO = [
   ['Should you get a grown-up when a friend is hurt?', 'Yes', 'Yes, you should. Grown-ups know how to help when someone gets hurt.', 'would mean your hurt friend gets no help, so get a grown-up, who knows how to help.', 'A grown-up can help when a friend is very sad, too.'],
   ['Is it kind to ask your sad grown-up, can I give you a hug?', 'Yes', 'Yes, it is kind. Grown-ups have feelings too, and asking to give a hug shows you care.', 'would mean asking is not kind, but asking to give a hug shows your grown-up you care.', 'Asking your grown-up if they are okay is kind too.'],
   ['Is it kind to laugh at a friend who is scared?', 'No', 'No, it is not kind, because laughing can make a scared friend feel sad. Ask if your friend is okay.', 'would mean laughing is kind, but laughing can make a scared friend feel sad.', 'Laughing at a hurt friend is not kind, either.'],
+  // Since pass NY (EARMARKS A178 and A181): sad was said in three Yes rows and no No row, so a child who answered Yes when a question
+  // said sad was right 85.7 percent of the time, and the bank answered Yes 57.4 percent of the time. Grown from the lesson's own
+  // lines, every old row kept: a scared friend's teddy, the ball both friends want both ways, keeping your hands to yourself, and
+  // what laughing at a hurt friend can do, so it answers Yes half the time and no one word is right more than 75 percent of it.
+  ['Is it kind to bring a scared friend a teddy to hug?', 'Yes', 'Yes, it is kind. A teddy to hug is a kind way to help a scared friend.', 'would mean bringing a teddy is not kind, but it is a kind way to help.', 'Asking a scared friend if they are okay is kind too.'],
+  ['Is it okay to grab the ball when you both want it?', 'No', 'No, it is not. Grabbing the ball is not okay. Keep your hands to yourself.', 'would mean grabbing is okay, but grabbing the ball is not okay.', 'Pushing is not okay, either.'],
+  ['Should you keep your hands to yourself when a fight starts over one ball?', 'Yes', 'Yes. Keep your hands to yourself, because grabbing and pushing are not okay.', 'would mean grabbing and pushing in a fight are okay, but they are not okay.', null],
+  ['Should you grab the ball back when a friend grabs it?', 'No', 'No. Grabbing the ball back is not okay, even when a friend grabs it first. Keep your hands to yourself.', 'would mean grabbing it back is okay, but grabbing the ball is not okay.', 'Pushing is not okay, either.'],
+  ['Does laughing at a hurt friend make your friend feel happy?', 'No', 'No. Laughing at a hurt friend is not kind, and it can make your friend feel sad.', 'would mean laughing makes a hurt friend happy, but it can make your friend feel sad.', null],
 ];
 // Can I play too? (pass MN, earmarks E12 and E13 side by side, Domain I: PK3 I.C.3 and ELOF P-SE 4 whole, P-SE 3 in part). The
 // lesson's ways to join a game, the kind and unkind things a joiner can do, what to do with a not now, the feelings a game can
@@ -36242,22 +36572,36 @@ const P3_JOIN_YESNO = [
   ['Is it kind to ask a friend who plays alone, do you want to play with me?', 'Yes', 'Yes, it is kind. Asking can start a new game together.', 'would mean asking is not kind, but asking can start a new game together.', 'Asking your friends if you can play too is a kind way to join a game.'],
   ['Should you watch the game first when you want to play?', 'Yes', 'Yes. Watching first shows you what your friends are doing, so you know how they play.', 'would mean you should not watch, but watching shows you how your friends play.', null],
   ['When your friends are building a tower, is a ball a good thing to bring?', 'No', 'No. A ball can knock their tower down, so a block is a better thing to bring.', 'would mean a ball fits their game, but a ball can knock their tower down.', null],
+  // Since pass NY (EARMARKS A178 and A181): tower was said in two No rows and no Yes row, and the bank answered Yes 58.1 percent of
+  // the time. Grown from the lesson's own lines, every old row kept: the block to bring, watching or grabbing first, a not now, a
+  // friend's idea for the tower and friends who say not now, so it answers Yes half the time and no one word tells it.
+  ['Is a block a good thing to bring for your friends\' tower?', 'Yes', 'Yes. You can bring a block for the tower, and your friends can add it.', 'would mean a block is not for their game, but a block is for the tower.', null],
+  ['Should you grab the blocks first when you want to play?', 'No', 'No. Grabbing your friends\' blocks is not kind, and it can make your friends sad or mad.', 'would mean you grab first, but grabbing their blocks is not kind.', 'Knocking down their tower is not kind, either.'],
+  ['Is it kind to knock down your friends\' tower when they say, not now?', 'No', 'No, it is not kind. Not now is okay, and knocking down their tower can make your friends sad or mad.', 'would mean knocking it down is kind, but it can make your friends sad or mad.', 'Grabbing their blocks is not kind, either.'],
+  ['Should you listen to your friend\'s idea for the tower?', 'Yes', 'Yes. Say your idea, like let\'s make it tall, and listen to your friend\'s idea too.', 'would mean you only say your idea, but you listen to your friend\'s idea too.', null],
+  ['Do your friends always say yes when you ask to play?', 'No', 'No. Sometimes friends say, not now, and that is okay.', 'would mean friends always say yes, but sometimes friends say, not now.', null],
 ];
 const P3_JOIN_NOT_NOW = [
   ['What can you do when your friends say, not now?', 'Play something else', 'Knock their tower down', 'Not now is okay. You can play something else, and ask again later.', 'Knocking their tower down', 'is not kind, and it can make your friends sad or mad.', 'You can find another friend to play with, too.'],
   ['What can you do a little later, after your friends say, not now?', 'Ask again', 'Grab their blocks', 'You can ask again later, can I play too? Maybe then they will say yes.', 'Grabbing their blocks', 'is not kind, because your friends are using those blocks.', null],
   ['What else can you do when your friends say, not now?', 'Find another friend', 'Push your friends', 'You can find another friend to play with. Not now is okay.', 'Pushing your friends', 'is not okay, because it hurts.', 'You can ask a friend who plays alone if they want to play with you.'],
 ];
-// The wrong face changes with the moment and is never one a child could fairly feel there: a knocked-down tower or a friend
-// with nobody to play with can make a child sad or mad, so those offer happy; happy is the wrong face in two moments of five.
+// The wrong face changes with the moment and is never one a child could fairly feel there: a knocked-down tower, grabbed blocks or a
+// friend with nobody to play with can make a child sad or mad, so those offer happy.
 // The last field is one more right answer (another feeling the lesson says the moment can bring) or a true example of the same
 // feeling, or null when the lesson has none (pass MO: the morals that stood there were neither).
+// Since pass NY (EARMARKS A181, pass NX's measured lesson reads) every face is one this lesson draws and names, sad and mad on line 5
+// and happy on line 9, each told by the sign those lines say: the grabbed blocks had offered the scared face, which no line draws.
+// Each face is the answer as often as it is the wrong face (sad two and two, mad one and one, happy three and three), so a child who
+// always taps one face is right half the time, where sad had been right 60.5 percent of the time; the sixth moment, taking turns
+// adding blocks (line 7, happy by line 9), is what lets happy be an answer three times.
 const P3_JOIN_FACE = [
   ['How might your friends feel when someone knocks down their tower?', 'sad', 'happy', 'Their tower fell down, so your friends might feel sad. They might feel mad, too.', 'a tower knocked down can make your friends sad', 'Knocking down their tower can make your friends mad, too.'],
-  ['How might your friends feel when someone grabs their blocks?', 'mad', 'scared', 'Someone grabbed their blocks, so your friends might feel mad. Asking to play is a kind way to join.', 'grabbing can make your friends feel mad', 'Grabbing their blocks can make your friends sad, too.'],
-  ['How might you feel when your friends say, yes, come and play?', 'happy', 'mad', 'Your friends said yes, so you might feel happy. Playing together can make everyone happy.', 'playing together can make you happy', 'Adding a block to the tower together can feel happy too.'],
+  ['How might your friends feel when someone grabs their blocks?', 'mad', 'happy', 'Someone grabbed their blocks, so your friends might feel mad. Asking to play is a kind way to join.', 'grabbing can make your friends feel mad', 'Grabbing their blocks can make your friends sad, too.'],
+  ['How might you feel when your friends say, yes, come and play?', 'happy', 'sad', 'Your friends said yes, so you might feel happy. Playing together can make everyone happy.', 'playing together can make you happy', 'Adding a block to the tower together can feel happy too.'],
   ['How might a friend feel when nobody will play with him?', 'sad', 'happy', 'Nobody will play with him, so he might feel sad. You can ask, do you want to play with me?', 'having nobody to play with can make someone sad', null],
-  ['How might your friend feel when you listen to her idea for the game?', 'happy', 'sad', 'You listened to her idea, so your friend might feel happy. Her idea matters too.', 'being listened to can make a friend happy', 'Taking turns adding blocks can make everyone happy too.'],
+  ['How might your friend feel when you listen to her idea for the game?', 'happy', 'mad', 'You listened to her idea, so your friend might feel happy. Her idea matters too.', 'being listened to can make a friend happy', 'Taking turns adding blocks can make everyone happy too.'],
+  ['How might you feel when you and your friends take turns adding blocks?', 'happy', 'sad', 'You are playing together, so you might feel happy. Playing together can make everyone happy.', 'playing together can make everyone happy', null],
 ];
 // Taking turns once you are in: the four games the pre-K 3 lessons take turns in, each with what a turn is.
 const P3_JOIN_GAMES = [['adding blocks to the tower', 'added a block'], ['rolling a ball', 'rolled the ball'], ['going down the slide', 'went down the slide'], ['swinging on the swing', 'swung on the swing']];
@@ -36285,20 +36629,28 @@ const P4_FEEL_TELLS = [
   ['How might Nia feel when she hides from a loud noise?', 'scared', 'happy', 'Hiding from a loud noise can show you feel scared, so Nia might feel scared.', 'hiding from a loud noise can show you feel scared', 'Holding on tight to a grown-up can show a scared feeling, too.'],
   ['How might Omar feel when he cries because he lost his teddy?', 'sad', 'happy', 'Crying about a lost teddy can show you feel sad, so Omar might feel sad.', 'crying about a lost teddy can show you feel sad', 'A tear rolling out can show a sad feeling, too.'],
 ];
-// Saying a feeling's name: the moment and the face shown, never the feeling said, so the face is read (the moment alone could
-// fit two feelings, a fallen tower sad or mad); the wrong name is another feeling, told by its own sign against the face's.
+// Saying a feeling's name: the moment and the face shown, never the feeling said, so the face is read; the wrong name is another
+// feeling, told by its own sign against the face's. Since pass NY (EARMARKS A181, the measured reads) the wrong name is never a feeling
+// the moment could fairly bring, since a child may answer from the moment as well as the face: a fallen tower can make a child sad or
+// mad, and a taken crayon or a grabbed toy mad or sad, so those offer happy or scared (pre-K 3's grabbed blocks offer scared too); a
+// barking dog and thunder offer sad, and a visit from Grandma and a best friend mad. Each feeling is the answer twice and the wrong
+// choice twice, where I feel happy had never been wrong and was right 62.4 percent of the time to a child who always tapped it.
 const P4_FEEL_SAY = [
-  ['When your tower falls down and your face looks like this, what can you say?', 'sad', 'mad'],
-  ['When your friend takes your crayon and your face looks like this, what can you say?', 'mad', 'sad'],
-  ['When a big dog barks loudly and your face looks like this, what can you say?', 'scared', 'mad'],
-  ['When Grandma comes to visit and your face looks like this, what can you say?', 'happy', 'scared'],
-  ['When you lose your teddy and your face looks like this, what can you say?', 'sad', 'scared'],
+  ['When your tower falls down and your face looks like this, what can you say?', 'sad', 'happy'],
+  ['When your friend takes your crayon and your face looks like this, what can you say?', 'mad', 'scared'],
+  ['When a big dog barks loudly and your face looks like this, what can you say?', 'scared', 'sad'],
+  ['When Grandma comes to visit and your face looks like this, what can you say?', 'happy', 'mad'],
+  ['When you lose your teddy and your face looks like this, what can you say?', 'sad', 'happy'],
   ['When thunder booms and your face looks like this, what can you say?', 'scared', 'sad'],
   ['When someone grabs your toy and your face looks like this, what can you say?', 'mad', 'scared'],
-  ['When you see your best friend and your face looks like this, what can you say?', 'happy', 'sad'],
+  ['When you see your best friend and your face looks like this, what can you say?', 'happy', 'mad'],
 ];
 // What goes with each named feeling, said against the face shown (the feelings lesson's signs, a tear for sad).
 const P4_GOES = { happy: 'a big smile', sad: 'a tear', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
+// What is okay to do with a feeling. Since pass NY (EARMARKS A178 and A181: mad was in three of the three No rows and one Yes row, so
+// mad alone answered it 85.2 percent of the time) the bank grew from its own lesson's lines, every old row kept: saying I feel mad and a
+// slow breath are okay when you feel mad, feeling sad is okay, and hitting, pushing and throwing things are not okay whatever the
+// feeling, so mad, sad and scared each come with Yes and with No, seven of each.
 const P4_FEEL_OKAY = [
   ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and you can choose a kind way to show it.', 'would mean feeling mad is not okay, but every feeling is okay to have.', 'Every feeling is okay to have, even mad.'],
   ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Hitting is not okay, because it can hurt someone. You can say, I feel mad.', 'would mean hitting is okay, but hitting can hurt someone.', 'Pushing and throwing things are not okay either, because they can hurt someone.'],
@@ -36307,6 +36659,13 @@ const P4_FEEL_OKAY = [
   ['Is it okay to push a friend when you feel mad?', 'No', 'No, it is not. Pushing is not okay, because it can hurt your friend.', 'would mean pushing is okay, but pushing can hurt your friend.', 'Hitting and throwing things are not okay either, because they can hurt someone.'],
   ['Is it okay to ask for a hug when you feel scared?', 'Yes', 'Yes, it is okay. A hug from your grown-up can help a scared feeling get smaller.', 'would mean asking is not okay, but a hug can help a scared feeling get smaller.', 'Holding on tight to your grown-up can help, too.'],
   ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help.', 'would mean feeling scared is not okay, but every feeling is okay to have.', 'When you feel scared, you might hide or hold on tight to your grown-up, and that is okay.'],
+  ['Is it okay to say, I feel mad?', 'Yes', 'Yes, it is okay. When you feel mad, say, I feel mad, and tell what is wrong.', 'would mean saying I feel mad is not okay, but you can say it.', 'Taking a slow breath when you feel mad is okay, too.'],
+  ['Is it okay to take a slow breath when you feel mad?', 'Yes', 'Yes, it is okay. A slow breath helps a big feeling get smaller.', 'would mean a slow breath is not okay, but it helps a big feeling get smaller.', 'Counting to five when you feel mad is okay, too.'],
+  ['Is it okay to feel sad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and you might cry or want a hug.', 'would mean feeling sad is not okay, but every feeling is okay to have.', 'A tear may roll out when you feel sad, and that is okay.'],
+  ['Is it okay to hit when you feel sad?', 'No', 'No, it is not. Feeling sad is okay, but hitting is not okay, because it can hurt someone.', 'would mean hitting is okay, but hitting can hurt someone.', 'Pushing and throwing things are not okay either, because they can hurt someone.'],
+  ['Is it okay to throw a toy when you feel scared?', 'No', 'No, it is not. Feeling scared is okay, but throwing things is not okay, because it can hurt someone.', 'would mean throwing is okay, but throwing things can hurt someone.', 'Hitting and pushing are not okay either, because they can hurt someone.'],
+  ['Is it okay to push a friend?', 'No', 'No, it is not. Pushing is not okay, because it can hurt your friend.', 'would mean pushing is okay, but pushing can hurt your friend.', 'Hitting and throwing things are not okay either, because they can hurt someone.'],
+  ['Is it okay to hit a friend?', 'No', 'No, it is not. Hitting is not okay, because it can hurt your friend.', 'would mean hitting is okay, but hitting can hurt your friend.', 'Pushing and throwing things are not okay either, because they can hurt someone.'],
 ];
 // Ways to help a big feeling get smaller, each said on a line of the lesson, against a way that hurts or does not help.
 const P4_FEEL_CALM = [
@@ -36329,29 +36688,68 @@ const P4_FACE_LOOK = { happy: 'It has a big smile.', sad: 'A tear rolls out.', m
 const P4_FRIEND_FEELS = [
   ['You like pizza, and your friend likes cake. Your friend gets a piece of cake. How might your friend feel?', 'happy', 'sad', 'Your friend likes cake, so a piece of cake can make your friend feel happy.', 'your friend likes cake', 'You like cats, and your friend likes dogs, so a dog can make your friend happy.'],
   ['You like cake, but your friend does not like cake. Your friend gets a piece of cake. How might your friend feel?', 'sad', 'happy', 'Your friend does not like cake, so cake might make your friend feel a little sad. But you would feel happy.', 'your friend does not like cake', 'At the big slide, you can feel happy while your friend feels scared.'],
-  ['You like cats, and your friend likes dogs. Your friend gets to pet a puppy. How might your friend feel?', 'happy', 'sad', 'Your friend likes dogs, so petting a puppy can make your friend feel happy.', 'your friend likes dogs', 'Friends can like different things, and that is okay.'],
+  // Since pass NY (EARMARKS A181, the measured reads) the puppy row's More right answers is a true example in the lesson's words, where
+  // "Friends can like different things, and that is okay." was a moral.
+  ['You like cats, and your friend likes dogs. Your friend gets to pet a puppy. How might your friend feel?', 'happy', 'sad', 'Your friend likes dogs, so petting a puppy can make your friend feel happy.', 'your friend likes dogs', 'You like pizza, and your friend likes cake, so a piece of cake can make your friend happy.'],
   ['You love the big slide, but your friend thinks it is too tall. How might your friend feel at the big slide?', 'scared', 'happy', 'Your friend thinks the slide is too tall, so your friend might feel scared. Your friend\'s feelings can be different from yours.', 'your friend thinks the slide is too tall', 'A piece of cake can make you happy and your friend a little sad.'],
   ['Your friend loves the big slide, but you think it is too tall. How might your friend feel at the big slide?', 'happy', 'scared', 'Your friend loves the big slide, so your friend might feel happy, even though you feel scared.', 'your friend loves the big slide', 'Friends can feel different about the same slide.'],
+  // Since pass NY: happy answered three rows of five and was the wrong face in two, so a child who always tapped happy was right 60.8
+  // percent of the time; a friend who does not like pizza, the lesson's own cake turned round with its other food, makes it three each.
+  ['You like pizza, but your friend does not like pizza. Your friend gets a piece of pizza. How might your friend feel?', 'sad', 'happy', 'Your friend does not like pizza, so pizza might make your friend feel a little sad. But you would feel happy.', 'your friend does not like pizza', 'A piece of cake may make a friend who does not like cake a little sad.'],
 ];
-// Worried and embarrassed in moments a child knows: the wrong face is never a fair one there (a doctor's visit can make a child
-// scared and a fall can make a child sad, and a spill can make a child mad, so those offer the other new face or happy). Three rows
-// set worried and embarrassed against each other, so a child cannot pass by tapping the newest face (the lesson check, pass MN).
+// Worried and embarrassed in the moments the lesson's lines name, beside the lesson's own happy moments: each row's question, its
+// feeling, the wrong faces fair to offer with it (one dealt each time), its explanation, the clause its wrong face's reason ends on, and
+// one more right answer. A wrong face is never one the moment could fairly bring: after a spill, a fall or a mistake with everyone
+// looking a child may be worried, mad or sad too, so those offer only happy; a new school, or thinking something bad might happen,
+// offers embarrassed (and happy where the moment holds no fun to look forward to); a birthday party and a slide you love offer worried
+// (and since round one's lesson read of pass NY embarrassed, one time in four).
+// Since round one's lesson read of pass NY a happy row says why the moment is happy for the one it asks about, as the slide row does
+// ("You love the big slide."): a shy child can fairly feel worried at a birthday party, and this lesson teaches that friends can feel
+// differently about one thing, so "How might you feel at a birthday party?" had marked a fair feeling wrong on 420 of 2,000 seeds.
+// Since the same read (its SC1) the three happy rows offer embarrassed too, one time in four beside worried's three, a feeling the
+// lesson ties to a spill, a fall or a mistake with everyone looking, none of which a row that says you love the party or the slide
+// names: with one fixed wrong face in eight rows of nine, a child who tapped the face most often right for the pair shown was right
+// 94.5 percent of the time (embarrassed beside happy always embarrassed), and now 86.3 at seeds 1 to 2,000 (86.1 to 86.9 by kind of
+// round). Embarrassed as often as worried, as the read gave it, made it 78.8, but a child who always tapped worried, then shown in the
+// happy rows only half the time, was right 58.5 to 59.6 percent of the time, past the one-choice bound of 56 the rules test holds for
+// this bank (55.4 at most at one in four). Worried beside embarrassed is still always worried, since after a spill, a fall or a mistake
+// a child may be worried too, so no embarrassed row can offer it; the rules test holds the pair read at its bound.
+// Since pass NY (EARMARKS A181, the measured reads: each row had one fixed wrong face and worried answered three of six, so a child
+// who always tapped worried was right 67.5 percent of the time, and the teacher called Grandma, the doctor's visit and the class were
+// said in no line) worried, embarrassed and happy each answer three rows and are the wrong face about as often, every moment the
+// lesson's own, and no two faces P4_NEAR_FACES pairs ever stand together.
 const P4_NEW_MOMENTS = [
-  ['How might you feel on your first day at a new school, when you do not know anyone yet?', 'worried', 'mad', 'A new school with new people can make you feel worried, and that is okay.', 'a new school can make you feel worried', 'You may feel worried when you think something bad might happen.'],
-  ['How might you feel when you spill your milk at lunch and everyone looks at you?', 'embarrassed', 'happy', 'Spilling when everyone looks can make you feel embarrassed. Everyone spills sometimes.', 'spilling when everyone looks can make you feel embarrassed', 'Your cheeks can turn pink, and you may want to hide your face.'],
-  ['How might you feel when you call your teacher Grandma by mistake and your friends giggle?', 'embarrassed', 'worried', 'Saying the wrong name when everyone hears can make you feel embarrassed, and that is okay.', 'a mistake everyone hears can make you feel embarrassed', 'You may feel embarrassed when you spill, fall or make a mistake, and everyone looks at you.'],
-  ['How might you feel the night before you go to the doctor, when you wonder if it will hurt?', 'worried', 'embarrassed', 'Thinking something bad might happen can make you feel worried, and that is okay.', 'wondering if it will hurt can make you worried', 'You may feel worried on the first day at a new school, too.'],
-  ['How might your friend feel when her grown-up is late, and she wonders where they are?', 'worried', 'embarrassed', 'Your friend thinks something might be wrong, so she might feel worried.', 'wondering where your grown-up is can make you worried', 'A worried face can have a wiggly mouth, and eyebrows that go up in the middle.'],
-  ['How might your friend feel when he falls down in front of the class and everyone looks?', 'embarrassed', 'happy', 'Falling when everyone looks can make you feel embarrassed. He might want to hide his face.', 'falling when everyone looks can make you feel embarrassed', 'An embarrassed face can have eyes that look down and pink cheeks.'],
+  ['How might you feel on the first day at a new school?', 'worried', ['embarrassed'], 'A new school can make you feel worried, and that is okay.', 'a new school can make you feel worried', 'You may feel worried when you think something bad might happen.'],
+  ['How might you feel when you think something bad might happen?', 'worried', ['embarrassed', 'happy'], 'Thinking something bad might happen can make you feel worried, and that is okay.', 'thinking something bad might happen can make you worried', 'You may feel worried on the first day at a new school, too.'],
+  ['How might your friend feel on her first day at a new school?', 'worried', ['embarrassed'], 'A new school can make your friend feel worried, and that is okay.', 'a new school can make your friend feel worried', 'A worried face can have a wiggly mouth, and eyebrows that go up in the middle.'],
+  ['How might you feel when you spill, and everyone looks at you?', 'embarrassed', ['happy'], 'Spilling when everyone looks can make you feel embarrassed, and that is okay.', 'spilling when everyone looks can make you feel embarrassed', 'You may feel embarrassed when you fall or make a mistake, and everyone looks at you.'],
+  ['How might your friend feel when he falls, and everyone looks at him?', 'embarrassed', ['happy'], 'Falling when everyone looks can make your friend feel embarrassed. He may want to hide his face.', 'falling when everyone looks can make you feel embarrassed', 'An embarrassed face can have eyes that look down and pink cheeks.'],
+  ['How might you feel when you make a mistake, and everyone looks at you?', 'embarrassed', ['happy'], 'A mistake when everyone looks can make you feel embarrassed, and that is okay.', 'a mistake when everyone looks can make you feel embarrassed', 'You may feel embarrassed when you spill or fall, and everyone looks at you.'],
+  ['You love birthday parties. How might you feel at a birthday party?', 'happy', ['worried', 'worried', 'worried', 'embarrassed'], 'You love birthday parties, so you might feel happy there.', 'you love birthday parties', 'At a birthday party, your friend can feel happy too, the same feeling.'],
+  ['Your friend loves birthday parties. How might your friend feel at a birthday party?', 'happy', ['worried', 'worried', 'worried', 'embarrassed'], 'Your friend loves birthday parties, so your friend might feel happy there.', 'your friend loves birthday parties', 'You can feel happy at a birthday party too, the same feeling.'],
+  ['You love the big slide. How might you feel at the big slide?', 'happy', ['worried', 'worried', 'worried', 'embarrassed'], 'You love the big slide, so you might feel happy there.', 'you love the big slide', 'A birthday party can make you feel happy, too.'],
 ];
+// Yes or no about friends' feelings and likes, the two new feelings and how a face shows one. Since pass NY (EARMARKS A178 and A181:
+// "Can you ask a friend how they feel?" asked about ability, and do, in both always rows, answered it 85.7 percent of the time) the
+// asking row asks whether asking helps you know, and the bank grew from its own lesson's lines, every other row kept, so the same and
+// different feelings, a friend's likes, the cake, what is okay to feel and a face's signs are each asked both ways, seven Yes and seven No.
 const P4_FRIENDS_YESNO = [
   ['Can two friends feel different about the same slide?', 'Yes', 'Yes. One friend can feel happy on the big slide while another feels scared.', 'would mean friends always feel the same, but they can feel different.', 'A piece of cake can make you happy and your friend a little sad.'],
   ['Do friends always like the same things as you?', 'No', 'No. Friends can like different things, like cats or dogs, and that is okay.', 'would mean friends always like what you like, but friends can like different things.', 'You might like cats, and your friend might like dogs.'],
   ['Is it okay to feel worried?', 'Yes', 'Yes, it is okay. Everyone feels worried sometimes, and you can say, I feel worried.', 'would mean feeling worried is not okay, but everyone feels worried sometimes.', 'Everyone feels worried or embarrassed sometimes, and that is okay.'],
   ['Is it okay to feel embarrassed?', 'Yes', 'Yes, it is okay. Everyone feels embarrassed sometimes, like when they spill.', 'would mean feeling embarrassed is not okay, but everyone feels embarrassed sometimes.', 'Everyone feels worried or embarrassed sometimes, and that is okay.'],
   ['Do friends always feel the same as you?', 'No', 'No. Friends can feel the same as you, or different, so ask them how they feel.', 'would mean friends always feel the same, but they can feel different.', 'At the big slide, you can feel happy while your friend feels scared.'],
-  ['Can you ask a friend how they feel?', 'Yes', 'Yes. Asking your friend how they feel helps you know.', 'would mean you cannot ask, but asking helps you know how your friend feels.', 'When your friend looks sad, you can ask how they feel.'],
+  ['Does asking a friend how they feel help you know?', 'Yes', 'Yes. To know how a friend feels, turn toward your friend and ask, how do you feel?', 'would mean asking does not help, but asking helps you know how your friend feels.', 'When you ask, your friend may say, I feel worried.'],
   ['Does a piece of cake make every friend happy?', 'No', 'No. A friend who does not like cake may feel a little sad.', 'would mean every friend likes cake, but some friends do not like cake.', 'The big slide can make one friend happy and another friend scared.'],
+  ['Does a piece of cake make a friend who likes cake happy?', 'Yes', 'Yes. Your friend likes cake, so a piece of cake can make your friend happy.', 'would mean cake does not make a friend who likes cake happy, but it can.', 'A dog can make a friend who likes dogs happy.'],
+  ['Is it okay if your friend likes dogs and you like cats?', 'Yes', 'Yes, it is okay. Friends can like different things.', 'would mean your friend must like cats, but it is okay to like dogs.', 'You might like pizza, and your friend might like cake.'],
+  ['Does a worried face have a wiggly mouth?', 'Yes', 'Yes. A worried face can have a wiggly mouth, and eyebrows that go up in the middle.', 'would mean a worried face never has a wiggly mouth, but it can.', 'A worried face can have eyebrows that go up in the middle, too.'],
+  ['Does a worried face have a big smile?', 'No', 'No. A big smile can show happy. A worried face can have a wiggly mouth.', 'would mean a big smile shows worried, but a big smile can show happy.', 'A big smile can show happy.'],
+  ['When your friend does not like cake, does a piece of cake make your friend happy?', 'No', 'No. Cake may make a friend who does not like cake a little sad, even when it makes you happy.', 'would mean your friend is happy, but cake may make your friend a little sad.', 'A piece of cake can make a friend who likes cake happy.'],
+  // Since round one's lesson read of pass NY (its SC5) said as "Is happy the only feeling that is okay to have?", where "Is it only okay
+  // to feel happy?" was hard to hear.
+  ['Is happy the only feeling that is okay to have?', 'No', 'No. Everyone feels worried or embarrassed sometimes, and that is okay.', 'would mean only happy is okay to have, but feeling worried or embarrassed is okay too.', 'Everyone feels worried or embarrassed sometimes, and that is okay.'],
+  ['Does everyone feel happy at the big slide?', 'No', 'No. At the big slide, you can feel happy while your friend feels scared.', 'would mean everyone feels happy at the slide, but your friend can feel scared.', 'A piece of cake can make you happy and your friend a little sad.'],
 ];
 // Being a good friend (pass MN, earmark E13: PK4 I.C.6, I.C.5, ELOF P-SE 7 and P-SE 5 whole, P-SE 4 in part): kind words and acts for a friend who
 // feels sad, worried or embarrassed, when to get a grown-up and when friends can fix it themselves, and fixing a problem when
@@ -36359,48 +36757,79 @@ const P4_FRIENDS_YESNO = [
 const P4_KIND_WORDS = [
   ['What is a kind thing to say when your friend spills milk and feels embarrassed?', 'It is okay. I spill too.', 'Ha ha, you spilled!', 'Saying it is okay, and that you spill too, helps your friend feel better. Everyone spills sometimes.', 'Laughing at your friend', 'can make an embarrassed friend feel worse, so it is not kind.', 'You can also ask if your friend is okay.'],
   ['What is a kind thing to say when your friend feels worried on the first day at school?', 'I will play with you.', 'Go away.', 'Saying, I will play with you, can help a worried friend feel better.', 'Saying go away', 'leaves your worried friend alone, so it is not kind.', 'You can ask to hold your friend\'s hand, too.'],
-  ['What is a kind thing to say when your friend looks sad?', 'Are you okay?', 'Stop crying!', 'Asking your friend if they are okay shows you care how your friend feels.', 'Saying stop crying', 'is not kind, because every feeling is okay to have.', 'You can also say, I will play with you.'],
-  ['What is a kind thing to say when your friend falls in front of the class?', 'Are you okay?', 'Ha ha, you fell!', 'Asking your friend if they are okay shows you care, and laughing can make your friend feel embarrassed.', 'Laughing at your friend', 'can make your friend feel embarrassed, so it is not kind.', 'You can also say, I will play with you.'],
+  // Since pass NY (pass NX's measured reads) stop crying is said on line 2 as words that are not kind, and its reason is this
+  // lesson's (it had been Happy, sad, mad and scared's "every feeling is okay to have").
+  ['What is a kind thing to say when your friend looks sad?', 'Are you okay?', 'Stop crying!', 'Asking your friend if they are okay shows you care how your friend feels.', 'Saying stop crying', 'is not kind to a sad friend, and kind words can help.', 'You can also say, I will play with you.'],
+  // Since pass NY this friend feels embarrassed, as line 1 says, where the row had said a friend who falls in front of the class,
+  // a scene only How do friends feel? says, and a fall is where this lesson's line 6 gets a grown-up. Its laugh is longer than its
+  // answer, as the fall's was, so the longer choice is not always the answer.
+  ['What is a kind thing to say when your friend feels embarrassed?', 'Are you okay?', 'Ha ha, you are embarrassed!', 'Good friends notice how others feel. Asking, are you okay, is a kind way to help a friend who feels embarrassed.', 'Laughing at your friend', 'can make an embarrassed friend feel worse, so it is not kind.', 'You can also say, I will play with you.'],
 ];
 const P4_HELP_FRIEND = [
   ['What can you do when your friend spills milk?', 'Help wipe it up', 'Point and laugh', 'Helping wipe it up is kind, and it helps your friend feel better.', 'Pointing and laughing', 'can make your friend feel embarrassed, so it is not kind.', 'You can say, it is okay, I spill too.'],
   ['What can you do when your friend feels worried on the first day at school?', 'Ask, can I hold your hand?', 'Walk away', 'Asking first lets your friend say yes or no. Holding hands shows your friend you care.', 'Walking away', 'leaves your worried friend alone, so it is not kind.', 'You can say, I will play with you.'],
   ['What can you do when your friend looks sad?', 'Sit beside your friend', 'Laugh at your friend', 'Sitting beside your friend shows you care how your friend feels.', 'Laughing at your friend', 'can make a sad friend feel worse, so it is not kind.', 'You can ask your friend if they are okay.'],
 ];
-// When to get a grown-up, and when friends can fix it themselves, each frame (Should you get, Do you need, and since pass NV Can you
-// and your friend fix the problem together) asked both ways, so its opening words never give the answer (the code check, pass MN round one) (P-SE 5 at 48 to 60 months: "Although simple conflicts may be
-// resolved without adult assistance, may seek out or need adult support in more challenging moments.").
+// When to get a grown-up, and when friends can fix it themselves (P-SE 5 at 48 to 60 months: "Although simple conflicts may be resolved
+// without adult assistance, may seek out or need adult support in more challenging moments."), in three frames: Should you get, Do you
+// need, and since pass NV Can you and your friend fix the problem (or it) together. Each frame was asked both ways from pass MN's code
+// check, so its opening words never gave the answer, until pass NY (below) asked Should you get only with Yes; since round one's lesson
+// read of pass NY (its SC2) the Can frame is asked both ways again, the hurt friend's row asking whether you can fix it together, No,
+// and Do you need is asked both ways, so only Should you get answers one way, and the opening words alone are right on 9 rows of 13.
+// Since pass NY (EARMARKS A181, pass NX's measured lesson reads) a No is asked only as "Do you need a grown-up ...?", as line 11 says
+// it ("you do not need to get a grown-up"): "Should you get a grown-up ...?" answered No had taught that getting a grown-up is wrong,
+// so Should you get asks only where a grown-up is the answer. The third frame keeps its two Yes rows and lost its No, "... when a
+// fight starts and you cannot stop it?", whose own words answered it; a worried friend's hand, asked without a grown-up, stands in
+// its place, a topic no other row asks. The very sad friend asks Do you need, so need is said with Yes as well as with No (the
+// one-word check), and its reason is this lesson's line 6, where it had been Feelings and what we do's "the biggest feelings".
 const P4_WHEN_GROWNUP = [
   ['Should you get a grown-up when your friend falls and gets hurt?', 'Yes', 'Yes. Get a grown-up, because grown-ups know how to help when someone is hurt.', 'would mean your hurt friend gets no help, but grown-ups know how to help.', 'A grown-up can help when a fight starts and you cannot stop it, too.'],
   ['Do you need a grown-up when a fight starts and you cannot stop it?', 'Yes', 'Yes. A grown-up can help you both stop the fight and fix the problem.', 'would mean nobody helps stop the fight, but a grown-up can help you both.', 'A grown-up can help when a friend falls and gets hurt, too.'],
-  ['Should you get a grown-up when your friend is very sad and cannot stop crying?', 'Yes', 'Yes. Grown-ups can help with the biggest feelings.', 'would mean your friend gets no help, but grown-ups can help with the biggest feelings.', 'A grown-up can help when a friend falls and gets hurt, too.'],
-  ['Do you need a grown-up when you and your friend can take turns choosing the game?', 'No', 'No. You can fix it yourselves by taking turns choosing.', 'would mean you cannot fix it, but taking turns choosing fixes it.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
-  ['Should you get a grown-up when you and your friend can find a game you both like?', 'No', 'No. You can fix it yourselves by finding a game you both like.', 'would mean you cannot fix it, but finding a game you both like fixes it.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
+  ['Do you need a grown-up when your friend is very sad and cannot stop crying?', 'Yes', 'Yes. Get a grown-up, because grown-ups know how to help.', 'would mean your friend gets no help, but grown-ups know how to help.', 'A grown-up can help when a friend falls and gets hurt, too.'],
+  ['Do you need a grown-up when you and your friend can take turns choosing the game?', 'No', 'No. You and your friend can fix it together by taking turns choosing.', 'would mean you cannot fix it, but taking turns choosing fixes it.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
+  ['Do you need a grown-up when you and your friend can find a game you both like?', 'No', 'No. You and your friend can fix it together by finding a game you both like.', 'would mean you cannot fix it, but finding a game you both like fixes it.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
   // Since pass NV (EARMARKS A158): both No rows said can and game and no Yes row did, so either word told the answer every time.
   // Rows of each frame both ways, and a third frame, Can you and your friend fix the problem (or, of the spilled milk, it) together,
-  // whose Yes is the problem friends fix and whose No is the fight they cannot stop, so cannot is said with No too; each a line of the
-  // lesson's own.
+  // whose Yes is the problem friends fix and whose No was the fight they cannot stop, so cannot was said with No too, until pass NY
+  // took that row out (above); each a line of the lesson's own.
   ['Do you need a grown-up when you and your friend cannot fix a problem together?', 'Yes', 'Yes. When you cannot fix a problem together, get a grown-up.', 'would mean you do not need a grown-up, but you cannot fix the problem together.', 'A grown-up can help when a fight starts and you cannot stop it, too.'],
   ['Can you and your friend fix the problem together when you want different games?', 'Yes', 'Yes. You can take turns choosing, or find a game you both like.', 'would mean you need a grown-up, but you can take turns choosing the game.', 'When your friend spills a little milk, you can help wipe it up together, too.'],
   ['Can you and your friend fix it together when your friend spills a little milk?', 'Yes', 'Yes. Say, it is okay, I spill too, and help wipe it up together.', 'would mean you need a grown-up for spilled milk, but you can wipe it up together.', 'When you want different games, you can take turns choosing, too.'],
+  // Since round one's lesson read of pass NY (its SC2) the Can frame asks a No too, line 6's hurt friend, so its opening words no longer
+  // answer it Yes every time.
+  ['Can you and your friend fix it together when your friend falls and gets hurt?', 'No', 'No. Get a grown-up, because grown-ups know how to help when someone is hurt.', 'would mean you can fix a hurt by yourselves, but grown-ups know how to help.', 'A grown-up can help when your friend is very sad and cannot stop crying, too.'],
   ['Do you need a grown-up to say kind words to a sad friend?', 'No', 'No. You can say kind words too, like, are you okay?', 'would mean only a grown-up can say kind words, but you can say them too.', 'You do not need a grown-up to sit beside your friend, either.'],
-  ['Should you get a grown-up when you want to play blocks and your friend wants to play ball?', 'No', 'No. You can take turns choosing, first blocks and then ball.', 'would mean you need a grown-up, but you can take turns choosing.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
+  ['Do you need a grown-up when you want to play blocks and your friend wants to play ball?', 'No', 'No. You can take turns choosing, first blocks and then ball.', 'would mean you need a grown-up, but you can take turns choosing.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
   ['Do you need a grown-up when you and your friend fix a problem together?', 'No', 'No. When you and your friend can fix a problem together, you do not need to get a grown-up.', 'would mean you need a grown-up, but you can fix the problem together.', 'You do not need a grown-up to take turns choosing, either.'],
-  ['Can you and your friend fix the problem together when a fight starts and you cannot stop it?', 'No', 'No. When a fight starts and you cannot stop it, get a grown-up.', 'would mean you can stop the fight together, but you cannot, so get a grown-up.', 'A grown-up can help when a friend falls and gets hurt, too.'],
+  ['Do you need a grown-up to ask a worried friend, can I hold your hand?', 'No', 'No. You can ask a worried friend, can I hold your hand?', 'would mean you need a grown-up to ask, but you can ask your friend too.', 'You do not need a grown-up to play with a worried friend, either.'],
 ];
+// Since pass NY (pass NX's measured reads) the first row's wrong choice is line 10's own, only you choosing every time, where it had
+// been grabbing the ball, which no line of this lesson says; and the fourth row's reason says what line 8 says, where it had said
+// the words call your friend a name, which no line of this lesson says either.
 const P4_FIX_PROBLEM = [
-  ['You want to play blocks, and your friend wants to play ball. What can you do?', 'Take turns choosing', 'Grab the ball', 'Take turns choosing. First blocks, then ball, so you both get to play your game.', 'Grabbing the ball', 'is not kind, and it does not fix the problem.', 'You can find a game you both like, too.'],
+  ['You want to play blocks, and your friend wants to play ball. What can you do?', 'Take turns choosing', 'Choose blocks every time', 'Take turns choosing. First blocks, then ball, so you both get to play your game.', 'Choosing blocks every time', 'is not fair, because your friend wants a turn to choose too.', 'You can find a game you both like, too.'],
   ['You and your friend both want to choose the game. What is fair?', 'Take turns choosing', 'Only you choose', 'Taking turns choosing is fair, so you both get a turn to pick.', 'Only you choosing', 'is not fair, because your friend wants a turn too.', 'You can find a game you both like, too.'],
   ['Your friend does not like your game, and you do not like your friend\'s game. What can you do?', 'Find a game you both like', 'Say, you are not my friend', 'Find a game you both like, and you can play together.', 'Saying you are not my friend', 'is not kind, and it does not fix the problem.', 'You can take turns choosing, too.'],
-  ['You want to play blocks, and your friend wants to play ball. How can you say what the problem is?', 'We want different games', 'You are mean', 'Saying, we want different games, tells the problem kindly, so you can fix it together.', 'Saying you are mean', 'calls your friend a name, and it does not say the problem.', null],
+  ['You want to play blocks, and your friend wants to play ball. How can you say what the problem is?', 'We want different games', 'You are mean', 'Saying, we want different games, tells the problem kindly, so you can fix it together.', 'Saying you are mean', 'does not say the problem, so it does not help you fix it.', null],
   ['You and your friend are fighting, and you cannot fix it. Who can help?', 'A grown-up', 'Nobody', 'Get a grown-up. A grown-up can help you both fix the problem.', null, 'means no one helps you, and a grown-up can help you both.', null],
 ];
+// Since pass NY (EARMARKS A178 and A181, pass NX's measured lesson reads): the bank answered Yes 59.5 percent of the time, and a child
+// who answered Yes when a question said I was right 80.5 percent of it. The spilled milk's kind words say the moment they are said in,
+// where the row had dropped it; More right answers under the worried friend's hand is another kind act, where it had said what to
+// say; and saying what the problem is asks what line 8 says, should you, where it had asked whether it is kind, which no line says.
+// Grown from the lesson's own lines, every old row kept: I choose every time, taking turns choosing, and a sad friend's words and
+// seat both ways (line 2 says go away and stop crying are not kind), so it answers Yes half the time.
 const P4_GOOD_YESNO = [
   ['Is it kind to laugh when a friend spills milk?', 'No', 'No, it is not kind. Laughing can make your friend feel embarrassed and worse.', 'would mean laughing is kind, but it can make your friend feel worse.', null],
-  ['Is it kind to say, it is okay, I spill too?', 'Yes', 'Yes, it is kind. It helps your friend feel better.', 'would mean those words are not kind, but they help your friend feel better.', 'Helping wipe up the milk is kind, too.'],
-  ['Is it kind to ask a worried friend, can I hold your hand?', 'Yes', 'Yes, it is kind. Asking first lets your friend say yes or no. Holding hands shows your friend you care.', 'would mean asking is not kind, but asking first lets your friend choose.', 'You can say, I will play with you.'],
+  ['Is it kind to say, it is okay, I spill too, when a friend spills a little milk?', 'Yes', 'Yes, it is kind. Those kind words help a friend who feels embarrassed.', 'would mean those words are not kind, but saying them helps a friend who spills.', 'Helping wipe up the milk is kind, too.'],
+  ['Is it kind to ask a worried friend, can I hold your hand?', 'Yes', 'Yes, it is kind. Asking first lets your friend say yes or no. Holding hands shows your friend you care.', 'would mean asking is not kind, but asking first lets your friend choose.', 'Saying, I will play with you, is kind too.'],
   ['Is it fair if only you choose the game every time?', 'No', 'No, it is not fair. Taking turns choosing lets you both pick.', 'would mean it is fair, but your friend wants a turn to choose too.', null],
-  ['Is it kind to say what the problem is, like, we want different games?', 'Yes', 'Yes. Saying what the problem is kindly helps you fix it together.', 'would mean those words are not kind, but saying the problem helps you fix it together.', null],
+  ['Should you say what the problem is, like, we want different games?', 'Yes', 'Yes. Say what the problem is, and then find a fair way to fix it together.', 'would mean you should not say it, but saying the problem helps you fix it together.', null],
+  ['Is it fair to say, I choose the game every time?', 'No', 'No, it is not fair. Your friend wants a turn to choose too.', 'would mean it is fair, but only you choosing every time is not fair.', null],
+  ['Is it fair to take turns choosing, first blocks and then ball?', 'Yes', 'Yes, it is fair. Taking turns choosing is a fair way to fix the problem.', 'would mean it is not fair, but taking turns choosing is a fair way to fix it.', 'Finding a game you both like is fair, too.'],
+  ['Is it kind to say go away to a friend who feels sad?', 'No', 'No, it is not kind. Good friends say kind words to a friend who feels sad.', 'would mean those words are kind, but saying go away to your friend is not kind.', 'Saying stop crying to your friend is not kind, either.'],
+  ['Is it kind to sit beside a friend who feels sad?', 'Yes', 'Yes, it is kind. Sitting beside a friend who feels sad is a kind way to help.', 'would mean sitting beside a sad friend is not kind, but it helps your friend.', 'Asking if your friend is okay is kind too.'],
+  ['Is it kind to say stop crying to a friend who feels sad?', 'No', 'No, it is not kind. When a friend feels sad, you can help with kind words.', 'would mean those words are kind, but saying stop crying to your friend is not kind.', 'Saying go away to your friend is not kind, either.'],
 ];
 // Let's play together (pass MO, earmark E13: PK4 I.C.1, I.C.3 and I.C.4 whole, ELOF P-SE 4 and P-SE 1 in part). Ways to start
 // with a new friend, the words and signs that build a friendship, and playing together with a plan, each row in socialRow's shape
@@ -36685,7 +37114,7 @@ Object.assign(GENERATORS, {
       whyNot: p3WhyNot(choices, answer, (w) => ({ name: /^icon:/.test(w) ? p3PicName(w) : /^I feel /.test(w) ? `Saying ${w}` : w, why: notWhy })), alsoRight: more ? [more] : [] }; },
   // Helping a friend (pass MD, PK3 I.C.5, I.C.6 and I.D.1, ELOF P-SE 5 and P-SE 7): the friend who may need help by the face,
   // the kind thing to say or do, the grown-up to get, and the fight over one ball, with the lesson's own words.
-  'p3-help-who': (rng) => { const [prompt, f, foils, why, more] = pick(rng, P3_HELP_WHO); const other = pick(rng, foils); const choices = shuffle(rng, [`face:${f}`, `face:${other}`]); const needs = /might need help/.test(prompt);
+  'p3-help-who': (rng) => { const [prompt, f, foils, why, more] = pick(rng, P3_HELP_WHO); const other = pick(rng, foils); const choices = shuffle(rng, [`face:${f}`, `face:${other}`]); const needs = /(?:might|may) need help/.test(prompt);
     return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: why, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: needs ? `has ${P3_FACE_SIGN[t.slice(5)]}, so that friend may not need help right now.` : `has ${P3_FACE_SIGN[t.slice(5)]}, and ${P3_FRIEND_LOOK[f]}.` })), alsoRight: more ? [more] : [] }; },
   'p3-help-kind': (rng) => { const [prompt, answer, wrong, why, wrongName, notWhy, more] = pick(rng, P3_HELP_KIND); const choices = shuffle(rng, [answer, wrong]);
@@ -36722,7 +37151,9 @@ Object.assign(GENERATORS, {
   'p4-feel-calm': (rng) => socialRow(pick(rng, P4_FEEL_CALM), rng),
   // How do friends feel? (pass MN, earmark E13: PK4 I.D.1, ELOF P-SE 6): two feelings the same or different, a friend's own
   // feeling from what the friend likes or thinks, worried and embarrassed in moments and on faces, and yes or no.
-  'p4-same-or-different': (rng) => { const a = pick(rng, P4_FEELINGS6); const same = rng() < 0.5; const b = same ? a : pick(rng, P4_FEELINGS6.filter((x) => x !== a)); const choices = shuffle(rng, ['The same', 'Different']); const answer = same ? 'The same' : 'Different';
+  // Since pass NY (EARMARKS A181, the measured reads) two different feelings are never two faces a child can fairly take for each other
+  // (P4_NEAR_FACES), since the two drawn faces would look the same beside the answer Different.
+  'p4-same-or-different': (rng) => { const a = pick(rng, P4_FEELINGS6); const same = rng() < 0.5; const b = same ? a : pick(rng, P4_FEELINGS6.filter((x) => x !== a && !P4_NEAR_FACES.some((p) => p.includes(a) && p.includes(x)))); const choices = shuffle(rng, ['The same', 'Different']); const answer = same ? 'The same' : 'Different';
     return { type: 'choice', story: null, prompt: `You feel ${a}, and your friend feels ${b}. Are your feelings the same, or different?`, choices, answer,
       explain: same ? `You both feel ${a}, so your feelings are the same.` : `You feel ${a}, and your friend feels ${b}, so your feelings are different. That is okay.`,
       visual: { kind: 'pair', a: { kind: 'face', feeling: a }, b: { kind: 'face', feeling: b } }, explainVisual: null,
@@ -36744,7 +37175,8 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: ask, choices, answer: `icon:${a}`, explain, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, `icon:${a}`, (t) => ({ name: p3PicName(t), why: a === 'house' && t === 'icon:block' ? 'is what you build with, not what you will make.' : 'is not what the words say.' })), alsoRight: [] };
   },
   'p4-friend-feels': (rng) => socialFace(pick(rng, P4_FRIEND_FEELS), rng),
-  'p4-new-feeling-moment': (rng) => socialFace(pick(rng, P4_NEW_MOMENTS), rng),
+  // A moment's feeling as a face, its wrong face dealt from the faces its row says the moment could not fairly bring (pass NY).
+  'p4-new-feeling-moment': (rng) => { const [prompt, f, wrongs, why, clause, more] = pick(rng, P4_NEW_MOMENTS); return socialFace([prompt, f, pick(rng, wrongs), why, clause, more], rng); },
   // A face by its feeling, or a feeling for the face shown: worried and embarrassed half the time, any of the six otherwise. Two faces a
   // child can fairly take for each other are never set against each other, either way round (P4_NEAR_FACES): scared and embarrassed,
   // whose faces both draw wide eyes (the lesson check, pass MN), sad and embarrassed, eyes down and no smile (round two's second read),
